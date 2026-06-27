@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão Financeira - Comissão de Formatura PMMT</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+
+    <!-- Top Navigation / Header -->
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-amber-500 text-slate-950 p-2.5 rounded-lg font-bold shadow-md">
+                    <i class="fa-solid fa-shield-halved text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight">Comissão de Formatura PMMT</h1>
+                    <p class="text-xs text-slate-400">Portal do Tesoureiro · Controle de Caixa e Pelotão</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="exportarDados()" class="bg-slate-800 hover:bg-slate-700 text-white text-sm px-4 py-2 rounded-lg font-medium transition duration-200 border border-slate-700 flex items-center gap-2">
+                    <i class="fa-solid fa-download"></i> Exportar Backup
+                </button>
+                <label class="bg-amber-500 hover:bg-amber-600 text-slate-950 text-sm px-4 py-2 rounded-lg font-semibold transition duration-200 cursor-pointer flex items-center gap-2 shadow-sm">
+                    <i class="fa-solid fa-upload"></i> Importar Backup
+                    <input type="file" id="importFile" accept=".json" class="hidden" onchange="importarDados(event)">
+                </label>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        
+        <!-- CARD METRICS SECTION -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Income Card -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+                <div class="space-y-1">
+                    <span class="text-sm font-medium text-slate-500 uppercase tracking-wider">Total Receitas</span>
+                    <h3 id="totalReceitas" class="text-2xl font-bold text-emerald-600">R$ 0,00</h3>
+                </div>
+                <div class="bg-emerald-50 text-emerald-600 p-4 rounded-xl">
+                    <i class="fa-solid fa-arrow-trend-up text-2xl"></i>
+                </div>
+            </div>
+            
+            <!-- Expenses Card -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+                <div class="space-y-1">
+                    <span class="text-sm font-medium text-slate-500 uppercase tracking-wider">Total Despesas</span>
+                    <h3 id="totalDespesas" class="text-2xl font-bold text-rose-600">R$ 0,00</h3>
+                </div>
+                <div class="bg-rose-50 text-rose-600 p-4 rounded-xl">
+                    <i class="fa-solid fa-arrow-trend-down text-2xl"></i>
+                </div>
+            </div>
+
+            <!-- Net Balance Card -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+                <div class="space-y-1">
+                    <span class="text-sm font-medium text-slate-500 uppercase tracking-wider">Saldo Atual em Caixa</span>
+                    <h3 id="saldoAtual" class="text-2xl font-bold text-slate-900">R$ 0,00</h3>
+                </div>
+                <div id="saldoIconBox" class="bg-slate-100 text-slate-700 p-4 rounded-xl">
+                    <i class="fa-solid fa-wallet text-2xl"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- INPUT FORM AND CHARTS SECTION -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Transaction Form Card -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 lg:col-span-1 h-fit">
+                <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-plus text-slate-700"></i> Lançar Movimentação
+                </h2>
+                
+                <form id="transactionForm" onsubmit="salvarLancamento(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Tipo de Lançamento</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <label class="border-2 border-emerald-500 bg-emerald-50 text-emerald-700 rounded-xl p-3 flex items-center justify-center gap-2 font-medium cursor-pointer transition">
+                                <input type="radio" name="tipo" value="receita" checked class="accent-emerald-600" onclick="alternarTipo('receita')"> Receita
+                            </label>
+                            <label class="border border-slate-200 hover:border-slate-300 rounded-xl p-3 flex items-center justify-center gap-2 font-medium cursor-pointer transition">
+                                <input type="radio" name="tipo" value="despesa" class="accent-rose-600" onclick="alternarTipo('despesa')"> Despesa
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="descricao" class="block text-xs font-semibold text-slate-600 uppercase mb-1">Descrição / Identificação</label>
+                        <input type="text" id="descricao" required placeholder="Ex: Mensalidade Aluno X, Compra de Material" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 transition">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="valor" class="block text-xs font-semibold text-slate-600 uppercase mb-1">Valor (R$)</label>
+                            <input type="number" id="valor" step="0.01" required placeholder="0,00" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 transition">
+                        </div>
+                        <div>
+                            <label for="data" class="block text-xs font-semibold text-slate-600 uppercase mb-1">Data</label>
+                            <input type="date" id="data" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 transition">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="categoria" class="block text-xs font-semibold text-slate-600 uppercase mb-1">Categoria</label>
+                        <select id="categoria" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 transition">
+                            <!-- Categorias dinâmicas baseadas no tipo -->
+                            <option value="Mensalidade">Mensalidade do Pelotão</option>
+                            <option value="Arrecadação Extra">Arrecadação Extra / Rifas</option>
+                            <option value="Doações">Doações / Patrocínios</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 rounded-xl transition shadow-sm mt-2 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-check"></i> Confirmar Lançamento
+                    </button>
+                </form>
+            </div>
+
+            <!-- Visual Analytics / Charts -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 lg:col-span-2 space-y-6">
+                <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-chart-pie text-slate-700"></i> Resumo Visual e Balanço
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                    <!-- Chart 1: Evolution or Ratio -->
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-100 flex flex-col items-center">
+                        <span class="text-xs font-semibold text-slate-500 uppercase mb-4">Proporção Operacional</span>
+                        <div class="w-full max-w-[240px] h-[240px]">
+                            <canvas id="ratioChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Chart 2: Category Breakdown -->
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-100 flex flex-col items-center">
+                        <span class="text-xs font-semibold text-slate-500 uppercase mb-4">Gastos / Ganhos por Categoria</span>
+                        <div class="w-full max-w-[240px] h-[240px]">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TRANSACTION HISTORY TABLE -->
+        <section class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+            <div class="px-6 py-4 bg-slate-900 text-white flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h2 class="text-lg font-bold">Histórico de Lançamentos</h2>
+                    <p class="text-xs text-slate-400">Lista completa e transparente auditável do pelotão</p>
+                </div>
+                <div class="flex gap-2 w-full sm:w-auto">
+                    <select id="filtroTipo" onchange="atualizarPainel()" class="bg-slate-800 text-white border border-slate-700 rounded-lg px-3 py-1.5 text-sm focus:outline-none">
+                        <option value="todos">Todos os Tipos</option>
+                        <option value="receita">Apenas Receitas</option>
+                        <option value="despesa">Apenas Despesas</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-100 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                            <th class="px-6 py-3.5">Data</th>
+                            <th class="px-6 py-3.5">Descrição</th>
+                            <th class="px-6 py-3.5">Categoria</th>
+                            <th class="px-6 py-3.5">Tipo</th>
+                            <th class="px-6 py-3.5 text-right">Valor</th>
+                            <th class="px-6 py-3.5 text-center">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaCorpo" class="divide-y divide-slate-100 text-sm font-medium text-slate-700">
+                        <!-- Linhas injetadas via JS -->
+                    </tbody>
+                </table>
+                <div id="tabelaVazia" class="hidden p-8 text-center text-slate-400 text-sm">
+                    <i class="fa-solid fa-folder-open text-3xl mb-2 block"></i>
+                    Nenhum lançamento registrado neste filtro.
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="text-center py-8 text-xs text-slate-400">
+        Gestão Financeira Descentralizada · Desenvolvido para Comissões de Formatura Militares
+    </footer>
+
+    <!-- LOGIC SCRIPT AND LOCALSTORAGE PERSISTENCE -->
+    <script>
+        // Banco de dados em memória persistido via localStorage
+        let lancamentos = JSON.parse(localStorage.getItem('pmmt_financeiro')) || [];
+
+        // Instâncias Globais de Gráficos para reinicialização correta
+        let ratioChartInstance = null;
+        let categoryChartInstance = null;
+
+        // Categorias padrão para troca dinâmica no formulário
+        const categoriasReceita = [
+            { val: "Mensalidade", text: "Mensalidade do Pelotão" },
+            { val: "Arrecadação Extra", text: "Arrecadação Extra / Rifas" },
+            { val: "Doações", text: "Doações / Patrocínios" },
+            { val: "Outros", text: "Outros" }
+        ];
+
+        const categoriasDespesa = [
+            { val: "Fardamento", text: "Fardamento / Uniformes" },
+            { val: "Eventos", text: "Confraternizações / Eventos" },
+            { val: "Material Didático", text: "Apostilas / Impressões" },
+            { val: "Água / Consumo", text: "Água e Consumo do Pelotão" },
+            { val: "Formatura", text: "Reserva para a Solenidade" },
+            { val: "Taxas", text: "Taxas e Encargos Bancários" },
+            { val: "Outros", text: "Outros" }
+        ];
+
+        // Define a data atual como padrão no formulário ao carregar
+        document.getElementById('data').value = new Date().toISOString().split('T')[0];
+
+        function alternarTipo(tipo) {
+            const labels = document.querySelectorAll('#transactionForm grid div label, #transactionForm div div label');
+            const selectCategoria = document.getElementById('categoria');
+            
+            // Limpa opções anteriores
+            selectCategoria.innerHTML = '';
+
+            // Estilização visual dos botões de rádio baseados na escolha
+            labels.forEach(lbl => {
+                if (lbl.innerText.includes('Receita')) {
+                    if (tipo === 'receita') {
+                        lbl.className = "border-2 border-emerald-500 bg-emerald-50 text-emerald-700 rounded-xl p-3 flex items-center justify-center gap-2 font-medium cursor-pointer transition";
+                    } else {
+                        lbl.className = "border border-slate-200 hover:border-slate-300 rounded-xl p-3 flex items-center justify-center gap-2 font-medium cursor-pointer transition";
+                    }
+                }
+                if (lbl.innerText.includes('Despesa')) {
+                    if (tipo === 'despesa') {
+                        lbl.className = "border-2 border-rose-500 bg-rose-50 text-rose-700 rounded-xl p-3 flex items-center justify-center gap-2 font-medium cursor-pointer transition";
+                    } else {
+                        lbl.className = "border border-slate-200 hover:border-slate-300 rounded-xl p-3 flex items-center justify-center gap-2 font-medium cursor-pointer transition";
+                    }
+                }
+            });
+
+            // Altera opções de categoria
+            const cats = (tipo === 'receita') ? categoriasReceita : categoriasDespesa;
+            cats.forEach(c => {
+                let opt = document.createElement('option');
+                opt.value = c.val;
+                opt.innerText = c.text;
+                selectCategoria.appendChild(opt);
+            });
+        }
+
+        function formatarMoeda(valor) {
+            return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function formatarData(dataStr) {
+            const [ano, mes, dia] = dataStr.split('-');
+            return `${dia}/${mes}/${ano}`;
+        }
+
+        function salvarLancamento(e) {
+            e.preventDefault();
+            
+            const tipo = document.querySelector('input[name="tipo"]:checked').value;
+            const descricao = document.getElementById('descricao').value;
+            const valor = parseFloat(document.getElementById('valor').value);
+            const data = document.getElementById('data').value;
+            const categoria = document.getElementById('categoria').value;
+
+            const novoLancamento = {
+                id: Date.now().toString(),
+                tipo,
+                descricao,
+                valor,
+                data,
+                categoria
+            };
+
+            lancamentos.push(novoLancamento);
+            persistirDados();
+            
+            // Reset do formulário preservando a data atual
+            document.getElementById('descricao').value = '';
+            document.getElementById('valor').value = '';
+            document.getElementById('data').value = new Date().toISOString().split('T')[0];
+            
+            atualizarPainel();
+        }
+
+        function excluirLancamento(id) {
+            if(confirm("Tem certeza que deseja excluir esta movimentação?")) {
+                lancamentos = lancamentos.filter(l => l.id !== id);
+                persistirDados();
+                atualizarPainel();
+            }
+        }
+
+        function persistirDados() {
+            localStorage.setItem('pmmt_financeiro', JSON.stringify(lancamentos));
+        }
+
+        function exportarDados() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(lancamentos, null, 2));
+            const dlAnchorElem = document.createElement('a');
+            dlAnchorElem.setAttribute("href", dataStr);
+            dlAnchorElem.setAttribute("download", `BACKUP_FINANCEIRO_PMMT_${new Date().toISOString().split('T')[0]}.json`);
+            dlAnchorElem.click();
+        }
+
+        function importarDados(event) {
+            const fileReader = new FileReader();
+            fileReader.onload = function(e) {
+                try {
+                    const dadosImportados = JSON.parse(e.target.result);
+                    if (Array.isArray(dadosImportados)) {
+                        lancamentos = dadosImportados;
+                        persistirDados();
+                        atualizarPainel();
+                        alert("Dados importados com sucesso!");
+                    } else {
+                        alert("Erro: Formato de arquivo inválido.");
+                    }
+                } catch (err) {
+                    alert("Erro ao ler o arquivo de backup.");
+                }
+            }
+            fileReader.readAsText(event.target.files[0]);
+        }
+
+        function atualizarPainel() {
+            const filtro = document.getElementById('filtroTipo').value;
+            const tabelaCorpo = document.getElementById('tabelaCorpo');
+            const tabelaVazia = document.getElementById('tabelaVazia');
+            
+            tabelaCorpo.innerHTML = '';
+
+            let totalRec = 0;
+            let totalDes = 0;
+            let catMap = {};
+
+            // Ordena lançamentos por data decrescente
+            lancamentos.sort((a, b) => new Date(b.data) - new Date(a.data));
+
+            let itensFiltrados = 0;
+
+            lancamentos.forEach(l => {
+                // Cálculos globais (independente de filtro da tabela)
+                if (l.tipo === 'receita') totalRec += l.valor;
+                if (l.tipo === 'despesa') totalDes += l.valor;
+
+                // Mapeamento de categorias para gráfico secundário
+                catMap[l.categoria] = (catMap[l.categoria] || 0) + l.valor;
+
+                // Aplicação de filtro de exibição para a tabela
+                if (filtro !== 'todos' && l.tipo !== filtro) return;
+                
+                itensFiltrados++;
+
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-slate-100 hover:bg-slate-50 transition";
+                
+                const tipoBadge = l.tipo === 'receita' 
+                    ? '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700"><i class="fa-solid fa-circle text-[6px]"></i> Receita</span>'
+                    : '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-700"><i class="fa-solid fa-circle text-[6px]"></i> Despesa</span>';
+
+                const valorClasse = l.tipo === 'receita' ? 'text-emerald-600' : 'text-rose-600';
+                const sinal = l.tipo === 'receita' ? '+' : '-';
+
+                tr.innerHTML = `
+                    <td class="px-6 py-4 white-space-nowrap text-slate-500 font-normal">${formatarData(l.data)}</td>
+                    <td class="px-6 py-4 font-semibold text-slate-900">${l.descricao}</td>
+                    <td class="px-6 py-4 text-slate-500 font-normal">${l.categoria}</td>
+                    <td class="px-6 py-4">${tipoBadge}</td>
+                    <td class="px-6 py-4 text-right font-bold ${valorClasse}">${sinal} ${formatarMoeda(l.valor)}</td>
+                    <td class="px-6 py-4 text-center">
+                        <button onclick="excluirLancamento('${l.id}')" class="text-slate-400 hover:text-rose-600 p-1 rounded-lg transition" title="Excluir">
+                            <i class="fa-regular fa-trash-can text-base"></i>
+                        </button>
+                    </td>
+                `;
+                tabelaCorpo.appendChild(tr);
+            });
+
+            if (itensFiltrados === 0) {
+                tabelaVazia.classList.remove('hidden');
+            } else {
+                tabelaVazia.classList.add('hidden');
+            }
+
+            // Atualiza Cards de Métricas superiores
+            const saldo = totalRec - totalDes;
+            document.getElementById('totalReceitas').innerText = formatarMoeda(totalRec);
+            document.getElementById('totalDespesas').innerText = formatarMoeda(totalDes);
+            document.getElementById('saldoAtual').innerText = formatarMoeda(saldo);
+
+            // Muda cor do card de saldo dinamicamente
+            const saldoIconBox = document.getElementById('saldoIconBox');
+            const saldoAtualElement = document.getElementById('saldoAtual');
+            if (saldo > 0) {
+                saldoIconBox.className = "bg-emerald-50 text-emerald-600 p-4 rounded-xl";
+                saldoAtualElement.className = "text-2xl font-bold text-slate-900";
+            } else if (saldo < 0) {
+                saldoIconBox.className = "bg-rose-50 text-rose-600 p-4 rounded-xl";
+                saldoAtualElement.className = "text-2xl font-bold text-rose-600";
+            } else {
+                saldoIconBox.className = "bg-slate-100 text-slate-700 p-4 rounded-xl";
+                saldoAtualElement.className = "text-2xl font-bold text-slate-900";
+            }
+
+            // ATUALIZAÇÃO DOS GRÁFICOS (CHART.JS)
+            renderizarGraficos(totalRec, totalDes, catMap);
+        }
+
+        function renderizarGraficos(receitas, despesas, mapaCategorias) {
+            // Destrói instâncias anteriores para evitar travamentos de rendering do Canvas
+            if (ratioChartInstance) ratioChartInstance.destroy();
+            if (categoryChartInstance) categoryChartInstance.destroy();
+
+            // Gráfico 1: Proporção Entrada x Saída
+            const ctxRatio = document.getElementById('ratioChart').getContext('2d');
+            ratioChartInstance = new Chart(ctxRatio, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Receitas', 'Despesas'],
+                    datasets: [{
+                        data: [receitas, despesas],
+                        backgroundColor: ['#10b981', '#f43f5e'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
+                    }
+                }
+            });
+
+            // Gráfico 2: Divisão por Categorias
+            const categoriasLabels = Object.keys(mapaCategorias);
+            const categoriasValores = Object.values(mapaCategorias);
+
+            const ctxCat = document.getElementById('categoryChart').getContext('2d');
+            categoryChartInstance = new Chart(ctxCat, {
+                type: 'pie',
+                data: {
+                    labels: categoriasLabels.length ? categoriasLabels : ['Sem dados'],
+                    datasets: [{
+                        data: categoriasLabels.length ? categoriasValores : [1],
+                        backgroundColor: [
+                            '#3b82f6', '#f59e0b', '#10b981', '#ec4899', 
+                            '#8b5cf6', '#64748b', '#a855f7', '#14b8a6'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
+                    }
+                }
+            });
+        }
+
+        // Execução inicial no carregamento da janela
+        window.onload = function() {
+            alternarTipo('receita');
+            atualizarPainel();
+        };
+    </script>
+</body>
+</html>
