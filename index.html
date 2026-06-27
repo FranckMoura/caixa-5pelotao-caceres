@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal da Transparência - 5º Pelotão</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { pmmt: { blue: '#0B1C3D', gold: '#C5A059' } } } } }
+    </script>
+</head>
+<body class="bg-slate-100 min-h-screen">
+
+    <header class="bg-pmmt-blue text-white border-b-4 border-pmmt-gold p-4">
+        <div class="max-w-5xl mx-auto flex items-center justify-between">
+            <h1 class="text-xl font-bold text-pmmt-gold">5º PELOTÃO - PMMT</h1>
+            <p id="statusConexao" class="text-sm">Conectando...</p>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto p-6 space-y-6">
+        <!-- Dashboard Simplificado -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white p-4 rounded shadow"> <p class="text-xs text-gray-500">Total</p> <h2 id="valorReceitas" class="text-xl font-bold text-green-600">R$ 0,00</h2> </div>
+            <div class="bg-white p-4 rounded shadow"> <p class="text-xs text-gray-500">Despesas</p> <h2 id="valorDespesas" class="text-xl font-bold text-red-600">R$ 0,00</h2> </div>
+            <div class="bg-white p-4 rounded shadow"> <p class="text-xs text-gray-500">Saldo</p> <h2 id="valorSaldo" class="text-xl font-bold text-blue-900">R$ 0,00</h2> </div>
+        </div>
+
+        <div id="gridCotas" class="grid grid-cols-2 md:grid-cols-5 gap-2"></div>
+    </main>
+
+    <script>
+        // Configuração Única
+        const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwd.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
+
+        // Inicialização segura
+        let supabaseClient = null;
+        
+        async function init() {
+            try {
+                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                document.getElementById('statusConexao').innerText = "Conectado";
+                await carregarDados();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function carregarDados() {
+            const { data, error } = await supabaseClient.from('transacoes_caixa').select('*');
+            if (error) console.error(error);
+            else console.log("Dados carregados", data);
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
