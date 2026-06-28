@@ -41,16 +41,13 @@
 </head>
 <body class="bg-slate-100 text-slate-800 h-screen flex overflow-hidden">
 
-    <!-- MENU LATERAL (SIDEBAR) AUMENTADO -->
     <aside class="w-72 bg-pmmt-blue text-white flex flex-col shadow-2xl z-50 hidden md:flex h-full">
-        <!-- Logo Pelotão Maior e Centralizada -->
-        <div class="p-4 text-center border-b border-pmmt-gold/30 mt-4">
-            <img src="IMG_1315.JPG" alt="Brasão 5º Pelotão" class="w-48 h-48 object-cover rounded-full border-4 border-pmmt-gold shadow-xl bg-pmmt-blue mx-auto mb-4 hover:scale-105 transition-transform duration-300">
+        <div class="p-4 text-center border-b border-pmmt-gold/30 mt-2">
+            <img src="IMG_1408.JPG" alt="Brasão 5º Pelotão" class="w-full h-auto object-contain rounded-lg border-2 border-pmmt-gold shadow-xl bg-pmmt-blue mx-auto mb-4 hover:scale-105 transition-transform duration-300">
             <h2 class="text-xl font-extrabold text-pmmt-gold tracking-widest drop-shadow-md">5º PELOTÃO</h2>
             <p class="text-[11px] font-semibold text-slate-300 uppercase tracking-widest mt-1">Força Tática - Cáceres</p>
         </div>
 
-        <!-- Navegação de Módulos -->
         <nav class="flex-1 p-4 space-y-2 overflow-y-auto mt-2">
             <button onclick="mudarModulo('financeiro')" id="btn-financeiro" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold transition-all bg-pmmt-gold text-pmmt-blue shadow-md">
                 <i class="fa-solid fa-vault w-5 text-center"></i> Gestão Financeira
@@ -71,10 +68,8 @@
         </div>
     </aside>
 
-    <!-- CONTEÚDO PRINCIPAL -->
     <div class="flex-1 flex flex-col h-screen overflow-hidden">
         
-        <!-- CABEÇALHO SUPERIOR (FUNDO AZUL) -->
         <header class="bg-pmmt-blue shadow-md border-b-4 border-pmmt-gold py-4 px-8 flex justify-between items-center z-40">
             <div class="flex items-center gap-4">
                 <img src="logo_pmmt_branco_para_fundo_azul.png" alt="Logo PMMT" class="h-20 object-contain drop-shadow-md">
@@ -87,7 +82,6 @@
             <button class="md:hidden text-white text-2xl"><i class="fa-solid fa-bars"></i></button>
         </header>
 
-        <!-- ÁREA DOS MÓDULOS (Scrollable) -->
         <main class="flex-1 overflow-y-auto p-6 md:p-8 bg-slate-100">
             
             <div id="loaderAlert" class="hidden bg-pmmt-light border-l-4 border-pmmt-gold p-4 rounded-r-lg shadow-sm mb-6 flex items-center gap-3">
@@ -95,11 +89,7 @@
                 <p class="text-sm font-medium text-white">Sincronizando dados...</p>
             </div>
 
-            <!-- ========================================== -->
-            <!-- MÓDULO 1: GESTÃO FINANCEIRA                -->
-            <!-- ========================================== -->
             <section id="modulo-financeiro" class="space-y-6">
-                <!-- Painel de Indicadores -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="bg-white rounded-xl shadow-md p-6 border-t-4 border-emerald-600 relative overflow-hidden">
                         <i class="fa-solid fa-money-bill-trend-up absolute -right-4 -bottom-4 text-7xl text-emerald-50 opacity-50"></i>
@@ -118,7 +108,6 @@
                     </div>
                 </div>
 
-                <!-- Formulário e Gráfico -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 no-print">
                     <div class="bg-white rounded-xl shadow-md p-6 lg:col-span-1 border border-slate-200">
                         <h3 class="text-lg font-bold text-pmmt-blue mb-5 border-b pb-2"><i class="fa-solid fa-pen-to-square text-pmmt-gold mr-2"></i> Lançar Movimentação</h3>
@@ -180,7 +169,6 @@
                     </div>
                 </div>
 
-                <!-- Painel de Cotas Colapsável -->
                 <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden no-print">
                     <div class="bg-pmmt-blue border-b border-pmmt-light px-6 py-4 flex justify-between items-center cursor-pointer select-none hover:bg-pmmt-light transition" onclick="togglePainel('conteudoCotas', 'iconeCotas')">
                         <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-users text-pmmt-gold mr-2"></i> Monitoramento de Cotas (R$ 150,00)</h3>
@@ -191,7 +179,6 @@
                     </div>
                 </div>
 
-                <!-- Tabela de Histórico Colapsável -->
                 <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
                     <div class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center cursor-pointer select-none hover:bg-slate-50 transition" onclick="togglePainel('conteudoHistorico', 'iconeHistorico')">
                         <h3 class="text-lg font-bold text-pmmt-blue"><i class="fa-solid fa-list-check text-pmmt-gold mr-2"></i> Livro Caixa - Histórico Auditável</h3>
@@ -215,27 +202,72 @@
                                 </tr>
                             </thead>
                             <tbody id="tabelaDados" class="divide-y divide-slate-200 text-sm">
-                                <!-- Renderizado via JS -->
-                            </tbody>
+                                </tbody>
                         </table>
                     </div>
                 </div>
             </section>
 
-            <!-- ========================================== -->
-            <!-- MÓDULO 2: EFETIVO (Placeholder)            -->
-            <!-- ========================================== -->
             <section id="modulo-efetivo" class="hidden space-y-6">
-                <div class="bg-white rounded-xl shadow-md p-8 border-t-4 border-pmmt-blue text-center">
-                    <i class="fa-solid fa-users text-6xl text-slate-200 mb-4"></i>
-                    <h2 class="text-2xl font-bold text-pmmt-blue">Módulo de Efetivo</h2>
-                    <p class="text-slate-500 mt-2">Área destinada ao cadastro de RQAs, tipagem sanguínea, contatos de emergência e histórico disciplinar dos alunos do 5º Pelotão.</p>
+                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                    <h3 class="text-xl font-bold text-pmmt-blue border-b-2 border-pmmt-gold pb-2 mb-4">
+                        <i class="fas fa-calendar-alt text-pmmt-gold mr-2"></i>Escala de Serviço - 5º Pelotão
+                    </h3>
+                    <div id="gridEscala" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+                        </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-xl shadow-md border-t-4 border-blue-600 overflow-hidden">
+                        <div class="bg-blue-50 py-3 px-4 border-b border-blue-100 flex justify-between items-center">
+                            <h3 class="text-lg font-extrabold text-blue-900">Equipe ALFA</h3>
+                            <span class="bg-blue-200 text-blue-800 text-xs font-bold px-2 py-1 rounded">CMT: SGT ORTIZ</span>
+                        </div>
+                        <ul id="tabelaAlfa" class="text-sm p-4 text-black font-semibold divide-y divide-slate-100 h-64 overflow-y-auto"></ul>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-md border-t-4 border-amber-500 overflow-hidden">
+                        <div class="bg-amber-50 py-3 px-4 border-b border-amber-100 flex justify-between items-center">
+                            <h3 class="text-lg font-extrabold text-amber-900">Equipe BRAVO</h3>
+                            <span class="bg-amber-200 text-amber-900 text-xs font-bold px-2 py-1 rounded">CMT: SGT MAURIZON</span>
+                        </div>
+                        <ul id="tabelaBravo" class="text-sm p-4 text-black font-semibold divide-y divide-slate-100 h-64 overflow-y-auto"></ul>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-md border-t-4 border-emerald-600 overflow-hidden">
+                        <div class="bg-emerald-50 py-3 px-4 border-b border-emerald-100 flex justify-between items-center">
+                            <h3 class="text-lg font-extrabold text-emerald-900">Equipe CHARLIE</h3>
+                            <span class="bg-emerald-200 text-emerald-800 text-xs font-bold px-2 py-1 rounded">CMT: SGT SOUZA</span>
+                        </div>
+                        <ul id="tabelaCharlie" class="text-sm p-4 text-black font-semibold divide-y divide-slate-100 h-64 overflow-y-auto"></ul>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                    <div class="bg-pmmt-blue px-6 py-4 flex justify-between items-center">
+                        <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-users text-pmmt-gold mr-2"></i> Relação Nominal Geral</h3>
+                        <button onclick="event.stopPropagation(); window.print()" class="text-sm text-white hover:text-pmmt-gold border border-slate-500 px-3 py-1.5 rounded shadow-sm transition no-print">
+                            <i class="fa-solid fa-print"></i> Imprimir
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-xs font-bold text-slate-600 uppercase tracking-wider border-b border-slate-300">
+                                    <th class="px-6 py-3">Nº</th>
+                                    <th class="px-6 py-3">QRA</th>
+                                    <th class="px-6 py-3">Nome Completo</th>
+                                    <th class="px-6 py-3 text-center">Equipe</th>
+                                    <th class="px-6 py-3">Comandante</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelaEfetivoGeral" class="divide-y divide-slate-200 text-sm text-black">
+                                </tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 
-            <!-- ========================================== -->
-            <!-- MÓDULO 3: APOIO (Placeholder)              -->
-            <!-- ========================================== -->
             <section id="modulo-apoio" class="hidden space-y-6">
                 <div class="bg-white rounded-xl shadow-md p-8 border-t-4 border-pmmt-gold text-center">
                     <i class="fa-solid fa-book-open text-6xl text-slate-200 mb-4"></i>
@@ -244,9 +276,6 @@
                 </div>
             </section>
 
-            <!-- ========================================== -->
-            <!-- MÓDULO 4: DEBATE (Placeholder)             -->
-            <!-- ========================================== -->
             <section id="modulo-debate" class="hidden space-y-6">
                 <div class="bg-white rounded-xl shadow-md p-8 border-t-4 border-emerald-600 text-center">
                     <i class="fa-solid fa-comments text-6xl text-slate-200 mb-4"></i>
@@ -280,20 +309,17 @@
 
         // --- NAVEGAÇÃO SPA (Módulos) ---
         function mudarModulo(moduloDestino) {
-            // Oculta todos
             document.getElementById('modulo-financeiro').classList.add('hidden');
             document.getElementById('modulo-efetivo').classList.add('hidden');
             document.getElementById('modulo-apoio').classList.add('hidden');
             document.getElementById('modulo-debate').classList.add('hidden');
             
-            // Reseta botões do menu
             const botoes = ['financeiro', 'efetivo', 'apoio', 'debate'];
             botoes.forEach(b => {
                 const btn = document.getElementById('btn-' + b);
                 btn.className = "w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold text-slate-300 hover:bg-pmmt-light hover:text-white transition-all";
             });
 
-            // Mostra o destino e ativa o botão
             document.getElementById('modulo-' + moduloDestino).classList.remove('hidden');
             document.getElementById('btn-' + moduloDestino).className = "w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold transition-all bg-pmmt-gold text-pmmt-blue shadow-md";
         }
@@ -383,11 +409,17 @@
             const select = document.getElementById('inputAluno');
             const { data, error } = await supabaseClient.from('alunos_pelotao').select('*').order('numero', { ascending: true });
             if (error) return;
+            
             listaAlunosFull = data;
+            
             data.forEach(aluno => {
                 alunosMap[aluno.id] = `${aluno.numero} - ${aluno.nome}`;
                 select.add(new Option(`${aluno.numero.toString().padStart(2, '0')} - ${aluno.nome}`, aluno.id));
             });
+            
+            // Injeta as informações no módulo de Efetivo
+            renderizarEscala();
+            renderizarListasEfetivo();
         }
 
         async function carregarTransacoes() {
@@ -458,7 +490,7 @@
             }
         }
 
-        // --- ORDENAÇÃO E RENDERIZAÇÃO ---
+        // --- ORDENAÇÃO E RENDERIZAÇÃO (FINANCEIRO) ---
         function ordenarTabela(coluna) {
             if (colunaOrdenacao === coluna) direcaoOrdenacao = direcaoOrdenacao === 'asc' ? 'desc' : 'asc';
             else { colunaOrdenacao = coluna; direcaoOrdenacao = 'asc'; }
@@ -584,6 +616,92 @@
                     }]
                 },
                 options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { family: 'Montserrat', size: 10, weight: 'bold' }, color: 'black' } } } }
+            });
+        }
+
+        // --- MÓDULO EFETIVO (Escala e Equipes) ---
+        function renderizarEscala() {
+            const grid = document.getElementById('gridEscala');
+            grid.innerHTML = '';
+            
+            // Base: 29/06/2026 às 12:00 (meio-dia para evitar bug de fuso horário)
+            const dataBase = new Date('2026-06-29T12:00:00Z'); 
+            const sequencia = ['CHARLIE', 'ALFA', 'BRAVO'];
+            const cores = {
+                'ALFA': 'bg-blue-100 text-blue-800 border-blue-300', 
+                'BRAVO': 'bg-amber-100 text-amber-800 border-amber-300', 
+                'CHARLIE': 'bg-emerald-100 text-emerald-800 border-emerald-300'
+            };
+
+            let hoje = new Date();
+            // Reseta a hora local para o cálculo ficar exato
+            hoje.setHours(12, 0, 0, 0); 
+
+            for(let i = 0; i < 7; i++) {
+                let dataAlvo = new Date(hoje);
+                dataAlvo.setDate(hoje.getDate() + i);
+
+                let diferencaDias = Math.floor((dataAlvo - dataBase) / (1000 * 60 * 60 * 24));
+                let indexEquipe = diferencaDias % 3;
+                if (indexEquipe < 0) indexEquipe += 3;
+
+                let equipeDoDia = sequencia[indexEquipe];
+                let corTag = cores[equipeDoDia];
+                
+                let ehHoje = i === 0 ? 'border-pmmt-gold border-2 bg-yellow-50 shadow-md scale-105 z-10' : 'border-slate-200 bg-white';
+                let txtHoje = i === 0 ? '<div class="text-[10px] text-pmmt-blue font-black uppercase mb-1 bg-pmmt-gold/20 px-2 py-0.5 rounded-full">Hoje</div>' : '';
+
+                grid.innerHTML += `
+                    <div class="p-3 rounded-lg border text-center flex flex-col items-center justify-center transition-all ${ehHoje}">
+                        ${txtHoje}
+                        <p class="text-xs text-slate-500 font-bold uppercase">${dataAlvo.toLocaleDateString('pt-BR', {weekday: 'short'})}</p>
+                        <p class="text-xl font-extrabold text-black mb-2">${dataAlvo.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'})}</p>
+                        <span class="text-xs font-black px-3 py-1 rounded-full border ${corTag}">${equipeDoDia}</span>
+                    </div>
+                `;
+            }
+        }
+
+        function renderizarListasEfetivo() {
+            const tabAlfa = document.getElementById('tabelaAlfa');
+            const tabBravo = document.getElementById('tabelaBravo');
+            const tabCharlie = document.getElementById('tabelaCharlie');
+            const tabGeral = document.getElementById('tabelaEfetivoGeral');
+            
+            tabAlfa.innerHTML = ''; tabBravo.innerHTML = ''; tabCharlie.innerHTML = ''; tabGeral.innerHTML = '';
+
+            listaAlunosFull.forEach(aluno => {
+                let qra = aluno.qra || '-';
+                let equipe = aluno.equipe || '-';
+                let comandante = aluno.comandante || '-';
+                let numFormatado = aluno.numero.toString().padStart(2, '0');
+
+                // Listas das Equipes
+                let linhaMini = `<li class="py-2.5 flex justify-between items-center hover:bg-slate-50 px-2 rounded transition cursor-default">
+                                    <span><span class="text-slate-400 font-bold mr-2">${numFormatado}</span> ${qra}</span> 
+                                 </li>`;
+                
+                if(equipe === 'ALFA') tabAlfa.innerHTML += linhaMini;
+                if(equipe === 'BRAVO') tabBravo.innerHTML += linhaMini;
+                if(equipe === 'CHARLIE') tabCharlie.innerHTML += linhaMini;
+
+                // Tabela Geral
+                let badgeColor = '';
+                if(equipe === 'ALFA') badgeColor = 'bg-blue-100 text-blue-800';
+                if(equipe === 'BRAVO') badgeColor = 'bg-amber-100 text-amber-800';
+                if(equipe === 'CHARLIE') badgeColor = 'bg-emerald-100 text-emerald-800';
+
+                tabGeral.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition border-b border-slate-200">
+                        <td class="px-6 py-4 font-bold text-slate-500">${numFormatado}</td>
+                        <td class="px-6 py-4 font-extrabold text-pmmt-blue">${qra}</td>
+                        <td class="px-6 py-4 font-semibold text-slate-700">${aluno.nome}</td>
+                        <td class="px-6 py-4 text-center">
+                            <span class="px-3 py-1 rounded text-xs font-bold ${badgeColor}">${equipe}</span>
+                        </td>
+                        <td class="px-6 py-4 font-bold text-slate-600">${comandante}</td>
+                    </tr>
+                `;
             });
         }
 
