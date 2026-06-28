@@ -78,7 +78,6 @@
                     <p class="text-sm font-semibold text-slate-300 uppercase tracking-widest">Portal Institucional Integrado</p>
                 </div>
             </div>
-            
             <button class="md:hidden text-white text-2xl"><i class="fa-solid fa-bars"></i></button>
         </header>
 
@@ -90,6 +89,7 @@
             </div>
 
             <section id="modulo-financeiro" class="space-y-6">
+                
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="bg-white rounded-xl shadow-md p-6 border-t-4 border-emerald-600 relative overflow-hidden">
                         <i class="fa-solid fa-money-bill-trend-up absolute -right-4 -bottom-4 text-7xl text-emerald-50 opacity-50"></i>
@@ -176,6 +176,78 @@
                     </div>
                     <div id="conteudoCotas" class="painel-conteudo bg-slate-50" style="max-height: 2000px; padding: 1.5rem;">
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3" id="gridCotas"></div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden no-print">
+                    <div class="bg-pmmt-light border-b border-pmmt-blue px-6 py-4 flex justify-between items-center cursor-pointer select-none hover:bg-pmmt-blue transition" onclick="togglePainel('conteudoPlanejamento', 'iconePlanejamento')">
+                        <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-crosshairs text-pmmt-gold mr-2"></i> Planejamento e Provisão de Gastos</h3>
+                        <i id="iconePlanejamento" class="fa-solid fa-chevron-up text-pmmt-gold transition-transform duration-300"></i>
+                    </div>
+                    <div id="conteudoPlanejamento" class="painel-conteudo bg-slate-50" style="max-height: 4000px; padding: 1.5rem;">
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <div class="bg-white border-l-4 border-pmmt-blue p-4 rounded shadow-sm">
+                                <p class="text-[10px] font-bold text-slate-500 uppercase">Caixa Atual</p>
+                                <h4 id="projCaixaAtual" class="text-xl font-extrabold text-pmmt-blue">R$ 0,00</h4>
+                            </div>
+                            <div class="bg-white border-l-4 border-amber-500 p-4 rounded shadow-sm">
+                                <p class="text-[10px] font-bold text-slate-500 uppercase">Total Previsto (A Pagar)</p>
+                                <h4 id="projTotalPrevisto" class="text-xl font-extrabold text-amber-600">R$ 0,00</h4>
+                            </div>
+                            <div id="boxSaldoProjetado" class="bg-white border-l-4 border-slate-200 p-4 rounded shadow-sm transition-colors">
+                                <p class="text-[10px] font-bold text-slate-500 uppercase">Saldo Projetado</p>
+                                <h4 id="projSaldoFinal" class="text-xl font-extrabold text-slate-700">R$ 0,00</h4>
+                                <p id="projAlertaCota" class="text-xs font-bold text-rose-600 mt-1 hidden"><i class="fa-solid fa-triangle-exclamation"></i> Cota Extra Necessária: <span id="valorCotaExtra">R$ 0,00</span>/aluno</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div class="lg:col-span-1 bg-white p-4 rounded border border-slate-200 shadow-sm">
+                                <h4 class="text-sm font-bold text-pmmt-blue mb-4 border-b pb-2">Nova Provisão</h4>
+                                <form onsubmit="salvarPrevisao(event)" class="space-y-3">
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-500 uppercase">Descrição</label>
+                                        <input type="text" id="prevDescricao" required placeholder="Ex: Fardamento Tático" class="w-full bg-slate-50 border border-slate-200 p-2 rounded text-sm outline-none focus:border-pmmt-gold">
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-500 uppercase">Categoria</label>
+                                            <input type="text" id="prevCategoria" required placeholder="Ex: Fardamento" class="w-full bg-slate-50 border border-slate-200 p-2 rounded text-sm outline-none focus:border-pmmt-gold">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-500 uppercase">Prazo</label>
+                                            <input type="date" id="prevData" required class="w-full bg-slate-50 border border-slate-200 p-2 rounded text-sm outline-none focus:border-pmmt-gold">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-500 uppercase">Valor Estimado (R$)</label>
+                                        <input type="number" step="0.01" id="prevValor" required placeholder="500.00" class="w-full bg-slate-50 border border-slate-200 p-2 rounded text-sm outline-none focus:border-pmmt-gold">
+                                    </div>
+                                    <button type="submit" class="w-full bg-pmmt-blue hover:bg-pmmt-light text-white font-bold py-2 rounded shadow transition text-sm">
+                                        Agendar Despesa
+                                    </button>
+                                </form>
+                            </div>
+
+                            <div class="lg:col-span-2 bg-white rounded border border-slate-200 shadow-sm overflow-hidden">
+                                <div class="overflow-x-auto h-64">
+                                    <table class="w-full text-left border-collapse">
+                                        <thead class="bg-slate-100 text-[10px] uppercase font-bold text-slate-500 sticky top-0">
+                                            <tr>
+                                                <th class="p-3">Prazo</th>
+                                                <th class="p-3">Item / Descrição</th>
+                                                <th class="p-3 text-right">Valor Est.</th>
+                                                <th class="p-3 text-center">Status</th>
+                                                <th class="p-3 text-center">Ação</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabelaPrevisoes" class="divide-y divide-slate-100 text-sm font-medium">
+                                            </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -293,6 +365,7 @@
         let alunosMap = {};
         let listaAlunosFull = []; 
         let transacoesGlobais = [];
+        let previsoesGlobais = []; // Variável para as previsões
         
         let colunaOrdenacao = 'data';
         let direcaoOrdenacao = 'desc';
@@ -331,11 +404,11 @@
             if (conteudo.style.maxHeight !== '0px') {
                 conteudo.style.maxHeight = '0px';
                 icone.style.transform = 'rotate(180deg)';
-                if(conteudoId === 'conteudoCotas') conteudo.style.padding = '0px 1.5rem';
+                if(conteudoId === 'conteudoCotas' || conteudoId === 'conteudoPlanejamento') conteudo.style.padding = '0px 1.5rem';
             } else {
                 conteudo.style.maxHeight = '4000px';
                 icone.style.transform = 'rotate(0deg)';
-                if(conteudoId === 'conteudoCotas') conteudo.style.padding = '1.5rem';
+                if(conteudoId === 'conteudoCotas' || conteudoId === 'conteudoPlanejamento') conteudo.style.padding = '1.5rem';
             }
         }
 
@@ -399,6 +472,7 @@
                 document.getElementById('statusConexao').className = 'text-xs font-bold text-green-400';
                 await carregarAlunos();
                 await carregarTransacoes();
+                await carregarPrevisoes(); // Carrega as previsões do banco
             } catch (error) {
                 document.getElementById('statusConexao').innerText = "Erro de Rede";
                 document.getElementById('statusConexao').className = 'text-xs font-bold text-rose-500';
@@ -417,7 +491,6 @@
                 select.add(new Option(`${aluno.numero.toString().padStart(2, '0')} - ${aluno.nome}`, aluno.id));
             });
             
-            // Injeta as informações no módulo de Efetivo
             renderizarEscala();
             renderizarListasEfetivo();
         }
@@ -521,6 +594,7 @@
             renderizarGrafico(categoriasGrafico);
             renderizarPainelCotas(pagamentosAlunos);
             renderizarTabelaHTML();
+            renderizarPrevisoes(); // Atualiza a projeção financeira
         }
 
         function renderizarTabelaHTML() {
@@ -619,12 +693,125 @@
             });
         }
 
+        // --- MÓDULO DE PLANEJAMENTO E PROVISÃO ---
+        async function carregarPrevisoes() {
+            const { data, error } = await supabaseClient.from('previsao_despesas').select('*').order('data_limite', { ascending: true });
+            if (!error) {
+                previsoesGlobais = data;
+                renderizarPrevisoes();
+            }
+        }
+
+        async function salvarPrevisao(e) {
+            e.preventDefault();
+            mostrarLoading(true);
+            const novaPrevisao = {
+                descricao: document.getElementById('prevDescricao').value,
+                categoria: document.getElementById('prevCategoria').value,
+                data_limite: document.getElementById('prevData').value,
+                valor_estimado: parseFloat(document.getElementById('prevValor').value)
+            };
+            
+            const { error } = await supabaseClient.from('previsao_despesas').insert([novaPrevisao]);
+            if (!error) {
+                document.getElementById('prevDescricao').value = '';
+                document.getElementById('prevCategoria').value = '';
+                document.getElementById('prevValor').value = '';
+                await carregarPrevisoes();
+            } else {
+                alert("Erro ao salvar previsão!");
+            }
+            mostrarLoading(false);
+        }
+
+        async function deletarPrevisao(id) {
+            if(confirm("Excluir este planejamento?")) {
+                mostrarLoading(true);
+                await supabaseClient.from('previsao_despesas').delete().eq('id', id);
+                await carregarPrevisoes();
+                mostrarLoading(false);
+            }
+        }
+
+        async function concluirPrevisao(id) {
+            if(confirm("Marcar este item como COMPRADO/CONCLUÍDO? \n(Lembre-se de registrar a despesa real no Livro Caixa).")) {
+                mostrarLoading(true);
+                await supabaseClient.from('previsao_despesas').update({ status: 'CONCLUIDO' }).eq('id', id);
+                await carregarPrevisoes();
+                mostrarLoading(false);
+            }
+        }
+
+        function renderizarPrevisoes() {
+            const tbody = document.getElementById('tabelaPrevisoes');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            let totalPrevistoPendente = 0;
+
+            previsoesGlobais.forEach(p => {
+                const valor = parseFloat(p.valor_estimado);
+                if (p.status !== 'CONCLUIDO') totalPrevistoPendente += valor;
+
+                const dataFormatada = p.data_limite ? p.data_limite.split('-').reverse().join('/') : '-';
+                const tr = document.createElement('tr');
+                tr.className = p.status === 'CONCLUIDO' ? 'bg-slate-50 opacity-60' : 'hover:bg-slate-50';
+                
+                let statusBadge = p.status === 'CONCLUIDO' 
+                    ? `<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-xs font-bold"><i class="fa-solid fa-check"></i> Comprado</span>`
+                    : `<button onclick="concluirPrevisao('${p.id}')" class="bg-amber-100 hover:bg-amber-200 text-amber-700 px-2 py-1 rounded text-xs font-bold transition">Pendente (Marcar ✅)</button>`;
+
+                tr.innerHTML = `
+                    <td class="p-3 whitespace-nowrap">${dataFormatada}</td>
+                    <td class="p-3">
+                        <p class="font-bold text-pmmt-blue">${p.descricao}</p>
+                        <p class="text-xs text-slate-500 uppercase">${p.categoria}</p>
+                    </td>
+                    <td class="p-3 text-right font-bold text-amber-600">${valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                    <td class="p-3 text-center">${statusBadge}</td>
+                    <td class="p-3 text-center">
+                        <button onclick="deletarPrevisao('${p.id}')" class="text-rose-400 hover:text-rose-600 p-1"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            calcularProjecao(totalPrevistoPendente);
+        }
+
+        function calcularProjecao(totalPrevisto) {
+            const saldoTexto = document.getElementById('valorSaldo').innerText.replace('R$', '').replace(/\./g, '').replace(',', '.').trim();
+            const saldoAtual = parseFloat(saldoTexto) || 0;
+            const saldoProjetado = saldoAtual - totalPrevisto;
+            
+            document.getElementById('projCaixaAtual').innerText = saldoAtual.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            document.getElementById('projTotalPrevisto').innerText = totalPrevisto.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            
+            const boxProjetado = document.getElementById('boxSaldoProjetado');
+            const txtProjetado = document.getElementById('projSaldoFinal');
+            const alertaCota = document.getElementById('projAlertaCota');
+            
+            txtProjetado.innerText = saldoProjetado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+            if (saldoProjetado < 0) {
+                boxProjetado.className = "bg-rose-50 border-l-4 border-rose-500 p-4 rounded shadow-sm transition-colors";
+                txtProjetado.className = "text-xl font-extrabold text-rose-700";
+                alertaCota.classList.remove('hidden');
+                
+                const qdtAlunos = listaAlunosFull.length > 0 ? listaAlunosFull.length : 30;
+                const cotaPorAluno = Math.abs(saldoProjetado) / qdtAlunos;
+                document.getElementById('valorCotaExtra').innerText = cotaPorAluno.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            } else {
+                boxProjetado.className = "bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded shadow-sm transition-colors";
+                txtProjetado.className = "text-xl font-extrabold text-emerald-700";
+                alertaCota.classList.add('hidden');
+            }
+        }
+
         // --- MÓDULO EFETIVO (Escala e Equipes) ---
         function renderizarEscala() {
             const grid = document.getElementById('gridEscala');
             grid.innerHTML = '';
             
-            // Base: 29/06/2026 às 12:00 (meio-dia para evitar bug de fuso horário)
             const dataBase = new Date('2026-06-29T12:00:00Z'); 
             const sequencia = ['CHARLIE', 'ALFA', 'BRAVO'];
             const cores = {
@@ -634,7 +821,6 @@
             };
 
             let hoje = new Date();
-            // Reseta a hora local para o cálculo ficar exato
             hoje.setHours(12, 0, 0, 0); 
 
             for(let i = 0; i < 7; i++) {
@@ -676,7 +862,6 @@
                 let comandante = aluno.comandante || '-';
                 let numFormatado = aluno.numero.toString().padStart(2, '0');
 
-                // Listas das Equipes
                 let linhaMini = `<li class="py-2.5 flex justify-between items-center hover:bg-slate-50 px-2 rounded transition cursor-default">
                                     <span><span class="text-slate-400 font-bold mr-2">${numFormatado}</span> ${qra}</span> 
                                  </li>`;
@@ -685,7 +870,6 @@
                 if(equipe === 'BRAVO') tabBravo.innerHTML += linhaMini;
                 if(equipe === 'CHARLIE') tabCharlie.innerHTML += linhaMini;
 
-                // Tabela Geral
                 let badgeColor = '';
                 if(equipe === 'ALFA') badgeColor = 'bg-blue-100 text-blue-800';
                 if(equipe === 'BRAVO') badgeColor = 'bg-amber-100 text-amber-800';
