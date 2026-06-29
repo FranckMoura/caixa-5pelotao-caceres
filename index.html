@@ -32,332 +32,383 @@
         
         /* Ajustes para Impressão */
         @media print {
-            aside, .no-print { display: none !important; }
+            aside, .no-print, #telaLogin, footer { display: none !important; }
             main { margin: 0 !important; padding: 0 !important; width: 100% !important; }
             body { background: white; color: black; }
             table, th, td { border: 1px solid black !important; color: black !important; }
         }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-800 h-screen flex overflow-hidden">
+<body class="bg-slate-100 text-slate-800 h-screen flex flex-col overflow-hidden">
 
-    <aside class="w-72 bg-pmmt-blue text-white flex flex-col shadow-2xl z-50 hidden md:flex h-full">
-        <div class="p-4 text-center border-b border-pmmt-gold/30 mt-2">
-            <img src="IMG_1408.JPG" alt="Brasão 5º Pelotão" class="w-full h-auto object-contain rounded-lg border-2 border-pmmt-gold shadow-xl bg-pmmt-blue mx-auto mb-4 hover:scale-105 transition-transform duration-300">
-            <h2 class="text-xl font-extrabold text-pmmt-gold tracking-widest drop-shadow-md">5º PELOTÃO</h2>
-            <p class="text-[11px] font-semibold text-slate-300 uppercase tracking-widest mt-1">Força Tática - Cáceres</p>
-        </div>
-
-        <nav class="flex-1 p-4 space-y-2 overflow-y-auto mt-2">
-            <button onclick="mudarModulo('financeiro')" id="btn-financeiro" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold transition-all bg-pmmt-gold text-pmmt-blue shadow-md">
-                <i class="fa-solid fa-vault w-5 text-center"></i> Gestão Financeira
-            </button>
-            <button onclick="mudarModulo('efetivo')" id="btn-efetivo" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold text-slate-300 hover:bg-pmmt-light hover:text-white transition-all">
-                <i class="fa-solid fa-users w-5 text-center"></i> Efetivo (Alunos)
-            </button>
-            <button onclick="mudarModulo('apoio')" id="btn-apoio" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold text-slate-300 hover:bg-pmmt-light hover:text-white transition-all">
-                <i class="fa-solid fa-book-open w-5 text-center"></i> Material de Apoio
-            </button>
-            <button onclick="mudarModulo('debate')" id="btn-debate" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold text-slate-300 hover:bg-pmmt-light hover:text-white transition-all">
-                <i class="fa-solid fa-comments w-5 text-center"></i> Área Livre / Debate
-            </button>
-        </nav>
-
-        <div class="p-4 border-t border-pmmt-gold/30 text-center">
-            <p id="statusConexao" class="text-xs font-bold text-slate-400"><i class="fa-solid fa-circle-notch fa-spin"></i> Conectando banco...</p>
-        </div>
-    </aside>
-
-    <div class="flex-1 flex flex-col h-screen overflow-hidden">
+    <div class="flex-1 flex overflow-hidden relative w-full">
         
-        <header class="bg-pmmt-blue shadow-md border-b-4 border-pmmt-gold py-4 px-8 flex justify-between items-center z-40">
-            <div class="flex items-center gap-4">
-                <img src="logo_pmmt_branco_para_fundo_azul.png" alt="Logo PMMT" class="h-20 object-contain drop-shadow-md">
-                <div>
-                    <h1 class="text-2xl font-extrabold text-white tracking-wider">35º CFSD PMMT <span class="text-pmmt-gold">| 6º CR</span></h1>
-                    <p class="text-sm font-semibold text-slate-300 uppercase tracking-widest">Portal Institucional Integrado</p>
-                </div>
-            </div>
-            <button class="md:hidden text-white text-2xl"><i class="fa-solid fa-bars"></i></button>
-        </header>
-
-        <main class="flex-1 overflow-y-auto p-6 md:p-8 bg-slate-100">
+        <div id="telaLogin" class="flex flex-col items-center justify-center w-full h-full bg-gradient-to-br from-pmmt-blue to-pmmt-light p-4 z-[100] relative">
             
-            <div id="loaderAlert" class="hidden bg-pmmt-light border-l-4 border-pmmt-gold p-4 rounded-r-lg shadow-sm mb-6 flex items-center gap-3">
-                <i class="fa-solid fa-circle-notch fa-spin text-pmmt-gold text-xl"></i>
-                <p class="text-sm font-medium text-white">Sincronizando dados...</p>
-            </div>
+            <header class="bg-pmmt-blue shadow-md border-b-4 border-pmmt-gold py-3 px-6 flex items-center justify-center text-center w-full absolute top-0 left-0 z-50">
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+                    <img src="logo_pmmt_branco_para_fundo_azul.png" alt="Logo PMMT" class="h-12 md:h-16 object-contain drop-shadow-md">
+                    <div class="text-center sm:text-left">
+                        <h1 class="text-lg md:text-xl font-extrabold text-white tracking-wider">35º CFSD PMMT <span class="text-pmmt-gold">| 6º CR</span></h1>
+                        <p class="text-[10px] font-semibold text-slate-300 uppercase tracking-widest">Portal Institucional Integrado</p>
+                    </div>
+                </div>
+            </header>
 
-            <section id="modulo-financeiro" class="space-y-6">
+            <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full border-t-4 border-pmmt-gold overflow-hidden flex flex-col z-10 mt-16">
+                <div class="w-full bg-pmmt-blue p-4 flex items-center justify-center border-b border-slate-100">
+                    <img src="IMG_1408.JPG" alt="Brasão 5º Pelotão" class="w-full h-auto max-h-40 object-contain rounded-lg shadow-md">
+                </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white rounded-xl shadow-md p-6 border-t-4 border-emerald-600 relative overflow-hidden">
-                        <i class="fa-solid fa-money-bill-trend-up absolute -right-4 -bottom-4 text-7xl text-emerald-50 opacity-50"></i>
-                        <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Total Arrecadado</p>
-                        <h2 id="valorReceitas" class="text-3xl font-extrabold text-emerald-700">R$ 0,00</h2>
+                <div class="p-5 bg-slate-50 space-y-3.5">
+                    <div class="text-center">
+                        <h2 class="text-lg font-black text-pmmt-blue tracking-wider uppercase">Acesso Restrito</h2>
+                        <p class="text-[11px] font-bold text-pmmt-gold uppercase tracking-widest mt-0.5">5º Pelotão - Cáceres - MT</p>
                     </div>
-                    <div class="bg-white rounded-xl shadow-md p-6 border-t-4 border-rose-600 relative overflow-hidden">
-                        <i class="fa-solid fa-money-bill-transfer absolute -right-4 -bottom-4 text-7xl text-rose-50 opacity-50"></i>
-                        <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Total de Despesas</p>
-                        <h2 id="valorDespesas" class="text-3xl font-extrabold text-rose-700">R$ 0,00</h2>
-                    </div>
-                    <div class="bg-pmmt-blue rounded-xl shadow-md p-6 border-t-4 border-pmmt-gold relative overflow-hidden">
-                        <i class="fa-solid fa-vault absolute -right-4 -bottom-4 text-7xl text-pmmt-light"></i>
-                        <p class="text-xs font-bold text-pmmt-gold uppercase tracking-widest mb-1">Saldo em Caixa</p>
-                        <h2 id="valorSaldo" class="text-3xl font-extrabold text-white">R$ 0,00</h2>
-                    </div>
+                    
+                    <form id="formLogin" onsubmit="autenticarUsuario(event)" class="space-y-3 text-left">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Login</label>
+                            <input type="text" id="loginEmail" required placeholder="Ex: willys" class="w-full bg-white border border-slate-300 p-2.5 rounded-lg text-sm outline-none focus:border-pmmt-blue text-black font-semibold shadow-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Senha de Acesso</label>
+                            <input type="password" id="loginSenha" required placeholder="••••••••" class="w-full bg-white border border-slate-300 p-2.5 rounded-lg text-sm outline-none focus:border-pmmt-blue text-black font-semibold shadow-sm">
+                        </div>
+                        <button type="submit" id="btnEntrar" class="w-full bg-pmmt-blue hover:bg-pmmt-light text-white font-black py-2.5 rounded-lg shadow-lg transition uppercase tracking-wider text-xs mt-3 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-right-to-bracket text-pmmt-gold"></i> Entrar no Portal
+                        </button>
+                    </form>
+                    <p id="erroLogin" class="text-xs font-bold text-rose-600 mt-2 bg-rose-50 p-2 rounded border border-rose-200 hidden"></p>
+                </div>
+            </div>
+        </div>
+
+        <div id="painelPrincipal" class="hidden h-full flex overflow-hidden w-full">
+            
+            <aside class="w-72 bg-pmmt-blue text-white flex flex-col shadow-2xl z-50 hidden md:flex h-full">
+                <div class="p-4 text-center border-b border-pmmt-gold/30 mt-2">
+                    <img src="IMG_1408.JPG" alt="Brasão 5º Pelotão" class="w-full h-auto object-contain rounded-lg border-2 border-pmmt-gold shadow-xl bg-pmmt-blue mx-auto mb-4 hover:scale-105 transition-transform duration-300">
+                    <h2 class="text-xl font-extrabold text-pmmt-gold tracking-widest drop-shadow-md">5º PELOTÃO</h2>
+                    <p class="text-[11px] font-semibold text-slate-300 uppercase tracking-widest mt-1">Força Tática - Cáceres</p>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 no-print">
-                    <div class="bg-white rounded-xl shadow-md p-6 lg:col-span-1 border border-slate-200">
-                        <h3 class="text-lg font-bold text-pmmt-blue mb-5 border-b pb-2"><i class="fa-solid fa-pen-to-square text-pmmt-gold mr-2"></i> Lançar Movimentação</h3>
-                        <form id="formCaixa" onsubmit="salvarTransacao(event)" class="space-y-4">
-                            <div class="grid grid-cols-2 gap-3">
-                                <label class="border-2 border-slate-200 rounded-lg p-2 text-center cursor-pointer hover:bg-slate-50 transition" id="lblReceita">
-                                    <input type="radio" name="tipoOp" value="receita" checked class="hidden" onchange="mudarTipoUi()">
-                                    <span class="text-sm font-bold text-emerald-700"><i class="fa-solid fa-arrow-down"></i> Receita</span>
-                                </label>
-                                <label class="border-2 border-slate-200 rounded-lg p-2 text-center cursor-pointer hover:bg-slate-50 transition" id="lblDespesa">
-                                    <input type="radio" name="tipoOp" value="despesa" class="hidden" onchange="mudarTipoUi()">
-                                    <span class="text-sm font-bold text-rose-700"><i class="fa-solid fa-arrow-up"></i> Despesa</span>
-                                </label>
-                            </div>
+                <nav class="flex-1 p-4 space-y-2 overflow-y-auto mt-2">
+                    <button onclick="mudarModulo('financeiro')" id="btn-financeiro" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold transition-all bg-pmmt-gold text-pmmt-blue shadow-md">
+                        <i class="fa-solid fa-vault w-5 text-center"></i> Gestão Financeira
+                    </button>
+                    <button onclick="mudarModulo('efetivo')" id="btn-efetivo" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold text-slate-300 hover:bg-pmmt-light hover:text-white transition-all">
+                        <i class="fa-solid fa-users w-5 text-center"></i> Efetivo (Alunos)
+                    </button>
+                    <button onclick="mudarModulo('apoio')" id="btn-apoio" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold text-slate-300 hover:bg-pmmt-light hover:text-white transition-all">
+                        <i class="fa-solid fa-book-open w-5 text-center"></i> Material de Apoio
+                    </button>
+                    <button onclick="mudarModulo('debate')" id="btn-debate" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold text-slate-300 hover:bg-pmmt-light hover:text-white transition-all">
+                        <i class="fa-solid fa-comments w-5 text-center"></i> Área Livre / Debate
+                    </button>
+                    
+                    <button onclick="deslogarUsuario()" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold text-rose-400 hover:bg-rose-950/40 hover:text-rose-300 transition-all pt-8 border-t border-slate-700/50 no-print">
+                        <i class="fa-solid fa-power-off w-5 text-center"></i> Sair do Portal
+                    </button>
+                </nav>
 
-                            <div>
-                                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Categoria</label>
-                                <div class="flex gap-2">
-                                    <select id="inputCategoria" required class="w-full bg-slate-50 border border-slate-200 text-black rounded-lg p-2.5 text-sm outline-none focus:border-pmmt-blue" onchange="verificarNovaCategoria()"></select>
-                                    <input type="text" id="inputNovaCategoria" placeholder="Nome da nova categoria" class="hidden w-full bg-slate-50 border border-pmmt-gold text-black rounded-lg p-2.5 text-sm outline-none">
-                                    <button type="button" id="btnCancelarNovaCat" class="hidden bg-slate-200 hover:bg-slate-300 text-black px-3 rounded-lg font-bold transition" onclick="cancelarNovaCategoria()"><i class="fa-solid fa-xmark"></i></button>
-                                </div>
-                            </div>
+                <div class="p-4 border-t border-pmmt-gold/30 text-center">
+                    <p id="statusConexao" class="text-xs font-bold text-slate-400"><i class="fa-solid fa-circle-notch fa-spin"></i> Conectando banco...</p>
+                </div>
+            </aside>
 
-                            <div id="blocoAluno">
-                                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Vincular a Aluno</label>
-                                <select id="inputAluno" class="w-full bg-slate-50 border border-slate-200 text-black font-semibold rounded-lg p-2.5 text-sm outline-none focus:border-pmmt-blue">
-                                    <option value="TODOS">-- Lançamento Geral / Vincular Todos --</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Descrição</label>
-                                <input type="text" id="inputDescricao" required placeholder="Ex: Compra de refrigerantes" class="w-full bg-slate-50 border border-slate-200 text-black rounded-lg p-2.5 text-sm outline-none focus:border-pmmt-blue">
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Valor (R$)</label>
-                                    <input type="number" step="0.01" id="inputValor" required placeholder="0.00" class="w-full bg-slate-50 border border-slate-200 text-black rounded-lg p-2.5 text-sm outline-none focus:border-pmmt-blue">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Data</label>
-                                    <input type="date" id="inputData" required class="w-full bg-slate-50 border border-slate-200 text-black rounded-lg p-2.5 text-sm outline-none focus:border-pmmt-blue">
-                                </div>
-                            </div>
-
-                            <button type="submit" class="w-full bg-pmmt-gold hover:bg-yellow-600 text-pmmt-blue font-bold py-3 rounded-lg shadow-md transition mt-2 flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-cloud-arrow-up"></i> Registrar Operação
-                            </button>
-                        </form>
-                    </div>
-
-                    <div class="bg-white rounded-xl shadow-md p-6 lg:col-span-2 border border-slate-200 flex flex-col items-center justify-center">
-                        <h3 class="text-lg font-bold text-pmmt-blue mb-5 border-b w-full pb-2"><i class="fa-solid fa-chart-pie text-pmmt-gold mr-2"></i> Distribuição Financeira</h3>
-                        <div class="w-full max-w-sm">
-                            <canvas id="graficoTransacoes"></canvas>
+            <div class="flex-1 flex flex-col h-screen overflow-hidden">
+                
+                <header class="bg-pmmt-blue shadow-md border-b-4 border-pmmt-gold py-4 px-8 flex justify-between items-center z-40">
+                    <div class="flex items-center gap-4">
+                        <img src="logo_pmmt_branco_para_fundo_azul.png" alt="Logo PMMT" class="h-20 object-contain drop-shadow-md">
+                        <div>
+                            <h1 class="text-2xl font-extrabold text-white tracking-wider">35º CFSD PMMT <span class="text-pmmt-gold">| 6º CR</span></h1>
+                            <p class="text-sm font-semibold text-slate-300 uppercase tracking-widest">Portal Institucional Integrado</p>
                         </div>
                     </div>
-                </div>
+                    <button class="md:hidden text-white text-2xl"><i class="fa-solid fa-bars"></i></button>
+                </header>
 
-                <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden no-print">
-                    <div class="bg-pmmt-blue border-b border-pmmt-light px-6 py-4 flex justify-between items-center cursor-pointer select-none hover:bg-pmmt-light transition" onclick="togglePainel('conteudoCotas', 'iconeCotas')">
-                        <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-users text-pmmt-gold mr-2"></i> Monitoramento de Cotas (R$ 150,00)</h3>
-                        <i id="iconeCotas" class="fa-solid fa-chevron-up text-pmmt-gold transition-transform duration-300"></i>
+                <main class="flex-1 overflow-y-auto p-6 md:p-8 bg-slate-100">
+                    
+                    <div id="loaderAlert" class="hidden bg-pmmt-light border-l-4 border-pmmt-gold p-4 rounded-r-lg shadow-sm mb-6 flex items-center gap-3">
+                        <i class="fa-solid fa-circle-notch fa-spin text-pmmt-gold text-xl"></i>
+                        <p class="text-sm font-medium text-white">Sincronizando dados...</p>
                     </div>
-                    <div id="conteudoCotas" class="painel-conteudo bg-slate-50" style="max-height: 2000px; padding: 1.5rem;">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3" id="gridCotas"></div>
-                    </div>
-                </div>
 
-                <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden no-print">
-                    <div class="bg-pmmt-light border-b border-pmmt-blue px-6 py-4 flex justify-between items-center cursor-pointer select-none hover:bg-pmmt-blue transition" onclick="togglePainel('conteudoPlanejamento', 'iconePlanejamento')">
-                        <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-crosshairs text-pmmt-gold mr-2"></i> Planejamento e Provisão de Gastos</h3>
-                        <i id="iconePlanejamento" class="fa-solid fa-chevron-up text-pmmt-gold transition-transform duration-300"></i>
-                    </div>
-                    <div id="conteudoPlanejamento" class="painel-conteudo bg-slate-50" style="max-height: 4000px; padding: 1.5rem;">
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                            <div class="bg-white border-l-4 border-pmmt-blue p-4 rounded shadow-sm">
-                                <p class="text-[10px] font-bold text-slate-500 uppercase">Caixa Atual</p>
-                                <h4 id="projCaixaAtual" class="text-xl font-extrabold text-pmmt-blue">R$ 0,00</h4>
+                    <section id="modulo-financeiro" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="bg-white rounded-xl shadow-md p-6 border-t-4 border-emerald-600 relative overflow-hidden">
+                                <i class="fa-solid fa-money-bill-trend-up absolute -right-4 -bottom-4 text-7xl text-emerald-50 opacity-50"></i>
+                                <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Total Arrecadado</p>
+                                <h2 id="valorReceitas" class="text-3xl font-extrabold text-emerald-700">R$ 0,00</h2>
                             </div>
-                            <div class="bg-white border-l-4 border-amber-500 p-4 rounded shadow-sm">
-                                <p class="text-[10px] font-bold text-slate-500 uppercase">Total Previsto (A Pagar)</p>
-                                <h4 id="projTotalPrevisto" class="text-xl font-extrabold text-amber-600">R$ 0,00</h4>
+                            <div class="bg-white rounded-xl shadow-md p-6 border-t-4 border-rose-600 relative overflow-hidden">
+                                <i class="fa-solid fa-money-bill-transfer absolute -right-4 -bottom-4 text-7xl text-rose-50 opacity-50"></i>
+                                <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Total de Despesas</p>
+                                <h2 id="valorDespesas" class="text-3xl font-extrabold text-rose-700">R$ 0,00</h2>
                             </div>
-                            <div id="boxSaldoProjetado" class="bg-white border-l-4 border-slate-200 p-4 rounded shadow-sm transition-colors">
-                                <p class="text-[10px] font-bold text-slate-500 uppercase">Saldo Projetado</p>
-                                <h4 id="projSaldoFinal" class="text-xl font-extrabold text-slate-700">R$ 0,00</h4>
-                                <p id="projAlertaCota" class="text-xs font-bold text-rose-600 mt-1 hidden"><i class="fa-solid fa-triangle-exclamation"></i> Cota Extra Necessária: <span id="valorCotaExtra">R$ 0,00</span>/aluno</p>
+                            
+                            <div class="bg-pmmt-blue rounded-xl shadow-md p-6 border-t-4 border-pmmt-gold relative overflow-hidden">
+                                <i class="fa-solid fa-vault absolute -right-4 -bottom-4 text-7xl text-pmmt-light"></i>
+                                <p class="text-xs font-bold text-pmmt-gold uppercase tracking-widest mb-1">Saldo em Caixa</p>
+                                <h2 id="valorSaldo" class="text-3xl font-extrabold text-white">R$ 0,00</h2>
+                                <p class="text-[11px] font-semibold text-slate-300 mt-1 uppercase tracking-wider">Disponível Livre: <span id="valorSaldoLivreIndicador" class="text-emerald-400 font-bold">R$ 0,00</span></p>
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                            <div class="lg:col-span-1 bg-white p-4 rounded border border-slate-200 shadow-sm">
-                                <h4 class="text-sm font-bold text-pmmt-blue mb-4 border-b pb-2">Nova Provisão</h4>
-                                <form onsubmit="salvarPrevisao(event)" class="space-y-3">
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-slate-500 uppercase">Descrição</label>
-                                        <input type="text" id="prevDescricao" required placeholder="Ex: Fardamento Tático" class="w-full bg-slate-50 border border-slate-200 p-2 rounded text-sm outline-none focus:border-pmmt-gold">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 no-print">
+                            <div class="bg-white rounded-xl shadow-md p-6 lg:col-span-1 border border-slate-200">
+                                <h3 class="text-lg font-bold text-pmmt-blue mb-5 border-b pb-2"><i class="fa-solid fa-pen-to-square text-pmmt-gold mr-2"></i> Lançar Movimentação</h3>
+                                <form id="formCaixa" onsubmit="salvarTransacao(event)" class="space-y-4">
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <label class="border-2 border-slate-200 rounded-lg p-2 text-center cursor-pointer hover:bg-slate-50 transition" id="lblReceita">
+                                            <input type="radio" name="tipoOp" value="receita" checked class="hidden" onchange="mudarTipoUi()">
+                                            <span class="text-sm font-bold text-emerald-700"><i class="fa-solid fa-arrow-down"></i> Receita</span>
+                                        </label>
+                                        <label class="border-2 border-slate-200 rounded-lg p-2 text-center cursor-pointer hover:bg-slate-50 transition" id="lblDespesa">
+                                            <input type="radio" name="tipoOp" value="despesa" class="hidden" onchange="mudarTipoUi()">
+                                            <span class="text-sm font-bold text-rose-700"><i class="fa-solid fa-arrow-up"></i> Despesa</span>
+                                        </label>
                                     </div>
-                                    <div class="grid grid-cols-2 gap-2">
+
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Categoria</label>
+                                        <div class="flex gap-2">
+                                            <select id="inputCategoria" required class="w-full bg-slate-50 border border-slate-200 text-black rounded-lg p-2.5 text-sm outline-none focus:border-pmmt-blue" onchange="verificarNovaCategoria()"></select>
+                                            <input type="text" id="inputNovaCategoria" placeholder="Nome da nova categoria" class="hidden w-full bg-slate-50 border border-pmmt-gold text-black rounded-lg p-2.5 text-sm outline-none">
+                                            <button type="button" id="btnCancelarNovaCat" class="hidden bg-slate-200 hover:bg-slate-300 text-black px-3 rounded-lg font-bold transition" onclick="cancelarNovaCategoria()"><i class="fa-solid fa-xmark"></i></button>
+                                        </div>
+                                    </div>
+
+                                    <div id="blocoAluno">
+                                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Vincular a Aluno</label>
+                                        <select id="inputAluno" class="w-full bg-slate-50 border border-slate-200 text-black font-semibold rounded-lg p-2.5 text-sm outline-none focus:border-pmmt-blue">
+                                            <option value="TODOS">-- Lançamento Geral / Vincular Todos --</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Descrição</label>
+                                        <input type="text" id="inputDescricao" required placeholder="Ex: Compra de refrigerantes" class="w-full bg-slate-50 border border-slate-200 text-black rounded-lg p-2.5 text-sm outline-none focus:border-pmmt-blue">
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-3">
                                         <div>
-                                            <label class="block text-[10px] font-bold text-slate-500 uppercase">Categoria</label>
-                                            <input type="text" id="prevCategoria" required placeholder="Ex: Fardamento" class="w-full bg-slate-50 border border-slate-200 p-2 rounded text-sm outline-none focus:border-pmmt-gold">
+                                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Valor (R$)</label>
+                                            <input type="number" step="0.01" id="inputValor" required placeholder="0.00" class="w-full bg-slate-50 border border-slate-200 p-2.5 text-sm outline-none focus:border-pmmt-blue">
                                         </div>
                                         <div>
-                                            <label class="block text-[10px] font-bold text-slate-500 uppercase">Prazo</label>
-                                            <input type="date" id="prevData" required class="w-full bg-slate-50 border border-slate-200 p-2 rounded text-sm outline-none focus:border-pmmt-gold">
+                                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Data</label>
+                                            <input type="date" id="inputData" required class="w-full bg-slate-50 border border-slate-200 p-2.5 text-sm outline-none focus:border-pmmt-blue">
                                         </div>
                                     </div>
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-slate-500 uppercase">Valor Estimado (R$)</label>
-                                        <input type="number" step="0.01" id="prevValor" required placeholder="500.00" class="w-full bg-slate-50 border border-slate-200 p-2 rounded text-sm outline-none focus:border-pmmt-gold">
-                                    </div>
-                                    <button type="submit" class="w-full bg-pmmt-blue hover:bg-pmmt-light text-white font-bold py-2 rounded shadow transition text-sm">
-                                        Agendar Despesa
+
+                                    <button type="submit" class="w-full bg-pmmt-gold hover:bg-yellow-600 text-pmmt-blue font-bold py-3 rounded-lg shadow-md transition mt-2 flex items-center justify-center gap-2">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i> Registrar Operação
                                     </button>
                                 </form>
                             </div>
 
-                            <div class="lg:col-span-2 bg-white rounded border border-slate-200 shadow-sm overflow-hidden">
-                                <div class="overflow-x-auto h-64">
-                                    <table class="w-full text-left border-collapse">
-                                        <thead class="bg-slate-100 text-[10px] uppercase font-bold text-slate-500 sticky top-0">
-                                            <tr>
-                                                <th class="p-3">Prazo</th>
-                                                <th class="p-3">Item / Descrição</th>
-                                                <th class="p-3 text-right">Valor Est.</th>
-                                                <th class="p-3 text-center">Status</th>
-                                                <th class="p-3 text-center">Ação</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="tabelaPrevisoes" class="divide-y divide-slate-100 text-sm font-medium">
-                                            </tbody>
-                                    </table>
+                            <div class="bg-white rounded-xl shadow-md p-6 lg:col-span-2 border border-slate-200 flex flex-col items-center justify-center">
+                                <h3 class="text-lg font-bold text-pmmt-blue mb-5 border-b w-full pb-2"><i class="fa-solid fa-chart-pie text-pmmt-gold mr-2"></i> Distribuição Financeira</h3>
+                                <div class="w-full max-w-sm">
+                                    <canvas id="graficoTransacoes"></canvas>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
-                    <div class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center cursor-pointer select-none hover:bg-slate-50 transition" onclick="togglePainel('conteudoHistorico', 'iconeHistorico')">
-                        <h3 class="text-lg font-bold text-pmmt-blue"><i class="fa-solid fa-list-check text-pmmt-gold mr-2"></i> Livro Caixa - Histórico Auditável</h3>
-                        <div class="flex items-center gap-4 no-print">
-                            <button onclick="event.stopPropagation(); window.print()" class="text-sm text-slate-600 hover:text-pmmt-blue border border-slate-300 px-3 py-1.5 rounded shadow-sm transition">
-                                <i class="fa-solid fa-print"></i> Imprimir
-                            </button>
-                            <i id="iconeHistorico" class="fa-solid fa-chevron-up text-slate-400 transition-transform duration-300"></i>
+                        <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden no-print">
+                            <div class="bg-pmmt-blue border-b border-pmmt-light px-6 py-4 flex justify-between items-center cursor-pointer select-none hover:bg-pmmt-light transition" onclick="togglePainel('conteudoCotas', 'iconeCotas')">
+                                <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-users text-pmmt-gold mr-2"></i> Monitoramento de Cotas (R$ 150,00)</h3>
+                                <i id="iconeCotas" class="fa-solid fa-chevron-up text-pmmt-gold transition-transform duration-300"></i>
+                            </div>
+                            <div id="conteudoCotas" class="painel-conteudo bg-slate-50" style="max-height: 2000px; padding: 1.5rem;">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3" id="gridCotas"></div>
+                            </div>
                         </div>
-                    </div>
-                    <div id="conteudoHistorico" class="painel-conteudo overflow-x-auto" style="max-height: 4000px;">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="bg-pmmt-blue text-xs font-bold text-white uppercase tracking-wider border-b">
-                                    <th class="px-6 py-3" onclick="ordenarTabela('data')">Data <i id="sort-data" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
-                                    <th class="px-6 py-3" onclick="ordenarTabela('descricao')">Descrição <i id="sort-descricao" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
-                                    <th class="px-6 py-3" onclick="ordenarTabela('categoria')">Categoria <i id="sort-categoria" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
-                                    <th class="px-6 py-3" onclick="ordenarTabela('aluno')">Aluno Vinculado <i id="sort-aluno" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
-                                    <th class="px-6 py-3 text-right" onclick="ordenarTabela('valor')">Valor <i id="sort-valor" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
-                                    <th class="px-6 py-3 text-center no-print">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabelaDados" class="divide-y divide-slate-200 text-sm">
-                                </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
 
-            <section id="modulo-efetivo" class="hidden space-y-6">
-                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
-                    <h3 class="text-xl font-bold text-pmmt-blue border-b-2 border-pmmt-gold pb-2 mb-4">
-                        <i class="fas fa-calendar-alt text-pmmt-gold mr-2"></i>Escala de Serviço - 5º Pelotão
-                    </h3>
-                    <div id="gridEscala" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+                        <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden no-print">
+                            <div class="bg-pmmt-light border-b border-pmmt-blue px-6 py-4 flex justify-between items-center cursor-pointer select-none hover:bg-pmmt-blue transition" onclick="togglePainel('conteudoPlanejamento', 'iconePlanejamento')">
+                                <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-crosshairs text-pmmt-gold mr-2"></i> Planejamento e Provisão de Gastos</h3>
+                                <i id="iconePlanejamento" class="fa-solid fa-chevron-up text-pmmt-gold transition-transform duration-300"></i>
+                            </div>
+                            <div id="conteudoPlanejamento" class="painel-conteudo bg-slate-50" style="max-height: 4000px; padding: 1.5rem;">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                                    <div class="bg-white border-l-4 border-pmmt-blue p-4 rounded shadow-sm">
+                                        <p class="text-[10px] font-bold text-slate-500 uppercase">Caixa Atual</p>
+                                        <h4 id="projCaixaAtual" class="text-xl font-extrabold text-pmmt-blue">R$ 0,00</h4>
+                                    </div>
+                                    <div class="bg-white border-l-4 border-amber-500 p-4 rounded shadow-sm">
+                                        <p class="text-[10px] font-bold text-slate-500 uppercase">Total Previsto (A Pagar)</p>
+                                        <h4 id="projTotalPrevisto" class="text-xl font-extrabold text-amber-600">R$ 0,00</h4>
+                                    </div>
+                                    <div id="boxSaldoProjetado" class="bg-white border-l-4 border-slate-200 p-4 rounded shadow-sm transition-colors">
+                                        <p class="text-[10px] font-bold text-slate-500 uppercase">Saldo Projetado</p>
+                                        <h4 id="projSaldoFinal" class="text-xl font-extrabold text-slate-700">R$ 0,00</h4>
+                                        <p id="projAlertaCota" class="text-xs font-bold text-rose-600 mt-1 hidden"><i class="fa-solid fa-triangle-exclamation"></i> Cota Extra Necessária: <span id="valorCotaExtra">R$ 0,00</span>/aluno</p>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                    <div class="lg:col-span-1 bg-white p-4 rounded border border-slate-200 shadow-sm">
+                                        <h4 class="text-sm font-bold text-pmmt-blue mb-4 border-b pb-2">Nova Provisão</h4>
+                                        <form onsubmit="salvarPrevisao(event)" class="space-y-3">
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-slate-500 uppercase">Descrição</label>
+                                                <input type="text" id="prevDescricao" required placeholder="Ex: Fardamento Tático" class="w-full bg-slate-50 border border-slate-200 p-2 rounded text-sm outline-none focus:border-pmmt-gold">
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-2">
+                                                <div>
+                                                    <label class="block text-[10px] font-bold text-slate-500 uppercase">Categoria</label>
+                                                    <input type="text" id="prevCategoria" required placeholder="Ex: Fardamento" class="w-full bg-slate-50 border border-slate-200 p-2 rounded text-sm outline-none focus:border-pmmt-gold">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-[10px] font-bold text-slate-500 uppercase">Prazo</label>
+                                                    <input type="date" id="prevData" required class="w-full bg-slate-50 border border-slate-200 p-2 rounded text-sm outline-none focus:border-pmmt-gold">
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-slate-500 uppercase">Valor Estimado (R$)</label>
+                                                <input type="number" step="0.01" id="prevValor" required placeholder="500.00" class="w-full bg-slate-50 border border-slate-200 p-2 rounded text-sm outline-none focus:border-pmmt-gold">
+                                            </div>
+                                            <button type="submit" class="w-full bg-pmmt-blue hover:bg-pmmt-light text-white font-bold py-2 rounded shadow transition text-sm">
+                                                Agendar Despesa
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                    <div class="lg:col-span-2 bg-white rounded border border-slate-200 shadow-sm overflow-hidden">
+                                        <div class="overflow-x-auto h-64">
+                                            <table class="w-full text-left border-collapse">
+                                                <thead class="bg-slate-100 text-[10px] uppercase font-bold text-slate-500 sticky top-0">
+                                                    <tr>
+                                                        <th class="p-3">Prazo</th>
+                                                        <th class="p-3">Item / Descrição</th>
+                                                        <th class="p-3 text-right">Valor Est.</th>
+                                                        <th class="p-3 text-center">Status</th>
+                                                        <th class="p-3 text-center">Ação</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tabelaPrevisoes" class="divide-y divide-slate-100 text-sm font-medium"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white rounded-xl shadow-md border-t-4 border-blue-600 overflow-hidden">
-                        <div class="bg-blue-50 py-3 px-4 border-b border-blue-100 flex justify-between items-center">
-                            <h3 class="text-lg font-extrabold text-blue-900">Equipe ALFA</h3>
-                            <span class="bg-blue-200 text-blue-800 text-xs font-bold px-2 py-1 rounded">CMT: SGT ORTIZ</span>
+                        <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                            <div class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center cursor-pointer select-none hover:bg-slate-50 transition" onclick="togglePainel('conteudoHistorico', 'iconeHistorico')">
+                                <h3 class="text-lg font-bold text-pmmt-blue"><i class="fa-solid fa-list-check text-pmmt-gold mr-2"></i> Livro Caixa - Histórico Auditável</h3>
+                                <div class="flex items-center gap-4 no-print">
+                                    <button onclick="event.stopPropagation(); window.print()" class="text-sm text-slate-600 hover:text-pmmt-blue border border-slate-300 px-3 py-1.5 rounded shadow-sm transition">
+                                        <i class="fa-solid fa-print"></i> Imprimir
+                                    </button>
+                                    <i id="iconeHistorico" class="fa-solid fa-chevron-up text-slate-400 transition-transform duration-300"></i>
+                                </div>
+                            </div>
+                            <div id="conteudoHistorico" class="painel-conteudo overflow-x-auto" style="max-height: 4000px;">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="bg-pmmt-blue text-xs font-bold text-white uppercase tracking-wider border-b">
+                                            <th class="px-6 py-3" onclick="ordenarTabela('data')">Data <i id="sort-data" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
+                                            <th class="px-6 py-3" onclick="ordenarTabela('descricao')">Descrição <i id="sort-descricao" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
+                                            <th class="px-6 py-3" onclick="ordenarTabela('categoria')">Categoria <i id="sort-categoria" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
+                                            <th class="px-6 py-3" onclick="ordenarTabela('aluno')">Aluno Vinculado <i id="sort-aluno" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
+                                            <th class="px-6 py-3 text-right" onclick="ordenarTabela('valor')">Valor <i id="sort-valor" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
+                                            <th class="px-6 py-3 text-center no-print">Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tabelaDados" class="divide-y divide-slate-200 text-sm"></tbody>
+                                </table>
+                            </div>
                         </div>
-                        <ul id="tabelaAlfa" class="text-sm p-4 text-black font-semibold divide-y divide-slate-100 h-64 overflow-y-auto"></ul>
-                    </div>
-                    
-                    <div class="bg-white rounded-xl shadow-md border-t-4 border-amber-500 overflow-hidden">
-                        <div class="bg-amber-50 py-3 px-4 border-b border-amber-100 flex justify-between items-center">
-                            <h3 class="text-lg font-extrabold text-amber-900">Equipe BRAVO</h3>
-                            <span class="bg-amber-200 text-amber-900 text-xs font-bold px-2 py-1 rounded">CMT: SGT MAURIZON</span>
+                    </section>
+
+                    <section id="modulo-efetivo" class="hidden space-y-6">
+                        <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                            <h3 class="text-xl font-bold text-pmmt-blue border-b-2 border-pmmt-gold pb-2 mb-4">
+                                <i class="fas fa-calendar-alt text-pmmt-gold mr-2"></i>Escala de Serviço - 5º Pelotão
+                            </h3>
+                            <div id="gridEscala" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
                         </div>
-                        <ul id="tabelaBravo" class="text-sm p-4 text-black font-semibold divide-y divide-slate-100 h-64 overflow-y-auto"></ul>
-                    </div>
-                    
-                    <div class="bg-white rounded-xl shadow-md border-t-4 border-emerald-600 overflow-hidden">
-                        <div class="bg-emerald-50 py-3 px-4 border-b border-emerald-100 flex justify-between items-center">
-                            <h3 class="text-lg font-extrabold text-emerald-900">Equipe CHARLIE</h3>
-                            <span class="bg-emerald-200 text-emerald-800 text-xs font-bold px-2 py-1 rounded">CMT: SGT SOUZA</span>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="bg-white rounded-xl shadow-md border-t-4 border-blue-600 overflow-hidden">
+                                <div class="bg-blue-50 py-3 px-4 border-b border-blue-100 flex justify-between items-center">
+                                    <h3 class="text-lg font-extrabold text-blue-900">Equipe ALFA</h3>
+                                    <span class="bg-blue-200 text-blue-800 text-xs font-bold px-2 py-1 rounded">CMT: SGT ORTIZ</span>
+                                </div>
+                                <ul id="tabelaAlfa" class="text-sm p-4 text-black font-semibold divide-y divide-slate-100 h-64 overflow-y-auto"></ul>
+                            </div>
+                            
+                            <div class="bg-white rounded-xl shadow-md border-t-4 border-amber-500 overflow-hidden">
+                                <div class="bg-amber-50 py-3 px-4 border-b border-amber-100 flex justify-between items-center">
+                                    <h3 class="text-lg font-extrabold text-amber-900">Equipe BRAVO</h3>
+                                    <span class="bg-amber-200 text-amber-900 text-xs font-bold px-2 py-1 rounded">CMT: SGT MAURIZON</span>
+                                </div>
+                                <ul id="tabelaBravo" class="text-sm p-4 text-black font-semibold divide-y divide-slate-100 h-64 overflow-y-auto"></ul>
+                            </div>
+                            
+                            <div class="bg-white rounded-xl shadow-md border-t-4 border-emerald-600 overflow-hidden">
+                                <div class="bg-emerald-50 py-3 px-4 border-b border-emerald-100 flex justify-between items-center">
+                                    <h3 class="text-lg font-extrabold text-emerald-900">Equipe CHARLIE</h3>
+                                    <span class="bg-emerald-200 text-emerald-800 text-xs font-bold px-2 py-1 rounded">CMT: SGT SOUZA</span>
+                                </div>
+                                <ul id="tabelaCharlie" class="text-sm p-4 text-black font-semibold divide-y divide-slate-100 h-64 overflow-y-auto"></ul>
+                            </div>
                         </div>
-                        <ul id="tabelaCharlie" class="text-sm p-4 text-black font-semibold divide-y divide-slate-100 h-64 overflow-y-auto"></ul>
-                    </div>
-                </div>
 
-                <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
-                    <div class="bg-pmmt-blue px-6 py-4 flex justify-between items-center">
-                        <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-users text-pmmt-gold mr-2"></i> Relação Nominal Geral</h3>
-                        <button onclick="event.stopPropagation(); window.print()" class="text-sm text-white hover:text-pmmt-gold border border-slate-500 px-3 py-1.5 rounded shadow-sm transition no-print">
-                            <i class="fa-solid fa-print"></i> Imprimir
-                        </button>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="bg-slate-100 text-xs font-bold text-slate-600 uppercase tracking-wider border-b border-slate-300">
-                                    <th class="px-6 py-3">Nº</th>
-                                    <th class="px-6 py-3">QRA</th>
-                                    <th class="px-6 py-3">Nome Completo</th>
-                                    <th class="px-6 py-3 text-center">Equipe</th>
-                                    <th class="px-6 py-3">Comandante</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabelaEfetivoGeral" class="divide-y divide-slate-200 text-sm text-black">
-                                </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
+                        <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                            <div class="bg-pmmt-blue px-6 py-4 flex justify-between items-center">
+                                <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-users text-pmmt-gold mr-2"></i> Relação Nominal Geral</h3>
+                                <button onclick="event.stopPropagation(); window.print()" class="text-sm text-white hover:text-pmmt-gold border border-slate-500 px-3 py-1.5 rounded shadow-sm transition no-print">
+                                    <i class="fa-solid fa-print"></i> Imprimir
+                                </button>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="bg-slate-100 text-xs font-bold text-slate-600 uppercase tracking-wider border-b border-slate-300">
+                                            <th class="px-6 py-3">Nº</th>
+                                            <th class="px-6 py-3">QRA</th>
+                                            <th class="px-6 py-3">Nome Completo</th>
+                                            <th class="px-6 py-3 text-center">Equipe</th>
+                                            <th class="px-6 py-3">Comandante</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tabelaEfetivoGeral" class="divide-y divide-slate-200 text-sm text-black"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
 
-            <section id="modulo-apoio" class="hidden space-y-6">
-                <div class="bg-white rounded-xl shadow-md p-8 border-t-4 border-pmmt-gold text-center">
-                    <i class="fa-solid fa-book-open text-6xl text-slate-200 mb-4"></i>
-                    <h2 class="text-2xl font-bold text-pmmt-blue">Material de Apoio</h2>
-                    <p class="text-slate-500 mt-2">Repositório de Manuais, Legislações, POPs da PMMT e Canções Militares para estudo e consulta rápida.</p>
-                </div>
-            </section>
+                    <section id="modulo-apoio" class="hidden space-y-6">
+                        <div class="bg-white rounded-xl shadow-md p-8 border-t-4 border-pmmt-gold text-center">
+                            <i class="fa-solid fa-book-open text-6xl text-slate-200 mb-4"></i>
+                            <h2 class="text-2xl font-bold text-pmmt-blue">Material de Apoio</h2>
+                            <p class="text-slate-500 mt-2">Repositório de Manuais, Legislações, POPs da PMMT e Canções Militares para estudo e consulta rápida.</p>
+                        </div>
+                    </section>
 
-            <section id="modulo-debate" class="hidden space-y-6">
-                <div class="bg-white rounded-xl shadow-md p-8 border-t-4 border-emerald-600 text-center">
-                    <i class="fa-solid fa-comments text-6xl text-slate-200 mb-4"></i>
-                    <h2 class="text-2xl font-bold text-pmmt-blue">Área Livre / Sugestões</h2>
-                    <p class="text-slate-500 mt-2">Mural aberto para propostas de melhoria, sugestões para a formatura e debates gerais da tropa.</p>
-                </div>
-            </section>
+                    <section id="modulo-debate" class="hidden space-y-6">
+                        <div class="bg-white rounded-xl shadow-md p-8 border-t-4 border-emerald-600 text-center">
+                            <i class="fa-solid fa-comments text-6xl text-slate-200 mb-4"></i>
+                            <h2 class="text-2xl font-bold text-pmmt-blue">Área Livre / Debate</h2>
+                            <p class="text-slate-500 mt-2">Mural aberto para propostas de melhoria, sugestões para a formatura e debates gerais da tropa.</p>
+                        </div>
+                    </section>
 
-        </main>
+                </main>
+            </div>
+        </div>
     </div>
+
+    <footer class="bg-white border-t border-slate-200 py-3 px-8 text-center text-xs font-bold text-slate-500 no-print shadow-inner z-[110]">
+        Portal desenvolvido por: <span class="text-pmmt-blue">AL SD PM WILLYS</span> - Equipe Bravo - 5º Pelotão, Cáceres.
+    </footer>
 
     <script>
         let supabaseClient;
@@ -365,7 +416,7 @@
         let alunosMap = {};
         let listaAlunosFull = []; 
         let transacoesGlobais = [];
-        let previsoesGlobais = []; // Variável para as previsões
+        let previsoesGlobais = []; 
         
         let colunaOrdenacao = 'data';
         let direcaoOrdenacao = 'desc';
@@ -380,7 +431,75 @@
 
         document.getElementById('inputData').value = new Date().toISOString().split('T')[0];
 
-        // --- NAVEGAÇÃO SPA (Módulos) ---
+        window.onload = async function() {
+            mudarTipoUi();
+            await iniciarSupabase();
+        };
+
+        async function iniciarSupabase() {
+            try {
+                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                
+                if (session) {
+                    await logarSucesso();
+                } else {
+                    document.getElementById('telaLogin').classList.remove('hidden');
+                    document.getElementById('painelPrincipal').classList.add('hidden');
+                }
+            } catch (error) {
+                document.getElementById('statusConexao').innerText = "Erro de Conexão";
+                document.getElementById('statusConexao').className = 'text-xs font-bold text-rose-500';
+            }
+        }
+
+        async function autenticarUsuario(e) {
+            e.preventDefault();
+            let usuarioInput = document.getElementById('loginEmail').value.trim().toLowerCase();
+            const senha = document.getElementById('loginSenha').value;
+            const btn = document.getElementById('btnEntrar');
+            const erroBox = document.getElementById('erroLogin');
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Validando Credenciais...';
+            erroBox.classList.add('hidden');
+
+            const emailFinal = usuarioInput.includes('@') ? usuarioInput : `${usuarioInput}@5pelotao.internal`;
+
+            const { data, error } = await supabaseClient.auth.signInWithPassword({
+                email: emailFinal,
+                password: senha
+            });
+
+            if (error) {
+                erroBox.innerText = "Acesso Negado: Usuário ou senha incorretos.";
+                erroBox.classList.remove('hidden');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-right-to-bracket text-pmmt-gold"></i> Entrar no Portal';
+            } else {
+                await logarSucesso();
+            }
+        }
+
+        async function logarSucesso() {
+            document.getElementById('telaLogin').classList.add('hidden');
+            document.getElementById('painelPrincipal').classList.remove('hidden');
+            
+            document.getElementById('statusConexao').innerHTML = '<i class="fa-solid fa-circle text-xs text-emerald-400"></i> Banco Conectado';
+            document.getElementById('statusConexao').className = 'text-xs font-bold text-green-400';
+            
+            await carregarAlunos();
+            await carregarTransacoes();
+            await carregarPrevisoes();
+        }
+
+        async function deslogarUsuario() {
+            if (confirm("Deseja realmente encerrar sua sessão no portal institucional?")) {
+                await supabaseClient.auth.signOut();
+                window.location.reload();
+            }
+        }
+
         function mudarModulo(moduloDestino) {
             document.getElementById('modulo-financeiro').classList.add('hidden');
             document.getElementById('modulo-efetivo').classList.add('hidden');
@@ -397,7 +516,6 @@
             document.getElementById('btn-' + moduloDestino).className = "w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold transition-all bg-pmmt-gold text-pmmt-blue shadow-md";
         }
 
-        // --- COLAPSAR PAINÉIS ---
         function togglePainel(conteudoId, iconeId) {
             const conteudo = document.getElementById(conteudoId);
             const icone = document.getElementById(iconeId);
@@ -412,7 +530,6 @@
             }
         }
 
-        // --- CATEGORIAS DINÂMICAS ---
         function mudarTipoUi() {
             const tipo = document.querySelector('input[name="tipoOp"]:checked').value;
             const lblRec = document.getElementById('lblReceita');
@@ -459,34 +576,15 @@
             selCat.selectedIndex = 0;
         }
 
-        // --- SUPABASE & INIT ---
-        window.onload = async function() {
-            mudarTipoUi();
-            await iniciarSupabase();
-        };
-
-        async function iniciarSupabase() {
-            try {
-                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-                document.getElementById('statusConexao').innerHTML = '<i class="fa-solid fa-circle text-xs text-emerald-400"></i> Banco Conectado';
-                document.getElementById('statusConexao').className = 'text-xs font-bold text-green-400';
-                await carregarAlunos();
-                await carregarTransacoes();
-                await carregarPrevisoes(); // Carrega as previsões do banco
-            } catch (error) {
-                document.getElementById('statusConexao').innerText = "Erro de Rede";
-                document.getElementById('statusConexao').className = 'text-xs font-bold text-rose-500';
-            }
-        }
-
         async function carregarAlunos() {
             const select = document.getElementById('inputAluno');
-            const { data, error } = await supabaseClient.from('alunos_pelotao').select('*').order('numero', { ascending: true });
-            if (error) return;
+            if(!select || select.options.length > 1) return;
             
-            listaAlunosFull = data;
+            const { data: dbData, error: dbError } = await supabaseClient.from('alunos_pelotao').select('*').order('numero', { ascending: true });
+            if (dbError) return;
             
-            data.forEach(aluno => {
+            listaAlunosFull = dbData;
+            dbData.forEach(aluno => {
                 alunosMap[aluno.id] = `${aluno.numero} - ${aluno.nome}`;
                 select.add(new Option(`${aluno.numero.toString().padStart(2, '0')} - ${aluno.nome}`, aluno.id));
             });
@@ -563,7 +661,6 @@
             }
         }
 
-        // --- ORDENAÇÃO E RENDERIZAÇÃO (FINANCEIRO) ---
         function ordenarTabela(coluna) {
             if (colunaOrdenacao === coluna) direcaoOrdenacao = direcaoOrdenacao === 'asc' ? 'desc' : 'asc';
             else { colunaOrdenacao = coluna; direcaoOrdenacao = 'asc'; }
@@ -594,18 +691,21 @@
             renderizarGrafico(categoriasGrafico);
             renderizarPainelCotas(pagamentosAlunos);
             renderizarTabelaHTML();
-            renderizarPrevisoes(); // Atualiza a projeção financeira
+            renderizarPrevisoes();
         }
 
         function renderizarTabelaHTML() {
             const tbody = document.getElementById('tabelaDados');
+            if(!tbody) return;
             tbody.innerHTML = '';
 
             ['data', 'descricao', 'categoria', 'aluno', 'valor'].forEach(col => {
-                document.getElementById(`sort-${col}`).className = 'fa-solid fa-sort ml-1 opacity-20 no-print';
+                const el = document.getElementById(`sort-${col}`);
+                if(el) el.className = 'fa-solid fa-sort ml-1 opacity-20 no-print';
             });
             const iconClass = direcaoOrdenacao === 'asc' ? 'fa-sort-up' : 'fa-sort-down';
-            document.getElementById(`sort-${colunaOrdenacao}`).className = `fa-solid ${iconClass} ml-1 text-pmmt-gold opacity-100 no-print`;
+            const targetSort = document.getElementById(`sort-${colunaOrdenacao}`);
+            if(targetSort) targetSort.className = `fa-solid ${iconClass} ml-1 text-pmmt-gold opacity-100 no-print`;
 
             let dadosOrdenados = [...transacoesGlobais].sort((a, b) => {
                 let vA = a[colunaOrdenacao]; let vB = b[colunaOrdenacao];
@@ -647,6 +747,7 @@
 
         function renderizarPainelCotas(pagamentos) {
             const grid = document.getElementById('gridCotas');
+            if(!grid) return;
             grid.innerHTML = '';
             listaAlunosFull.forEach(aluno => {
                 const totalPago = pagamentos[aluno.id] || 0;
@@ -676,16 +777,42 @@
             });
         }
 
+        // --- SISTEMA DE CORES INTELIGENTES DO GRÁFICO (VERDE E VERMELHO) ---
         function renderizarGrafico(dadosCat) {
-            const ctx = document.getElementById('graficoTransacoes').getContext('2d');
+            const canvas = document.getElementById('graficoTransacoes');
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
             if(grafico) grafico.destroy();
+
+            const labels = Object.keys(dadosCat);
+            
+            // Paletas táticas estruturadas por tons
+            let greenIdx = 0;
+            let redIdx = 0;
+            const tonsVerde = ['#059669', '#10b981', '#34d399', '#6ee7b7', '#a7f3d0'];
+            const tonsVermelho = ['#dc2626', '#f43f5e', '#fb7185', '#fca5a5', '#fecdd3'];
+
+            const cores = labels.map(cat => {
+                // Localiza uma transação correspondente para identificar se a categoria é receita ou despesa
+                const transExemplo = transacoesGlobais.find(t => t.categoria === cat);
+                if (transExemplo && transExemplo.tipo === 'receita') {
+                    let cor = tonsVerde[greenIdx % tonsVerde.length];
+                    greenIdx++;
+                    return cor;
+                } else {
+                    let cor = tonsVermelho[redIdx % tonsVermelho.length];
+                    redIdx++;
+                    return cor;
+                }
+            });
+
             grafico = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: Object.keys(dadosCat),
+                    labels: labels,
                     datasets: [{
                         data: Object.values(dadosCat),
-                        backgroundColor: ['#0B1C3D', '#C5A059', '#142A5C', '#f43f5e', '#8b5cf6', '#10b981', '#3b82f6', '#f59e0b'],
+                        backgroundColor: cores,
                         borderWidth: 2, borderColor: '#ffffff'
                     }]
                 },
@@ -693,7 +820,6 @@
             });
         }
 
-        // --- MÓDULO DE PLANEJAMENTO E PROVISÃO ---
         async function carregarPrevisoes() {
             const { data, error } = await supabaseClient.from('previsao_despesas').select('*').order('data_limite', { ascending: true });
             if (!error) {
@@ -778,8 +904,11 @@
             calcularProjecao(totalPrevistoPendente);
         }
 
+        // --- SISTEMA INTELLIGENT DE CÁLCULO E SINCRONIZAÇÃO DE SALDO REAL VS PROJETADO ---
         function calcularProjecao(totalPrevisto) {
-            const saldoTexto = document.getElementById('valorSaldo').innerText.replace('R$', '').replace(/\./g, '').replace(',', '.').trim();
+            const elSaldo = document.getElementById('valorSaldo');
+            if(!elSaldo) return;
+            const saldoTexto = elSaldo.innerText.replace('R$', '').replace(/\./g, '').replace(',', '.').trim();
             const saldoAtual = parseFloat(saldoTexto) || 0;
             const saldoProjetado = saldoAtual - totalPrevisto;
             
@@ -790,11 +919,16 @@
             const txtProjetado = document.getElementById('projSaldoFinal');
             const alertaCota = document.getElementById('projAlertaCota');
             
+            // Atualiza o sub-indicador interno do Card Azul de monitoramento rápido no topo
+            const subIndicador = document.getElementById('valorSaldoLivreIndicador');
+            subIndicador.innerText = saldoProjetado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            
             txtProjetado.innerText = saldoProjetado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
             if (saldoProjetado < 0) {
                 boxProjetado.className = "bg-rose-50 border-l-4 border-rose-500 p-4 rounded shadow-sm transition-colors";
                 txtProjetado.className = "text-xl font-extrabold text-rose-700";
+                subIndicador.className = "text-rose-400 font-bold animate-pulse";
                 alertaCota.classList.remove('hidden');
                 
                 const qdtAlunos = listaAlunosFull.length > 0 ? listaAlunosFull.length : 30;
@@ -803,13 +937,14 @@
             } else {
                 boxProjetado.className = "bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded shadow-sm transition-colors";
                 txtProjetado.className = "text-xl font-extrabold text-emerald-700";
+                subIndicador.className = "text-emerald-400 font-bold";
                 alertaCota.classList.add('hidden');
             }
         }
 
-        // --- MÓDULO EFETIVO (Escala e Equipes) ---
         function renderizarEscala() {
             const grid = document.getElementById('gridEscala');
+            if(!grid) return;
             grid.innerHTML = '';
             
             const dataBase = new Date('2026-06-29T12:00:00Z'); 
@@ -854,6 +989,7 @@
             const tabCharlie = document.getElementById('tabelaCharlie');
             const tabGeral = document.getElementById('tabelaEfetivoGeral');
             
+            if(!tabAlfa) return;
             tabAlfa.innerHTML = ''; tabBravo.innerHTML = ''; tabCharlie.innerHTML = ''; tabGeral.innerHTML = '';
 
             listaAlunosFull.forEach(aluno => {
