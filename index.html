@@ -84,11 +84,11 @@
             </div>
         </div>
 
-        <div id="painelPrincipal" class="hidden h-full flex overflow-hidden w-full">
+        <div id="painelPrincipal" class="hidden h-full flex flex-col md:flex-row overflow-hidden w-full">
             
-            <aside class="w-72 bg-pmmt-blue text-white flex flex-col shadow-2xl z-50 hidden md:flex h-full">
+            <aside id="menuLateral" class="w-full md:w-72 bg-pmmt-blue text-white flex flex-col shadow-2xl z-50 hidden md:flex h-auto md:h-full shrink-0 max-h-screen overflow-y-auto">
                 <div class="p-4 text-center border-b border-pmmt-gold/30 mt-2">
-                    <img src="IMG_1408.JPG" alt="Brasão 5º Pelotão" class="w-full h-auto object-contain rounded-lg border-2 border-pmmt-gold shadow-xl bg-pmmt-blue mx-auto mb-4 hover:scale-105 transition-transform duration-300">
+                    <img src="IMG_1408.JPG" alt="Brasão 5º Pelotão" class="w-2/3 md:w-full h-auto object-contain rounded-lg border-2 border-pmmt-gold shadow-xl bg-pmmt-blue mx-auto mb-4 hover:scale-105 transition-transform duration-300">
                     <h2 class="text-xl font-extrabold text-pmmt-gold tracking-widest drop-shadow-md">5º PELOTÃO</h2>
                     <p class="text-[11px] font-semibold text-slate-300 uppercase tracking-widest mt-1">Força Tática - Cáceres</p>
                 </div>
@@ -119,18 +119,20 @@
 
             <div class="flex-1 flex flex-col h-screen overflow-hidden">
                 
-                <header class="bg-pmmt-blue shadow-md border-b-4 border-pmmt-gold py-4 px-8 flex justify-between items-center z-40">
+                <header class="bg-pmmt-blue shadow-md border-b-4 border-pmmt-gold py-4 px-4 md:px-8 flex justify-between items-center z-40">
                     <div class="flex items-center gap-4">
-                        <img src="logo_pmmt_branco_para_fundo_azul.png" alt="Logo PMMT" class="h-20 object-contain drop-shadow-md">
+                        <img src="logo_pmmt_branco_para_fundo_azul.png" alt="Logo PMMT" class="h-12 md:h-20 object-contain drop-shadow-md">
                         <div>
-                            <h1 class="text-2xl font-extrabold text-white tracking-wider">35º CFSD PMMT <span class="text-pmmt-gold">| 6º CR</span></h1>
-                            <p class="text-sm font-semibold text-slate-300 uppercase tracking-widest">Portal Institucional Integrado</p>
+                            <h1 class="text-lg md:text-2xl font-extrabold text-white tracking-wider">35º CFSD PMMT <span class="text-pmmt-gold">| 6º CR</span></h1>
+                            <p class="text-[10px] md:text-sm font-semibold text-slate-300 uppercase tracking-widest">Portal Institucional Integrado</p>
                         </div>
                     </div>
-                    <button class="md:hidden text-white text-2xl"><i class="fa-solid fa-bars"></i></button>
+                    <button onclick="document.getElementById('menuLateral').classList.toggle('hidden')" class="md:hidden text-white text-2xl p-2 focus:outline-none">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
                 </header>
 
-                <main class="flex-1 overflow-y-auto p-6 md:p-8 bg-slate-100">
+                <main class="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-100">
                     
                     <div id="loaderAlert" class="hidden bg-pmmt-light border-l-4 border-pmmt-gold p-4 rounded-r-lg shadow-sm mb-6 flex items-center gap-3">
                         <i class="fa-solid fa-circle-notch fa-spin text-pmmt-gold text-xl"></i>
@@ -313,7 +315,7 @@
                                 <table class="w-full text-left border-collapse">
                                     <thead>
                                         <tr class="bg-pmmt-blue text-xs font-bold text-white uppercase tracking-wider border-b">
-                                            <th class="px-6 py-3" onclick="ordenarTabela('data')">Data <i id="sort-data" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
+                                            <th class="px-6 py-3 whitespace-nowrap" onclick="ordenarTabela('data')">Data <i id="sort-data" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
                                             <th class="px-6 py-3" onclick="ordenarTabela('descricao')">Descrição <i id="sort-descricao" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
                                             <th class="px-6 py-3" onclick="ordenarTabela('categoria')">Categoria <i id="sort-categoria" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
                                             <th class="px-6 py-3" onclick="ordenarTabela('aluno')">Aluno Vinculado <i id="sort-aluno" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
@@ -374,9 +376,9 @@
                                         <tr class="bg-slate-100 text-xs font-bold text-slate-600 uppercase tracking-wider border-b border-slate-300">
                                             <th class="px-6 py-3">Nº</th>
                                             <th class="px-6 py-3">QRA</th>
-                                            <th class="px-6 py-3">Nome Completo</th>
+                                            <th class="px-6 py-3 whitespace-nowrap">Nome Completo</th>
                                             <th class="px-6 py-3 text-center">Equipe</th>
-                                            <th class="px-6 py-3">Comandante</th>
+                                            <th class="px-6 py-3 whitespace-nowrap">Comandante</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tabelaEfetivoGeral" class="divide-y divide-slate-200 text-sm text-black"></tbody>
@@ -514,6 +516,11 @@
 
             document.getElementById('modulo-' + moduloDestino).classList.remove('hidden');
             document.getElementById('btn-' + moduloDestino).className = "w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold transition-all bg-pmmt-gold text-pmmt-blue shadow-md";
+            
+            // CÓDIGO CORRIGIDO AQUI: Fecha o menu automaticamente no mobile após clique
+            if (window.innerWidth < 768) {
+                document.getElementById('menuLateral').classList.add('hidden');
+            }
         }
 
         function togglePainel(conteudoId, iconeId) {
@@ -777,7 +784,6 @@
             });
         }
 
-        // --- SISTEMA DE CORES INTELIGENTES DO GRÁFICO (VERDE E VERMELHO) ---
         function renderizarGrafico(dadosCat) {
             const canvas = document.getElementById('graficoTransacoes');
             if(!canvas) return;
@@ -786,14 +792,12 @@
 
             const labels = Object.keys(dadosCat);
             
-            // Paletas táticas estruturadas por tons
             let greenIdx = 0;
             let redIdx = 0;
             const tonsVerde = ['#059669', '#10b981', '#34d399', '#6ee7b7', '#a7f3d0'];
             const tonsVermelho = ['#dc2626', '#f43f5e', '#fb7185', '#fca5a5', '#fecdd3'];
 
             const cores = labels.map(cat => {
-                // Localiza uma transação correspondente para identificar se a categoria é receita ou despesa
                 const transExemplo = transacoesGlobais.find(t => t.categoria === cat);
                 if (transExemplo && transExemplo.tipo === 'receita') {
                     let cor = tonsVerde[greenIdx % tonsVerde.length];
@@ -904,7 +908,6 @@
             calcularProjecao(totalPrevistoPendente);
         }
 
-        // --- SISTEMA INTELLIGENT DE CÁLCULO E SINCRONIZAÇÃO DE SALDO REAL VS PROJETADO ---
         function calcularProjecao(totalPrevisto) {
             const elSaldo = document.getElementById('valorSaldo');
             if(!elSaldo) return;
@@ -919,7 +922,6 @@
             const txtProjetado = document.getElementById('projSaldoFinal');
             const alertaCota = document.getElementById('projAlertaCota');
             
-            // Atualiza o sub-indicador interno do Card Azul de monitoramento rápido no topo
             const subIndicador = document.getElementById('valorSaldoLivreIndicador');
             subIndicador.innerText = saldoProjetado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             
@@ -1015,11 +1017,11 @@
                     <tr class="hover:bg-slate-50 transition border-b border-slate-200">
                         <td class="px-6 py-4 font-bold text-slate-500">${numFormatado}</td>
                         <td class="px-6 py-4 font-extrabold text-pmmt-blue">${qra}</td>
-                        <td class="px-6 py-4 font-semibold text-slate-700">${aluno.nome}</td>
+                        <td class="px-6 py-4 font-semibold text-slate-700 whitespace-nowrap">${aluno.nome}</td>
                         <td class="px-6 py-4 text-center">
                             <span class="px-3 py-1 rounded text-xs font-bold ${badgeColor}">${equipe}</span>
                         </td>
-                        <td class="px-6 py-4 font-bold text-slate-600">${comandante}</td>
+                        <td class="px-6 py-4 font-bold text-slate-600 whitespace-nowrap">${comandante}</td>
                     </tr>
                 `;
             });
