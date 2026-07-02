@@ -98,7 +98,7 @@
                         <i class="fa-solid fa-vault w-5 text-center"></i> Gestão Financeira
                     </button>
                     <button onclick="mudarModulo('efetivo')" id="btn-efetivo" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold text-slate-300 hover:bg-pmmt-light hover:text-white transition-all">
-                        <i class="fa-solid fa-users w-5 text-center"></i> Efetivo (Alunos)
+                        <i class="fa-solid fa-users w-5 text-center"></i> Efetivo e TAF
                     </button>
                     <button onclick="mudarModulo('apoio')" id="btn-apoio" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold text-slate-300 hover:bg-pmmt-light hover:text-white transition-all">
                         <i class="fa-solid fa-book-open w-5 text-center"></i> Material de Apoio
@@ -151,7 +151,6 @@
                                 <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Total de Despesas</p>
                                 <h2 id="valorDespesas" class="text-3xl font-extrabold text-rose-700">R$ 0,00</h2>
                             </div>
-                            
                             <div class="bg-pmmt-blue rounded-xl shadow-md p-6 border-t-4 border-pmmt-gold relative overflow-hidden">
                                 <i class="fa-solid fa-vault absolute -right-4 -bottom-4 text-7xl text-pmmt-light"></i>
                                 <p class="text-xs font-bold text-pmmt-gold uppercase tracking-widest mb-1">Saldo em Caixa</p>
@@ -174,7 +173,6 @@
                                             <span class="text-sm font-bold text-rose-700"><i class="fa-solid fa-arrow-up"></i> Despesa</span>
                                         </label>
                                     </div>
-
                                     <div>
                                         <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Categoria</label>
                                         <div class="flex gap-2">
@@ -183,19 +181,16 @@
                                             <button type="button" id="btnCancelarNovaCat" class="hidden bg-slate-200 hover:bg-slate-300 text-black px-3 rounded-lg font-bold transition" onclick="cancelarNovaCategoria()"><i class="fa-solid fa-xmark"></i></button>
                                         </div>
                                     </div>
-
                                     <div id="blocoAluno">
                                         <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Vincular a Aluno</label>
                                         <select id="inputAluno" class="w-full bg-slate-50 border border-slate-200 text-black font-semibold rounded-lg p-2.5 text-sm outline-none focus:border-pmmt-blue">
                                             <option value="TODOS">-- Lançamento Geral / Vincular Todos --</option>
                                         </select>
                                     </div>
-
                                     <div>
                                         <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Descrição</label>
                                         <input type="text" id="inputDescricao" required placeholder="Ex: Compra de refrigerantes" class="w-full bg-slate-50 border border-slate-200 text-black rounded-lg p-2.5 text-sm outline-none focus:border-pmmt-blue">
                                     </div>
-
                                     <div class="grid grid-cols-2 gap-3">
                                         <div>
                                             <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Valor (R$)</label>
@@ -206,13 +201,11 @@
                                             <input type="date" id="inputData" required class="w-full bg-slate-50 border border-slate-200 p-2.5 text-sm outline-none focus:border-pmmt-blue">
                                         </div>
                                     </div>
-
                                     <button type="submit" class="w-full bg-pmmt-gold hover:bg-yellow-600 text-pmmt-blue font-bold py-3 rounded-lg shadow-md transition mt-2 flex items-center justify-center gap-2">
                                         <i class="fa-solid fa-cloud-arrow-up"></i> Registrar Operação
                                     </button>
                                 </form>
                             </div>
-
                             <div class="bg-white rounded-xl shadow-md p-6 lg:col-span-2 border border-slate-200 flex flex-col items-center justify-center">
                                 <h3 class="text-lg font-bold text-pmmt-blue mb-5 border-b w-full pb-2"><i class="fa-solid fa-chart-pie text-pmmt-gold mr-2"></i> Distribuição Financeira</h3>
                                 <div class="w-full max-w-sm">
@@ -252,7 +245,6 @@
                                         <p id="projAlertaCota" class="text-xs font-bold text-rose-600 mt-1 hidden"><i class="fa-solid fa-triangle-exclamation"></i> Cota Extra Necessária: <span id="valorCotaExtra">R$ 0,00</span>/aluno</p>
                                     </div>
                                 </div>
-
                                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                                     <div class="lg:col-span-1 bg-white p-4 rounded border border-slate-200 shadow-sm">
                                         <h4 class="text-sm font-bold text-pmmt-blue mb-4 border-b pb-2">Nova Provisão</h4>
@@ -280,7 +272,6 @@
                                             </button>
                                         </form>
                                     </div>
-
                                     <div class="lg:col-span-2 bg-white rounded border border-slate-200 shadow-sm overflow-hidden">
                                         <div class="overflow-x-auto h-64">
                                             <table class="w-full text-left border-collapse">
@@ -330,59 +321,151 @@
                     </section>
 
                     <section id="modulo-efetivo" class="hidden space-y-6">
-                        <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
-                            <h3 class="text-xl font-bold text-pmmt-blue border-b-2 border-pmmt-gold pb-2 mb-4">
-                                <i class="fas fa-calendar-alt text-pmmt-gold mr-2"></i>Escala de Serviço - 5º Pelotão
-                            </h3>
-                            <div id="gridEscala" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-2 flex gap-2 overflow-x-auto no-print">
+                            <button onclick="alternarAbaEfetivo('geral')" id="aba-geral" class="px-4 py-2 bg-pmmt-blue text-white font-bold rounded-lg text-sm flex-1 whitespace-nowrap transition">
+                                <i class="fa-solid fa-calendar-days mr-2"></i> Escala e Efetivo Geral
+                            </button>
+                            <button onclick="alternarAbaEfetivo('taf')" id="aba-taf" class="px-4 py-2 bg-slate-100 text-slate-500 hover:bg-slate-200 font-bold rounded-lg text-sm flex-1 whitespace-nowrap transition">
+                                <i class="fa-solid fa-person-running mr-2"></i> Desempenho TAF
+                            </button>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div class="bg-white rounded-xl shadow-md border-t-4 border-blue-600 overflow-hidden">
-                                <div class="bg-blue-50 py-3 px-4 border-b border-blue-100 flex justify-between items-center">
-                                    <h3 class="text-lg font-extrabold text-blue-900">Equipe ALFA</h3>
-                                    <span class="bg-blue-200 text-blue-800 text-xs font-bold px-2 py-1 rounded">CMT: SGT ORTIZ</span>
-                                </div>
-                                <ul id="tabelaAlfa" class="text-sm p-4 text-black font-semibold divide-y divide-slate-100 h-64 overflow-y-auto"></ul>
+                        <div id="conteudo-efetivo-geral" class="space-y-6">
+                            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                                <h3 class="text-xl font-bold text-pmmt-blue border-b-2 border-pmmt-gold pb-2 mb-4">
+                                    <i class="fas fa-calendar-alt text-pmmt-gold mr-2"></i>Escala de Serviço - 5º Pelotão
+                                </h3>
+                                <div id="gridEscala" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
                             </div>
-                            
-                            <div class="bg-white rounded-xl shadow-md border-t-4 border-amber-500 overflow-hidden">
-                                <div class="bg-amber-50 py-3 px-4 border-b border-amber-100 flex justify-between items-center">
-                                    <h3 class="text-lg font-extrabold text-amber-900">Equipe BRAVO</h3>
-                                    <span class="bg-amber-200 text-amber-900 text-xs font-bold px-2 py-1 rounded">CMT: SGT MAURIZON</span>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div class="bg-white rounded-xl shadow-md border-t-4 border-blue-600 overflow-hidden">
+                                    <div class="bg-blue-50 py-3 px-4 border-b border-blue-100 flex justify-between items-center">
+                                        <h3 class="text-lg font-extrabold text-blue-900">Equipe ALFA</h3>
+                                        <span class="bg-blue-200 text-blue-800 text-xs font-bold px-2 py-1 rounded">CMT: SGT ORTIZ</span>
+                                    </div>
+                                    <ul id="tabelaAlfa" class="text-sm p-4 text-black font-semibold divide-y divide-slate-100 h-64 overflow-y-auto"></ul>
                                 </div>
-                                <ul id="tabelaBravo" class="text-sm p-4 text-black font-semibold divide-y divide-slate-100 h-64 overflow-y-auto"></ul>
+                                <div class="bg-white rounded-xl shadow-md border-t-4 border-amber-500 overflow-hidden">
+                                    <div class="bg-amber-50 py-3 px-4 border-b border-amber-100 flex justify-between items-center">
+                                        <h3 class="text-lg font-extrabold text-amber-900">Equipe BRAVO</h3>
+                                        <span class="bg-amber-200 text-amber-900 text-xs font-bold px-2 py-1 rounded">CMT: SGT MAURIZON</span>
+                                    </div>
+                                    <ul id="tabelaBravo" class="text-sm p-4 text-black font-semibold divide-y divide-slate-100 h-64 overflow-y-auto"></ul>
+                                </div>
+                                <div class="bg-white rounded-xl shadow-md border-t-4 border-emerald-600 overflow-hidden">
+                                    <div class="bg-emerald-50 py-3 px-4 border-b border-emerald-100 flex justify-between items-center">
+                                        <h3 class="text-lg font-extrabold text-emerald-900">Equipe CHARLIE</h3>
+                                        <span class="bg-emerald-200 text-emerald-800 text-xs font-bold px-2 py-1 rounded">CMT: SGT SOUZA</span>
+                                    </div>
+                                    <ul id="tabelaCharlie" class="text-sm p-4 text-black font-semibold divide-y divide-slate-100 h-64 overflow-y-auto"></ul>
+                                </div>
                             </div>
-                            
-                            <div class="bg-white rounded-xl shadow-md border-t-4 border-emerald-600 overflow-hidden">
-                                <div class="bg-emerald-50 py-3 px-4 border-b border-emerald-100 flex justify-between items-center">
-                                    <h3 class="text-lg font-extrabold text-emerald-900">Equipe CHARLIE</h3>
-                                    <span class="bg-emerald-200 text-emerald-800 text-xs font-bold px-2 py-1 rounded">CMT: SGT SOUZA</span>
+
+                            <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                                <div class="bg-pmmt-blue px-6 py-4 flex justify-between items-center">
+                                    <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-users text-pmmt-gold mr-2"></i> Relação Nominal Geral</h3>
+                                    <button onclick="event.stopPropagation(); window.print()" class="text-sm text-white hover:text-pmmt-gold border border-slate-500 px-3 py-1.5 rounded shadow-sm transition no-print">
+                                        <i class="fa-solid fa-print"></i> Imprimir
+                                    </button>
                                 </div>
-                                <ul id="tabelaCharlie" class="text-sm p-4 text-black font-semibold divide-y divide-slate-100 h-64 overflow-y-auto"></ul>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr class="bg-slate-100 text-xs font-bold text-slate-600 uppercase tracking-wider border-b border-slate-300">
+                                                <th class="px-6 py-3">Nº</th>
+                                                <th class="px-6 py-3">QRA</th>
+                                                <th class="px-6 py-3 whitespace-nowrap">Nome Completo</th>
+                                                <th class="px-6 py-3 text-center">Equipe</th>
+                                                <th class="px-6 py-3 whitespace-nowrap">Comandante</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabelaEfetivoGeral" class="divide-y divide-slate-200 text-sm text-black"></tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
-                            <div class="bg-pmmt-blue px-6 py-4 flex justify-between items-center">
-                                <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-users text-pmmt-gold mr-2"></i> Relação Nominal Geral</h3>
-                                <button onclick="event.stopPropagation(); window.print()" class="text-sm text-white hover:text-pmmt-gold border border-slate-500 px-3 py-1.5 rounded shadow-sm transition no-print">
-                                    <i class="fa-solid fa-print"></i> Imprimir
-                                </button>
-                            </div>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left border-collapse">
-                                    <thead>
-                                        <tr class="bg-slate-100 text-xs font-bold text-slate-600 uppercase tracking-wider border-b border-slate-300">
-                                            <th class="px-6 py-3">Nº</th>
-                                            <th class="px-6 py-3">QRA</th>
-                                            <th class="px-6 py-3 whitespace-nowrap">Nome Completo</th>
-                                            <th class="px-6 py-3 text-center">Equipe</th>
-                                            <th class="px-6 py-3 whitespace-nowrap">Comandante</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tabelaEfetivoGeral" class="divide-y divide-slate-200 text-sm text-black"></tbody>
-                                </table>
+                        <div id="conteudo-efetivo-taf" class="hidden space-y-6">
+                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                <div class="bg-white rounded-xl shadow-md border-t-4 border-emerald-600 p-6 lg:col-span-1">
+                                    <h3 class="text-lg font-bold text-pmmt-blue border-b pb-2 mb-4"><i class="fa-solid fa-plus text-emerald-600 mr-2"></i> Lançar Novo TAF</h3>
+                                    <form id="formTAF" onsubmit="salvarTAF(event)" class="space-y-3">
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Aluno</label>
+                                            <select id="tafAluno" required class="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-lg text-sm outline-none focus:border-pmmt-blue text-black"></select>
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Data do Teste</label>
+                                                <input type="date" id="tafData" required class="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-lg text-sm outline-none">
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Gênero (Índices)</label>
+                                                <select id="tafSexo" required class="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-lg text-sm outline-none">
+                                                    <option value="M">Masculino</option>
+                                                    <option value="F">Feminino</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-100">
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-slate-500 uppercase">Corrida (Metros)</label>
+                                                <input type="number" id="tafCorrida" placeholder="Ex: 2400" required class="w-full bg-white border border-slate-300 p-2 rounded text-sm">
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-slate-500 uppercase">Abdominal (Reps)</label>
+                                                <input type="number" id="tafAbdominal" placeholder="Ex: 40" required class="w-full bg-white border border-slate-300 p-2 rounded text-sm">
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-slate-500 uppercase">Barra (Reps / Segs)</label>
+                                                <input type="number" id="tafBarra" placeholder="Rep. ou Tempo" required class="w-full bg-white border border-slate-300 p-2 rounded text-sm">
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-slate-500 uppercase">Meio Sugado (Reps)</label>
+                                                <input type="number" id="tafSugado" placeholder="Ex: 20" required class="w-full bg-white border border-slate-300 p-2 rounded text-sm">
+                                            </div>
+                                            <div class="col-span-2">
+                                                <label class="block text-[10px] font-bold text-slate-500 uppercase">Natação 50m (Segundos)</label>
+                                                <input type="number" id="tafNatacao" placeholder="Ex: 65 (para 1m05s)" required class="w-full bg-white border border-slate-300 p-2 rounded text-sm">
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg shadow transition mt-2 text-sm">
+                                            Salvar Resultados
+                                        </button>
+                                    </form>
+                                </div>
+                                <div class="bg-white rounded-xl shadow-md border border-slate-200 lg:col-span-2 overflow-hidden flex flex-col">
+                                    <div class="bg-pmmt-blue px-6 py-4 flex justify-between items-center">
+                                        <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-chart-line text-pmmt-gold mr-2"></i> Evolução Individual</h3>
+                                    </div>
+                                    <div class="p-4 bg-slate-50 border-b border-slate-200 flex gap-4 items-end">
+                                        <div class="flex-1">
+                                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Filtrar por Aluno</label>
+                                            <select id="filtroTafAluno" onchange="carregarTAF()" class="w-full bg-white border border-slate-300 p-2 rounded-lg text-sm text-black">
+                                                <option value="TODOS">Todos os Alunos</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="overflow-x-auto flex-1">
+                                        <table class="w-full text-left border-collapse min-w-[700px]">
+                                            <thead class="bg-slate-100 text-[10px] font-bold text-slate-500 uppercase">
+                                                <tr>
+                                                    <th class="p-3">Data</th>
+                                                    <th class="p-3">Aluno</th>
+                                                    <th class="p-3 text-center">Corrida 12m</th>
+                                                    <th class="p-3 text-center">Barra Fixa</th>
+                                                    <th class="p-3 text-center">Abd.</th>
+                                                    <th class="p-3 text-center">Sugado</th>
+                                                    <th class="p-3 text-center">Natação</th>
+                                                    <th class="p-3 text-center">Situação</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tabelaTAF" class="divide-y divide-slate-200 text-sm font-medium bg-white"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </section>
@@ -419,6 +502,7 @@
         let listaAlunosFull = []; 
         let transacoesGlobais = [];
         let previsoesGlobais = []; 
+        let historicoTAF = [];
         
         let colunaOrdenacao = 'data';
         let direcaoOrdenacao = 'desc';
@@ -517,12 +601,145 @@
             document.getElementById('modulo-' + moduloDestino).classList.remove('hidden');
             document.getElementById('btn-' + moduloDestino).className = "w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold transition-all bg-pmmt-gold text-pmmt-blue shadow-md";
             
-            // CÓDIGO CORRIGIDO AQUI: Fecha o menu automaticamente no mobile após clique
             if (window.innerWidth < 768) {
                 document.getElementById('menuLateral').classList.add('hidden');
             }
         }
 
+        // FUNÇÕES TAF
+        function alternarAbaEfetivo(aba) {
+            document.getElementById('conteudo-efetivo-geral').classList.add('hidden');
+            document.getElementById('conteudo-efetivo-taf').classList.add('hidden');
+            
+            document.getElementById('aba-geral').className = "px-4 py-2 bg-slate-100 text-slate-500 hover:bg-slate-200 font-bold rounded-lg text-sm flex-1 whitespace-nowrap transition";
+            document.getElementById('aba-taf').className = "px-4 py-2 bg-slate-100 text-slate-500 hover:bg-slate-200 font-bold rounded-lg text-sm flex-1 whitespace-nowrap transition";
+
+            document.getElementById(`conteudo-efetivo-${aba}`).classList.remove('hidden');
+            document.getElementById(`aba-${aba}`).className = "px-4 py-2 bg-pmmt-blue text-white font-bold rounded-lg text-sm flex-1 whitespace-nowrap transition";
+
+            if(aba === 'taf') {
+                preencherSelectsTAF();
+                carregarTAF();
+                document.getElementById('tafData').value = new Date().toISOString().split('T')[0];
+            }
+        }
+
+        function preencherSelectsTAF() {
+            const selForm = document.getElementById('tafAluno');
+            const selFiltro = document.getElementById('filtroTafAluno');
+            
+            if(selForm.options.length > 0) return;
+
+            listaAlunosFull.forEach(aluno => {
+                const nomeFormatado = `${aluno.numero.toString().padStart(2, '0')} - ${aluno.qra || aluno.nome}`;
+                selForm.add(new Option(nomeFormatado, aluno.id));
+                selFiltro.add(new Option(nomeFormatado, aluno.id));
+            });
+        }
+
+        async function salvarTAF(e) {
+            e.preventDefault();
+            mostrarLoading(true);
+
+            const sexo = document.getElementById('tafSexo').value;
+            const barraInput = parseInt(document.getElementById('tafBarra').value);
+            const reps = sexo === 'M' ? barraInput : null;
+            const isometria = sexo === 'F' ? barraInput : null;
+
+            const novoTAF = {
+                aluno_id: document.getElementById('tafAluno').value,
+                data_teste: document.getElementById('tafData').value,
+                sexo: sexo,
+                corrida_metros: parseInt(document.getElementById('tafCorrida').value),
+                barra_reps: reps,
+                barra_tempo_segs: isometria,
+                abdominal_reps: parseInt(document.getElementById('tafAbdominal').value),
+                meio_sugado_reps: parseInt(document.getElementById('tafSugado').value),
+                natacao_tempo_segs: parseInt(document.getElementById('tafNatacao').value)
+            };
+
+            const { error } = await supabaseClient.from('taf_resultados').insert([novoTAF]);
+
+            if (!error) {
+                document.getElementById('formTAF').reset();
+                document.getElementById('tafData').value = new Date().toISOString().split('T')[0];
+                await carregarTAF();
+            } else {
+                alert("Erro ao salvar resultado do TAF. Verifique se a tabela taf_resultados foi criada no Supabase.");
+            }
+            mostrarLoading(false);
+        }
+
+        async function carregarTAF() {
+            mostrarLoading(true);
+            let query = supabaseClient.from('taf_resultados').select('*').order('data_teste', { ascending: false });
+            
+            const filtro = document.getElementById('filtroTafAluno').value;
+            if (filtro && filtro !== "TODOS") query = query.eq('aluno_id', filtro);
+
+            const { data, error } = await query;
+            
+            if (!error && data) {
+                historicoTAF = data;
+                renderizarTabelaTAF();
+            }
+            mostrarLoading(false);
+        }
+
+        function renderizarTabelaTAF() {
+            const tbody = document.getElementById('tabelaTAF');
+            tbody.innerHTML = '';
+
+            historicoTAF.forEach(taf => {
+                const alunoNome = alunosMap[taf.aluno_id] || "Aluno Não Encontrado";
+                const dataFormatada = taf.data_teste.split('-').reverse().join('/');
+                
+                const isM = taf.sexo === 'M';
+                const minCorrida = isM ? 2000 : 1600;
+                const minBarra = isM ? 3 : 10;
+                const minAbd = isM ? 30 : 20;
+                const minSugado = 15;
+                const maxNatacao = isM ? 70 : 80;
+
+                const passCorrida = taf.corrida_metros >= minCorrida;
+                const valorBarra = isM ? taf.barra_reps : taf.barra_tempo_segs;
+                const passBarra = valorBarra >= minBarra;
+                const passAbd = taf.abdominal_reps >= minAbd;
+                const passSugado = taf.meio_sugado_reps >= minSugado;
+                const passNatacao = taf.natacao_tempo_segs <= maxNatacao;
+
+                const aprovadoGeral = passCorrida && passBarra && passAbd && passSugado && passNatacao;
+
+                const formatBadge = (passou, valor, sufixo) => 
+                    `<span class="px-2 py-1 rounded text-xs font-bold ${passou ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'}">${valor} ${sufixo}</span>`;
+
+                const formatarTempo = (segs) => {
+                    const m = Math.floor(segs / 60);
+                    const s = segs % 60;
+                    return m > 0 ? `${m}m${s.toString().padStart(2, '0')}s` : `${s}s`;
+                };
+
+                const strBarra = isM ? formatBadge(passBarra, valorBarra, 'reps') : formatBadge(passBarra, valorBarra, 'segs');
+                const badgeSit = aprovadoGeral 
+                    ? `<span class="bg-emerald-600 text-white px-3 py-1 rounded-full text-xs font-black shadow"><i class="fa-solid fa-check"></i> APTO</span>`
+                    : `<span class="bg-rose-600 text-white px-3 py-1 rounded-full text-xs font-black shadow"><i class="fa-solid fa-xmark"></i> INAPTO</span>`;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="p-3 text-slate-500 font-bold whitespace-nowrap">${dataFormatada}</td>
+                    <td class="p-3 font-extrabold text-black uppercase">${alunoNome}</td>
+                    <td class="p-3 text-center">${formatBadge(passCorrida, taf.corrida_metros, 'm')}</td>
+                    <td class="p-3 text-center">${strBarra}</td>
+                    <td class="p-3 text-center">${formatBadge(passAbd, taf.abdominal_reps, 'reps')}</td>
+                    <td class="p-3 text-center">${formatBadge(passSugado, taf.meio_sugado_reps, 'reps')}</td>
+                    <td class="p-3 text-center">${formatBadge(passNatacao, formatarTempo(taf.natacao_tempo_segs), '')}</td>
+                    <td class="p-3 text-center">${badgeSit}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // DEMAIS FUNÇÕES DO SISTEMA...
         function togglePainel(conteudoId, iconeId) {
             const conteudo = document.getElementById(conteudoId);
             const icone = document.getElementById(iconeId);
