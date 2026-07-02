@@ -277,9 +277,9 @@
                                             <table class="w-full text-left border-collapse">
                                                 <thead class="bg-slate-100 text-[10px] uppercase font-bold text-slate-500 sticky top-0">
                                                     <tr>
-                                                        <th class="p-3">Prazo</th>
+                                                        <th class="p-3 whitespace-nowrap">Prazo</th>
                                                         <th class="p-3">Item / Descrição</th>
-                                                        <th class="p-3 text-right">Valor Est.</th>
+                                                        <th class="p-3 text-right whitespace-nowrap">Valor Est.</th>
                                                         <th class="p-3 text-center">Status</th>
                                                         <th class="p-3 text-center">Ação</th>
                                                     </tr>
@@ -307,10 +307,10 @@
                                     <thead>
                                         <tr class="bg-pmmt-blue text-xs font-bold text-white uppercase tracking-wider border-b">
                                             <th class="px-6 py-3 whitespace-nowrap" onclick="ordenarTabela('data')">Data <i id="sort-data" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
-                                            <th class="px-6 py-3" onclick="ordenarTabela('descricao')">Descrição <i id="sort-descricao" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
-                                            <th class="px-6 py-3" onclick="ordenarTabela('categoria')">Categoria <i id="sort-categoria" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
-                                            <th class="px-6 py-3" onclick="ordenarTabela('aluno')">Aluno Vinculado <i id="sort-aluno" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
-                                            <th class="px-6 py-3 text-right" onclick="ordenarTabela('valor')">Valor <i id="sort-valor" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
+                                            <th class="px-6 py-3 whitespace-nowrap" onclick="ordenarTabela('descricao')">Descrição <i id="sort-descricao" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
+                                            <th class="px-6 py-3 whitespace-nowrap" onclick="ordenarTabela('categoria')">Categoria <i id="sort-categoria" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
+                                            <th class="px-6 py-3 whitespace-nowrap" onclick="ordenarTabela('aluno')">Aluno Vinculado <i id="sort-aluno" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
+                                            <th class="px-6 py-3 text-right whitespace-nowrap" onclick="ordenarTabela('valor')">Valor <i id="sort-valor" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
                                             <th class="px-6 py-3 text-center no-print">Ações</th>
                                         </tr>
                                     </thead>
@@ -374,10 +374,10 @@
                                     <table class="w-full text-left border-collapse">
                                         <thead>
                                             <tr class="bg-slate-100 text-xs font-bold text-slate-600 uppercase tracking-wider border-b border-slate-300">
-                                                <th class="px-6 py-3">Nº</th>
-                                                <th class="px-6 py-3">QRA</th>
+                                                <th class="px-6 py-3 whitespace-nowrap">Nº</th>
+                                                <th class="px-6 py-3 whitespace-nowrap">QRA</th>
                                                 <th class="px-6 py-3 whitespace-nowrap">Nome Completo</th>
-                                                <th class="px-6 py-3 text-center">Equipe</th>
+                                                <th class="px-6 py-3 text-center whitespace-nowrap">Equipe</th>
                                                 <th class="px-6 py-3 whitespace-nowrap">Comandante</th>
                                             </tr>
                                         </thead>
@@ -390,7 +390,7 @@
                         <div id="conteudo-efetivo-taf" class="hidden space-y-6">
                             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                                 <div class="bg-white rounded-xl shadow-md border-t-4 border-emerald-600 p-6 lg:col-span-1">
-                                    <h3 class="text-lg font-bold text-pmmt-blue border-b pb-2 mb-4"><i class="fa-solid fa-plus text-emerald-600 mr-2"></i> Lançar Novo TAF</h3>
+                                    <h3 class="text-lg font-bold text-pmmt-blue border-b pb-2 mb-4"><i class="fa-solid fa-plus text-emerald-600 mr-2"></i> Lançar Resultado do TAF</h3>
                                     <form id="formTAF" onsubmit="salvarTAF(event)" class="space-y-3">
                                         <div>
                                             <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Aluno</label>
@@ -402,7 +402,7 @@
                                                 <input type="date" id="tafData" required class="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-lg text-sm outline-none">
                                             </div>
                                             <div>
-                                                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Gênero (Índices)</label>
+                                                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Gênero</label>
                                                 <select id="tafSexo" required class="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-lg text-sm outline-none">
                                                     <option value="M">Masculino</option>
                                                     <option value="F">Feminino</option>
@@ -412,54 +412,76 @@
                                         <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-100">
                                             <div>
                                                 <label class="block text-[10px] font-bold text-slate-500 uppercase">Corrida (Metros)</label>
-                                                <input type="number" id="tafCorrida" placeholder="Ex: 2400" required class="w-full bg-white border border-slate-300 p-2 rounded text-sm">
+                                                <input type="number" id="tafCorrida" placeholder="Ex: 2400" class="w-full bg-white border border-slate-300 p-2 rounded text-sm outline-none focus:border-pmmt-blue">
                                             </div>
                                             <div>
                                                 <label class="block text-[10px] font-bold text-slate-500 uppercase">Abdominal (Reps)</label>
-                                                <input type="number" id="tafAbdominal" placeholder="Ex: 40" required class="w-full bg-white border border-slate-300 p-2 rounded text-sm">
+                                                <input type="number" id="tafAbdominal" placeholder="Ex: 40" class="w-full bg-white border border-slate-300 p-2 rounded text-sm outline-none focus:border-pmmt-blue">
                                             </div>
                                             <div>
                                                 <label class="block text-[10px] font-bold text-slate-500 uppercase">Barra (Reps / Segs)</label>
-                                                <input type="number" id="tafBarra" placeholder="Rep. ou Tempo" required class="w-full bg-white border border-slate-300 p-2 rounded text-sm">
+                                                <input type="number" id="tafBarra" placeholder="Ex: 5" class="w-full bg-white border border-slate-300 p-2 rounded text-sm outline-none focus:border-pmmt-blue">
                                             </div>
                                             <div>
                                                 <label class="block text-[10px] font-bold text-slate-500 uppercase">Meio Sugado (Reps)</label>
-                                                <input type="number" id="tafSugado" placeholder="Ex: 20" required class="w-full bg-white border border-slate-300 p-2 rounded text-sm">
+                                                <input type="number" id="tafSugado" placeholder="Ex: 20" class="w-full bg-white border border-slate-300 p-2 rounded text-sm outline-none focus:border-pmmt-blue">
                                             </div>
                                             <div class="col-span-2">
                                                 <label class="block text-[10px] font-bold text-slate-500 uppercase">Natação 50m (Segundos)</label>
-                                                <input type="number" id="tafNatacao" placeholder="Ex: 65 (para 1m05s)" required class="w-full bg-white border border-slate-300 p-2 rounded text-sm">
+                                                <input type="number" id="tafNatacao" placeholder="Ex: 65 (para 1m05s)" class="w-full bg-white border border-slate-300 p-2 rounded text-sm outline-none focus:border-pmmt-blue">
                                             </div>
                                         </div>
-                                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg shadow transition mt-2 text-sm">
-                                            Salvar Resultados
+                                        <button type="submit" id="btnSalvarTAF" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg shadow transition mt-2 text-sm flex justify-center items-center gap-2">
+                                            <i class="fa-solid fa-check"></i> Salvar Resultados
                                         </button>
                                     </form>
                                 </div>
+                                
                                 <div class="bg-white rounded-xl shadow-md border border-slate-200 lg:col-span-2 overflow-hidden flex flex-col">
                                     <div class="bg-pmmt-blue px-6 py-4 flex justify-between items-center">
                                         <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-chart-line text-pmmt-gold mr-2"></i> Evolução Individual</h3>
                                     </div>
-                                    <div class="p-4 bg-slate-50 border-b border-slate-200 flex gap-4 items-end">
-                                        <div class="flex-1">
-                                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Filtrar por Aluno</label>
+                                    
+                                    <div class="p-4 bg-slate-50 border-b border-slate-200 flex flex-col md:flex-row gap-4 items-end">
+                                        <div class="flex-1 w-full">
+                                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Filtrar Histórico por Aluno</label>
                                             <select id="filtroTafAluno" onchange="carregarTAF()" class="w-full bg-white border border-slate-300 p-2 rounded-lg text-sm text-black">
                                                 <option value="TODOS">Todos os Alunos</option>
                                             </select>
                                         </div>
                                     </div>
+
+                                    <div class="p-4 bg-white border-b border-slate-200">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <h4 class="text-sm font-bold text-pmmt-blue"><i class="fa-solid fa-chart-area text-pmmt-gold mr-2"></i> Gráfico de Desenvolvimento</h4>
+                                            <select id="filtroGraficoExercicio" onchange="renderizarGraficoTAF()" class="bg-slate-50 border border-slate-200 p-1.5 rounded text-xs font-bold text-slate-600 outline-none">
+                                                <option value="corrida_metros">Corrida (Metros)</option>
+                                                <option value="barra">Barra Fixa</option>
+                                                <option value="abdominal_reps">Abdominal</option>
+                                                <option value="meio_sugado_reps">Meio Sugado</option>
+                                                <option value="natacao_tempo_segs">Natação (Segundos)</option>
+                                            </select>
+                                        </div>
+                                        <div class="w-full h-48 relative">
+                                            <canvas id="canvasEvolucaoTAF"></canvas>
+                                            <div id="avisoGraficoTAF" class="absolute inset-0 flex items-center justify-center bg-white/90 text-xs font-bold text-slate-400 text-center px-4">
+                                                Selecione um Aluno específico no filtro acima para visualizar o gráfico de evolução do curso.
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div class="overflow-x-auto flex-1">
                                         <table class="w-full text-left border-collapse min-w-[700px]">
                                             <thead class="bg-slate-100 text-[10px] font-bold text-slate-500 uppercase">
                                                 <tr>
-                                                    <th class="p-3">Data</th>
-                                                    <th class="p-3">Aluno</th>
-                                                    <th class="p-3 text-center">Corrida 12m</th>
-                                                    <th class="p-3 text-center">Barra Fixa</th>
-                                                    <th class="p-3 text-center">Abd.</th>
-                                                    <th class="p-3 text-center">Sugado</th>
-                                                    <th class="p-3 text-center">Natação</th>
-                                                    <th class="p-3 text-center">Situação</th>
+                                                    <th class="p-3 whitespace-nowrap">Data</th>
+                                                    <th class="p-3 whitespace-nowrap">Aluno</th>
+                                                    <th class="p-3 text-center whitespace-nowrap">Corrida 12m</th>
+                                                    <th class="p-3 text-center whitespace-nowrap">Barra Fixa</th>
+                                                    <th class="p-3 text-center whitespace-nowrap">Abd.</th>
+                                                    <th class="p-3 text-center whitespace-nowrap">Sugado</th>
+                                                    <th class="p-3 text-center whitespace-nowrap">Natação</th>
+                                                    <th class="p-3 text-center whitespace-nowrap">Ações</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="tabelaTAF" class="divide-y divide-slate-200 text-sm font-medium bg-white"></tbody>
@@ -503,6 +525,8 @@
         let transacoesGlobais = [];
         let previsoesGlobais = []; 
         let historicoTAF = [];
+        let graficoEvolucaoTAF = null;
+        let tafEditandoId = null;
         
         let colunaOrdenacao = 'data';
         let direcaoOrdenacao = 'desc';
@@ -606,7 +630,7 @@
             }
         }
 
-        // FUNÇÕES TAF
+        // --- FUNÇÕES DO TAF (TESTE DE APTIDÃO FÍSICA) ---
         function alternarAbaEfetivo(aba) {
             document.getElementById('conteudo-efetivo-geral').classList.add('hidden');
             document.getElementById('conteudo-efetivo-taf').classList.add('hidden');
@@ -642,23 +666,39 @@
             mostrarLoading(true);
 
             const sexo = document.getElementById('tafSexo').value;
-            const barraInput = parseInt(document.getElementById('tafBarra').value);
-            const reps = sexo === 'M' ? barraInput : null;
-            const isometria = sexo === 'F' ? barraInput : null;
+            const inputBarra = document.getElementById('tafBarra').value;
+            const valBarra = inputBarra !== '' ? parseInt(inputBarra) : null;
+            
+            const reps = sexo === 'M' ? valBarra : null;
+            const isometria = sexo === 'F' ? valBarra : null;
 
-            const novoTAF = {
+            const inputCorrida = document.getElementById('tafCorrida').value;
+            const inputAbd = document.getElementById('tafAbdominal').value;
+            const inputSugado = document.getElementById('tafSugado').value;
+            const inputNatacao = document.getElementById('tafNatacao').value;
+
+            const dadosTAF = {
                 aluno_id: document.getElementById('tafAluno').value,
                 data_teste: document.getElementById('tafData').value,
                 sexo: sexo,
-                corrida_metros: parseInt(document.getElementById('tafCorrida').value),
+                corrida_metros: inputCorrida !== '' ? parseInt(inputCorrida) : null,
                 barra_reps: reps,
                 barra_tempo_segs: isometria,
-                abdominal_reps: parseInt(document.getElementById('tafAbdominal').value),
-                meio_sugado_reps: parseInt(document.getElementById('tafSugado').value),
-                natacao_tempo_segs: parseInt(document.getElementById('tafNatacao').value)
+                abdominal_reps: inputAbd !== '' ? parseInt(inputAbd) : null,
+                meio_sugado_reps: inputSugado !== '' ? parseInt(inputSugado) : null,
+                natacao_tempo_segs: inputNatacao !== '' ? parseInt(inputNatacao) : null
             };
 
-            const { error } = await supabaseClient.from('taf_resultados').insert([novoTAF]);
+            let error;
+            if (tafEditandoId) {
+                const res = await supabaseClient.from('taf_resultados').update(dadosTAF).eq('id', tafEditandoId);
+                error = res.error;
+                tafEditandoId = null;
+                document.getElementById('btnSalvarTAF').innerHTML = '<i class="fa-solid fa-check"></i> Salvar Resultados';
+            } else {
+                const res = await supabaseClient.from('taf_resultados').insert([dadosTAF]);
+                error = res.error;
+            }
 
             if (!error) {
                 document.getElementById('formTAF').reset();
@@ -682,8 +722,38 @@
             if (!error && data) {
                 historicoTAF = data;
                 renderizarTabelaTAF();
+                renderizarGraficoTAF();
             }
             mostrarLoading(false);
+        }
+
+        function editarTAF(id) {
+            const taf = historicoTAF.find(t => t.id === id);
+            if(!taf) return;
+            
+            document.getElementById('tafAluno').value = taf.aluno_id;
+            document.getElementById('tafData').value = taf.data_teste;
+            document.getElementById('tafSexo').value = taf.sexo;
+            document.getElementById('tafCorrida').value = taf.corrida_metros || '';
+            document.getElementById('tafAbdominal').value = taf.abdominal_reps || '';
+            document.getElementById('tafBarra').value = (taf.sexo === 'M' ? taf.barra_reps : taf.barra_tempo_segs) || '';
+            document.getElementById('tafSugado').value = taf.meio_sugado_reps || '';
+            document.getElementById('tafNatacao').value = taf.natacao_tempo_segs || '';
+
+            tafEditandoId = id;
+            document.getElementById('btnSalvarTAF').innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Atualizar Resultado';
+            
+            if(window.innerWidth < 1024) {
+                document.getElementById('formTAF').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        async function deletarTAF(id) {
+            if(confirm("Deseja realmente apagar este registro de TAF?")) {
+                mostrarLoading(true);
+                await supabaseClient.from('taf_resultados').delete().eq('id', id);
+                await carregarTAF();
+            }
         }
 
         function renderizarTabelaTAF() {
@@ -693,53 +763,110 @@
             historicoTAF.forEach(taf => {
                 const alunoNome = alunosMap[taf.aluno_id] || "Aluno Não Encontrado";
                 const dataFormatada = taf.data_teste.split('-').reverse().join('/');
-                
                 const isM = taf.sexo === 'M';
-                const minCorrida = isM ? 2000 : 1600;
-                const minBarra = isM ? 3 : 10;
-                const minAbd = isM ? 30 : 20;
-                const minSugado = 15;
-                const maxNatacao = isM ? 70 : 80;
 
-                const passCorrida = taf.corrida_metros >= minCorrida;
-                const valorBarra = isM ? taf.barra_reps : taf.barra_tempo_segs;
-                const passBarra = valorBarra >= minBarra;
-                const passAbd = taf.abdominal_reps >= minAbd;
-                const passSugado = taf.meio_sugado_reps >= minSugado;
-                const passNatacao = taf.natacao_tempo_segs <= maxNatacao;
-
-                const aprovadoGeral = passCorrida && passBarra && passAbd && passSugado && passNatacao;
-
-                const formatBadge = (passou, valor, sufixo) => 
-                    `<span class="px-2 py-1 rounded text-xs font-bold ${passou ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'}">${valor} ${sufixo}</span>`;
-
+                const formataValor = (valor, sufixo) => valor ? `<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-xs font-bold border border-slate-200">${valor} ${sufixo}</span>` : '-';
                 const formatarTempo = (segs) => {
+                    if(!segs) return '-';
                     const m = Math.floor(segs / 60);
                     const s = segs % 60;
-                    return m > 0 ? `${m}m${s.toString().padStart(2, '0')}s` : `${s}s`;
+                    return `<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-xs font-bold border border-slate-200">${m > 0 ? `${m}m${s.toString().padStart(2, '0')}s` : `${s}s`}</span>`;
                 };
 
-                const strBarra = isM ? formatBadge(passBarra, valorBarra, 'reps') : formatBadge(passBarra, valorBarra, 'segs');
-                const badgeSit = aprovadoGeral 
-                    ? `<span class="bg-emerald-600 text-white px-3 py-1 rounded-full text-xs font-black shadow"><i class="fa-solid fa-check"></i> APTO</span>`
-                    : `<span class="bg-rose-600 text-white px-3 py-1 rounded-full text-xs font-black shadow"><i class="fa-solid fa-xmark"></i> INAPTO</span>`;
+                const valorBarra = isM ? taf.barra_reps : taf.barra_tempo_segs;
+                const strBarra = isM ? formataValor(valorBarra, 'reps') : formataValor(valorBarra, 'segs');
 
                 const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition border-b border-slate-100";
                 tr.innerHTML = `
                     <td class="p-3 text-slate-500 font-bold whitespace-nowrap">${dataFormatada}</td>
-                    <td class="p-3 font-extrabold text-black uppercase">${alunoNome}</td>
-                    <td class="p-3 text-center">${formatBadge(passCorrida, taf.corrida_metros, 'm')}</td>
-                    <td class="p-3 text-center">${strBarra}</td>
-                    <td class="p-3 text-center">${formatBadge(passAbd, taf.abdominal_reps, 'reps')}</td>
-                    <td class="p-3 text-center">${formatBadge(passSugado, taf.meio_sugado_reps, 'reps')}</td>
-                    <td class="p-3 text-center">${formatBadge(passNatacao, formatarTempo(taf.natacao_tempo_segs), '')}</td>
-                    <td class="p-3 text-center">${badgeSit}</td>
+                    <td class="p-3 font-extrabold text-black uppercase whitespace-nowrap">${alunoNome}</td>
+                    <td class="p-3 text-center whitespace-nowrap">${formataValor(taf.corrida_metros, 'm')}</td>
+                    <td class="p-3 text-center whitespace-nowrap">${strBarra}</td>
+                    <td class="p-3 text-center whitespace-nowrap">${formataValor(taf.abdominal_reps, 'reps')}</td>
+                    <td class="p-3 text-center whitespace-nowrap">${formataValor(taf.meio_sugado_reps, 'reps')}</td>
+                    <td class="p-3 text-center whitespace-nowrap">${formatarTempo(taf.natacao_tempo_segs)}</td>
+                    <td class="p-3 text-center whitespace-nowrap">
+                        <button onclick="editarTAF('${taf.id}')" class="text-pmmt-blue hover:text-pmmt-gold p-1 mx-1" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deletarTAF('${taf.id}')" class="text-rose-400 hover:text-rose-600 p-1 mx-1" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        // DEMAIS FUNÇÕES DO SISTEMA...
+        function renderizarGraficoTAF() {
+            const filtroAluno = document.getElementById('filtroTafAluno').value;
+            const canvas = document.getElementById('canvasEvolucaoTAF');
+            const aviso = document.getElementById('avisoGraficoTAF');
+
+            if(graficoEvolucaoTAF) graficoEvolucaoTAF.destroy();
+
+            // Mostra o gráfico apenas se 1 aluno for selecionado
+            if(filtroAluno === "TODOS" || historicoTAF.length === 0) {
+                aviso.classList.remove('hidden');
+                return;
+            }
+
+            aviso.classList.add('hidden');
+
+            // Inverte a ordem para mostrar do mais antigo (esquerda) pro mais novo (direita)
+            const dadosAluno = [...historicoTAF].reverse(); 
+            const metrica = document.getElementById('filtroGraficoExercicio').value;
+            
+            const labels = [];
+            const dataSet = [];
+            let labelName = "";
+
+            dadosAluno.forEach(t => {
+                let valorParaPlotar = null;
+                if(metrica === 'corrida_metros') { valorParaPlotar = t.corrida_metros; labelName = "Evolução - Corrida (Metros)"; }
+                if(metrica === 'barra') { valorParaPlotar = t.sexo === 'M' ? t.barra_reps : t.barra_tempo_segs; labelName = t.sexo === 'M' ? "Evolução - Barra (Repetições)" : "Evolução - Barra (Segundos de Isometria)"; }
+                if(metrica === 'abdominal_reps') { valorParaPlotar = t.abdominal_reps; labelName = "Evolução - Abdominal (Repetições)"; }
+                if(metrica === 'meio_sugado_reps') { valorParaPlotar = t.meio_sugado_reps; labelName = "Evolução - Meio Sugado (Repetições)"; }
+                if(metrica === 'natacao_tempo_segs') { valorParaPlotar = t.natacao_tempo_segs; labelName = "Evolução - Natação 50m (Segundos)"; }
+
+                // Se houver valor, plota. Assim pula dias em que o exercício não foi treinado.
+                if(valorParaPlotar !== null && valorParaPlotar !== undefined) {
+                    labels.push(t.data_teste.split('-').reverse().join('/'));
+                    dataSet.push(valorParaPlotar);
+                }
+            });
+
+            const ctx = canvas.getContext('2d');
+            graficoEvolucaoTAF = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: labelName,
+                        data: dataSet,
+                        borderColor: '#C5A059', // pmmt-gold
+                        backgroundColor: 'rgba(197, 160, 89, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.3,
+                        pointBackgroundColor: '#0B1C3D', // pmmt-blue
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true, position: 'top', labels: { font: { family: 'Montserrat', size: 11, weight: 'bold' } } }
+                    },
+                    scales: {
+                        y: { beginAtZero: false, grid: { color: '#f1f5f9' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+
+        // DEMAIS FUNÇÕES DO SISTEMA (Abaixo mantive tudo que você já tinha)
         function togglePainel(conteudoId, iconeId) {
             const conteudo = document.getElementById(conteudoId);
             const icone = document.getElementById(iconeId);
@@ -956,11 +1083,11 @@
                 tr.className = "hover:bg-slate-50 transition border-b border-slate-200";
                 tr.innerHTML = `
                     <td class="px-6 py-4 whitespace-nowrap text-black font-medium">${dataFormatada}</td>
-                    <td class="px-6 py-4 font-bold text-black">${t.descricao}</td>
-                    <td class="px-6 py-4 text-black"><span class="bg-slate-200 px-2 py-1 rounded text-xs font-semibold border border-slate-300">${t.categoria}</span></td>
-                    <td class="px-6 py-4 text-xs font-bold text-black">${nomeAluno}</td>
+                    <td class="px-6 py-4 font-bold text-black whitespace-nowrap">${t.descricao}</td>
+                    <td class="px-6 py-4 text-black whitespace-nowrap"><span class="bg-slate-200 px-2 py-1 rounded text-xs font-semibold border border-slate-300">${t.categoria}</span></td>
+                    <td class="px-6 py-4 text-xs font-bold text-black whitespace-nowrap">${nomeAluno}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right font-extrabold ${corText}">${iconOp} ${valorFormatado}</td>
-                    <td class="px-6 py-4 text-center no-print flex justify-center gap-2">
+                    <td class="px-6 py-4 text-center no-print flex justify-center gap-2 whitespace-nowrap">
                         <button onclick="editarDescricao('${t.id}', '${t.descricao}')" class="text-slate-500 hover:text-pmmt-blue transition p-2 bg-slate-100 rounded shadow-sm" title="Editar Descrição"><i class="fa-solid fa-pen"></i></button>
                         <button onclick="deletarTransacao('${t.id}')" class="text-rose-400 hover:text-white hover:bg-rose-500 transition p-2 bg-rose-50 rounded shadow-sm" title="Excluir Definitivo"><i class="fa-solid fa-trash"></i></button>
                     </td>
@@ -1105,17 +1232,17 @@
                 
                 let statusBadge = p.status === 'CONCLUIDO' 
                     ? `<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-xs font-bold"><i class="fa-solid fa-check"></i> Comprado</span>`
-                    : `<button onclick="concluirPrevisao('${p.id}')" class="bg-amber-100 hover:bg-amber-200 text-amber-700 px-2 py-1 rounded text-xs font-bold transition">Pendente (Marcar ✅)</button>`;
+                    : `<button onclick="concluirPrevisao('${p.id}')" class="bg-amber-100 hover:bg-amber-200 text-amber-700 px-2 py-1 rounded text-xs font-bold transition whitespace-nowrap">Pendente (Marcar ✅)</button>`;
 
                 tr.innerHTML = `
                     <td class="p-3 whitespace-nowrap">${dataFormatada}</td>
-                    <td class="p-3">
+                    <td class="p-3 whitespace-nowrap">
                         <p class="font-bold text-pmmt-blue">${p.descricao}</p>
                         <p class="text-xs text-slate-500 uppercase">${p.categoria}</p>
                     </td>
-                    <td class="p-3 text-right font-bold text-amber-600">${valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                    <td class="p-3 text-right font-bold text-amber-600 whitespace-nowrap">${valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
                     <td class="p-3 text-center">${statusBadge}</td>
-                    <td class="p-3 text-center">
+                    <td class="p-3 text-center whitespace-nowrap">
                         <button onclick="deletarPrevisao('${p.id}')" class="text-rose-400 hover:text-rose-600 p-1"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 `;
@@ -1232,10 +1359,10 @@
 
                 tabGeral.innerHTML += `
                     <tr class="hover:bg-slate-50 transition border-b border-slate-200">
-                        <td class="px-6 py-4 font-bold text-slate-500">${numFormatado}</td>
-                        <td class="px-6 py-4 font-extrabold text-pmmt-blue">${qra}</td>
+                        <td class="px-6 py-4 font-bold text-slate-500 whitespace-nowrap">${numFormatado}</td>
+                        <td class="px-6 py-4 font-extrabold text-pmmt-blue whitespace-nowrap">${qra}</td>
                         <td class="px-6 py-4 font-semibold text-slate-700 whitespace-nowrap">${aluno.nome}</td>
-                        <td class="px-6 py-4 text-center">
+                        <td class="px-6 py-4 text-center whitespace-nowrap">
                             <span class="px-3 py-1 rounded text-xs font-bold ${badgeColor}">${equipe}</span>
                         </td>
                         <td class="px-6 py-4 font-bold text-slate-600 whitespace-nowrap">${comandante}</td>
