@@ -485,7 +485,6 @@
         }
 
         function mudarModulo(moduloDestino) {
-            // Oculta todos os painéis
             const modulos = ['financeiro', 'efetivo', 'apoio', 'debate', 'taf'];
             modulos.forEach(m => {
                 document.getElementById('modulo-' + m).classList.add('hidden');
@@ -493,12 +492,10 @@
                 if(btn) btn.className = "w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold text-slate-300 hover:bg-pmmt-light hover:text-white transition-all";
             });
 
-            // Mostra o painel selecionado
             document.getElementById('modulo-' + moduloDestino).classList.remove('hidden');
             const btnAtivo = document.getElementById('btn-' + moduloDestino);
             if(btnAtivo) btnAtivo.className = "w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold transition-all bg-pmmt-gold text-pmmt-blue shadow-md";
             
-            // Recolhe o menu lateral no celular
             if (window.innerWidth < 768) {
                 document.getElementById('menuLateral').classList.add('hidden');
             }
@@ -572,9 +569,14 @@
             if (dbError) return;
             
             listaAlunosFull = dbData;
-            dbData.forEach(aluno => {
-                alunosMap[aluno.id] = `${aluno.numero} - ${aluno.nome}`;
-                select.add(new Option(`${aluno.numero.toString().padStart(2, '0')} - ${aluno.nome}`, aluno.id));
+            dbData.forEach(aluno => { 
+                // Adiciona o '5' na frente e garante que o número tenha sempre 2 dígitos (01 a 30)
+                const numeroFormatado = "5" + aluno.numero.toString().padStart(2, '0');
+                // Usa o QRA se existir. Se por algum erro faltar, usa o nome civil
+                const nomeExibicao = aluno.qra ? aluno.qra : aluno.nome;
+                
+                alunosMap[aluno.id] = `${numeroFormatado} - ${nomeExibicao}`; 
+                select.add(new Option(`${numeroFormatado} - ${nomeExibicao}`, aluno.id)); 
             });
             
             renderizarEscala();
@@ -616,7 +618,7 @@
                 valor: parseFloat(document.getElementById('inputValor').value),
                 data: document.getElementById('inputData').value,
                 aluno_id: alunoId
-            };
+            }
 
             const { error } = await supabaseClient.from('transacoes_caixa').insert([novaTransacao]);
 
@@ -747,15 +749,18 @@
                 } else {
                     status = "PENDENTE"; corBox = "bg-white border-rose-200"; corTexto = "text-rose-600"; icone = '<i class="fa-solid fa-triangle-exclamation"></i>';
                 }
-                const nomes = aluno.nome.split(' ');
-                const nomeCurto = nomes.length > 1 ? `${nomes[0]} ${nomes[1]}` : nomes[0];
+                
+                // Formatação Nova para 500 + QRA no Painel de Cotas
+                const numeroFormatado = "5" + aluno.numero.toString().padStart(2, '0');
+                const nomeExibicao = aluno.qra ? aluno.qra : (aluno.nome.split(' ')[0]);
+                
                 grid.innerHTML += `
                     <div class="border rounded-lg p-3 ${corBox} shadow-sm flex flex-col justify-between">
                         <div class="flex justify-between items-start mb-2">
-                            <span class="text-[10px] font-bold text-slate-500 bg-slate-200 px-1.5 rounded">${aluno.numero.toString().padStart(2, '0')}</span>
+                            <span class="text-[10px] font-bold text-slate-500 bg-slate-200 px-1.5 rounded">${numeroFormatado}</span>
                             <span class="text-[10px] font-bold ${corTexto}">${icone} ${status}</span>
                         </div>
-                        <p class="text-xs font-extrabold text-black leading-tight mb-1 truncate" title="${aluno.nome}">${nomeCurto}</p>
+                        <p class="text-xs font-extrabold text-black leading-tight mb-1 truncate uppercase" title="${aluno.nome}">${nomeExibicao}</p>
                         <div class="w-full bg-slate-200 rounded-full h-1.5 mb-1 mt-1">
                             <div class="bg-emerald-500 h-1.5 rounded-full" style="width: ${Math.min((totalPago/VALOR_COTA)*100, 100)}%"></div>
                         </div>
@@ -975,7 +980,9 @@
                 let qra = aluno.qra || '-';
                 let equipe = aluno.equipe || '-';
                 let comandante = aluno.comandante || '-';
-                let numFormatado = aluno.numero.toString().padStart(2, '0');
+                
+                // Formatação Nova para exibir na listagem do Efetivo 
+                let numFormatado = "5" + aluno.numero.toString().padStart(2, '0');
 
                 let linhaMini = `<li class="py-2.5 flex justify-between items-center hover:bg-slate-50 px-2 rounded transition cursor-default">
                                     <span><span class="text-slate-400 font-bold mr-2">${numFormatado}</span> ${qra}</span> 
@@ -993,8 +1000,8 @@
                 tabGeral.innerHTML += `
                     <tr class="hover:bg-slate-50 transition border-b border-slate-200">
                         <td class="px-6 py-4 font-bold text-slate-500 whitespace-nowrap">${numFormatado}</td>
-                        <td class="px-6 py-4 font-extrabold text-pmmt-blue whitespace-nowrap">${qra}</td>
-                        <td class="px-6 py-4 font-semibold text-slate-700 whitespace-nowrap">${aluno.nome}</td>
+                        <td class="px-6 py-4 font-extrabold text-pmmt-blue whitespace-nowrap uppercase">${qra}</td>
+                        <td class="px-6 py-4 font-semibold text-slate-700 whitespace-nowrap uppercase">${aluno.nome}</td>
                         <td class="px-6 py-4 text-center whitespace-nowrap">
                             <span class="px-3 py-1 rounded text-xs font-bold ${badgeColor}">${equipe}</span>
                         </td>
