@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel TAF e F.O. - 5º Pelotão</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { pmmt: { blue: '#0B1C3D', gold: '#C5A059', light: '#142A5C' } } } }
+        }
+    </script>
+    <style> body { font-family: 'Montserrat', sans-serif; } </style>
+</head>
+<body class="bg-slate-100 text-slate-800 p-2 md:p-6 min-h-screen">
+    
+    <div id="loaderAlert" class="bg-pmmt-light border-l-4 border-pmmt-gold p-3 rounded shadow-sm mb-4 flex items-center gap-3 hidden">
+        <i class="fa-solid fa-circle-notch fa-spin text-pmmt-gold"></i>
+        <p class="text-xs font-bold text-white">Sincronizando Ficha do Aluno...</p>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-md border-l-4 border-pmmt-blue p-4 mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
+        <h2 class="text-lg font-extrabold text-pmmt-blue uppercase tracking-wider"><i class="fa-solid fa-address-card text-pmmt-gold mr-2"></i> Gestão do Aluno</h2>
+        <select id="alunoSelecionado" onchange="selecionarAluno()" class="w-full md:w-1/2 bg-slate-50 border border-slate-300 p-3 rounded-lg text-sm font-bold text-pmmt-blue outline-none focus:border-pmmt-gold shadow-inner">
+            <option value="">-- Selecione o Aluno para Gerenciar --</option>
+        </select>
+    </div>
+
+    <div id="painelAluno" class="hidden space-y-6">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-white p-5 rounded-xl shadow-md border-t-4 border-pmmt-blue flex flex-col">
+                <h3 class="text-sm font-bold text-slate-700 border-b pb-2 mb-4"><i class="fa-solid fa-weight-scale text-pmmt-blue mr-2"></i> Perfil Biométrico</h3>
+                <form onsubmit="salvarBiometria(event)" class="space-y-4 flex-1 flex flex-col justify-between">
+                    <div class="grid grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase">Tipagem</label>
+                            <input type="text" id="bioTipagem" placeholder="O+" class="w-full bg-slate-50 border border-slate-200 p-2.5 rounded text-sm font-bold text-center outline-none uppercase focus:border-pmmt-blue">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase">Altura (m)</label>
+                            <input type="number" step="0.01" id="bioAltura" placeholder="1.75" class="w-full bg-slate-50 border border-slate-200 p-2.5 rounded text-sm font-bold text-center outline-none focus:border-pmmt-blue">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase">Peso (kg)</label>
+                            <input type="number" step="0.1" id="bioPeso" placeholder="80.5" class="w-full bg-slate-50 border border-slate-200 p-2.5 rounded text-sm font-bold text-center outline-none focus:border-pmmt-blue">
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-slate-800 hover:bg-slate-900 text-pmmt-gold font-bold py-3 rounded-lg shadow transition text-xs uppercase tracking-wider mt-4">
+                        <i class="fa-solid fa-floppy-disk"></i> Atualizar Dados Físicos
+                    </button>
+                </form>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl shadow-md border-t-4 border-pmmt-gold">
+                <h3 class="text-sm font-bold text-slate-700 border-b pb-2 mb-4"><i class="fa-solid fa-clipboard-user text-pmmt-gold mr-2"></i> Livro de Fatos Observados (F.O.)</h3>
+                <form onsubmit="salvarFO(event)" class="space-y-3 mb-4">
+                    <div class="flex gap-3">
+                        <select id="foTipo" required class="bg-slate-50 border border-slate-200 p-2.5 rounded-lg text-sm font-black outline-none focus:border-pmmt-gold w-1/3">
+                            <option value="FO+" class="text-emerald-600">FO (+) Positivo</option>
+                            <option value="FO-" class="text-rose-600">FO (-) Negativo</option>
+                        </select>
+                        <input type="date" id="foData" required class="w-2/3 bg-slate-50 border border-slate-200 p-2.5 rounded-lg text-sm outline-none font-medium">
+                    </div>
+                    <input type="text" id="foDescricao" required placeholder="Relate o fato observado pelo Comando..." class="w-full bg-slate-50 border border-slate-200 p-3 rounded-lg text-sm outline-none focus:border-pmmt-gold">
+                    <button type="submit" class="w-full bg-pmmt-gold hover:bg-yellow-600 text-pmmt-blue font-black py-2.5 rounded-lg shadow transition text-xs uppercase tracking-wider">
+                        <i class="fa-solid fa-plus"></i> Registrar F.O.
+                    </button>
+                </form>
+                
+                <div class="max-h-32 overflow-y-auto border border-slate-100 rounded bg-slate-50">
+                    <table class="w-full text-left text-xs">
+                        <tbody id="listaFO" class="divide-y divide-slate-200"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="bg-white rounded-xl shadow-md border-t-4 border-emerald-600 p-5 lg:col-span-1">
+                <h3 class="text-sm font-bold text-pmmt-blue border-b pb-2 mb-4"><i class="fa-solid fa-stopwatch text-emerald-600 mr-2"></i> Lançar Desempenho TAF</h3>
+                <form id="formTAF" onsubmit="salvarTAF(event)" class="space-y-3">
+                    <input type="hidden" id="tafId">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Data</label>
+                            <input type="date" id="tafData" required class="w-full bg-slate-50 border border-slate-200 p-2 rounded text-sm outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Gênero</label>
+                            <select id="tafSexo" required class="w-full bg-slate-50 border border-slate-200 p-2 rounded text-sm outline-none font-bold">
+                                <option value="M">Masculino</option>
+                                <option value="F">Feminino</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 pt-3 border-t border-slate-100 mt-2">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase">Corrida (Mts)</label>
+                            <input type="number" id="tafCorrida" placeholder="Ex: 2400" class="w-full bg-white border border-slate-300 p-2 rounded text-sm outline-none focus:border-emerald-500 font-medium">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase">Abdominal (Reps)</label>
+                            <input type="number" id="tafAbdominal" placeholder="Ex: 40" class="w-full bg-white border border-slate-300 p-2 rounded text-sm outline-none focus:border-emerald-500 font-medium">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase">Barra (Reps/Segs)</label>
+                            <input type="number" id="tafBarra" placeholder="Ex: 5" class="w-full bg-white border border-slate-300 p-2 rounded text-sm outline-none focus:border-emerald-500 font-medium">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase">Meio Sugado</label>
+                            <input type="number" id="tafSugado" placeholder="Ex: 20" class="w-full bg-white border border-slate-300 p-2 rounded text-sm outline-none focus:border-emerald-500 font-medium">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase">Natação 50m (Segundos)</label>
+                            <input type="number" id="tafNatacao" placeholder="Ex: 65" class="w-full bg-white border border-slate-300 p-2 rounded text-sm outline-none focus:border-emerald-500 font-medium">
+                        </div>
+                    </div>
+                    <button type="submit" id="btnSalvarTAF" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3 rounded-lg shadow transition mt-2 text-xs uppercase tracking-wider flex justify-center items-center gap-2">
+                        <i class="fa-solid fa-check"></i> Salvar Resultado TAF
+                    </button>
+                </form>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-md border border-slate-200 lg:col-span-2 overflow-hidden flex flex-col">
+                <div class="bg-pmmt-blue px-5 py-3 flex justify-between items-center">
+                    <h3 class="text-sm font-bold text-white"><i class="fa-solid fa-chart-line text-pmmt-gold mr-2"></i> Curva de Evolução & Histórico</h3>
+                    <select id="filtroGraficoExercicio" onchange="renderizarGraficoTAF()" class="bg-pmmt-light border border-slate-500 text-white p-1.5 rounded text-[10px] font-bold outline-none uppercase">
+                        <option value="corrida_metros">Gráfico: Corrida</option>
+                        <option value="barra">Gráfico: Barra Fixa</option>
+                        <option value="abdominal_reps">Gráfico: Abdominal</option>
+                        <option value="meio_sugado_reps">Gráfico: Meio Sugado</option>
+                        <option value="natacao_tempo_segs">Gráfico: Natação</option>
+                    </select>
+                </div>
+                <div class="w-full h-48 p-2 border-b border-slate-100 bg-slate-50/50">
+                    <canvas id="canvasEvolucaoTAF"></canvas>
+                </div>
+                <div class="overflow-x-auto flex-1">
+                    <table class="w-full text-left border-collapse min-w-[500px]">
+                        <thead class="bg-slate-100 text-[10px] font-extrabold text-slate-500 uppercase">
+                            <tr>
+                                <th class="p-3 whitespace-nowrap border-b border-slate-200">Data</th>
+                                <th class="p-3 text-center border-b border-slate-200">Corrida</th>
+                                <th class="p-3 text-center border-b border-slate-200">Barra</th>
+                                <th class="p-3 text-center border-b border-slate-200">Abd.</th>
+                                <th class="p-3 text-center border-b border-slate-200">Sugado</th>
+                                <th class="p-3 text-center border-b border-slate-200">Natação</th>
+                                <th class="p-3 text-center border-b border-slate-200">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaTAF" class="divide-y divide-slate-100 text-xs font-semibold text-slate-700 bg-white"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let supabaseClient;
+        let alunoSelecionadoId = null;
+        let listaAlunosFull = [];
+        let historicoTAF = [];
+        let historicoFO = [];
+        let graficoEvolucaoTAF = null;
+
+        const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
+
+        window.onload = async function() {
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            document.getElementById('tafData').value = new Date().toISOString().split('T')[0];
+            document.getElementById('foData').value = new Date().toISOString().split('T')[0];
+            await carregarAlunosGeral();
+        };
+
+        async function carregarAlunosGeral() {
+            mostrarLoading(true);
+            const { data, error } = await supabaseClient.from('alunos_pelotao').select('*').order('numero', { ascending: true });
+            if (!error && data) {
+                listaAlunosFull = data;
+                const select = document.getElementById('alunoSelecionado');
+                data.forEach(a => {
+                    select.add(new Option(`${a.numero.toString().padStart(2,'0')} - ${a.qra || a.nome}`, a.id));
+                });
+            }
+            mostrarLoading(false);
+        }
+
+        async function selecionarAluno() {
+            const select = document.getElementById('alunoSelecionado');
+            alunoSelecionadoId = select.value;
+            
+            if(!alunoSelecionadoId) {
+                document.getElementById('painelAluno').classList.add('hidden');
+                return;
+            }
+            
+            document.getElementById('painelAluno').classList.remove('hidden');
+            mostrarLoading(true);
+            
+            const aluno = listaAlunosFull.find(a => a.id === alunoSelecionadoId);
+            document.getElementById('bioTipagem').value = aluno.tipagem_sanguinea || '';
+            document.getElementById('bioAltura').value = aluno.altura || '';
+            document.getElementById('bioPeso').value = aluno.peso || '';
+            
+            await carregarTAF();
+            await carregarFO();
+            mostrarLoading(false);
+        }
+
+        async function salvarBiometria(e) {
+            e.preventDefault();
+            if(!alunoSelecionadoId) return;
+            mostrarLoading(true);
+            const updates = {
+                tipagem_sanguinea: document.getElementById('bioTipagem').value.toUpperCase(),
+                altura: parseFloat(document.getElementById('bioAltura').value) || null,
+                peso: parseFloat(document.getElementById('bioPeso').value) || null
+            };
+            
+            const { error } = await supabaseClient.from('alunos_pelotao').update(updates).eq('id', alunoSelecionadoId);
+            if(!error) {
+                const index = listaAlunosFull.findIndex(a => a.id === alunoSelecionadoId);
+                if(index > -1) listaAlunosFull[index] = { ...listaAlunosFull[index], ...updates };
+                alert("Perfil biométrico atualizado no sistema!");
+            }
+            mostrarLoading(false);
+        }
+
+        async function carregarFO() {
+            const { data, error } = await supabaseClient.from('fatos_observados').select('*').eq('aluno_id', alunoSelecionadoId).order('data_registro', { ascending: false });
+            if(!error && data) {
+                historicoFO = data;
+                const tbody = document.getElementById('listaFO');
+                tbody.innerHTML = '';
+                if(data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-slate-400 font-bold text-xs">Ficha Limpa. Nenhum F.O. registrado.</td></tr>';
+                }
+                data.forEach(fo => {
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-white transition cursor-default";
+                    const isPos = fo.tipo === 'FO+';
+                    const badgeClass = isPos ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700';
+                    const df = fo.data_registro.split('-').reverse().join('/');
+                    tr.innerHTML = `
+                        <td class="p-2.5 whitespace-nowrap"><span class="${badgeClass} font-black px-2 py-1 rounded text-[10px] uppercase shadow-sm">${fo.tipo}</span></td>
+                        <td class="p-2.5 text-slate-500 whitespace-nowrap font-bold">${df}</td>
+                        <td class="p-2.5 font-semibold text-slate-700 w-full">${fo.descricao}</td>
+                        <td class="p-2.5 text-right"><button onclick="deletarFO('${fo.id}')" title="Remover F.O."><i class="fa fa-trash text-slate-300 hover:text-rose-500 transition"></i></button></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        }
+
+        async function salvarFO(e) {
+            e.preventDefault();
+            if(!alunoSelecionadoId) return;
+            mostrarLoading(true);
+            const obj = {
+                aluno_id: alunoSelecionadoId,
+                data_registro: document.getElementById('foData').value,
+                tipo: document.getElementById('foTipo').value,
+                descricao: document.getElementById('foDescricao').value
+            };
+            const { error } = await supabaseClient.from('fatos_observados').insert([obj]);
+            if(!error) {
+                document.getElementById('foDescricao').value = '';
+                await carregarFO();
+            }
+            mostrarLoading(false);
+        }
+
+        async function deletarFO(id) {
+            if(confirm("Deseja cancelar o registro deste F.O.?")) {
+                mostrarLoading(true);
+                await supabaseClient.from('fatos_observados').delete().eq('id', id);
+                await carregarFO();
+                mostrarLoading(false);
+            }
+        }
+
+        async function carregarTAF() {
+            const { data, error } = await supabaseClient.from('taf_resultados').select('*').eq('aluno_id', alunoSelecionadoId).order('data_teste', { ascending: false });
+            if(!error && data) {
+                historicoTAF = data;
+                renderizarTabelaTAF();
+                renderizarGraficoTAF();
+            }
+        }
+
+        async function salvarTAF(e) {
+            e.preventDefault();
+            if(!alunoSelecionadoId) return;
+            mostrarLoading(true);
+            const sexo = document.getElementById('tafSexo').value;
+            const valBarra = document.getElementById('tafBarra').value ? parseInt(document.getElementById('tafBarra').value) : null;
+            const id = document.getElementById('tafId').value;
+            const obj = {
+                aluno_id: alunoSelecionadoId,
+                data_teste: document.getElementById('tafData').value,
+                sexo: sexo,
+                corrida_metros: document.getElementById('tafCorrida').value ? parseInt(document.getElementById('tafCorrida').value) : null,
+                barra_reps: sexo === 'M' ? valBarra : null,
+                barra_tempo_segs: sexo === 'F' ? valBarra : null,
+                abdominal_reps: document.getElementById('tafAbdominal').value ? parseInt(document.getElementById('tafAbdominal').value) : null,
+                meio_sugado_reps: document.getElementById('tafSugado').value ? parseInt(document.getElementById('tafSugado').value) : null,
+                natacao_tempo_segs: document.getElementById('tafNatacao').value ? parseInt(document.getElementById('tafNatacao').value) : null
+            };
+
+            let error;
+            if(id) {
+                error = (await supabaseClient.from('taf_resultados').update(obj).eq('id', id)).error;
+                document.getElementById('tafId').value = '';
+                document.getElementById('btnSalvarTAF').innerHTML = '<i class="fa-solid fa-check"></i> Salvar Resultado TAF';
+            } else {
+                error = (await supabaseClient.from('taf_resultados').insert([obj])).error;
+            }
+
+            if(!error) {
+                document.getElementById('formTAF').reset();
+                document.getElementById('tafData').value = new Date().toISOString().split('T')[0];
+                await carregarTAF();
+            }
+            mostrarLoading(false);
+        }
+
+        function editarTAF(id) {
+            const t = historicoTAF.find(x => x.id === id);
+            if(!t) return;
+            document.getElementById('tafId').value = t.id;
+            document.getElementById('tafData').value = t.data_teste;
+            document.getElementById('tafSexo').value = t.sexo || 'M';
+            document.getElementById('tafCorrida').value = t.corrida_metros || '';
+            document.getElementById('tafAbdominal').value = t.abdominal_reps || '';
+            document.getElementById('tafBarra').value = (t.sexo === 'M' ? t.barra_reps : t.barra_tempo_segs) || '';
+            document.getElementById('tafSugado').value = t.meio_sugado_reps || '';
+            document.getElementById('tafNatacao').value = t.natacao_tempo_segs || '';
+            document.getElementById('btnSalvarTAF').innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Atualizar Lançamento';
+        }
+
+        async function deletarTAF(id) {
+            if(confirm("Deseja apagar este resultado do TAF?")) {
+                mostrarLoading(true);
+                await supabaseClient.from('taf_resultados').delete().eq('id', id);
+                await carregarTAF();
+                mostrarLoading(false);
+            }
+        }
+
+        function renderizarTabelaTAF() {
+            const tbody = document.getElementById('tabelaTAF');
+            tbody.innerHTML = '';
+            historicoTAF.forEach(t => {
+                const df = t.data_teste.split('-').reverse().join('/');
+                const isM = t.sexo === 'M';
+                const bVal = isM ? t.barra_reps : t.barra_tempo_segs;
+                const bStr = bVal !== null ? (isM ? bVal + ' r' : bVal + ' s') : '-';
+                const m = t.natacao_tempo_segs ? Math.floor(t.natacao_tempo_segs/60) : 0;
+                const s = t.natacao_tempo_segs ? t.natacao_tempo_segs % 60 : 0;
+                const natStr = t.natacao_tempo_segs ? (m>0 ? `${m}m${s}s` : `${s}s`) : '-';
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="p-3 text-pmmt-light font-black whitespace-nowrap">${df}</td>
+                    <td class="p-3 text-center"><span class="bg-slate-100 px-2 py-1 rounded">${t.corrida_metros || '-'}</span></td>
+                    <td class="p-3 text-center"><span class="bg-slate-100 px-2 py-1 rounded">${bStr}</span></td>
+                    <td class="p-3 text-center"><span class="bg-slate-100 px-2 py-1 rounded">${t.abdominal_reps || '-'}</span></td>
+                    <td class="p-3 text-center"><span class="bg-slate-100 px-2 py-1 rounded">${t.meio_sugado_reps || '-'}</span></td>
+                    <td class="p-3 text-center"><span class="bg-slate-100 px-2 py-1 rounded">${natStr}</span></td>
+                    <td class="p-3 text-center whitespace-nowrap">
+                        <button onclick="editarTAF('${t.id}')" class="text-pmmt-blue hover:text-pmmt-gold mx-1.5"><i class="fa fa-pen"></i></button>
+                        <button onclick="deletarTAF('${t.id}')" class="text-rose-400 hover:text-rose-600 mx-1.5"><i class="fa fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderizarGraficoTAF() {
+            const canvas = document.getElementById('canvasEvolucaoTAF');
+            if(graficoEvolucaoTAF) graficoEvolucaoTAF.destroy();
+            if(historicoTAF.length === 0) return;
+            
+            const dados = [...historicoTAF].reverse();
+            const metrica = document.getElementById('filtroGraficoExercicio').value;
+            const labels = []; const dataSet = [];
+            
+            dados.forEach(t => {
+                let v = null;
+                if(metrica === 'corrida_metros') v = t.corrida_metros;
+                if(metrica === 'barra') v = t.sexo === 'M' ? t.barra_reps : t.barra_tempo_segs;
+                if(metrica === 'abdominal_reps') v = t.abdominal_reps;
+                if(metrica === 'meio_sugado_reps') v = t.meio_sugado_reps;
+                if(metrica === 'natacao_tempo_segs') v = t.natacao_tempo_segs;
+                
+                if(v !== null && v !== undefined) {
+                    labels.push(t.data_teste.split('-').reverse().join('/'));
+                    dataSet.push(v);
+                }
+            });
+            
+            const ctx = canvas.getContext('2d');
+            graficoEvolucaoTAF = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Evolução', data: dataSet,
+                        borderColor: '#C5A059', backgroundColor: 'rgba(197, 160, 89, 0.15)',
+                        borderWidth: 3, fill: true, tension: 0.3,
+                        pointBackgroundColor: '#0B1C3D', pointRadius: 5
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } } } }
+            });
+        }
+
+        function mostrarLoading(show) { document.getElementById('loaderAlert').classList.toggle('hidden', !show); }
+    </script>
+</body>
+</html>
