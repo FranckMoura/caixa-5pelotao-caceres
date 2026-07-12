@@ -3,334 +3,275 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Institucional - 5º Pelotão</title>
+    <title>Portal Institucional - 5º Pelotão CR VI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
-            theme: { 
-                extend: { 
-                    colors: { 
-                        sys: { 
-                            dark: '#1b4571',    /* Navbar */
-                            header: '#348fe2',  /* Tabelas */
-                            menu: '#e2e7ec',    /* Header do Menu Lateral */
-                            bg: '#f4f6f9',      /* Fundo da Página */
-                            blue: '#2b579a',    /* Login Header */
-                            breadcrumb: '#5b8cbe'
-                        } 
-                    }, 
-                    fontFamily: { sans: ['"Open Sans"', 'sans-serif'] } 
-                } 
-            }
+            theme: { extend: { colors: { pmmt: { blue: '#0B1C3D', gold: '#C5A059', light: '#142A5C' } } } }
         }
     </script>
     <style>
-        body { background-color: #f4f6f9; color: #333; }
+        body { font-family: 'Montserrat', sans-serif; }
         .painel-conteudo { transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out; overflow: hidden; }
-        th { cursor: pointer; }
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #c1c1c1; }
-        ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
-        
-        /* Classes padronizadas do Menu (Convertidas para CSS puro para remover alertas do VS Code) */
-        .menu-item { 
-            display: flex; align-items: center; gap: 0.75rem; 
-            padding: 0.75rem 1rem; font-size: 13px; font-weight: 600; 
-            color: #334155; border-left: 4px solid transparent; 
-            transition: all 0.2s ease; width: 100%; text-align: left; 
-        }
-        .menu-item:hover { background-color: #f1f5f9; }
-        .menu-item.ativo { 
-            background-color: #f1f5f9; 
-            border-left-color: #1b4571; 
-            color: #1b4571; 
-            font-weight: 700; 
-        }
-
+        th { cursor: pointer; transition: background-color 0.2s; }
+        th:hover { background-color: rgba(255,255,255,0.1); }
         @media print {
-            aside, .no-print, #telaLogin, footer, header, #breadcrumb-bar { display: none !important; }
-            main { margin: 0 !important; padding: 0 !important; width: 100% !important; background: white; }
+            aside, .no-print, #telaLogin, footer { display: none !important; }
+            main { margin: 0 !important; padding: 0 !important; width: 100% !important; }
             body { background: white; color: black; }
-            table, th, td { border: 1px solid #cbd5e1 !important; color: black !important; }
+            table, th, td { border: 1px solid black !important; color: black !important; }
         }
     </style>
 </head>
-<body class="h-screen flex flex-col overflow-hidden antialiased">
+<body class="bg-slate-100 text-slate-800 h-screen flex flex-col overflow-hidden">
 
     <div class="flex-1 flex overflow-hidden relative w-full">
-        <div id="telaLogin" class="flex flex-col items-center justify-center w-full h-full bg-slate-200 p-4 z-[100] relative">
-            <div class="bg-white shadow-xl max-w-sm w-full flex flex-col z-10 border border-slate-300">
-                <div class="bg-sys-blue text-white text-center py-3.5 flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-lock"></i>
-                    <h2 class="text-sm font-semibold">Iniciar sessão</h2>
+        <div id="telaLogin" class="flex flex-col items-center justify-center w-full h-full bg-gradient-to-br from-pmmt-blue to-pmmt-light p-4 z-[100] relative">
+            <header class="bg-pmmt-blue shadow-md border-b-4 border-pmmt-gold py-3 px-6 flex items-center justify-center text-center w-full absolute top-0 left-0 z-50">
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+                    <img src="logo_pmmt_branco_para_fundo_azul.png" alt="Logo PMMT" class="h-12 md:h-16 object-contain drop-shadow-md">
+                    <div class="text-center sm:text-left">
+                        <h1 class="text-lg md:text-xl font-extrabold text-white tracking-wider">35º CFSD PMMT <span class="text-pmmt-gold">| 6º CR</span></h1>
+                        <p class="text-[10px] font-semibold text-slate-300 uppercase tracking-widest">Portal Institucional Integrado</p>
+                    </div>
                 </div>
-                
-                <div class="p-8 flex flex-col items-center">
-                    <div class="flex items-center justify-center gap-4 mb-6">
-                        <img src="IMG_1500.jpg" alt="Brasão 5º Pelotão" class="h-32 object-contain">
+            </header>
+            <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full border-t-4 border-pmmt-gold overflow-hidden flex flex-col z-10 mt-16">
+                <div class="w-full bg-pmmt-blue p-4 flex items-center justify-center border-b border-slate-100">
+                    <img src="logo_marechal_rondon.png" alt="Brasão 5º Pelotão" class="w-full h-auto max-h-40 object-contain rounded-lg shadow-md">
+                </div>
+                <div class="p-5 bg-slate-50 space-y-3.5">
+                    <div class="text-center">
+                        <h2 class="text-lg font-black text-pmmt-blue tracking-wider uppercase">Acesso Restrito</h2>
+                        <p class="text-[11px] font-bold text-pmmt-gold uppercase tracking-widest mt-0.5">5º Pelotão - Cáceres - MT</p>
                     </div>
-                    
-                    <div class="w-full text-center border-b border-slate-200 pb-4 mb-4">
-                        <h3 class="text-lg font-bold text-slate-800 uppercase tracking-tight">Portal Institucional</h3>
-                        <p class="text-[11px] text-slate-500 uppercase mt-1">35º CFSD PMMT - 6º CR</p>
-                    </div>
-
-                    <form id="formLogin" onsubmit="autenticarUsuario(event)" class="w-full space-y-4">
+                    <form id="formLogin" onsubmit="autenticarUsuario(event)" class="space-y-3 text-left">
                         <div>
-                            <input type="text" id="loginEmail" required placeholder="Usuário (Ex: willys)" class="w-full bg-white border border-slate-300 p-2.5 text-sm outline-none focus:border-sys-blue transition text-slate-900">
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Login</label>
+                            <input type="text" id="loginEmail" required placeholder="Ex: willys" class="w-full bg-white border border-slate-300 p-2.5 rounded-lg text-sm outline-none focus:border-pmmt-blue text-black font-semibold shadow-sm">
                         </div>
                         <div>
-                            <input type="password" id="loginSenha" required placeholder="Senha" class="w-full bg-white border border-slate-300 p-2.5 text-sm outline-none focus:border-sys-blue transition text-slate-900">
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Senha de Acesso</label>
+                            <input type="password" id="loginSenha" required placeholder="••••••••" class="w-full bg-white border border-slate-300 p-2.5 rounded-lg text-sm outline-none focus:border-pmmt-blue text-black font-semibold shadow-sm">
                         </div>
-                        <button type="submit" id="btnEntrar" class="w-full bg-sys-blue hover:bg-blue-800 text-white font-semibold py-2.5 shadow transition text-sm mt-2">
-                            Entrar
+                        <button type="submit" id="btnEntrar" class="w-full bg-pmmt-blue hover:bg-pmmt-light text-white font-black py-2.5 rounded-lg shadow-lg transition uppercase tracking-wider text-xs mt-3 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-right-to-bracket text-pmmt-gold"></i> Entrar no Portal
                         </button>
                     </form>
-                    <p id="erroLogin" class="text-xs font-semibold text-rose-600 mt-4 text-center hidden"></p>
-                </div>
-                <div class="bg-slate-50 py-3 px-6 text-right border-t border-slate-200">
-                    <p class="text-[10px] text-slate-500"><i class="fa-solid fa-shield-halved"></i> 5º Pelotão Força Tática</p>
+                    <p id="erroLogin" class="text-xs font-bold text-rose-600 mt-2 bg-rose-50 p-2 rounded border border-rose-200 hidden"></p>
                 </div>
             </div>
         </div>
 
-        <div id="painelPrincipal" class="hidden h-full flex flex-col overflow-hidden w-full">
+        <div id="painelPrincipal" class="hidden h-full flex flex-col md:flex-row overflow-hidden w-full">
             
-            <header class="bg-sys-dark text-white h-14 md:h-16 flex items-center justify-between px-4 z-40 shrink-0 shadow-sm">
-                <div class="flex items-center gap-3 md:gap-6 w-full">
-                    <button onclick="document.getElementById('wrapperLateral').classList.toggle('hidden')" class="md:hidden text-white text-xl px-2 focus:outline-none">
-                        <i class="fa-solid fa-bars"></i>
+            <aside id="menuLateral" class="w-full md:w-72 bg-pmmt-blue text-white flex flex-col shadow-2xl z-50 hidden md:flex h-auto md:h-full shrink-0 max-h-screen overflow-y-auto">
+                <div class="p-4 text-center border-b border-pmmt-gold/30 mt-2">
+                    <img src="logo_marechal_rondon.png" alt="Brasão 5º Pelotão" class="w-2/3 md:w-full h-auto object-contain rounded-lg border-2 border-pmmt-gold shadow-xl bg-pmmt-blue mx-auto mb-4 hover:scale-105 transition-transform duration-300">
+                    <h2 class="text-xl font-extrabold text-pmmt-gold tracking-widest drop-shadow-md">5º PELOTÃO</h2>
+                    <p class="text-[11px] font-semibold text-slate-300 uppercase tracking-widest mt-1">Força Tática - Cáceres</p>
+                </div>
+
+                <nav class="flex-1 p-4 space-y-2 overflow-y-auto mt-2">
+                    <button onclick="mudarModulo('financeiro')" id="btn-financeiro" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold transition-all bg-pmmt-gold text-pmmt-blue shadow-md">
+                        <i class="fa-solid fa-vault w-5 text-center"></i> Gestão Financeira
                     </button>
-                    <div class="flex items-center gap-3">
-                        <img src="logo_pmmt_branco_para_fundo_azul.png" alt="Logo PMMT" class="h-8 md:h-10 object-contain">
-                        <div class="hidden sm:block border-l border-slate-400/30 pl-3">
-                            <h1 class="text-sm md:text-base font-bold tracking-wide">35º CFSD PMMT</h1>
-                            <p class="text-[10px] text-slate-300 uppercase tracking-widest">Portal Institucional Integrado</p>
+                    <button onclick="mudarModulo('efetivo')" id="btn-efetivo" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold text-slate-300 hover:bg-pmmt-light hover:text-white transition-all">
+                        <i class="fa-solid fa-users w-5 text-center"></i> Efetivo e Escala
+                    </button>
+                    
+                    <button onclick="mudarModulo('taf')" id="btn-taf" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold text-slate-300 hover:bg-pmmt-light hover:text-white transition-all">
+                        <i class="fa-solid fa-person-running w-5 text-center"></i> TAF e Fatos Obs.
+                    </button>
+
+                    <button onclick="mudarModulo('apoio')" id="btn-apoio" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold text-slate-300 hover:bg-pmmt-light hover:text-white transition-all">
+                        <i class="fa-solid fa-book-open w-5 text-center"></i> Material de Apoio
+                    </button>
+                    <button onclick="mudarModulo('debate')" id="btn-debate" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold text-slate-300 hover:bg-pmmt-light hover:text-white transition-all">
+                        <i class="fa-solid fa-comments w-5 text-center"></i> Área Livre / Debate
+                    </button>
+                    
+                    <button onclick="deslogarUsuario()" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold text-rose-400 hover:bg-rose-950/40 hover:text-rose-300 transition-all pt-8 border-t border-slate-700/50 no-print">
+                        <i class="fa-solid fa-power-off w-5 text-center"></i> Sair do Portal
+                    </button>
+                </nav>
+
+                <div class="p-4 border-t border-pmmt-gold/30 text-center">
+                    <p id="statusConexao" class="text-xs font-bold text-slate-400"><i class="fa-solid fa-circle-notch fa-spin"></i> Conectando banco...</p>
+                </div>
+            </aside>
+
+            <div class="flex-1 flex flex-col h-screen overflow-hidden">
+                <header class="bg-pmmt-blue shadow-md border-b-4 border-pmmt-gold py-4 px-4 md:px-8 flex justify-between items-center z-40">
+                    <div class="flex items-center gap-4">
+                        <img src="logo_pmmt_branco_para_fundo_azul.png" alt="Logo PMMT" class="h-12 md:h-20 object-contain drop-shadow-md">
+                        <div>
+                            <h1 class="text-lg md:text-2xl font-extrabold text-white tracking-wider">35º CFSD PMMT <span class="text-pmmt-gold">| 6º CR</span></h1>
+                            <p class="text-[10px] md:text-sm font-semibold text-slate-300 uppercase tracking-widest">Portal Institucional Integrado</p>
                         </div>
                     </div>
-                </div>
-                
-                <div class="flex flex-col items-end justify-center min-w-max border-l border-slate-400/30 pl-4 h-full pr-2">
-                    <p class="text-xs font-bold uppercase">5º PELOTÃO</p>
-                    <p class="text-[10px] text-slate-300 uppercase">Força Tática - Cáceres</p>
-                </div>
-            </header>
+                    <button onclick="document.getElementById('menuLateral').classList.toggle('hidden')" class="md:hidden text-white text-2xl p-2 focus:outline-none">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                </header>
 
-            <div id="breadcrumb-bar" class="bg-sys-breadcrumb text-white px-5 py-1.5 text-xs flex items-center shrink-0 shadow-inner border-b border-blue-900/20">
-                <i class="fa-solid fa-home mr-2"></i> Home &nbsp;/&nbsp; <span id="txt-breadcrumb" class="font-semibold ml-1">Gestão Financeira</span>
-            </div>
-
-            <div class="flex-1 flex overflow-hidden">
-                
-                <aside id="wrapperLateral" class="w-64 bg-white border-r border-slate-300 flex flex-col z-30 hidden md:flex shrink-0 shadow-sm">
-                    <div class="p-6 flex flex-col items-center border-b border-slate-200">
-                        <img src="IMG_1500.jpg" alt="Brasão 5º Pelotão" class="w-28 h-28 object-contain mb-3 drop-shadow-md">
-                        <h2 class="text-sm font-bold text-slate-800 uppercase">5º Pelotão</h2>
-                    </div>
-
-                    <div class="bg-sys-menu text-sys-dark text-[11px] font-bold uppercase tracking-wider py-2.5 px-4 border-b border-slate-300 shadow-inner">
-                        Menu Principal
-                    </div>
-
-                    <nav class="flex-1 overflow-y-auto py-2">
-                        <button onclick="mudarModulo('financeiro')" id="btn-financeiro" class="menu-item ativo">
-                            <i class="fa-solid fa-vault w-5 text-center text-slate-500"></i> Gestão Financeira
-                        </button>
-                        <button onclick="mudarModulo('efetivo')" id="btn-efetivo" class="menu-item">
-                            <i class="fa-solid fa-users w-5 text-center text-slate-500"></i> Efetivo e Escala
-                        </button>
-                        <button onclick="mudarModulo('taf')" id="btn-taf" class="menu-item">
-                            <i class="fa-solid fa-person-running w-5 text-center text-slate-500"></i> TAF e Fatos Obs.
-                        </button>
-                        <button onclick="mudarModulo('apoio')" id="btn-apoio" class="menu-item">
-                            <i class="fa-solid fa-book-open w-5 text-center text-slate-500"></i> Material de Apoio
-                        </button>
-                        <button onclick="mudarModulo('debate')" id="btn-debate" class="menu-item">
-                            <i class="fa-solid fa-comments w-5 text-center text-slate-500"></i> Área Livre
-                        </button>
-                    </nav>
-
-                    <div class="p-3 border-t border-slate-200 flex justify-between items-center bg-slate-50">
-                        <span id="statusConexao" class="text-[10px] text-slate-500 font-semibold"><i class="fa-solid fa-circle-notch fa-spin"></i> Conectando...</span>
-                        <button onclick="deslogarUsuario()" class="text-rose-600 hover:text-rose-800 text-sm no-print" title="Sair">
-                            <i class="fa-solid fa-power-off"></i>
-                        </button>
-                    </div>
-                </aside>
-
-                <main class="flex-1 overflow-y-auto p-4 md:p-6 bg-sys-bg">
+                <main class="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-100 flex flex-col">
                     
-                    <div id="loaderAlert" class="hidden bg-amber-100 border border-amber-300 text-amber-800 px-4 py-3 rounded mb-4 flex items-center gap-3">
-                        <i class="fa-solid fa-circle-notch fa-spin"></i>
-                        <span class="text-sm font-semibold">Sincronizando dados com o servidor...</span>
-                    </div>
-
-                    <div class="bg-slate-100 border-l-4 border-slate-400 p-3 mb-6 shadow-sm no-print">
-                        <p class="text-[13px] md:text-sm text-slate-700">Seja bem-vindo(a) ao <strong>Portal Institucional do 35º CFSD - 5º Pelotão</strong>.</p>
+                    <div id="loaderAlert" class="hidden bg-pmmt-light border-l-4 border-pmmt-gold p-4 rounded-r-lg shadow-sm mb-6 flex items-center gap-3">
+                        <i class="fa-solid fa-circle-notch fa-spin text-pmmt-gold text-xl"></i>
+                        <p class="text-sm font-medium text-white">Sincronizando dados...</p>
                     </div>
 
                     <section id="modulo-financeiro" class="space-y-6">
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div class="bg-white border-t-4 border-emerald-500 shadow-sm p-4 flex items-center justify-between">
-                                <div>
-                                    <p class="text-[10px] font-bold text-slate-500 uppercase">Total Arrecadado</p>
-                                    <h2 id="valorReceitas" class="text-2xl font-bold text-emerald-600 mt-1">R$ 0,00</h2>
-                                </div>
-                                <i class="fa-solid fa-money-bill-wave text-3xl text-emerald-100"></i>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="bg-white rounded-xl shadow-md p-6 border-t-4 border-emerald-600 relative overflow-hidden">
+                                <i class="fa-solid fa-money-bill-trend-up absolute -right-4 -bottom-4 text-7xl text-emerald-50 opacity-50"></i>
+                                <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Total Arrecadado</p>
+                                <h2 id="valorReceitas" class="text-3xl font-extrabold text-emerald-700">R$ 0,00</h2>
                             </div>
-                            
-                            <div class="bg-white border-t-4 border-rose-500 shadow-sm p-4 flex items-center justify-between">
-                                <div>
-                                    <p class="text-[10px] font-bold text-slate-500 uppercase">Total de Despesas</p>
-                                    <h2 id="valorDespesas" class="text-2xl font-bold text-rose-600 mt-1">R$ 0,00</h2>
-                                </div>
-                                <i class="fa-solid fa-file-invoice text-3xl text-rose-100"></i>
+                            <div class="bg-white rounded-xl shadow-md p-6 border-t-4 border-rose-600 relative overflow-hidden">
+                                <i class="fa-solid fa-money-bill-transfer absolute -right-4 -bottom-4 text-7xl text-rose-50 opacity-50"></i>
+                                <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Total de Despesas</p>
+                                <h2 id="valorDespesas" class="text-3xl font-extrabold text-rose-700">R$ 0,00</h2>
                             </div>
-                            
-                            <div class="bg-white border-t-4 border-sys-dark shadow-sm p-4 flex items-center justify-between">
-                                <div>
-                                    <p class="text-[10px] font-bold text-slate-500 uppercase">Saldo em Caixa</p>
-                                    <h2 id="valorSaldo" class="text-2xl font-bold text-sys-dark mt-1">R$ 0,00</h2>
-                                    <p class="text-[10px] text-slate-400 mt-1">Livre: <span id="valorSaldoLivreIndicador" class="font-bold text-emerald-500">R$ 0,00</span></p>
-                                </div>
-                                <i class="fa-solid fa-building-columns text-3xl text-slate-100"></i>
+                            <div class="bg-pmmt-blue rounded-xl shadow-md p-6 border-t-4 border-pmmt-gold relative overflow-hidden">
+                                <i class="fa-solid fa-vault absolute -right-4 -bottom-4 text-7xl text-pmmt-light"></i>
+                                <p class="text-xs font-bold text-pmmt-gold uppercase tracking-widest mb-1">Saldo em Caixa</p>
+                                <h2 id="valorSaldo" class="text-3xl font-extrabold text-white">R$ 0,00</h2>
+                                <p class="text-[11px] font-semibold text-slate-300 mt-1 uppercase tracking-wider">Disponível Livre: <span id="valorSaldoLivreIndicador" class="text-emerald-400 font-bold">R$ 0,00</span></p>
                             </div>
                         </div>
 
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 no-print">
-                            <div class="bg-white shadow-sm border border-slate-200 lg:col-span-1">
-                                <div class="bg-slate-50 border-b border-slate-200 px-4 py-3">
-                                    <h3 class="text-sm font-semibold text-slate-700"><i class="fa-solid fa-pen-to-square text-sys-dark mr-2"></i>Lançar Movimentação</h3>
-                                </div>
-                                <div class="p-4">
-                                    <form id="formCaixa" onsubmit="salvarTransacao(event)" class="space-y-3">
-                                        <div class="grid grid-cols-2 gap-2 mb-2">
-                                            <label class="border border-slate-300 bg-white rounded p-1.5 text-center cursor-pointer hover:bg-slate-50" id="lblReceita">
-                                                <input type="radio" name="tipoOp" value="receita" checked class="hidden" onchange="mudarTipoUi()">
-                                                <span class="text-xs font-semibold text-slate-700"><i class="fa-solid fa-arrow-down text-emerald-500"></i> Receita</span>
-                                            </label>
-                                            <label class="border border-slate-300 bg-white rounded p-1.5 text-center cursor-pointer hover:bg-slate-50" id="lblDespesa">
-                                                <input type="radio" name="tipoOp" value="despesa" class="hidden" onchange="mudarTipoUi()">
-                                                <span class="text-xs font-semibold text-slate-700"><i class="fa-solid fa-arrow-up text-rose-500"></i> Despesa</span>
-                                            </label>
-                                        </div>
-                                        <div>
-                                            <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Categoria</label>
-                                            <div class="flex gap-1">
-                                                <select id="inputCategoria" required class="w-full border border-slate-300 rounded p-1.5 text-xs text-slate-700 outline-none focus:border-sys-dark" onchange="verificarNovaCategoria()"></select>
-                                                <input type="text" id="inputNovaCategoria" placeholder="Nova..." class="hidden w-full border border-slate-300 rounded p-1.5 text-xs outline-none">
-                                                <button type="button" id="btnCancelarNovaCat" class="hidden bg-slate-200 px-2 rounded text-slate-600 hover:bg-slate-300" onclick="cancelarNovaCategoria()"><i class="fa-solid fa-times"></i></button>
-                                            </div>
-                                        </div>
-                                        <div id="blocoAluno">
-                                            <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Vincular Aluno</label>
-                                            <select id="inputAluno" class="w-full border border-slate-300 rounded p-1.5 text-xs text-slate-700 outline-none focus:border-sys-dark">
-                                                <option value="TODOS">-- Lançamento Geral --</option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Descrição</label>
-                                            <input type="text" id="inputDescricao" required placeholder="Ex: Compra de materiais" class="w-full border border-slate-300 rounded p-1.5 text-xs text-slate-700 outline-none focus:border-sys-dark">
-                                        </div>
-                                        <div class="grid grid-cols-2 gap-2">
-                                            <div>
-                                                <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Valor (R$)</label>
-                                                <input type="number" step="0.01" id="inputValor" required placeholder="0.00" class="w-full border border-slate-300 rounded p-1.5 text-xs text-slate-700 outline-none focus:border-sys-dark">
-                                            </div>
-                                            <div>
-                                                <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Data</label>
-                                                <input type="date" id="inputData" required class="w-full border border-slate-300 rounded p-1.5 text-xs text-slate-700 outline-none focus:border-sys-dark">
-                                            </div>
-                                        </div>
-                                        <button type="submit" class="w-full bg-sys-blue hover:bg-blue-800 text-white font-semibold py-2 rounded text-xs transition mt-2">
-                                            Gravar Registro
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                            
-                            <div class="bg-white shadow-sm border border-slate-200 lg:col-span-2 flex flex-col">
-                                <div class="bg-slate-50 border-b border-slate-200 px-4 py-3">
-                                    <h3 class="text-sm font-semibold text-slate-700"><i class="fa-solid fa-chart-pie text-sys-dark mr-2"></i>Distribuição Financeira</h3>
-                                </div>
-                                <div class="flex-1 flex items-center justify-center p-4">
-                                    <div class="w-full max-w-[220px]">
-                                        <canvas id="graficoTransacoes"></canvas>
+                            <div class="bg-white rounded-xl shadow-md p-6 lg:col-span-1 border border-slate-200">
+                                <h3 class="text-lg font-bold text-pmmt-blue mb-5 border-b pb-2"><i class="fa-solid fa-pen-to-square text-pmmt-gold mr-2"></i> Lançar Movimentação</h3>
+                                <form id="formCaixa" onsubmit="salvarTransacao(event)" class="space-y-4">
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <label class="border-2 border-slate-200 rounded-lg p-2 text-center cursor-pointer hover:bg-slate-50 transition" id="lblReceita">
+                                            <input type="radio" name="tipoOp" value="receita" checked class="hidden" onchange="mudarTipoUi()">
+                                            <span class="text-sm font-bold text-emerald-700"><i class="fa-solid fa-arrow-down"></i> Receita</span>
+                                        </label>
+                                        <label class="border-2 border-slate-200 rounded-lg p-2 text-center cursor-pointer hover:bg-slate-50 transition" id="lblDespesa">
+                                            <input type="radio" name="tipoOp" value="despesa" class="hidden" onchange="mudarTipoUi()">
+                                            <span class="text-sm font-bold text-rose-700"><i class="fa-solid fa-arrow-up"></i> Despesa</span>
+                                        </label>
                                     </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Categoria</label>
+                                        <div class="flex gap-2">
+                                            <select id="inputCategoria" required class="w-full bg-slate-50 border border-slate-200 text-black rounded-lg p-2.5 text-sm outline-none focus:border-pmmt-blue" onchange="verificarNovaCategoria()"></select>
+                                            <input type="text" id="inputNovaCategoria" placeholder="Nome da nova categoria" class="hidden w-full bg-slate-50 border border-pmmt-gold text-black rounded-lg p-2.5 text-sm outline-none">
+                                            <button type="button" id="btnCancelarNovaCat" class="hidden bg-slate-200 hover:bg-slate-300 text-black px-3 rounded-lg font-bold transition" onclick="cancelarNovaCategoria()"><i class="fa-solid fa-xmark"></i></button>
+                                        </div>
+                                    </div>
+                                    <div id="blocoAluno">
+                                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Vincular a Aluno</label>
+                                        <select id="inputAluno" class="w-full bg-slate-50 border border-slate-200 text-black font-semibold rounded-lg p-2.5 text-sm outline-none focus:border-pmmt-blue">
+                                            <option value="TODOS">-- Lançamento Geral / Vincular Todos --</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Descrição</label>
+                                        <input type="text" id="inputDescricao" required placeholder="Ex: Compra de refrigerantes" class="w-full bg-slate-50 border border-slate-200 text-black rounded-lg p-2.5 text-sm outline-none focus:border-pmmt-blue">
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Valor (R$)</label>
+                                            <input type="number" step="0.01" id="inputValor" required placeholder="0.00" class="w-full bg-slate-50 border border-slate-200 p-2.5 text-sm outline-none focus:border-pmmt-blue">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Data</label>
+                                            <input type="date" id="inputData" required class="w-full bg-slate-50 border border-slate-200 p-2.5 text-sm outline-none focus:border-pmmt-blue">
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="w-full bg-pmmt-gold hover:bg-yellow-600 text-pmmt-blue font-bold py-3 rounded-lg shadow-md transition mt-2 flex items-center justify-center gap-2">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i> Registrar Operação
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="bg-white rounded-xl shadow-md p-6 lg:col-span-2 border border-slate-200 flex flex-col items-center justify-center">
+                                <h3 class="text-lg font-bold text-pmmt-blue mb-5 border-b w-full pb-2"><i class="fa-solid fa-chart-pie text-pmmt-gold mr-2"></i> Distribuição Financeira</h3>
+                                <div class="w-full max-w-sm">
+                                    <canvas id="graficoTransacoes"></canvas>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="bg-white shadow-sm border border-slate-200 no-print">
-                            <div class="bg-slate-50 border-b border-slate-200 px-4 py-3 flex justify-between items-center cursor-pointer hover:bg-slate-100" onclick="togglePainel('conteudoCotas', 'iconeCotas')">
-                                <h3 class="text-sm font-semibold text-slate-700"><i class="fa-solid fa-users text-sys-dark mr-2"></i>Monitoramento de Cotas (R$ 150,00)</h3>
-                                <i id="iconeCotas" class="fa-solid fa-chevron-up text-slate-500 transition-transform duration-300"></i>
+                        <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden no-print">
+                            <div class="bg-pmmt-blue border-b border-pmmt-light px-6 py-4 flex justify-between items-center cursor-pointer select-none hover:bg-pmmt-light transition" onclick="togglePainel('conteudoCotas', 'iconeCotas')">
+                                <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-users text-pmmt-gold mr-2"></i> Monitoramento de Cotas (R$ 150,00)</h3>
+                                <i id="iconeCotas" class="fa-solid fa-chevron-up text-pmmt-gold transition-transform duration-300"></i>
                             </div>
-                            <div id="conteudoCotas" class="painel-conteudo bg-white" style="max-height: 2000px; padding: 1rem;">
-                                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3" id="gridCotas"></div>
+                            <div id="conteudoCotas" class="painel-conteudo bg-slate-50" style="max-height: 2000px; padding: 1.5rem;">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3" id="gridCotas"></div>
                             </div>
                         </div>
 
-                        <div class="bg-white shadow-sm border border-slate-200 no-print">
-                            <div class="bg-slate-50 border-b border-slate-200 px-4 py-3 flex justify-between items-center cursor-pointer hover:bg-slate-100" onclick="togglePainel('conteudoPlanejamento', 'iconePlanejamento')">
-                                <h3 class="text-sm font-semibold text-slate-700"><i class="fa-solid fa-crosshairs text-sys-dark mr-2"></i>Provisão de Gastos Futuros</h3>
-                                <i id="iconePlanejamento" class="fa-solid fa-chevron-up text-slate-500 transition-transform duration-300"></i>
+                        <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden no-print">
+                            <div class="bg-pmmt-light border-b border-pmmt-blue px-6 py-4 flex justify-between items-center cursor-pointer select-none hover:bg-pmmt-blue transition" onclick="togglePainel('conteudoPlanejamento', 'iconePlanejamento')">
+                                <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-crosshairs text-pmmt-gold mr-2"></i> Planejamento e Provisão de Gastos</h3>
+                                <i id="iconePlanejamento" class="fa-solid fa-chevron-up text-pmmt-gold transition-transform duration-300"></i>
                             </div>
-                            <div id="conteudoPlanejamento" class="painel-conteudo bg-white" style="max-height: 4000px; padding: 1rem;">
+                            <div id="conteudoPlanejamento" class="painel-conteudo bg-slate-50" style="max-height: 4000px; padding: 1.5rem;">
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                                    <div class="border border-slate-200 p-3 rounded bg-slate-50">
-                                        <p class="text-[10px] text-slate-500 uppercase font-semibold">Caixa Atual</p>
-                                        <h4 id="projCaixaAtual" class="text-lg font-bold text-slate-800">R$ 0,00</h4>
+                                    <div class="bg-white border-l-4 border-pmmt-blue p-4 rounded shadow-sm">
+                                        <p class="text-[10px] font-bold text-slate-500 uppercase">Caixa Atual</p>
+                                        <h4 id="projCaixaAtual" class="text-xl font-extrabold text-pmmt-blue">R$ 0,00</h4>
                                     </div>
-                                    <div class="border border-slate-200 p-3 rounded bg-amber-50">
-                                        <p class="text-[10px] text-amber-700 uppercase font-semibold">Despesas Previstas</p>
-                                        <h4 id="projTotalPrevisto" class="text-lg font-bold text-amber-800">R$ 0,00</h4>
+                                    <div class="bg-white border-l-4 border-amber-500 p-4 rounded shadow-sm">
+                                        <p class="text-[10px] font-bold text-slate-500 uppercase">Total Previsto (A Pagar)</p>
+                                        <h4 id="projTotalPrevisto" class="text-xl font-extrabold text-amber-600">R$ 0,00</h4>
                                     </div>
-                                    <div id="boxSaldoProjetado" class="border border-slate-200 p-3 rounded transition-colors bg-slate-50">
-                                        <p class="text-[10px] text-slate-500 uppercase font-semibold">Saldo Projetado Final</p>
-                                        <h4 id="projSaldoFinal" class="text-lg font-bold text-slate-800">R$ 0,00</h4>
-                                        <p id="projAlertaCota" class="text-[10px] font-bold text-rose-600 mt-1 hidden">Faltam: <span id="valorCotaExtra">R$ 0,00</span>/aluno</p>
+                                    <div id="boxSaldoProjetado" class="bg-white border-l-4 border-slate-200 p-4 rounded shadow-sm transition-colors">
+                                        <p class="text-[10px] font-bold text-slate-500 uppercase">Saldo Projetado</p>
+                                        <h4 id="projSaldoFinal" class="text-xl font-extrabold text-slate-700">R$ 0,00</h4>
+                                        <p id="projAlertaCota" class="text-xs font-bold text-rose-600 mt-1 hidden"><i class="fa-solid fa-triangle-exclamation"></i> Cota Extra Necessária: <span id="valorCotaExtra">R$ 0,00</span>/aluno</p>
                                     </div>
                                 </div>
-                                
-                                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                                    <div class="lg:col-span-1 border border-slate-200 p-4 rounded bg-slate-50">
-                                        <h4 class="text-xs font-bold text-slate-700 uppercase mb-3 border-b border-slate-300 pb-1">Novo Agendamento</h4>
+                                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                    <div class="lg:col-span-1 bg-white p-4 rounded border border-slate-200 shadow-sm">
+                                        <h4 class="text-sm font-bold text-pmmt-blue mb-4 border-b pb-2">Nova Provisão</h4>
                                         <form onsubmit="salvarPrevisao(event)" class="space-y-3">
                                             <div>
-                                                <input type="text" id="prevDescricao" required placeholder="Descrição" class="w-full border border-slate-300 p-1.5 rounded text-xs outline-none focus:border-sys-dark">
+                                                <label class="block text-[10px] font-bold text-slate-500 uppercase">Descrição</label>
+                                                <input type="text" id="prevDescricao" required placeholder="Ex: Fardamento Tático" class="w-full bg-slate-50 border border-slate-200 p-2 rounded text-sm outline-none focus:border-pmmt-gold">
                                             </div>
                                             <div class="grid grid-cols-2 gap-2">
-                                                <input type="text" id="prevCategoria" required placeholder="Categoria" class="w-full border border-slate-300 p-1.5 rounded text-xs outline-none focus:border-sys-dark">
-                                                <input type="date" id="prevData" required class="w-full border border-slate-300 p-1.5 rounded text-xs outline-none focus:border-sys-dark">
+                                                <div>
+                                                    <label class="block text-[10px] font-bold text-slate-500 uppercase">Categoria</label>
+                                                    <input type="text" id="prevCategoria" required placeholder="Ex: Fardamento" class="w-full bg-slate-50 border border-slate-200 p-2 rounded text-sm outline-none focus:border-pmmt-gold">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-[10px] font-bold text-slate-500 uppercase">Prazo</label>
+                                                    <input type="date" id="prevData" required class="w-full bg-slate-50 border border-slate-200 p-2 rounded text-sm outline-none focus:border-pmmt-gold">
+                                                </div>
                                             </div>
                                             <div>
-                                                <input type="number" step="0.01" id="prevValor" required placeholder="Valor (R$)" class="w-full border border-slate-300 p-1.5 rounded text-xs outline-none focus:border-sys-dark">
+                                                <label class="block text-[10px] font-bold text-slate-500 uppercase">Valor Estimado (R$)</label>
+                                                <input type="number" step="0.01" id="prevValor" required placeholder="500.00" class="w-full bg-slate-50 border border-slate-200 p-2 rounded text-sm outline-none focus:border-pmmt-gold">
                                             </div>
-                                            <button type="submit" class="w-full bg-slate-700 hover:bg-slate-800 text-white font-semibold py-1.5 rounded text-xs transition">
-                                                Incluir
+                                            <button type="submit" class="w-full bg-pmmt-blue hover:bg-pmmt-light text-white font-bold py-2 rounded shadow transition text-sm">
+                                                Agendar Despesa
                                             </button>
                                         </form>
                                     </div>
-                                    <div class="lg:col-span-2 border border-slate-300 rounded overflow-hidden bg-white">
-                                        <div class="overflow-x-auto h-[250px]">
-                                            <table class="w-full text-left border-collapse text-xs">
-                                                <thead class="bg-sys-header text-white sticky top-0">
+                                    <div class="lg:col-span-2 bg-white rounded border border-slate-200 shadow-sm overflow-hidden">
+                                        <div class="overflow-x-auto h-64">
+                                            <table class="w-full text-left border-collapse">
+                                                <thead class="bg-slate-100 text-[10px] uppercase font-bold text-slate-500 sticky top-0">
                                                     <tr>
-                                                        <th class="p-2.5 font-semibold">Prazo</th>
-                                                        <th class="p-2.5 font-semibold">Descrição</th>
-                                                        <th class="p-2.5 font-semibold text-right">Valor Estimado</th>
-                                                        <th class="p-2.5 font-semibold text-center">Status</th>
-                                                        <th class="p-2.5 text-center">Ações</th>
+                                                        <th class="p-3 whitespace-nowrap">Prazo</th>
+                                                        <th class="p-3">Item / Descrição</th>
+                                                        <th class="p-3 text-right whitespace-nowrap">Valor Est.</th>
+                                                        <th class="p-3 text-center">Status</th>
+                                                        <th class="p-3 text-center">Ação</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody id="tabelaPrevisoes" class="divide-y divide-slate-200"></tbody>
+                                                <tbody id="tabelaPrevisoes" class="divide-y divide-slate-100 text-sm font-medium"></tbody>
                                             </table>
                                         </div>
                                     </div>
@@ -338,29 +279,29 @@
                             </div>
                         </div>
 
-                        <div class="bg-white shadow-sm border border-slate-300 overflow-hidden">
-                            <div class="bg-slate-50 border-b border-slate-300 px-4 py-3 flex justify-between items-center cursor-pointer hover:bg-slate-100" onclick="togglePainel('conteudoHistorico', 'iconeHistorico')">
-                                <h3 class="text-sm font-semibold text-slate-700"><i class="fa-solid fa-list-check text-sys-dark mr-2"></i>Livro Caixa (Histórico Completo)</h3>
+                        <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                            <div class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center cursor-pointer select-none hover:bg-slate-50 transition" onclick="togglePainel('conteudoHistorico', 'iconeHistorico')">
+                                <h3 class="text-lg font-bold text-pmmt-blue"><i class="fa-solid fa-list-check text-pmmt-gold mr-2"></i> Livro Caixa - Histórico Auditável</h3>
                                 <div class="flex items-center gap-4 no-print">
-                                    <button onclick="event.stopPropagation(); window.print()" class="text-[11px] font-semibold text-slate-600 border border-slate-300 hover:bg-slate-200 px-2 py-1 rounded bg-white flex items-center gap-1">
+                                    <button onclick="event.stopPropagation(); window.print()" class="text-sm text-slate-600 hover:text-pmmt-blue border border-slate-300 px-3 py-1.5 rounded shadow-sm transition">
                                         <i class="fa-solid fa-print"></i> Imprimir
                                     </button>
-                                    <i id="iconeHistorico" class="fa-solid fa-chevron-up text-slate-500 transition-transform duration-300"></i>
+                                    <i id="iconeHistorico" class="fa-solid fa-chevron-up text-slate-400 transition-transform duration-300"></i>
                                 </div>
                             </div>
                             <div id="conteudoHistorico" class="painel-conteudo overflow-x-auto" style="max-height: 4000px;">
-                                <table class="w-full text-left border-collapse text-[13px]">
-                                    <thead class="bg-sys-header text-white">
-                                        <tr>
-                                            <th class="px-4 py-2.5 font-semibold whitespace-nowrap" onclick="ordenarTabela('data')">Data <i id="sort-data" class="fa-solid fa-sort ml-1 opacity-60 no-print"></i></th>
-                                            <th class="px-4 py-2.5 font-semibold whitespace-nowrap" onclick="ordenarTabela('descricao')">Descrição <i id="sort-descricao" class="fa-solid fa-sort ml-1 opacity-60 no-print"></i></th>
-                                            <th class="px-4 py-2.5 font-semibold whitespace-nowrap" onclick="ordenarTabela('categoria')">Categoria <i id="sort-categoria" class="fa-solid fa-sort ml-1 opacity-60 no-print"></i></th>
-                                            <th class="px-4 py-2.5 font-semibold whitespace-nowrap" onclick="ordenarTabela('aluno')">Aluno <i id="sort-aluno" class="fa-solid fa-sort ml-1 opacity-60 no-print"></i></th>
-                                            <th class="px-4 py-2.5 font-semibold text-right whitespace-nowrap" onclick="ordenarTabela('valor')">Valor <i id="sort-valor" class="fa-solid fa-sort ml-1 opacity-60 no-print"></i></th>
-                                            <th class="px-4 py-2.5 text-center no-print">Ações</th>
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="bg-pmmt-blue text-xs font-bold text-white uppercase tracking-wider border-b">
+                                            <th class="px-6 py-3 whitespace-nowrap" onclick="ordenarTabela('data')">Data <i id="sort-data" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
+                                            <th class="px-6 py-3 whitespace-nowrap" onclick="ordenarTabela('descricao')">Descrição <i id="sort-descricao" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
+                                            <th class="px-6 py-3 whitespace-nowrap" onclick="ordenarTabela('categoria')">Categoria <i id="sort-categoria" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
+                                            <th class="px-6 py-3 whitespace-nowrap" onclick="ordenarTabela('aluno')">Aluno Vinculado <i id="sort-aluno" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
+                                            <th class="px-6 py-3 text-right whitespace-nowrap" onclick="ordenarTabela('valor')">Valor <i id="sort-valor" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
+                                            <th class="px-6 py-3 text-center no-print">Ações</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="tabelaDados" class="divide-y divide-slate-200"></tbody>
+                                    <tbody id="tabelaDados" class="divide-y divide-slate-200 text-sm"></tbody>
                                 </table>
                             </div>
                         </div>
@@ -368,57 +309,56 @@
 
                     <section id="modulo-efetivo" class="hidden space-y-6">
                         <div id="conteudo-efetivo-geral" class="space-y-6">
-                            
-                            <div class="bg-white shadow-sm border border-slate-300 p-4">
-                                <h3 class="text-sm font-semibold text-slate-700 mb-4 border-b border-slate-200 pb-2">
-                                    <i class="fas fa-calendar-alt text-sys-dark mr-2"></i>Escala de Serviço Operacional
+                            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                                <h3 class="text-xl font-bold text-pmmt-blue border-b-2 border-pmmt-gold pb-2 mb-4">
+                                    <i class="fas fa-calendar-alt text-pmmt-gold mr-2"></i>Escala de Serviço - 5º Pelotão
                                 </h3>
-                                <div id="gridEscala" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3"></div>
+                                <div id="gridEscala" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div class="bg-white shadow-sm border border-slate-300 overflow-hidden">
-                                    <div class="bg-slate-50 py-2.5 px-4 border-b border-slate-300 flex justify-between items-center">
-                                        <h3 class="text-xs font-bold text-slate-700">EQUIPE ALFA</h3>
-                                        <span class="text-[9px] bg-slate-200 px-1.5 py-0.5 rounded text-slate-700 font-bold">CMT: SGT ORTIZ</span>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div class="bg-white rounded-xl shadow-md border-t-4 border-blue-600 overflow-hidden">
+                                    <div class="bg-blue-50 py-3 px-4 border-b border-blue-100 flex justify-between items-center">
+                                        <h3 class="text-lg font-extrabold text-blue-900">Equipe ALFA</h3>
+                                        <span class="bg-blue-200 text-blue-800 text-xs font-bold px-2 py-1 rounded">CMT: SGT ORTIZ</span>
                                     </div>
-                                    <ul id="tabelaAlfa" class="text-xs p-2 text-slate-700 divide-y divide-slate-100 h-[300px] overflow-y-auto"></ul>
+                                    <ul id="tabelaAlfa" class="text-sm p-4 text-black font-semibold divide-y divide-slate-100 h-64 overflow-y-auto"></ul>
                                 </div>
-                                <div class="bg-white shadow-sm border border-slate-300 overflow-hidden">
-                                    <div class="bg-slate-50 py-2.5 px-4 border-b border-slate-300 flex justify-between items-center">
-                                        <h3 class="text-xs font-bold text-slate-700">EQUIPE BRAVO</h3>
-                                        <span class="text-[9px] bg-slate-200 px-1.5 py-0.5 rounded text-slate-700 font-bold">CMT: SGT MAURIZON</span>
+                                <div class="bg-white rounded-xl shadow-md border-t-4 border-amber-500 overflow-hidden">
+                                    <div class="bg-amber-50 py-3 px-4 border-b border-amber-100 flex justify-between items-center">
+                                        <h3 class="text-lg font-extrabold text-amber-900">Equipe BRAVO</h3>
+                                        <span class="bg-amber-200 text-amber-900 text-xs font-bold px-2 py-1 rounded">CMT: SGT MAURIZON</span>
                                     </div>
-                                    <ul id="tabelaBravo" class="text-xs p-2 text-slate-700 divide-y divide-slate-100 h-[300px] overflow-y-auto"></ul>
+                                    <ul id="tabelaBravo" class="text-sm p-4 text-black font-semibold divide-y divide-slate-100 h-64 overflow-y-auto"></ul>
                                 </div>
-                                <div class="bg-white shadow-sm border border-slate-300 overflow-hidden">
-                                    <div class="bg-slate-50 py-2.5 px-4 border-b border-slate-300 flex justify-between items-center">
-                                        <h3 class="text-xs font-bold text-slate-700">EQUIPE CHARLIE</h3>
-                                        <span class="text-[9px] bg-slate-200 px-1.5 py-0.5 rounded text-slate-700 font-bold">CMT: SGT SOUZA</span>
+                                <div class="bg-white rounded-xl shadow-md border-t-4 border-emerald-600 overflow-hidden">
+                                    <div class="bg-emerald-50 py-3 px-4 border-b border-emerald-100 flex justify-between items-center">
+                                        <h3 class="text-lg font-extrabold text-emerald-900">Equipe CHARLIE</h3>
+                                        <span class="bg-emerald-200 text-emerald-800 text-xs font-bold px-2 py-1 rounded">CMT: SGT SOUZA</span>
                                     </div>
-                                    <ul id="tabelaCharlie" class="text-xs p-2 text-slate-700 divide-y divide-slate-100 h-[300px] overflow-y-auto"></ul>
+                                    <ul id="tabelaCharlie" class="text-sm p-4 text-black font-semibold divide-y divide-slate-100 h-64 overflow-y-auto"></ul>
                                 </div>
                             </div>
 
-                            <div class="bg-white shadow-sm border border-slate-300 overflow-hidden">
-                                <div class="bg-slate-50 px-4 py-3 flex justify-between items-center border-b border-slate-300">
-                                    <h3 class="text-sm font-semibold text-slate-700"><i class="fa-solid fa-users text-sys-dark mr-2"></i>Relação Nominal do Pelotão</h3>
-                                    <button onclick="event.stopPropagation(); window.print()" class="text-[11px] font-semibold text-slate-600 border border-slate-300 hover:bg-slate-200 px-2 py-1 rounded bg-white flex items-center gap-1 no-print">
+                            <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                                <div class="bg-pmmt-blue px-6 py-4 flex justify-between items-center">
+                                    <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-users text-pmmt-gold mr-2"></i> Relação Nominal Geral</h3>
+                                    <button onclick="event.stopPropagation(); window.print()" class="text-sm text-white hover:text-pmmt-gold border border-slate-500 px-3 py-1.5 rounded shadow-sm transition no-print">
                                         <i class="fa-solid fa-print"></i> Imprimir
                                     </button>
                                 </div>
                                 <div class="overflow-x-auto">
-                                    <table class="w-full text-left border-collapse text-[13px]">
-                                        <thead class="bg-sys-header text-white">
-                                            <tr>
-                                                <th class="px-4 py-2.5 font-semibold whitespace-nowrap">Nº</th>
-                                                <th class="px-4 py-2.5 font-semibold whitespace-nowrap">QRA</th>
-                                                <th class="px-4 py-2.5 font-semibold whitespace-nowrap">Nome Completo</th>
-                                                <th class="px-4 py-2.5 font-semibold text-center whitespace-nowrap">Equipe</th>
-                                                <th class="px-4 py-2.5 font-semibold whitespace-nowrap">Comandante</th>
+                                    <table class="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr class="bg-slate-100 text-xs font-bold text-slate-600 uppercase tracking-wider border-b border-slate-300">
+                                                <th class="px-6 py-3 whitespace-nowrap">Nº</th>
+                                                <th class="px-6 py-3 whitespace-nowrap">QRA</th>
+                                                <th class="px-6 py-3 whitespace-nowrap">Nome Completo</th>
+                                                <th class="px-6 py-3 text-center whitespace-nowrap">Equipe</th>
+                                                <th class="px-6 py-3 whitespace-nowrap">Comandante</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="tabelaEfetivoGeral" class="divide-y divide-slate-200"></tbody>
+                                        <tbody id="tabelaEfetivoGeral" class="divide-y divide-slate-200 text-sm text-black"></tbody>
                                     </table>
                                 </div>
                             </div>
@@ -426,22 +366,22 @@
                     </section>
 
                     <section id="modulo-taf" class="hidden flex-1 flex flex-col h-full min-h-[85vh]">
-                        <iframe src="taf.html" class="w-full h-full border border-slate-300 bg-white shadow-sm"></iframe>
+                        <iframe src="taf.html" class="w-full h-full border-none rounded-xl shadow-md bg-transparent"></iframe>
                     </section>
 
                     <section id="modulo-apoio" class="hidden space-y-6">
-                        <div class="bg-white shadow-sm border border-slate-300 p-8 text-center mt-4">
-                            <i class="fa-solid fa-folder-open text-4xl text-sys-dark mb-3"></i>
-                            <h2 class="text-lg font-bold text-slate-700">Material de Apoio</h2>
-                            <p class="text-sm text-slate-500 mt-2">Repositório de Manuais, Legislações, POPs e Canções.</p>
+                        <div class="bg-white rounded-xl shadow-md p-8 border-t-4 border-pmmt-gold text-center">
+                            <i class="fa-solid fa-book-open text-6xl text-slate-200 mb-4"></i>
+                            <h2 class="text-2xl font-bold text-pmmt-blue">Material de Apoio</h2>
+                            <p class="text-slate-500 mt-2">Repositório de Manuais, Legislações, POPs da PMMT e Canções Militares para estudo e consulta rápida.</p>
                         </div>
                     </section>
-                    
+
                     <section id="modulo-debate" class="hidden space-y-6">
-                        <div class="bg-white shadow-sm border border-slate-300 p-8 text-center mt-4">
-                            <i class="fa-solid fa-bullhorn text-4xl text-sys-dark mb-3"></i>
-                            <h2 class="text-lg font-bold text-slate-700">Área Livre / Mural</h2>
-                            <p class="text-sm text-slate-500 mt-2">Espaço para propostas e deliberações da tropa.</p>
+                        <div class="bg-white rounded-xl shadow-md p-8 border-t-4 border-emerald-600 text-center">
+                            <i class="fa-solid fa-comments text-6xl text-slate-200 mb-4"></i>
+                            <h2 class="text-2xl font-bold text-pmmt-blue">Área Livre / Debate</h2>
+                            <p class="text-slate-500 mt-2">Mural aberto para propostas de melhoria, sugestões para a formatura e debates gerais da tropa.</p>
                         </div>
                     </section>
 
@@ -449,6 +389,10 @@
             </div>
         </div>
     </div>
+
+    <footer class="bg-white border-t border-slate-200 py-3 px-8 text-center text-xs font-bold text-slate-500 no-print shadow-inner z-[110]">
+        Portal desenvolvido por: <span class="text-pmmt-blue">AL SD PM WILLYS</span> - Equipe Bravo - 5º Pelotão, Cáceres.
+    </footer>
 
     <script>
         let supabaseClient;
@@ -489,7 +433,7 @@
                 }
             } catch (error) {
                 document.getElementById('statusConexao').innerText = "Erro de Conexão";
-                document.getElementById('statusConexao').className = 'text-[10px] text-rose-600 font-semibold';
+                document.getElementById('statusConexao').className = 'text-xs font-bold text-rose-500';
             }
         }
 
@@ -501,7 +445,7 @@
             const erroBox = document.getElementById('erroLogin');
 
             btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Validando...';
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Validando Credenciais...';
             erroBox.classList.add('hidden');
 
             const emailFinal = usuarioInput.includes('@') ? usuarioInput : `${usuarioInput}@5pelotao.internal`;
@@ -512,10 +456,10 @@
             });
 
             if (error) {
-                erroBox.innerText = "Acesso Negado: Usuário/Senha incorretos.";
+                erroBox.innerText = "Acesso Negado: Usuário ou senha incorretos.";
                 erroBox.classList.remove('hidden');
                 btn.disabled = false;
-                btn.innerHTML = 'Entrar';
+                btn.innerHTML = '<i class="fa-solid fa-right-to-bracket text-pmmt-gold"></i> Entrar no Portal';
             } else {
                 await logarSucesso();
             }
@@ -525,7 +469,8 @@
             document.getElementById('telaLogin').classList.add('hidden');
             document.getElementById('painelPrincipal').classList.remove('hidden');
             
-            document.getElementById('statusConexao').innerHTML = '<i class="fa-solid fa-circle text-[8px] text-emerald-500 mr-1"></i> Banco Conectado';
+            document.getElementById('statusConexao').innerHTML = '<i class="fa-solid fa-circle text-xs text-emerald-400"></i> Banco Conectado';
+            document.getElementById('statusConexao').className = 'text-xs font-bold text-green-400';
             
             await carregarAlunos();
             await carregarTransacoes();
@@ -533,7 +478,7 @@
         }
 
         async function deslogarUsuario() {
-            if (confirm("Deseja realmente encerrar a sessão?")) {
+            if (confirm("Deseja realmente encerrar sua sessão no portal institucional?")) {
                 await supabaseClient.auth.signOut();
                 window.location.reload();
             }
@@ -541,28 +486,18 @@
 
         function mudarModulo(moduloDestino) {
             const modulos = ['financeiro', 'efetivo', 'apoio', 'debate', 'taf'];
-            const nomes = {
-                'financeiro': 'Gestão Financeira',
-                'efetivo': 'Efetivo e Escala',
-                'taf': 'TAF e Fatos Observados',
-                'apoio': 'Material de Apoio',
-                'debate': 'Área Livre / Mural'
-            };
-
             modulos.forEach(m => {
                 document.getElementById('modulo-' + m).classList.add('hidden');
                 const btn = document.getElementById('btn-' + m);
-                if(btn) btn.className = "menu-item";
+                if(btn) btn.className = "w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold text-slate-300 hover:bg-pmmt-light hover:text-white transition-all";
             });
 
             document.getElementById('modulo-' + moduloDestino).classList.remove('hidden');
             const btnAtivo = document.getElementById('btn-' + moduloDestino);
-            if(btnAtivo) btnAtivo.className = "menu-item ativo";
+            if(btnAtivo) btnAtivo.className = "w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold transition-all bg-pmmt-gold text-pmmt-blue shadow-md";
             
-            document.getElementById('txt-breadcrumb').innerText = nomes[moduloDestino];
-
             if (window.innerWidth < 768) {
-                document.getElementById('wrapperLateral').classList.add('hidden');
+                document.getElementById('menuLateral').classList.add('hidden');
             }
         }
 
@@ -572,11 +507,11 @@
             if (conteudo.style.maxHeight !== '0px') {
                 conteudo.style.maxHeight = '0px';
                 icone.style.transform = 'rotate(180deg)';
-                if(conteudoId === 'conteudoCotas' || conteudoId === 'conteudoPlanejamento') conteudo.style.padding = '0px 1rem';
+                if(conteudoId === 'conteudoCotas' || conteudoId === 'conteudoPlanejamento') conteudo.style.padding = '0px 1.5rem';
             } else {
                 conteudo.style.maxHeight = '4000px';
                 icone.style.transform = 'rotate(0deg)';
-                if(conteudoId === 'conteudoCotas' || conteudoId === 'conteudoPlanejamento') conteudo.style.padding = '1rem';
+                if(conteudoId === 'conteudoCotas' || conteudoId === 'conteudoPlanejamento') conteudo.style.padding = '1.5rem';
             }
         }
 
@@ -592,15 +527,15 @@
             let categoriasAtuais = tipo === 'receita' ? catReceitas : catDespesas;
 
             if(tipo === 'receita') {
-                lblRec.className = "border border-emerald-400 bg-emerald-50 rounded p-1.5 text-center cursor-pointer";
-                lblDes.className = "border border-slate-300 bg-white rounded p-1.5 text-center cursor-pointer hover:bg-slate-50";
+                lblRec.className = "border-2 border-emerald-600 bg-emerald-50 rounded-lg p-2 text-center cursor-pointer transition text-black";
+                lblDes.className = "border-2 border-slate-200 rounded-lg p-2 text-center cursor-pointer hover:bg-slate-50 transition text-black";
             } else {
-                lblDes.className = "border border-rose-400 bg-rose-50 rounded p-1.5 text-center cursor-pointer";
-                lblRec.className = "border border-slate-300 bg-white rounded p-1.5 text-center cursor-pointer hover:bg-slate-50";
+                lblDes.className = "border-2 border-rose-600 bg-rose-50 rounded-lg p-2 text-center cursor-pointer transition text-black";
+                lblRec.className = "border-2 border-slate-200 rounded-lg p-2 text-center cursor-pointer hover:bg-slate-50 transition text-black";
             }
 
             categoriasAtuais.sort().forEach(c => selCat.add(new Option(c, c)));
-            selCat.add(new Option("➕ Cadastrar Nova...", "NOVA"));
+            selCat.add(new Option("➕ Cadastrar Nova Categoria...", "NOVA"));
         }
 
         function verificarNovaCategoria() {
@@ -635,7 +570,9 @@
             
             listaAlunosFull = dbData;
             dbData.forEach(aluno => { 
+                // Adiciona o '5' na frente e garante que o número tenha sempre 2 dígitos (01 a 30)
                 const numeroFormatado = "5" + aluno.numero.toString().padStart(2, '0');
+                // Usa o QRA se existir. Se por algum erro faltar, usa o nome civil
                 const nomeExibicao = aluno.qra ? aluno.qra : aluno.nome;
                 
                 alunosMap[aluno.id] = `${numeroFormatado} - ${nomeExibicao}`; 
@@ -754,11 +691,11 @@
 
             ['data', 'descricao', 'categoria', 'aluno', 'valor'].forEach(col => {
                 const el = document.getElementById(`sort-${col}`);
-                if(el) el.className = 'fa-solid fa-sort ml-1 opacity-60 no-print';
+                if(el) el.className = 'fa-solid fa-sort ml-1 opacity-20 no-print';
             });
             const iconClass = direcaoOrdenacao === 'asc' ? 'fa-sort-up' : 'fa-sort-down';
             const targetSort = document.getElementById(`sort-${colunaOrdenacao}`);
-            if(targetSort) targetSort.className = `fa-solid ${iconClass} ml-1 text-white opacity-100 no-print`;
+            if(targetSort) targetSort.className = `fa-solid ${iconClass} ml-1 text-pmmt-gold opacity-100 no-print`;
 
             let dadosOrdenados = [...transacoesGlobais].sort((a, b) => {
                 let vA = a[colunaOrdenacao]; let vB = b[colunaOrdenacao];
@@ -777,20 +714,21 @@
             dadosOrdenados.forEach(t => {
                 const dataFormatada = t.data.split('-').reverse().join('/');
                 const valorFormatado = parseFloat(t.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-                const corText = t.tipo === 'receita' ? 'text-emerald-600' : 'text-rose-600';
-                const nomeAluno = t.aluno_id ? alunosMap[t.aluno_id] : '<span class="text-slate-500 italic">Lançamento Geral</span>';
+                const corText = t.tipo === 'receita' ? 'text-emerald-700' : 'text-rose-700';
+                const iconOp = t.tipo === 'receita' ? '+' : '-';
+                const nomeAluno = t.aluno_id ? alunosMap[t.aluno_id] : '<span class="text-black font-bold uppercase tracking-wider">Lançamento Geral</span>';
 
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 transition";
+                tr.className = "hover:bg-slate-50 transition border-b border-slate-200";
                 tr.innerHTML = `
-                    <td class="px-4 py-2.5 whitespace-nowrap text-slate-700">${dataFormatada}</td>
-                    <td class="px-4 py-2.5 font-semibold text-slate-800">${t.descricao}</td>
-                    <td class="px-4 py-2.5 text-slate-600"><span class="bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded text-[11px]">${t.categoria}</span></td>
-                    <td class="px-4 py-2.5 text-slate-700 whitespace-nowrap">${nomeAluno}</td>
-                    <td class="px-4 py-2.5 whitespace-nowrap text-right font-bold ${corText}">${t.tipo === 'receita' ? '+' : '-'} ${valorFormatado}</td>
-                    <td class="px-4 py-2.5 text-center no-print flex justify-center gap-2 whitespace-nowrap">
-                        <button onclick="editarDescricao('${t.id}', '${t.descricao}')" class="text-slate-400 hover:text-sys-dark" title="Editar"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="deletarTransacao('${t.id}')" class="text-slate-400 hover:text-rose-500" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                    <td class="px-6 py-4 whitespace-nowrap text-black font-medium">${dataFormatada}</td>
+                    <td class="px-6 py-4 font-bold text-black whitespace-nowrap">${t.descricao}</td>
+                    <td class="px-6 py-4 text-black whitespace-nowrap"><span class="bg-slate-200 px-2 py-1 rounded text-xs font-semibold border border-slate-300">${t.categoria}</span></td>
+                    <td class="px-6 py-4 text-xs font-bold text-black whitespace-nowrap">${nomeAluno}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right font-extrabold ${corText}">${iconOp} ${valorFormatado}</td>
+                    <td class="px-6 py-4 text-center no-print flex justify-center gap-2 whitespace-nowrap">
+                        <button onclick="editarDescricao('${t.id}', '${t.descricao}')" class="text-slate-500 hover:text-pmmt-blue transition p-2 bg-slate-100 rounded shadow-sm" title="Editar Descrição"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deletarTransacao('${t.id}')" class="text-rose-400 hover:text-white hover:bg-rose-500 transition p-2 bg-rose-50 rounded shadow-sm" title="Excluir Definitivo"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -803,29 +741,30 @@
             grid.innerHTML = '';
             listaAlunosFull.forEach(aluno => {
                 const totalPago = pagamentos[aluno.id] || 0;
-                let status, corBox, corTexto, bgBar;
+                let status, corBox, corTexto, icone;
                 if (totalPago >= VALOR_COTA) {
-                    status = "EM DIA"; corBox = "border-emerald-200 bg-emerald-50"; corTexto = "text-emerald-700"; bgBar = "bg-emerald-500";
+                    status = "EM DIA"; corBox = "bg-emerald-50 border-emerald-300"; corTexto = "text-emerald-700"; icone = '<i class="fa-solid fa-circle-check"></i>';
                 } else if (totalPago > 0 && totalPago < VALOR_COTA) {
-                    status = "PARCIAL"; corBox = "border-amber-200 bg-amber-50"; corTexto = "text-amber-700"; bgBar = "bg-amber-400";
+                    status = "PARCIAL"; corBox = "bg-amber-50 border-amber-300"; corTexto = "text-amber-700"; icone = '<i class="fa-solid fa-circle-half-stroke"></i>';
                 } else {
-                    status = "PENDENTE"; corBox = "border-slate-200 bg-white"; corTexto = "text-rose-600"; bgBar = "bg-rose-400";
+                    status = "PENDENTE"; corBox = "bg-white border-rose-200"; corTexto = "text-rose-600"; icone = '<i class="fa-solid fa-triangle-exclamation"></i>';
                 }
                 
+                // Formatação Nova para 500 + QRA no Painel de Cotas
                 const numeroFormatado = "5" + aluno.numero.toString().padStart(2, '0');
                 const nomeExibicao = aluno.qra ? aluno.qra : (aluno.nome.split(' ')[0]);
                 
                 grid.innerHTML += `
-                    <div class="border rounded p-2.5 ${corBox}">
-                        <div class="flex justify-between items-center mb-1">
-                            <span class="text-[10px] font-bold text-slate-500">${numeroFormatado}</span>
-                            <span class="text-[9px] font-bold ${corTexto}">${status}</span>
+                    <div class="border rounded-lg p-3 ${corBox} shadow-sm flex flex-col justify-between">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-[10px] font-bold text-slate-500 bg-slate-200 px-1.5 rounded">${numeroFormatado}</span>
+                            <span class="text-[10px] font-bold ${corTexto}">${icone} ${status}</span>
                         </div>
-                        <p class="text-xs font-semibold text-slate-800 truncate uppercase mb-1.5" title="${aluno.nome}">${nomeExibicao}</p>
-                        <div class="w-full bg-slate-200 h-1 mb-1">
-                            <div class="${bgBar} h-1" style="width: ${Math.min((totalPago/VALOR_COTA)*100, 100)}%"></div>
+                        <p class="text-xs font-extrabold text-black leading-tight mb-1 truncate uppercase" title="${aluno.nome}">${nomeExibicao}</p>
+                        <div class="w-full bg-slate-200 rounded-full h-1.5 mb-1 mt-1">
+                            <div class="bg-emerald-500 h-1.5 rounded-full" style="width: ${Math.min((totalPago/VALOR_COTA)*100, 100)}%"></div>
                         </div>
-                        <p class="text-[9px] text-slate-500">R$ ${totalPago.toFixed(2).replace('.', ',')} / 150</p>
+                        <p class="text-[10px] font-bold text-black">R$ ${totalPago.toFixed(2).replace('.', ',')} / R$ 150,00</p>
                     </div>
                 `;
             });
@@ -839,8 +778,8 @@
 
             const labels = Object.keys(dadosCat);
             let greenIdx = 0; let redIdx = 0;
-            const tonsVerde = ['#10b981', '#059669', '#34d399', '#047857', '#6ee7b7'];
-            const tonsVermelho = ['#f43f5e', '#e11d48', '#fb7185', '#be123c', '#fca5a5'];
+            const tonsVerde = ['#059669', '#10b981', '#34d399', '#6ee7b7', '#a7f3d0'];
+            const tonsVermelho = ['#dc2626', '#f43f5e', '#fb7185', '#fca5a5', '#fecdd3'];
 
             const cores = labels.map(cat => {
                 const transExemplo = transacoesGlobais.find(t => t.categoria === cat);
@@ -860,11 +799,10 @@
                     datasets: [{
                         data: Object.values(dadosCat),
                         backgroundColor: cores,
-                        borderWidth: 1, 
-                        borderColor: '#ffffff'
+                        borderWidth: 2, borderColor: '#ffffff'
                     }]
                 },
-                options: { responsive: true, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { font: { family: '"Open Sans"', size: 11 }, color: '#333', usePointStyle: true, boxWidth: 8 } } } }
+                options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { family: 'Montserrat', size: 10, weight: 'bold' }, color: 'black' } } } }
             });
         }
 
@@ -908,7 +846,7 @@
         }
 
         async function concluirPrevisao(id) {
-            if(confirm("Marcar como CONCLUÍDO?")) {
+            if(confirm("Marcar este item como COMPRADO/CONCLUÍDO? \n(Lembre-se de registrar a despesa real no Livro Caixa).")) {
                 mostrarLoading(true);
                 await supabaseClient.from('previsao_despesas').update({ status: 'CONCLUIDO' }).eq('id', id);
                 await carregarPrevisoes();
@@ -931,19 +869,19 @@
                 tr.className = p.status === 'CONCLUIDO' ? 'bg-slate-50 opacity-60' : 'hover:bg-slate-50';
                 
                 let statusBadge = p.status === 'CONCLUIDO' 
-                    ? `<span class="text-emerald-600 text-[10px] font-bold uppercase"><i class="fa-solid fa-check"></i> Comprado</span>`
-                    : `<button onclick="concluirPrevisao('${p.id}')" class="text-sys-dark hover:underline text-[10px] font-bold uppercase">Pendente</button>`;
+                    ? `<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-xs font-bold"><i class="fa-solid fa-check"></i> Comprado</span>`
+                    : `<button onclick="concluirPrevisao('${p.id}')" class="bg-amber-100 hover:bg-amber-200 text-amber-700 px-2 py-1 rounded text-xs font-bold transition whitespace-nowrap">Pendente (Marcar ✅)</button>`;
 
                 tr.innerHTML = `
-                    <td class="p-2.5 whitespace-nowrap text-slate-700">${dataFormatada}</td>
-                    <td class="p-2.5 whitespace-nowrap">
-                        <p class="font-semibold text-slate-800">${p.descricao}</p>
-                        <p class="text-[10px] text-slate-500 uppercase">${p.categoria}</p>
+                    <td class="p-3 whitespace-nowrap">${dataFormatada}</td>
+                    <td class="p-3 whitespace-nowrap">
+                        <p class="font-bold text-pmmt-blue">${p.descricao}</p>
+                        <p class="text-xs text-slate-500 uppercase">${p.categoria}</p>
                     </td>
-                    <td class="p-2.5 text-right font-semibold text-slate-700">${valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
-                    <td class="p-2.5 text-center">${statusBadge}</td>
-                    <td class="p-2.5 text-center whitespace-nowrap">
-                        <button onclick="deletarPrevisao('${p.id}')" class="text-slate-400 hover:text-rose-500"><i class="fa-solid fa-trash"></i></button>
+                    <td class="p-3 text-right font-bold text-amber-600 whitespace-nowrap">${valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                    <td class="p-3 text-center">${statusBadge}</td>
+                    <td class="p-3 text-center whitespace-nowrap">
+                        <button onclick="deletarPrevisao('${p.id}')" class="text-rose-400 hover:text-rose-600 p-1"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -972,18 +910,18 @@
             txtProjetado.innerText = saldoProjetado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
             if (saldoProjetado < 0) {
-                boxProjetado.className = "border border-rose-300 p-3 rounded transition-colors bg-rose-50";
-                txtProjetado.className = "text-lg font-bold text-rose-700";
-                subIndicador.className = "text-rose-500 font-bold";
+                boxProjetado.className = "bg-rose-50 border-l-4 border-rose-500 p-4 rounded shadow-sm transition-colors";
+                txtProjetado.className = "text-xl font-extrabold text-rose-700";
+                subIndicador.className = "text-rose-400 font-bold animate-pulse";
                 alertaCota.classList.remove('hidden');
                 
                 const qdtAlunos = listaAlunosFull.length > 0 ? listaAlunosFull.length : 30;
                 const cotaPorAluno = Math.abs(saldoProjetado) / qdtAlunos;
                 document.getElementById('valorCotaExtra').innerText = cotaPorAluno.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             } else {
-                boxProjetado.className = "border border-emerald-300 p-3 rounded transition-colors bg-emerald-50";
-                txtProjetado.className = "text-lg font-bold text-emerald-700";
-                subIndicador.className = "text-emerald-500 font-bold";
+                boxProjetado.className = "bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded shadow-sm transition-colors";
+                txtProjetado.className = "text-xl font-extrabold text-emerald-700";
+                subIndicador.className = "text-emerald-400 font-bold";
                 alertaCota.classList.add('hidden');
             }
         }
@@ -995,6 +933,11 @@
             
             const dataBase = new Date('2026-06-29T12:00:00Z'); 
             const sequencia = ['CHARLIE', 'ALFA', 'BRAVO'];
+            const cores = {
+                'ALFA': 'bg-blue-100 text-blue-800 border-blue-300', 
+                'BRAVO': 'bg-amber-100 text-amber-800 border-amber-300', 
+                'CHARLIE': 'bg-emerald-100 text-emerald-800 border-emerald-300'
+            };
 
             let hoje = new Date();
             hoje.setHours(12, 0, 0, 0); 
@@ -1008,16 +951,17 @@
                 if (indexEquipe < 0) indexEquipe += 3;
 
                 let equipeDoDia = sequencia[indexEquipe];
+                let corTag = cores[equipeDoDia];
                 
-                let ehHoje = i === 0 ? 'border-sys-dark bg-blue-50/50' : 'border-slate-200 bg-white';
-                let txtHoje = i === 0 ? '<span class="absolute -top-2 bg-sys-dark text-white text-[9px] font-bold px-1.5 py-0.5 rounded uppercase">Hoje</span>' : '';
+                let ehHoje = i === 0 ? 'border-pmmt-gold border-2 bg-yellow-50 shadow-md scale-105 z-10' : 'border-slate-200 bg-white';
+                let txtHoje = i === 0 ? '<div class="text-[10px] text-pmmt-blue font-black uppercase mb-1 bg-pmmt-gold/20 px-2 py-0.5 rounded-full">Hoje</div>' : '';
 
                 grid.innerHTML += `
-                    <div class="relative p-2.5 rounded border flex flex-col items-center justify-center ${ehHoje}">
+                    <div class="p-3 rounded-lg border text-center flex flex-col items-center justify-center transition-all ${ehHoje}">
                         ${txtHoje}
-                        <p class="text-[10px] text-slate-500 uppercase mt-1">${dataAlvo.toLocaleDateString('pt-BR', {weekday: 'short'})}</p>
-                        <p class="text-base font-bold text-slate-800">${dataAlvo.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'})}</p>
-                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 mt-1">${equipeDoDia}</span>
+                        <p class="text-xs text-slate-500 font-bold uppercase">${dataAlvo.toLocaleDateString('pt-BR', {weekday: 'short'})}</p>
+                        <p class="text-xl font-extrabold text-black mb-2">${dataAlvo.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'})}</p>
+                        <span class="text-xs font-black px-3 py-1 rounded-full border ${corTag}">${equipeDoDia}</span>
                     </div>
                 `;
             }
@@ -1037,25 +981,31 @@
                 let equipe = aluno.equipe || '-';
                 let comandante = aluno.comandante || '-';
                 
+                // Formatação Nova para exibir na listagem do Efetivo 
                 let numFormatado = "5" + aluno.numero.toString().padStart(2, '0');
 
-                let linhaMini = `<li class="py-1.5 flex justify-between items-center px-1">
-                                    <span class="text-[11px] font-semibold text-slate-700"><span class="text-slate-400 mr-2">${numFormatado}</span> ${qra}</span> 
+                let linhaMini = `<li class="py-2.5 flex justify-between items-center hover:bg-slate-50 px-2 rounded transition cursor-default">
+                                    <span><span class="text-slate-400 font-bold mr-2">${numFormatado}</span> ${qra}</span> 
                                  </li>`;
                 
                 if(equipe === 'ALFA') tabAlfa.innerHTML += linhaMini;
                 if(equipe === 'BRAVO') tabBravo.innerHTML += linhaMini;
                 if(equipe === 'CHARLIE') tabCharlie.innerHTML += linhaMini;
 
+                let badgeColor = '';
+                if(equipe === 'ALFA') badgeColor = 'bg-blue-100 text-blue-800';
+                if(equipe === 'BRAVO') badgeColor = 'bg-amber-100 text-amber-800';
+                if(equipe === 'CHARLIE') badgeColor = 'bg-emerald-100 text-emerald-800';
+
                 tabGeral.innerHTML += `
-                    <tr class="hover:bg-slate-50 border-b border-slate-200">
-                        <td class="px-4 py-2 font-medium text-slate-600 whitespace-nowrap">${numFormatado}</td>
-                        <td class="px-4 py-2 font-bold text-slate-800 whitespace-nowrap uppercase">${qra}</td>
-                        <td class="px-4 py-2 text-slate-700 whitespace-nowrap uppercase">${aluno.nome}</td>
-                        <td class="px-4 py-2 text-center whitespace-nowrap">
-                            <span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 text-[10px] font-bold">${equipe}</span>
+                    <tr class="hover:bg-slate-50 transition border-b border-slate-200">
+                        <td class="px-6 py-4 font-bold text-slate-500 whitespace-nowrap">${numFormatado}</td>
+                        <td class="px-6 py-4 font-extrabold text-pmmt-blue whitespace-nowrap uppercase">${qra}</td>
+                        <td class="px-6 py-4 font-semibold text-slate-700 whitespace-nowrap uppercase">${aluno.nome}</td>
+                        <td class="px-6 py-4 text-center whitespace-nowrap">
+                            <span class="px-3 py-1 rounded text-xs font-bold ${badgeColor}">${equipe}</span>
                         </td>
-                        <td class="px-4 py-2 text-slate-600 whitespace-nowrap">${comandante}</td>
+                        <td class="px-6 py-4 font-bold text-slate-600 whitespace-nowrap">${comandante}</td>
                     </tr>
                 `;
             });
