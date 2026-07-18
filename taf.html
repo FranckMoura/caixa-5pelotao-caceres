@@ -33,9 +33,17 @@
 
     <div id="painelTodos" class="hidden space-y-6">
         <div class="bg-white rounded-xl shadow-md border-t-4 border-pmmt-blue p-5 overflow-hidden">
-            <div class="flex justify-between items-center border-b border-slate-200 pb-3 mb-4">
-                <h3 class="text-sm font-bold text-slate-700"><i class="fa-solid fa-users-viewfinder text-pmmt-blue mr-2"></i> Resumo Geral do Pelotão</h3>
-                <p class="text-[10px] text-slate-500 uppercase font-bold">Exibindo: Último TAF lançado e Soma de F.O.s</p>
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-200 pb-3 mb-4 gap-3">
+                <div>
+                    <h3 class="text-sm font-bold text-slate-700"><i class="fa-solid fa-users-viewfinder text-pmmt-blue mr-2"></i> Resumo Geral do Pelotão</h3>
+                    <p class="text-[10px] text-slate-500 uppercase font-bold mt-0.5">Cruzamento de dados físicos e disciplinares</p>
+                </div>
+                <div class="w-full sm:w-auto flex items-center gap-2">
+                    <label for="filtroDataTaf" class="text-[11px] font-bold text-slate-600 uppercase whitespace-nowrap"><i class="fa-solid fa-filter text-pmmt-gold"></i> Filtrar TAF:</label>
+                    <select id="filtroDataTaf" onchange="filtrarDataMudada()" class="bg-slate-100 border border-slate-300 text-pmmt-blue text-xs font-bold p-2 rounded-lg outline-none focus:border-pmmt-gold min-w-[200px]">
+                        <option value="ULTIMO">Último TAF de cada Aluno</option>
+                    </select>
+                </div>
             </div>
             
             <div class="overflow-x-auto">
@@ -43,7 +51,7 @@
                     <thead class="bg-slate-100 font-extrabold text-slate-500 uppercase">
                         <tr>
                             <th class="p-3 border-b border-slate-200">Aluno</th>
-                            <th class="p-3 text-center border-b border-slate-200">Última Corrida</th>
+                            <th class="p-3 text-center border-b border-slate-200">Corrida</th>
                             <th class="p-3 text-center border-b border-slate-200">Barra</th>
                             <th class="p-3 text-center border-b border-slate-200">Abd.</th>
                             <th class="p-3 text-center border-b border-slate-200">Sugado</th>
@@ -60,7 +68,6 @@
     </div>
 
     <div id="painelAluno" class="hidden space-y-6">
-        
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div class="bg-white p-5 rounded-xl shadow-md border-t-4 border-pmmt-blue flex flex-col">
                 <h3 class="text-sm font-bold text-slate-700 border-b pb-2 mb-4"><i class="fa-solid fa-weight-scale text-pmmt-blue mr-2"></i> Perfil Biométrico</h3>
@@ -195,6 +202,8 @@
         let listaAlunosFull = [];
         let historicoTAF = [];
         let historicoFO = [];
+        let cacheTodosTAFs = []; // Cache guardado localmente para os filtros de data serem velozes
+        let cacheTodosFOs = [];
         let graficoEvolucaoTAF = null;
 
         const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
@@ -224,22 +233,21 @@
             const select = document.getElementById('alunoSelecionado');
             alunoSelecionadoId = select.value;
             
-            // Se não selecionar nada
             if(!alunoSelecionadoId) {
                 document.getElementById('painelAluno').classList.add('hidden');
                 document.getElementById('painelTodos').classList.add('hidden');
                 return;
             }
 
-            // Se selecionar "TODOS"
             if(alunoSelecionadoId === 'TODOS') {
                 document.getElementById('painelAluno').classList.add('hidden');
                 document.getElementById('painelTodos').classList.remove('hidden');
-                await carregarResumoGeral();
+                // Reseta o filtro para carregar o histórico geral inicialmente
+                document.getElementById('filtroDataTaf').value = 'ULTIMO';
+                await prepararDadosTodos();
                 return;
             }
             
-            // Se selecionar um Aluno Individual
             document.getElementById('painelTodos').classList.add('hidden');
             document.getElementById('painelAluno').classList.remove('hidden');
             mostrarLoading(true);
@@ -256,54 +264,82 @@
             mostrarLoading(false);
         }
 
-        // --- NOVA FUNÇÃO PARA CARREGAR A VISAO GERAL DE TODOS ---
-        async function carregarResumoGeral() {
+        // Busca inicial de dados do banco para montar a estrutura e popular o filtro de datas
+        async function prepararDadosTodos() {
             mostrarLoading(true);
+            const { data: todosTAFs } = await supabaseClient.from('taf_resultados').select('*').order('data_teste', { ascending: false });
+            const { data: todosFOs } = await supabaseClient.from('fatos_observados').select('*');
             
-            // Puxa todos os TAFs e FOs para cruzamento de dados
-            const { data: todosTAFs, error: errTAF } = await supabaseClient.from('taf_resultados').select('*').order('data_teste', { ascending: false });
-            const { data: todosFOs, error: errFO } = await supabaseClient.from('fatos_observados').select('*');
+            cacheTodosTAFs = todosTAFs || [];
+            cacheTodosFOs = todosFOs || [];
 
+            // Montagem dinâmica das opções do select de data
+            const selectData = document.getElementById('filtroDataTaf');
+            selectData.innerHTML = '<option value="ULTIMO">Último TAF de cada Aluno</option>';
+
+            // Extrai as datas únicas e as ordena da mais recente para a mais antiga
+            const datasUnicas = [...new Set(cacheTodosTAFs.map(t => t.data_teste))].sort((a, b) => new Date(b) - new Date(a));
+            
+            datasUnicas.forEach(dt => {
+                const dataPt = dt.split('-').reverse().join('/');
+                selectData.add(new Option(`TAF Aplicado em ${dataPt}`, dt));
+            });
+
+            renderizarTabelaGeral('ULTIMO');
+            mostrarLoading(false);
+        }
+
+        // Chamado sempre que o usuário alterar o filtro de data na tela
+        function filtrarDataMudada() {
+            const dataSelecionada = document.getElementById('filtroDataTaf').value;
+            renderizarTabelaGeral(dataSelecionada);
+        }
+
+        // Renderiza a tabela aplicando a lógica do filtro escolhido
+        function renderizarTabelaGeral(modoFiltro) {
             const tbody = document.getElementById('tabelaResumoGeral');
             tbody.innerHTML = '';
 
             listaAlunosFull.forEach(aluno => {
-                // Localiza o TAF mais recente deste aluno (como está desc no banco, o primeiro '.find' é o último feito)
-                const ultimoTAF = todosTAFs?.find(t => t.aluno_id == aluno.id);
+                let tafDoAluno = null;
+
+                if (modoFiltro === 'ULTIMO') {
+                    // Pega o TAF mais recente cadastrado para o aluno
+                    tafDoAluno = cacheTodosTAFs.find(t => t.aluno_id == aluno.id);
+                } else {
+                    // Filtra o TAF feito exatamente na data selecionada
+                    tafDoAluno = cacheTodosTAFs.find(t => t.aluno_id == aluno.id && t.data_teste === modoFiltro);
+                }
                 
-                // Contabiliza os FOs
-                const fosAluno = todosFOs?.filter(fo => fo.aluno_id == aluno.id) || [];
+                // Contabilização permanente de F.O.s históricos do aluno
+                const fosAluno = cacheTodosFOs.filter(fo => fo.aluno_id == aluno.id);
                 const foPositivo = fosAluno.filter(fo => fo.tipo === 'FO+').length;
                 const foNegativo = fosAluno.filter(fo => fo.tipo === 'FO-').length;
 
-                // Formatação do QRA e Numeração
                 const numFormatado = "5" + aluno.numero.toString().padStart(2, '0');
                 const nomeDisplay = aluno.qra || aluno.nome.split(' ')[0];
 
-                // Extração dos dados do TAF (ou traço se não tiver feito nenhum)
                 let strCorrida = '-', strBarra = '-', strAbd = '-', strSugado = '-', strNatacao = '-';
                 
-                if (ultimoTAF) {
-                    strCorrida = ultimoTAF.corrida_metros ? `${ultimoTAF.corrida_metros}m` : '-';
-                    strAbd = ultimoTAF.abdominal_reps ? `${ultimoTAF.abdominal_reps}` : '-';
-                    strSugado = ultimoTAF.meio_sugado_reps ? `${ultimoTAF.meio_sugado_reps}` : '-';
+                if (tafDoAluno) {
+                    strCorrida = tafDoAluno.corrida_metros ? `${tafDoAluno.corrida_metros}m` : '-';
+                    strAbd = tafDoAluno.abdominal_reps ? `${tafDoAluno.abdominal_reps}` : '-';
+                    strSugado = tafDoAluno.meio_sugado_reps ? `${tafDoAluno.meio_sugado_reps}` : '-';
                     
-                    const isM = ultimoTAF.sexo === 'M';
-                    const bVal = isM ? ultimoTAF.barra_reps : ultimoTAF.barra_tempo_segs;
+                    const isM = tafDoAluno.sexo === 'M';
+                    const bVal = isM ? tafDoAluno.barra_reps : tafDoAluno.barra_tempo_segs;
                     strBarra = bVal !== null ? (isM ? bVal + ' r' : bVal + ' s') : '-';
                     
-                    if (ultimoTAF.natacao_tempo_segs) {
-                        const m = Math.floor(ultimoTAF.natacao_tempo_segs / 60);
-                        const s = ultimoTAF.natacao_tempo_segs % 60;
+                    if (tafDoAluno.natacao_tempo_segs) {
+                        const m = Math.floor(tafDoAluno.natacao_tempo_segs / 60);
+                        const s = tafDoAluno.natacao_tempo_segs % 60;
                         strNatacao = m > 0 ? `${m}m${s}s` : `${s}s`;
                     }
                 }
 
-                // Badge de FO
                 const clsPos = foPositivo > 0 ? 'bg-emerald-100 text-emerald-700' : 'text-slate-300';
                 const clsNeg = foNegativo > 0 ? 'bg-rose-100 text-rose-700' : 'text-slate-300';
 
-                // Criação da Linha da Tabela
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition";
                 tr.innerHTML = `
@@ -321,8 +357,6 @@
                 `;
                 tbody.appendChild(tr);
             });
-
-            mostrarLoading(false);
         }
 
         async function salvarBiometria(e) {
@@ -339,7 +373,7 @@
             if(!error) {
                 const index = listaAlunosFull.findIndex(a => a.id == alunoSelecionadoId);
                 if(index > -1) listaAlunosFull[index] = { ...listaAlunosFull[index], ...updates };
-                alert("Perfil biométrico atualizado no sistema!");
+                alert("Perfil biométrico updated no sistema!");
             }
             mostrarLoading(false);
         }
