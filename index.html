@@ -430,10 +430,22 @@
                     </section>
 
                     <section id="modulo-apoio" class="hidden space-y-6">
-                        <div class="bg-white shadow-sm border border-slate-300 p-8 text-center mt-4">
-                            <i class="fa-solid fa-folder-open text-4xl text-sys-dark mb-3"></i>
-                            <h2 class="text-lg font-bold text-slate-700">Material de Apoio</h2>
-                            <p class="text-sm text-slate-500 mt-2">Repositório de Manuais, Legislações, POPs e Canções.</p>
+                        <div class="bg-white shadow-sm border border-slate-300 overflow-hidden">
+                            <div class="bg-sys-dark text-white px-5 py-4 flex justify-between items-center">
+                                <div>
+                                    <h2 class="text-base font-bold tracking-wide"><i class="fa-solid fa-folder-open text-amber-500 mr-2"></i> Repositório Acadêmico</h2>
+                                    <p class="text-[11px] text-slate-300 uppercase mt-0.5">Manuais, Legislações, POPs e Canções Oficiais</p>
+                                </div>
+                                <button onclick="carregarMateriaisApoio()" class="bg-white/20 hover:bg-white/30 text-white p-2 rounded transition">
+                                    <i class="fa-solid fa-arrows-rotate"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="p-6">
+                                <div id="containerMateriais" class="space-y-8">
+                                    <p class="text-sm text-slate-500 text-center py-4"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Carregando acervo...</p>
+                                </div>
+                            </div>
                         </div>
                     </section>
                     
@@ -542,8 +554,8 @@
                 await carregarAlunos();
                 await carregarTransacoes();
                 await carregarPrevisoes();
+                await carregarMateriaisApoio();
 
-                // Recarrega o iframe do TAF de forma limpa para puxar os dados sob o login validado
                 const iframe = document.getElementById('iframeTaf');
                 if (iframe && iframe.contentWindow) {
                     iframe.contentWindow.location.reload();
@@ -746,7 +758,7 @@
                 }
             } catch (err) {
                 console.error("Erro interno ao salvar transação:", err);
-            } bits: {
+            } finally {
                 mostrarLoading(false);
             }
         }
@@ -1115,6 +1127,52 @@
                         <td class="px-4 py-2 text-slate-600 whitespace-nowrap">${comandante}</td>
                     </tr>
                 `;
+            });
+        }
+
+        async function carregarMateriaisApoio() {
+            const container = document.getElementById('containerMateriais');
+            if(!container) return;
+
+            const { data, error } = await supabaseClient.from('material_apoio').select('*').order('categoria', { ascending: true }).order('titulo', { ascending: true });
+            
+            if (error || !data || data.length === 0) {
+                container.innerHTML = '<div class="bg-slate-50 border border-slate-200 text-center p-8 rounded text-slate-500 text-sm"><i class="fa-solid fa-folder-blank text-3xl mb-2 block"></i>Nenhum material disponível no momento.</div>';
+                return;
+            }
+
+            const categorias = {};
+            data.forEach(item => {
+                if (!categorias[item.categoria]) categorias[item.categoria] = [];
+                categorias[item.categoria].push(item);
+            });
+
+            container.innerHTML = '';
+
+            Object.keys(categorias).sort().forEach(cat => {
+                const section = document.createElement('div');
+                
+                let arquivosHTML = categorias[cat].map(arq => `
+                    <a href="${arq.url_arquivo}" target="_blank" class="flex items-center gap-3 p-3 border border-slate-200 rounded-lg bg-slate-50 hover:bg-slate-100 hover:border-sys-dark transition group">
+                        <div class="bg-sys-dark text-white w-10 h-10 flex items-center justify-center rounded shrink-0 group-hover:scale-105 transition-transform">
+                            <i class="fa-solid ${arq.icone || 'fa-file-pdf'} text-lg"></i>
+                        </div>
+                        <div class="overflow-hidden">
+                            <h4 class="text-xs font-bold text-slate-800 truncate">${arq.titulo}</h4>
+                            <p class="text-[9px] font-semibold text-slate-500 uppercase mt-0.5">Acessar Arquivo</p>
+                        </div>
+                    </a>
+                `).join('');
+
+                section.innerHTML = `
+                    <div class="mb-3 border-b border-slate-200 pb-1">
+                        <h3 class="text-sm font-bold text-sys-dark uppercase tracking-wider"><i class="fa-solid fa-tags text-slate-400 mr-2"></i>${cat}</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                        ${arquivosHTML}
+                    </div>
+                `;
+                container.appendChild(section);
             });
         }
 
