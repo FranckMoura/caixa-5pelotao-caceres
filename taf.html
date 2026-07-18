@@ -203,13 +203,16 @@
             document.getElementById('painelAluno').classList.remove('hidden');
             mostrarLoading(true);
             
-            const aluno = listaAlunosFull.find(a => a.id === alunoSelecionadoId);
-            document.getElementById('bioTipagem').value = aluno.tipagem_sanguinea || '';
-            document.getElementById('bioAltura').value = aluno.altura || '';
-            document.getElementById('bioPeso').value = aluno.peso || '';
-            
-            await carregarTAF();
-            await carregarFO();
+            // Corrigido para "==" permitindo cruzamento de ID tipo texto e número
+            const aluno = listaAlunosFull.find(a => a.id == alunoSelecionadoId);
+            if (aluno) {
+                document.getElementById('bioTipagem').value = aluno.tipagem_sanguinea || '';
+                document.getElementById('bioAltura').value = aluno.altura || '';
+                document.getElementById('bioPeso').value = aluno.peso || '';
+                
+                await carregarTAF();
+                await carregarFO();
+            }
             mostrarLoading(false);
         }
 
@@ -225,7 +228,7 @@
             
             const { error } = await supabaseClient.from('alunos_pelotao').update(updates).eq('id', alunoSelecionadoId);
             if(!error) {
-                const index = listaAlunosFull.findIndex(a => a.id === alunoSelecionadoId);
+                const index = listaAlunosFull.findIndex(a => a.id == alunoSelecionadoId);
                 if(index > -1) listaAlunosFull[index] = { ...listaAlunosFull[index], ...updates };
                 alert("Perfil biométrico atualizado no sistema!");
             }
@@ -331,7 +334,7 @@
         }
 
         function editarTAF(id) {
-            const t = historicoTAF.find(x => x.id === id);
+            const t = historicoTAF.find(x => x.id == id);
             if(!t) return;
             document.getElementById('tafId').value = t.id;
             document.getElementById('tafData').value = t.data_teste;
