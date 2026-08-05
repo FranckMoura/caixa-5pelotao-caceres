@@ -56,11 +56,34 @@
             font-weight: 700; 
         }
 
+        /* --- CONTROLE INTELIGENTE DE IMPRESSÃO --- */
         @media print {
-            aside, .no-print, #telaLogin, footer, header, #breadcrumb-bar { display: none !important; }
-            main { margin: 0 !important; padding: 0 !important; width: 100% !important; background: white; }
-            body { background: white; color: black; }
-            table, th, td { border: 1px solid #cbd5e1 !important; color: black !important; }
+            /* PRINT NORMAL (Financeiro / Efetivo) */
+            body:not(.printing-escala) aside, 
+            body:not(.printing-escala) .no-print, 
+            body:not(.printing-escala) #telaLogin, 
+            body:not(.printing-escala) header, 
+            body:not(.printing-escala) #breadcrumb-bar { display: none !important; }
+            
+            body:not(.printing-escala) main { margin: 0 !important; padding: 0 !important; width: 100% !important; background: white; }
+            body:not(.printing-escala) { background: white; color: black; }
+            body:not(.printing-escala) table, 
+            body:not(.printing-escala) th, 
+            body:not(.printing-escala) td { border: 1px solid #cbd5e1 !important; color: black !important; }
+
+            /* PRINT OFICIAL: ESCALA DE SERVIÇO */
+            body.printing-escala * { visibility: hidden; }
+            body.printing-escala #modulo-impressao-escala, 
+            body.printing-escala #modulo-impressao-escala * { visibility: visible; }
+            body.printing-escala #modulo-impressao-escala {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                display: block !important;
+            }
+            body.printing-escala #painelPrincipal { display: none !important; }
+            @page { margin: 1cm; }
         }
     </style>
 </head>
@@ -209,6 +232,9 @@
                             <div class="bg-white shadow-sm border border-slate-300 p-4 rounded-lg">
                                 <h3 class="text-sm font-semibold text-slate-700 mb-4 border-b border-slate-200 pb-2 flex justify-between items-center">
                                     <span><i class="fas fa-calendar-alt text-sys-dark mr-2"></i>Escala de Serviço Operacional (24/72h)</span>
+                                    <button onclick="imprimirEscalaDeHoje()" class="bg-sys-dark hover:bg-pmmt-blue text-white px-3 py-1.5 rounded shadow transition text-[10px] uppercase font-bold flex items-center gap-1.5">
+                                        <i class="fa-solid fa-print"></i> Imprimir Hoje
+                                    </button>
                                 </h3>
                                 <div id="gridEscala" class="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-3"></div>
                             </div>
@@ -248,7 +274,7 @@
                                 <div class="bg-slate-50 px-4 py-3 flex justify-between items-center border-b border-slate-300">
                                     <h3 class="text-sm font-semibold text-slate-700"><i class="fa-solid fa-users text-sys-dark mr-2"></i>Relação Nominal do Pelotão</h3>
                                     <button onclick="event.stopPropagation(); window.print()" class="text-[11px] font-semibold text-slate-600 border border-slate-300 hover:bg-slate-200 px-2.5 py-1 rounded bg-white flex items-center gap-1 no-print">
-                                        <i class="fa-solid fa-print"></i> Imprimir
+                                        <i class="fa-solid fa-print"></i> Imprimir Lista
                                     </button>
                                 </div>
                                 <div class="overflow-x-auto">
@@ -535,6 +561,58 @@
             </form>
         </div>
     </div>
+
+    <div id="modulo-impressao-escala" class="hidden bg-white text-black p-10 max-w-4xl mx-auto font-sans">
+        <div class="flex flex-col items-center mb-6 text-center">
+            <img src="IMG_1500.png" alt="Brasão PMMT" class="h-28 mb-4" onerror="this.style.display='none'">
+            <h1 class="font-bold text-lg leading-tight uppercase">POLÍCIA MILITAR DO ESTADO DE MATO GROSSO</h1>
+            <h2 class="font-bold text-md leading-tight uppercase">DIRETORIA DE ENSINO INSTRUÇÃO E PESQUISA</h2>
+            <h2 class="font-bold text-md leading-tight uppercase">ESCOLA SUPERIOR DE FORMAÇÃO E APERFEIÇOAMENTO DE PRAÇAS</h2>
+            <h2 class="font-bold text-md leading-tight uppercase">COORDENAÇÃO ACADÊMICA DO 35° CFSD - 5º PELOTÃO - POLO CÁCERES</h2>
+        </div>
+
+        <div class="text-center mb-6">
+            <p id="printDataAtual" class="font-bold text-md uppercase">-- DATA --</p>
+            <p class="font-bold text-lg mt-2 underline uppercase">ESCALA DE SERVIÇO Nº <span id="printNumEscala">001</span></p>
+        </div>
+
+        <div class="mb-6 font-bold text-sm uppercase">
+            <p class="mb-1">GRADUADO DE DIA: <span id="printGraduado" class="font-normal">-- SGT --</span></p>
+            <p class="mb-1">ALUNO DE DIA: <span id="printAlunoDia" class="font-normal">___________________________ ( RG ________ )</span></p>
+            <p>UNIFORME PARA O EFETIVO: <span class="font-normal">4º F3</span></p>
+        </div>
+
+        <div class="text-center mb-6 border-t border-b border-black py-2">
+            <p class="font-bold text-md uppercase">5º PELOTÃO - EQUIPE DE SERVIÇO <span id="printEquipeNome">--</span></p>
+            <p class="font-bold text-sm uppercase">HORÁRIO: 06H00MIN ÀS 06H00MIN (24H)</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-y-2 gap-x-8 mb-8 text-sm uppercase font-bold" id="printListaEquipe">
+            </div>
+
+        <div class="text-sm mb-6">
+            <h4 class="font-bold text-center underline mb-3 uppercase">ORIENTAÇÕES E DETERMINAÇÕES</h4>
+            <ul class="list-disc pl-5 space-y-1.5 text-justify uppercase font-semibold text-xs">
+                <li>O(S) AL SD PM DEVERÃO ESTAR COM TODOS OS UNIFORMES EM CONDIÇÕES.</li>
+                <li>A TROCA DO QUARTO DE HORA DEVE SER ACOMPANHADA PELO ALUNO DE DIA, OBEDECENDO O SEGUINTE CERIMONIAL.</li>
+                <li>ALUNO DE DIA AO CENTRO, ALUNO QUE SAI E ALUNO QUE ENTRA, VOLTADOS PARA O CENTRO DISTÂNCIA DE UM APERTO DE MÃO PARA PASSAGEM DE SERVIÇO, TODOS NA POSIÇÃO DE SENTIDO. EX:</li>
+                <li class="list-none italic">"AL SD PM FIRMINO, ALUNO DA HORA QUE SAÍ, PASSO O SERVIÇO SEM ALTERAÇÃO."</li>
+                <li class="list-none italic">"AL SD PM MARCO AURÉLIO, ALUNO DA HORA QUE ENTRA, RECEBO O SERVIÇO SEM ALTERAÇÃO."</li>
+                <li>ALUNO QUE ENTRA E ALUNO QUE SAI, FAZEM MEIA VOLTA E ROMPEM MARCHA, FINALIZANDO A PASSAGEM DO QUARTO DE HORA.</li>
+            </ul>
+        </div>
+        
+        <div class="mt-6 text-sm uppercase font-bold" id="postosServico">
+            </div>
+        
+        <div class="mt-16 text-center text-sm font-bold uppercase">
+            <p>CÁCERES – MT, <span id="printDataAssinatura">-- DATA --</span></p>
+            <p class="mt-8">___________________________________________________</p>
+            <p id="printNomeAssinatura">-- NOME DO GRADUADO --</p>
+            <p>GRADUADO DE DIA</p>
+        </div>
+    </div>
+
 
     <script>
         let supabaseClient;
@@ -1206,6 +1284,9 @@
             document.getElementById('txtXerifeData').innerText = `${segundaAtual.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'})} a ${domingoAtual.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'})}`;
         }
 
+        // ===============================================
+        // --- FUNÇÕES DE RENDERIZAR E IMPRIMIR ESCALA ---
+        // ===============================================
         function renderizarEscala() {
             const grid = document.getElementById('gridEscala');
             if(!grid) return;
@@ -1236,7 +1317,7 @@
                 let sgtDoDia = seqSgts[idxSgt];
                 
                 const equipeAlunos = alunosOrdenados.filter(a => a.equipe === equipeDoDia);
-                let defaultAlunoDia = equipeAlunos.length > 0 ? equipeAlunos[0] : { qra: 'N/A', numero: 0 };
+                let defaultAlunoDia = equipeAlunos.length > 0 ? equipeAlunos[0] : { qra: 'N/A', numero: 0, id: null };
                 let alunoDiaFinal = defaultAlunoDia;
                 
                 const overrideDia = funcoesComandoGlobais.find(f => f.tipo === 'ALUNO_DIA' && f.data_referencia === dataIso);
@@ -1252,6 +1333,8 @@
 
                 let ehHoje = i === 0 ? 'border-sys-dark bg-blue-50/50' : 'border-slate-200 bg-white';
                 let txtHoje = i === 0 ? '<span class="absolute -top-2 bg-sys-dark text-white text-[9px] font-bold px-1.5 py-0.5 rounded uppercase shadow">Hoje</span>' : '';
+
+                let idAlunoDiaToPass = alunoDiaFinal.id || '';
 
                 grid.innerHTML += `
                     <div class="relative p-2.5 rounded-lg border flex flex-col items-center justify-center ${ehHoje} hover:shadow-md transition">
@@ -1269,10 +1352,155 @@
                                 ${isAdmin ? `<button onclick="abrirModalFuncao('ALUNO_DIA', '${dataIso}', '${equipeDoDia}')" class="text-slate-300 hover:text-amber-500 transition-colors admin-only"><i class="fa-solid fa-pen text-[9px]"></i></button>` : ''}
                             </div>
                         </div>
+                        <button onclick="imprimirEscalaEspecifica('${dataIso}', '${equipeDoDia}', '${sgtDoDia}', '${idAlunoDiaToPass}')" class="absolute top-2 right-2 text-slate-400 hover:text-sys-dark transition-colors" title="Imprimir Escala do Dia"><i class="fa-solid fa-print text-[11px]"></i></button>
                     </div>
                 `;
             }
         }
+
+        function imprimirEscalaDeHoje() {
+            let hoje = new Date();
+            hoje.setHours(12, 0, 0, 0);
+            let dataIso = hoje.toISOString().split('T')[0];
+            
+            const dataBase = new Date('2026-08-03T12:00:00Z'); 
+            const seqEquipes = ['ALFA', 'BRAVO', 'CHARLIE', 'DELTA'];
+            const seqSgts = ['SGT MAURIZON', 'SGT SOUZA', 'SGT ORTIZ'];
+
+            let diferencaDias = Math.floor((hoje - dataBase) / (1000 * 60 * 60 * 24));
+            
+            let idxEq = diferencaDias % 4;
+            if (idxEq < 0) idxEq += 4;
+            let equipeDoDia = seqEquipes[idxEq];
+
+            let idxSgt = diferencaDias % 3;
+            if (idxSgt < 0) idxSgt += 3;
+            let sgtDoDia = seqSgts[idxSgt];
+            
+            const alunosOrdenados = [...listaAlunosFull].sort((a, b) => a.numero - b.numero);
+            const equipeAlunos = alunosOrdenados.filter(a => a.equipe === equipeDoDia);
+            let defaultAlunoDia = equipeAlunos.length > 0 ? equipeAlunos[0] : null;
+            let alunoDiaFinal = defaultAlunoDia;
+            
+            const overrideDia = funcoesComandoGlobais.find(f => f.tipo === 'ALUNO_DIA' && f.data_referencia === dataIso);
+            if(overrideDia) {
+                alunoDiaFinal = listaAlunosFull.find(a => a.id == overrideDia.aluno_id) || defaultAlunoDia;
+            }
+            
+            let alunoDiaId = alunoDiaFinal ? alunoDiaFinal.id : '';
+
+            imprimirEscalaEspecifica(dataIso, equipeDoDia, sgtDoDia, alunoDiaId);
+        }
+
+        function imprimirEscalaEspecifica(dataIso, equipe, sgt, alunoDiaId) {
+            const dataAlvo = new Date(dataIso + 'T12:00:00Z');
+            const dia = dataAlvo.getDate().toString().padStart(2, '0');
+            const meses = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO', 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'];
+            const diasSemana = ['DOMINGO', 'SEGUNDA-FEIRA', 'TERÇA-FEIRA', 'QUARTA-FEIRA', 'QUINTA-FEIRA', 'SEXTA-FEIRA', 'SÁBADO'];
+            const mesExtenso = meses[dataAlvo.getMonth()];
+            const ano = dataAlvo.getFullYear();
+            
+            const dataFormatada = `${dia} DE ${mesExtenso} DE ${ano} – ${diasSemana[dataAlvo.getDay()]}`;
+            const dataAssinatura = `${dia} DE ${mesExtenso} DE ${ano}`;
+            
+            let graduado = 'A DEFINIR';
+            let nomeAssinatura = '_______________________________________';
+            
+            if (sgt.includes('MAURIZON')) {
+                graduado = '2º SGT PM MAURIZON - RGPMMT';
+                nomeAssinatura = 'MAURIZON GOMES DOS SANTOS – 2º SGT PM';
+            } else if (sgt.includes('SOUZA')) {
+                graduado = '2º SGT PM SOUZA - RGPMMT';
+                nomeAssinatura = 'SOUZA – 2º SGT PM';
+            } else if (sgt.includes('ORTIZ')) {
+                graduado = '2º SGT PM ORTIZ - RGPMMT';
+                nomeAssinatura = 'ORTIZ – 2º SGT PM';
+            } else {
+                graduado = sgt;
+                nomeAssinatura = sgt;
+            }
+
+            document.getElementById('printEquipeNome').innerText = equipe;
+            document.getElementById('printDataAtual').innerText = dataFormatada + " (24 HORAS)";
+            document.getElementById('printGraduado').innerText = graduado;
+            document.getElementById('printDataAssinatura').innerText = dataAssinatura;
+            document.getElementById('printNomeAssinatura').innerText = nomeAssinatura;
+            
+            const inicioAno = new Date(ano, 0, 0);
+            const diffAno = dataAlvo - inicioAno;
+            const numEscala = Math.floor(diffAno / 1000 / 60 / 60 / 24).toString().padStart(3, '0');
+            document.getElementById('printNumEscala').innerText = numEscala;
+
+            const alunosDaEquipe = [...listaAlunosFull].filter(a => a.equipe === equipe).sort((a,b) => a.numero - b.numero);
+            
+            let alunoDiaObj = listaAlunosFull.find(a => a.id == alunoDiaId);
+            if (!alunoDiaObj && alunosDaEquipe.length > 0) {
+                alunoDiaObj = alunosDaEquipe[0];
+            }
+            
+            if (alunoDiaObj) {
+                const qraAlunoDia = alunoDiaObj.qra ? alunoDiaObj.qra.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase() : alunoDiaObj.nome.split(' ')[0].toUpperCase();
+                document.getElementById('printAlunoDia').innerText = `AL SD PM ${qraAlunoDia} (RG: ____________)`;
+            } else {
+                document.getElementById('printAlunoDia').innerText = `___________________________ ( RG ________ )`;
+            }
+
+            const divAlunos = document.getElementById('printListaEquipe');
+            divAlunos.innerHTML = '';
+
+            if (alunosDaEquipe.length === 0) {
+                divAlunos.innerHTML = `<p class="col-span-2 text-red-500">Nenhum aluno encontrado para a equipe ${equipe}.</p>`;
+            } else {
+                alunosDaEquipe.forEach(aluno => {
+                    const numFormatado = "5" + aluno.numero.toString().padStart(2, '0');
+                    const qra = aluno.qra ? aluno.qra.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase() : aluno.nome.split(' ')[0].toUpperCase();
+                    divAlunos.innerHTML += `<p>AL SD PM ${qra} (${numFormatado})</p>`;
+                });
+            }
+            
+            // Postos de Serviço
+            const alunosPosto = alunosDaEquipe.filter(a => !alunoDiaObj || a.id != alunoDiaObj.id);
+            let slotsHTML1 = '';
+            let slotsHTML2 = '';
+            const horarios = ['DAS 23H00 ÀS 01H00', 'DAS 01H00 ÀS 03H00', 'DAS 03H00 ÀS 05H00'];
+            
+            for(let i=0; i<3; i++) {
+                let a1 = alunosPosto[i] ? `AL SD PM ${alunosPosto[i].qra ? alunosPosto[i].qra.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase() : alunosPosto[i].nome.split(' ')[0].toUpperCase()} (${"5" + alunosPosto[i].numero.toString().padStart(2, '0')})` : '_________________________';
+                slotsHTML1 += `<p class="font-normal text-xs mb-1">${horarios[i]}: ${a1}</p>`;
+                
+                let a2 = alunosPosto[i+3] ? `AL SD PM ${alunosPosto[i+3].qra ? alunosPosto[i+3].qra.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase() : alunosPosto[i+3].nome.split(' ')[0].toUpperCase()} (${"5" + alunosPosto[i+3].numero.toString().padStart(2, '0')})` : '_________________________';
+                slotsHTML2 += `<p class="font-normal text-xs mb-1">${horarios[i]}: ${a2}</p>`;
+            }
+            
+            document.getElementById('postosServico').innerHTML = `
+                <div class="grid grid-cols-2 gap-8">
+                    <div>
+                        <p class="mb-2 font-bold underline">POSTO 01: PORTÃO E PÁTIO EXTERNO</p>
+                        ${slotsHTML1}
+                    </div>
+                    <div>
+                        <p class="mb-2 font-bold underline">POSTO 02: RECEPÇÃO</p>
+                        ${slotsHTML2}
+                    </div>
+                </div>
+            `;
+
+            const printModule = document.getElementById('modulo-impressao-escala');
+            printModule.classList.remove('hidden');
+            
+            // Adiciona a classe que sinaliza para o @media print exibir APENAS a escala
+            document.body.classList.add('printing-escala');
+
+            setTimeout(() => {
+                window.print();
+                
+                // Restaura o layout padrão para as impressões de tabelas no portal voltarem ao normal
+                printModule.classList.add('hidden');
+                document.body.classList.remove('printing-escala');
+            }, 300);
+        }
+
+        // ===============================================
 
         function abrirModalFuncao(tipo, dataRef, equipeAtual) {
             document.getElementById('modalFuncao').classList.remove('hidden');
