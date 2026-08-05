@@ -37,7 +37,6 @@
         ::-webkit-scrollbar-thumb { background: #c1c1c1; }
         ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
         
-        /* Classes padronizadas do Menu (CSS Puro) */
         .menu-item { 
             display: flex; align-items: center; gap: 0.75rem; 
             padding: 0.75rem 1rem; font-size: 13px; font-weight: 600; 
@@ -371,32 +370,39 @@
                         <div id="conteudo-efetivo-geral" class="space-y-6">
                             <div class="bg-white shadow-sm border border-slate-300 p-4">
                                 <h3 class="text-sm font-semibold text-slate-700 mb-4 border-b border-slate-200 pb-2">
-                                    <i class="fas fa-calendar-alt text-sys-dark mr-2"></i>Escala de Serviço Operacional
+                                    <i class="fas fa-calendar-alt text-sys-dark mr-2"></i>Escala de Serviço Operacional (24/72h e 24/48h)
                                 </h3>
                                 <div id="gridEscala" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3"></div>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
                                 <div class="bg-white shadow-sm border border-slate-300 overflow-hidden">
                                     <div class="bg-slate-50 py-2.5 px-4 border-b border-slate-300 flex justify-between items-center">
                                         <h3 class="text-xs font-bold text-slate-700">EQUIPE ALFA</h3>
-                                        <span class="text-[9px] bg-slate-200 px-1.5 py-0.5 rounded text-slate-700 font-bold">CMT: SGT ORTIZ</span>
+                                        <span class="text-[9px] bg-slate-200 px-1.5 py-0.5 rounded text-slate-700 font-bold">ESCALA: 24/72</span>
                                     </div>
                                     <ul id="tabelaAlfa" class="text-xs p-2 text-slate-700 divide-y divide-slate-100 h-[300px] overflow-y-auto"></ul>
                                 </div>
                                 <div class="bg-white shadow-sm border border-slate-300 overflow-hidden">
                                     <div class="bg-slate-50 py-2.5 px-4 border-b border-slate-300 flex justify-between items-center">
                                         <h3 class="text-xs font-bold text-slate-700">EQUIPE BRAVO</h3>
-                                        <span class="text-[9px] bg-slate-200 px-1.5 py-0.5 rounded text-slate-700 font-bold">CMT: SGT MAURIZON</span>
+                                        <span class="text-[9px] bg-slate-200 px-1.5 py-0.5 rounded text-slate-700 font-bold">ESCALA: 24/72</span>
                                     </div>
                                     <ul id="tabelaBravo" class="text-xs p-2 text-slate-700 divide-y divide-slate-100 h-[300px] overflow-y-auto"></ul>
                                 </div>
                                 <div class="bg-white shadow-sm border border-slate-300 overflow-hidden">
                                     <div class="bg-slate-50 py-2.5 px-4 border-b border-slate-300 flex justify-between items-center">
                                         <h3 class="text-xs font-bold text-slate-700">EQUIPE CHARLIE</h3>
-                                        <span class="text-[9px] bg-slate-200 px-1.5 py-0.5 rounded text-slate-700 font-bold">CMT: SGT SOUZA</span>
+                                        <span class="text-[9px] bg-slate-200 px-1.5 py-0.5 rounded text-slate-700 font-bold">ESCALA: 24/72</span>
                                     </div>
                                     <ul id="tabelaCharlie" class="text-xs p-2 text-slate-700 divide-y divide-slate-100 h-[300px] overflow-y-auto"></ul>
+                                </div>
+                                <div class="bg-white shadow-sm border border-slate-300 overflow-hidden">
+                                    <div class="bg-slate-50 py-2.5 px-4 border-b border-slate-300 flex justify-between items-center">
+                                        <h3 class="text-xs font-bold text-slate-700">EQUIPE DELTA</h3>
+                                        <span class="text-[9px] bg-slate-200 px-1.5 py-0.5 rounded text-slate-700 font-bold">ESCALA: 24/72</span>
+                                    </div>
+                                    <ul id="tabelaDelta" class="text-xs p-2 text-slate-700 divide-y divide-slate-100 h-[300px] overflow-y-auto"></ul>
                                 </div>
                             </div>
 
@@ -415,7 +421,6 @@
                                                 <th class="px-4 py-2.5 font-semibold whitespace-nowrap">QRA</th>
                                                 <th class="px-4 py-2.5 font-semibold whitespace-nowrap">Nome Completo</th>
                                                 <th class="px-4 py-2.5 font-semibold text-center whitespace-nowrap">Equipe</th>
-                                                <th class="px-4 py-2.5 font-semibold whitespace-nowrap">Comandante</th>
                                             </tr>
                                         </thead>
                                         <tbody id="tabelaEfetivoGeral" class="divide-y divide-slate-200"></tbody>
@@ -674,8 +679,12 @@
 
             listaAlunosFull = dbData;
             dbData.forEach(aluno => { 
+                
+                // Trava de Segurança no JS para limpar a sigla "AL SD PM"
+                let nomeExibicaoBruto = aluno.qra ? aluno.qra : aluno.nome;
+                let nomeExibicao = nomeExibicaoBruto.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase();
+
                 const numeroFormatado = "5" + aluno.numero.toString().padStart(2, '0');
-                const nomeExibicao = aluno.qra ? aluno.qra : aluno.nome;
                 
                 alunosMap[aluno.id] = `${numeroFormatado} - ${nomeExibicao}`; 
                 select.add(new Option(`${numeroFormatado} - ${nomeExibicao}`, aluno.id)); 
@@ -881,8 +890,11 @@
                     status = "PENDENTE"; corBox = "border-slate-200 bg-white"; corTexto = "text-rose-600"; bgBar = "bg-rose-400";
                 }
                 
+                // Trava de segurança no Painel de Cotas
+                let nomeExibicaoBruto = aluno.qra ? aluno.qra : (aluno.nome.split(' ')[0]);
+                let nomeExibicao = nomeExibicaoBruto.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase();
+
                 const numeroFormatado = "5" + aluno.numero.toString().padStart(2, '0');
-                const nomeExibicao = aluno.qra ? aluno.qra : (aluno.nome.split(' ')[0]);
                 
                 grid.innerHTML += `
                     <div class="border rounded p-2.5 ${corBox}">
@@ -1062,8 +1074,9 @@
             if(!grid) return;
             grid.innerHTML = '';
             
-            const dataBase = new Date('2026-06-29T12:00:00Z'); 
-            const sequencia = ['CHARLIE', 'ALFA', 'BRAVO'];
+            const dataBase = new Date('2026-08-03T12:00:00Z'); 
+            const seqEquipes = ['ALFA', 'BRAVO', 'CHARLIE', 'DELTA'];
+            const seqSgts = ['SGT MAURIZON', 'SGT SOUZA', 'SGT ORTIZ'];
 
             let hoje = new Date();
             hoje.setHours(12, 0, 0, 0); 
@@ -1073,10 +1086,14 @@
                 dataAlvo.setDate(hoje.getDate() + i);
 
                 let diferencaDias = Math.floor((dataAlvo - dataBase) / (1000 * 60 * 60 * 24));
-                let indexEquipe = diferencaDias % 3;
-                if (indexEquipe < 0) indexEquipe += 3;
+                
+                let idxEq = diferencaDias % 4;
+                if (idxEq < 0) idxEq += 4;
+                let equipeDoDia = seqEquipes[idxEq];
 
-                let equipeDoDia = sequencia[indexEquipe];
+                let idxSgt = diferencaDias % 3;
+                if (idxSgt < 0) idxSgt += 3;
+                let sgtDoDia = seqSgts[idxSgt];
                 
                 let ehHoje = i === 0 ? 'border-sys-dark bg-blue-50/50' : 'border-slate-200 bg-white';
                 let txtHoje = i === 0 ? '<span class="absolute -top-2 bg-sys-dark text-white text-[9px] font-bold px-1.5 py-0.5 rounded uppercase">Hoje</span>' : '';
@@ -1086,7 +1103,8 @@
                         ${txtHoje}
                         <p class="text-[10px] text-slate-500 uppercase mt-1">${dataAlvo.toLocaleDateString('pt-BR', {weekday: 'short'})}</p>
                         <p class="text-base font-bold text-slate-800">${dataAlvo.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'})}</p>
-                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 mt-1">${equipeDoDia}</span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-sys-blue text-white mt-1 w-full text-center">${equipeDoDia}</span>
+                        <span class="text-[8px] font-bold px-1 py-0.5 rounded bg-slate-200 text-slate-700 mt-1 w-full text-center truncate" title="Comandante: ${sgtDoDia}">CMT: ${sgtDoDia}</span>
                     </div>
                 `;
             }
@@ -1096,16 +1114,18 @@
             const tabAlfa = document.getElementById('tabelaAlfa');
             const tabBravo = document.getElementById('tabelaBravo');
             const tabCharlie = document.getElementById('tabelaCharlie');
+            const tabDelta = document.getElementById('tabelaDelta');
             const tabGeral = document.getElementById('tabelaEfetivoGeral');
             
-            if(!tabAlfa) return;
-            tabAlfa.innerHTML = ''; tabBravo.innerHTML = ''; tabCharlie.innerHTML = ''; tabGeral.innerHTML = '';
+            if(!tabAlfa || !tabDelta) return;
+            tabAlfa.innerHTML = ''; tabBravo.innerHTML = ''; tabCharlie.innerHTML = ''; tabDelta.innerHTML = ''; tabGeral.innerHTML = '';
 
             listaAlunosFull.forEach(aluno => {
-                let qra = aluno.qra || '-';
-                let equipe = aluno.equipe || '-';
-                let comandante = aluno.comandante || '-';
+                // Trava de Segurança no JS para limpar a sigla "AL SD PM"
+                let qraBruto = aluno.qra || '-';
+                let qra = qraBruto.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase();
                 
+                let equipe = aluno.equipe || '-';
                 let numFormatado = "5" + aluno.numero.toString().padStart(2, '0');
 
                 let linhaMini = `<li class="py-1.5 flex justify-between items-center px-1">
@@ -1115,6 +1135,7 @@
                 if(equipe === 'ALFA') tabAlfa.innerHTML += linhaMini;
                 if(equipe === 'BRAVO') tabBravo.innerHTML += linhaMini;
                 if(equipe === 'CHARLIE') tabCharlie.innerHTML += linhaMini;
+                if(equipe === 'DELTA') tabDelta.innerHTML += linhaMini;
 
                 tabGeral.innerHTML += `
                     <tr class="hover:bg-slate-50 border-b border-slate-200">
@@ -1124,7 +1145,6 @@
                         <td class="px-4 py-2 text-center whitespace-nowrap">
                             <span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 text-[10px] font-bold">${equipe}</span>
                         </td>
-                        <td class="px-4 py-2 text-slate-600 whitespace-nowrap">${comandante}</td>
                     </tr>
                 `;
             });
