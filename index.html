@@ -15,11 +15,11 @@
                 extend: { 
                     colors: { 
                         sys: { 
-                            dark: '#1b4571',    /* Navbar */
-                            header: '#348fe2',  /* Tabelas */
-                            menu: '#e2e7ec',    /* Header do Menu Lateral */
-                            bg: '#f4f6f9',      /* Fundo da Página */
-                            blue: '#2b579a',    /* Login Header */
+                            dark: '#1b4571',
+                            header: '#348fe2',
+                            menu: '#e2e7ec',
+                            bg: '#f4f6f9',
+                            blue: '#2b579a',
                             breadcrumb: '#5b8cbe'
                         },
                         pmmt: {
@@ -50,15 +50,11 @@
         }
         .menu-item:hover { background-color: #f1f5f9; }
         .menu-item.ativo { 
-            background-color: #f1f5f9; 
-            border-left-color: #1b4571; 
-            color: #1b4571; 
-            font-weight: 700; 
+            background-color: #f1f5f9; border-left-color: #1b4571; 
+            color: #1b4571; font-weight: 700; 
         }
 
-        /* --- CONTROLE INTELIGENTE DE IMPRESSÃO --- */
         @media print {
-            /* PRINT NORMAL (Financeiro / Efetivo) */
             body:not(.printing-escala) aside, 
             body:not(.printing-escala) .no-print, 
             body:not(.printing-escala) #telaLogin, 
@@ -71,67 +67,67 @@
             body:not(.printing-escala) th, 
             body:not(.printing-escala) td { border: 1px solid #cbd5e1 !important; color: black !important; }
 
-            /* PRINT OFICIAL: ESCALA DE SERVIÇO (Compactado para 1 Página) */
             body.printing-escala * { visibility: hidden; }
             body.printing-escala #modulo-impressao-escala, 
             body.printing-escala #modulo-impressao-escala * { visibility: visible; }
             body.printing-escala #modulo-impressao-escala {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                display: block !important;
+                position: absolute; left: 0; top: 0; width: 100%; display: block !important;
             }
             body.printing-escala #painelPrincipal { display: none !important; }
-            @page { 
-                size: A4 portrait;
-                margin: 10mm; /* Força margens curtas na impressora */
-            }
+            @page { size: A4 portrait; margin: 10mm; }
         }
     </style>
 </head>
 <body class="h-screen flex flex-col overflow-hidden antialiased">
 
     <div class="flex-1 flex overflow-hidden relative w-full">
+        <!-- TELA DE LOGIN -->
         <div id="telaLogin" class="flex flex-col items-center justify-center w-full h-full bg-slate-900 p-4 z-[100] relative overflow-y-auto">
             <div class="fixed inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 z-0 pointer-events-none"></div>
             <div class="fixed inset-0 bg-gradient-to-b from-pmmt-blue/90 to-slate-900/95 z-0 pointer-events-none"></div>
 
-            <div class="bg-white shadow-2xl rounded-xl max-w-sm w-full flex flex-col z-10 overflow-hidden border-t-4 border-pmmt-gold my-auto">
+            <!-- Caixa Central do Login -->
+            <div class="bg-white shadow-2xl rounded-xl max-w-sm w-full flex flex-col z-10 overflow-hidden border-t-4 border-pmmt-gold mt-auto">
                 <div class="bg-pmmt-blue text-white text-center py-5 flex flex-col items-center justify-center gap-1.5 relative">
                     <img src="logo_pmmt_branco_para_fundo_azul.png" alt="PMMT" class="h-16 object-contain mb-1 drop-shadow-md">
                     <h2 class="text-xs font-extrabold tracking-widest text-pmmt-gold uppercase">Polícia Militar de Mato Grosso</h2>
                     <p class="text-[9px] text-slate-300 uppercase tracking-widest opacity-80">6º Comando Regional</p>
                 </div>
                 
-                <div class="p-6 md:p-8 flex flex-col items-center bg-slate-50 relative">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-slate-200 to-transparent"></div>
+                <div class="p-6 md:p-8 flex flex-col items-center bg-slate-50 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-slate-200 to-transparent z-0"></div>
+                    <!-- Marca d'água no Fundo do Login -->
+                    <div class="absolute inset-0 bg-[url('logo_sem_fundo.png')] bg-no-repeat bg-center bg-contain opacity-[0.04] z-0 pointer-events-none"></div>
                     
-                    <div class="flex items-center justify-center gap-4 mb-4">
-                        <img src="IMG_1500.png" alt="Brasão 5º Pelotão" class="w-36 h-36 md:w-40 md:h-40 object-contain drop-shadow-xl" onerror="this.onerror=null; this.src='IMG_1500.png';">
+                    <!-- IMAGEM AUMENTADA DRASTICAMENTE AQUI -->
+                    <div class="flex items-center justify-center gap-4 mb-2 mt-[-10px] z-10 relative">
+                        <img src="logo_sem_fundo.png" alt="Brasão 5º Pelotão" class="w-48 h-48 md:w-56 md:h-56 object-contain drop-shadow-xl transform scale-110" onerror="this.onerror=null; this.src='IMG_1500.png';">
                     </div>
                     
-                    <div class="w-full text-center border-b border-slate-200 pb-4 mb-5">
+                    <div class="w-full text-center border-b border-slate-200 pb-4 mb-5 z-10 relative mt-2">
                         <h3 class="text-xl font-black text-sys-dark uppercase tracking-tight">Portal Institucional</h3>
                         <p class="text-[11px] font-bold text-slate-500 uppercase mt-1">35º CFSD - 5º Pelotão</p>
                     </div>
 
-                    <form id="formLogin" onsubmit="autenticarUsuario(event)" class="w-full space-y-3.5">
-                        <div>
-                            <input type="text" id="loginEmail" required placeholder="Usuário (Ex: willys)" class="w-full bg-white border border-slate-300 p-3 rounded-md text-sm outline-none focus:border-pmmt-gold transition text-slate-900 shadow-sm font-semibold">
-                        </div>
-                        <div>
-                            <input type="password" id="loginSenha" required placeholder="Senha" class="w-full bg-white border border-slate-300 p-3 rounded-md text-sm outline-none focus:border-pmmt-gold transition text-slate-900 shadow-sm font-semibold">
-                        </div>
+                    <form id="formLogin" onsubmit="autenticarUsuario(event)" class="w-full space-y-3.5 z-10 relative">
+                        <div><input type="text" id="loginEmail" required placeholder="Usuário (Ex: willys)" class="w-full bg-white border border-slate-300 p-3 rounded-md text-sm outline-none focus:border-pmmt-gold transition text-slate-900 shadow-sm font-semibold"></div>
+                        <div><input type="password" id="loginSenha" required placeholder="Senha" class="w-full bg-white border border-slate-300 p-3 rounded-md text-sm outline-none focus:border-pmmt-gold transition text-slate-900 shadow-sm font-semibold"></div>
                         <button type="submit" id="btnEntrar" class="w-full bg-sys-dark hover:bg-pmmt-blue text-white font-bold py-3 shadow-md rounded-md transition text-sm mt-2 uppercase tracking-wide flex items-center justify-center gap-2">
                             <i class="fa-solid fa-right-to-bracket"></i> Acessar Sistema
                         </button>
                     </form>
-                    <p id="erroLogin" class="text-xs font-bold text-rose-600 mt-4 text-center hidden"></p>
+                    <p id="erroLogin" class="text-xs font-bold text-rose-600 mt-4 text-center hidden z-10 relative"></p>
                 </div>
                 <div class="bg-slate-200 py-3 px-6 text-center border-t border-slate-300">
                     <p class="text-[9px] text-slate-500 font-bold uppercase tracking-wider"><i class="fa-solid fa-shield-halved"></i> Força Tática - Cáceres</p>
                 </div>
+            </div>
+
+            <!-- RODAPÉ DA TELA DE LOGIN ADICIONADO -->
+            <div class="mt-auto pt-8 pb-4 w-full text-center z-10 shrink-0">
+                <p class="text-[10px] text-slate-400/80 font-bold uppercase tracking-wider drop-shadow-md">
+                    Desenvolvido por: AL SD PM WILLYS - 5º PELOTÃO - 35º CFSD
+                </p>
             </div>
         </div>
 
@@ -150,7 +146,6 @@
                         </div>
                     </div>
                 </div>
-                
                 <div class="flex flex-col items-end justify-center min-w-max border-l border-slate-400/30 pl-4 h-full pr-2">
                     <p class="text-xs font-bold uppercase">5º PELOTÃO</p>
                     <p class="text-[10px] text-slate-300 uppercase">Força Tática - Cáceres</p>
@@ -163,36 +158,24 @@
             </div>
 
             <div class="flex-1 flex overflow-hidden">
-                
                 <aside id="wrapperLateral" class="w-64 bg-white border-r border-slate-300 flex flex-col z-30 hidden md:flex shrink-0 shadow-sm">
-                    <div class="p-5 flex flex-col items-center border-b border-slate-200 bg-slate-50 shrink-0">
-                        <img src="IMG_1500.png" alt="Brasão 5º Pelotão" class="w-28 h-28 object-contain mb-3 drop-shadow-md" onerror="this.onerror=null; this.src='IMG_1500.png';">
-                        <h2 class="text-sm font-extrabold text-slate-800 uppercase tracking-wider">5º Pelotão</h2>
-                        <p class="text-[9px] text-slate-500 uppercase font-bold mt-0.5 tracking-widest">Força Tática</p>
+                    <div class="p-5 flex flex-col items-center border-b border-slate-200 bg-slate-50 shrink-0 relative overflow-hidden">
+                        <!-- Marca d'água Menu Lateral -->
+                        <div class="absolute inset-0 bg-[url('logo_sem_fundo.png')] bg-no-repeat bg-center bg-cover opacity-[0.05] z-0 pointer-events-none"></div>
+                        <img src="logo_sem_fundo.png" alt="Brasão 5º Pelotão" class="w-24 h-24 md:w-28 md:h-28 object-contain mb-3 drop-shadow-md relative z-10 scale-110" onerror="this.onerror=null; this.src='IMG_1500.png';">
+                        <h2 class="text-sm font-extrabold text-slate-800 uppercase tracking-wider relative z-10 mt-1">5º Pelotão</h2>
+                        <p class="text-[9px] text-slate-500 uppercase font-bold mt-0.5 tracking-widest relative z-10">Força Tática</p>
                     </div>
-
                     <div class="bg-sys-menu text-sys-dark text-[11px] font-bold uppercase tracking-wider py-2 px-4 border-b border-slate-300 shadow-inner shrink-0">
                         Menu Principal
                     </div>
-
                     <nav class="flex-1 overflow-y-auto py-2">
-                        <button onclick="mudarModulo('efetivo')" id="btn-efetivo" class="menu-item ativo">
-                            <i class="fa-solid fa-users-gear w-5 text-center text-slate-500 text-base"></i> Efetivo e Escala
-                        </button>
-                        <button onclick="mudarModulo('financeiro')" id="btn-financeiro" class="menu-item">
-                            <i class="fa-solid fa-vault w-5 text-center text-slate-500 text-base"></i> Gestão Financeira
-                        </button>
-                        <button onclick="mudarModulo('taf')" id="btn-taf" class="menu-item">
-                            <i class="fa-solid fa-person-running w-5 text-center text-slate-500 text-base"></i> TAF e Fatos Obs.
-                        </button>
-                        <button onclick="mudarModulo('apoio')" id="btn-apoio" class="menu-item">
-                            <i class="fa-solid fa-book-open w-5 text-center text-slate-500 text-base"></i> Material de Apoio
-                        </button>
-                        <button onclick="mudarModulo('debate')" id="btn-debate" class="menu-item">
-                            <i class="fa-solid fa-comments w-5 text-center text-slate-500 text-base"></i> Área Livre
-                        </button>
+                        <button onclick="mudarModulo('efetivo')" id="btn-efetivo" class="menu-item ativo"><i class="fa-solid fa-users-gear w-5 text-center text-slate-500 text-base"></i> Efetivo e Escala</button>
+                        <button onclick="mudarModulo('financeiro')" id="btn-financeiro" class="menu-item"><i class="fa-solid fa-vault w-5 text-center text-slate-500 text-base"></i> Gestão Financeira</button>
+                        <button onclick="mudarModulo('taf')" id="btn-taf" class="menu-item"><i class="fa-solid fa-person-running w-5 text-center text-slate-500 text-base"></i> TAF e Fatos Obs.</button>
+                        <button onclick="mudarModulo('apoio')" id="btn-apoio" class="menu-item"><i class="fa-solid fa-book-open w-5 text-center text-slate-500 text-base"></i> Material de Apoio</button>
+                        <button onclick="mudarModulo('debate')" id="btn-debate" class="menu-item"><i class="fa-solid fa-comments w-5 text-center text-slate-500 text-base"></i> Área Livre</button>
                     </nav>
-
                     <div class="p-3 border-t border-slate-200 flex justify-between items-center bg-slate-50 shrink-0">
                         <button onclick="sincronizarDadosManualmente()" class="text-[11px] font-semibold text-slate-600 hover:text-sys-dark transition px-2 py-1 rounded hover:bg-slate-200" title="Sincronizar Dados">
                             <i class="fa-solid fa-arrows-rotate mr-1"></i> Sincronizar
@@ -203,20 +186,19 @@
                     </div>
                 </aside>
 
-                <main class="flex-1 overflow-y-auto p-3 md:p-5 bg-sys-bg">
-                    
-                    <div id="loaderAlert" class="hidden bg-amber-100 border border-amber-300 text-amber-800 px-4 py-3 rounded-lg mb-4 flex items-center gap-3 shadow-sm transition-opacity">
+                <main class="flex-1 overflow-y-auto p-3 md:p-5 bg-sys-bg flex flex-col">
+                    <div id="loaderAlert" class="hidden bg-amber-100 border border-amber-300 text-amber-800 px-4 py-3 rounded-lg mb-4 flex items-center gap-3 shadow-sm transition-opacity shrink-0">
                         <i class="fa-solid fa-circle-notch fa-spin text-lg"></i>
                         <span class="text-sm font-semibold">Sincronizando dados com o servidor...</span>
                     </div>
 
-                    <div class="bg-slate-100 border-l-4 border-slate-400 p-3 mb-5 shadow-sm no-print rounded-r-lg">
+                    <div class="bg-slate-100 border-l-4 border-slate-400 p-3 mb-5 shadow-sm no-print rounded-r-lg shrink-0">
                         <p class="text-xs md:text-sm text-slate-700">Seja bem-vindo(a) ao <strong>Portal Institucional do 35º CFSD - 5º Pelotão</strong>.</p>
                     </div>
 
+                    <!-- MÓDULO EFETIVO E ESCALA -->
                     <section id="modulo-efetivo" class="space-y-6">
                         <div id="conteudo-efetivo-geral" class="space-y-5">
-                            
                             <div class="bg-sys-dark text-white rounded-lg shadow-md border-b-4 border-pmmt-gold p-4 md:p-5 flex justify-between items-center relative overflow-hidden">
                                 <div class="z-10">
                                     <h3 class="text-[9px] md:text-[10px] font-bold text-slate-300 uppercase tracking-widest mb-1"><i class="fa-solid fa-star text-pmmt-gold mr-1"></i> Comando da Tropa / Xerifado</h3>
@@ -236,7 +218,7 @@
                                 <h3 class="text-sm font-semibold text-slate-700 mb-4 border-b border-slate-200 pb-2 flex justify-between items-center">
                                     <span><i class="fas fa-calendar-alt text-sys-dark mr-2"></i>Escala de Serviço Operacional (24/72h)</span>
                                     <button onclick="imprimirEscalaDeHoje()" class="bg-sys-dark hover:bg-pmmt-blue text-white px-3 py-1.5 rounded shadow transition text-[10px] uppercase font-bold flex items-center gap-1.5">
-                                        <i class="fa-solid fa-print"></i> Imprimir Hoje
+                                        <i class="fa-solid fa-magnifying-glass"></i> Pré-Visualizar Hoje
                                     </button>
                                 </h3>
                                 <div id="gridEscala" class="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-3"></div>
@@ -427,22 +409,15 @@
                                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
                                     <div class="lg:col-span-1 border border-slate-200 p-4 rounded-lg bg-slate-50 relative">
                                         <h4 class="text-[11px] font-bold text-slate-700 uppercase mb-3 border-b border-slate-300 pb-1">Novo Agendamento</h4>
-                                        
                                         <div class="admin-only">
                                             <form onsubmit="salvarPrevisao(event)" class="space-y-3">
-                                                <div>
-                                                    <input type="text" id="prevDescricao" required placeholder="Descrição" class="w-full border border-slate-300 p-1.5 rounded text-xs outline-none focus:border-sys-dark">
-                                                </div>
+                                                <div><input type="text" id="prevDescricao" required placeholder="Descrição" class="w-full border border-slate-300 p-1.5 rounded text-xs outline-none focus:border-sys-dark"></div>
                                                 <div class="grid grid-cols-2 gap-2">
                                                     <input type="text" id="prevCategoria" required placeholder="Categoria" class="w-full border border-slate-300 p-1.5 rounded text-xs outline-none focus:border-sys-dark">
                                                     <input type="date" id="prevData" required class="w-full border border-slate-300 p-1.5 rounded text-xs outline-none focus:border-sys-dark">
                                                 </div>
-                                                <div>
-                                                    <input type="number" step="0.01" id="prevValor" required placeholder="Valor (R$)" class="w-full border border-slate-300 p-1.5 rounded text-xs outline-none focus:border-sys-dark">
-                                                </div>
-                                                <button type="submit" class="w-full bg-slate-700 hover:bg-slate-800 text-white font-semibold py-1.5 rounded text-xs transition">
-                                                    Incluir
-                                                </button>
+                                                <div><input type="number" step="0.01" id="prevValor" required placeholder="Valor (R$)" class="w-full border border-slate-300 p-1.5 rounded text-xs outline-none focus:border-sys-dark"></div>
+                                                <button type="submit" class="w-full bg-slate-700 hover:bg-slate-800 text-white font-semibold py-1.5 rounded text-xs transition">Incluir</button>
                                             </form>
                                         </div>
                                         <div class="viewer-only hidden absolute inset-0 bg-slate-50 flex flex-col items-center justify-center text-slate-400 rounded-lg">
@@ -507,7 +482,6 @@
                             <div class="bg-sys-dark text-white px-5 py-4 flex justify-between items-center">
                                 <div>
                                     <h2 class="text-sm md:text-base font-bold tracking-wide"><i class="fa-solid fa-folder-open text-amber-500 mr-2"></i> Repositório Acadêmico</h2>
-                                    <p class="text-[10px] md:text-[11px] text-slate-300 uppercase mt-0.5">Manuais, Legislações, POPs e Canções Oficiais</p>
                                 </div>
                                 <button onclick="carregarMateriaisApoio()" class="bg-white/20 hover:bg-white/30 text-white p-2 md:p-2.5 rounded transition">
                                     <i class="fa-solid fa-arrows-rotate text-sm md:text-base"></i>
@@ -525,15 +499,19 @@
                         <div class="bg-white shadow-sm border border-slate-300 p-8 text-center mt-4 rounded-lg">
                             <i class="fa-solid fa-bullhorn text-4xl text-sys-dark mb-3"></i>
                             <h2 class="text-lg font-bold text-slate-700">Área Livre / Mural</h2>
-                            <p class="text-sm text-slate-500 mt-2">Espaço para propostas e deliberações da tropa.</p>
                         </div>
                     </section>
 
+                    <!-- RODAPÉ DA PÁGINA LOGADA -->
+                    <footer class="mt-auto pt-8 pb-2 text-[10px] text-slate-400 font-bold uppercase tracking-wider no-print w-full shrink-0 text-center relative z-10">
+                        Desenvolvido por: AL SD PM WILLYS - 5º PELOTÃO - 35º CFSD
+                    </footer>
                 </main>
             </div>
         </div>
     </div>
 
+    <!-- MODAL DE ALTERAR FUNÇÃO DO SISTEMA (XERIFE/ALUNO_DIA BASE) -->
     <div id="modalFuncao" class="fixed inset-0 bg-slate-900/70 z-[200] hidden flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm overflow-hidden border border-slate-300">
             <div class="bg-sys-dark px-4 py-3 flex justify-between items-center border-b border-slate-400/30">
@@ -543,18 +521,15 @@
             <form onsubmit="salvarFuncaoComando(event)" class="p-5 space-y-4">
                 <input type="hidden" id="modalFuncaoTipo">
                 <input type="hidden" id="modalFuncaoData">
-                
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1" id="modalFuncaoLabelData">Data</label>
                     <input type="text" id="modalFuncaoDataDisplay" disabled class="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-md text-[13px] text-slate-600 font-semibold cursor-not-allowed">
                 </div>
-                
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">Selecione o Aluno (Ordem Antiguidade)</label>
                     <select id="modalFuncaoAluno" required class="w-full bg-white border border-slate-300 p-2.5 rounded-md text-[13px] font-bold text-slate-800 outline-none focus:border-sys-dark shadow-sm">
                     </select>
                 </div>
-                
                 <button type="submit" class="w-full bg-sys-blue hover:bg-blue-800 text-white font-bold py-2.5 rounded-md shadow transition text-xs uppercase tracking-wider mt-2">
                     <i class="fa-solid fa-check mr-2"></i>Confirmar Designação
                 </button>
@@ -565,9 +540,105 @@
         </div>
     </div>
 
+    <!-- ========================================== -->
+    <!-- MODAL: PRÉ-VISUALIZAÇÃO DA ESCALA          -->
+    <!-- ========================================== -->
+    <div id="modalPreviaEscala" class="fixed inset-0 bg-slate-900/80 z-[300] hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl overflow-hidden border border-slate-300 flex flex-col max-h-[95vh]">
+            
+            <div class="bg-sys-dark px-5 py-4 flex justify-between items-center border-b border-slate-400/30 shrink-0">
+                <div>
+                    <h3 class="text-white font-bold text-base uppercase"><i class="fa-solid fa-file-pdf mr-2"></i>Pré-Visualização e Ajustes da Escala</h3>
+                    <p id="txtPreviaHeader" class="text-slate-300 text-[11px] font-semibold mt-0.5 uppercase">Data - Equipe</p>
+                </div>
+                <button onclick="document.getElementById('modalPreviaEscala').classList.add('hidden')" class="text-white/70 hover:text-white transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto flex-1 bg-slate-50 space-y-6">
+                <!-- Inputs Ocultos -->
+                <input type="hidden" id="prevDataIso">
+                <input type="hidden" id="prevEquipeNome">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                        <label class="block text-[11px] font-extrabold text-sys-dark uppercase tracking-wider mb-2 border-b border-slate-100 pb-1">Graduado de Dia (Comandante)</label>
+                        <select id="prevGraduado" class="w-full bg-slate-50 border border-slate-300 p-2 rounded text-xs font-bold text-slate-800 outline-none focus:border-sys-dark">
+                            <option value="2º SGT PM MAURIZON">2º SGT PM MAURIZON</option>
+                            <option value="2º SGT PM SOUZA">2º SGT PM SOUZA</option>
+                            <option value="2º SGT PM ORTIZ">2º SGT PM ORTIZ</option>
+                            <option value="A DEFINIR">A DEFINIR</option>
+                        </select>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                        <label class="block text-[11px] font-extrabold text-sys-dark uppercase tracking-wider mb-2 border-b border-slate-100 pb-1">Aluno de Dia</label>
+                        <select id="prevAlunoDia" class="w-full bg-slate-50 border border-slate-300 p-2 rounded text-xs font-bold text-slate-800 outline-none focus:border-sys-dark"></select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                    <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="bg-slate-100 px-4 py-2 border-b border-slate-200">
+                            <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Posto 01: Portão e Pátio Externo</h4>
+                        </div>
+                        <div class="p-4 space-y-3">
+                            <div>
+                                <label class="block text-[10px] font-bold text-emerald-600 uppercase mb-1">Das 23h00 às 01h00 (Mais Antigo)</label>
+                                <select id="prevP1_23" class="w-full border border-slate-300 p-1.5 rounded text-xs font-semibold text-slate-700 outline-none focus:border-sys-dark"></select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-amber-600 uppercase mb-1">Das 03h00 às 05h00 (Intermediário)</label>
+                                <select id="prevP1_03" class="w-full border border-slate-300 p-1.5 rounded text-xs font-semibold text-slate-700 outline-none focus:border-sys-dark"></select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-rose-600 uppercase mb-1">Das 01h00 às 03h00 (Mais Moderno)</label>
+                                <select id="prevP1_01" class="w-full border border-slate-300 p-1.5 rounded text-xs font-semibold text-slate-700 outline-none focus:border-sys-dark"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="bg-slate-100 px-4 py-2 border-b border-slate-200">
+                            <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Posto 02: Recepção</h4>
+                        </div>
+                        <div class="p-4 space-y-3">
+                            <div>
+                                <label class="block text-[10px] font-bold text-emerald-600 uppercase mb-1">Das 23h00 às 01h00 (Mais Antigo)</label>
+                                <select id="prevP2_23" class="w-full border border-slate-300 p-1.5 rounded text-xs font-semibold text-slate-700 outline-none focus:border-sys-dark"></select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-amber-600 uppercase mb-1">Das 03h00 às 05h00 (Intermediário)</label>
+                                <select id="prevP2_03" class="w-full border border-slate-300 p-1.5 rounded text-xs font-semibold text-slate-700 outline-none focus:border-sys-dark"></select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-rose-600 uppercase mb-1">Das 01h00 às 03h00 (Mais Moderno)</label>
+                                <select id="prevP2_01" class="w-full border border-slate-300 p-1.5 rounded text-xs font-semibold text-slate-700 outline-none focus:border-sys-dark"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-blue-50 border border-blue-200 p-3 rounded-lg flex gap-3 items-start">
+                    <i class="fa-solid fa-circle-info text-blue-500 mt-0.5"></i>
+                    <p class="text-[11px] text-blue-800">A relação preenchida acima foi distribuída automaticamente pelo sistema respeitando a rigorosa ordem de antiguidade e peso dos postos. Se precisar fazer alguma substituição devido a afastamentos, selecione o substituto nos menus acima.</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-4 border-t border-slate-300 shrink-0 flex justify-end gap-3">
+                <button onclick="document.getElementById('modalPreviaEscala').classList.add('hidden')" class="px-5 py-2.5 rounded border border-slate-300 text-slate-600 font-bold text-xs hover:bg-slate-100 transition uppercase tracking-wide">Cancelar</button>
+                <button onclick="confirmarImpressaoEscala()" class="px-5 py-2.5 rounded bg-sys-blue hover:bg-blue-800 text-white font-bold text-xs shadow-md transition flex items-center gap-2 uppercase tracking-wide">
+                    <i class="fa-solid fa-print"></i> Gerar Documento PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- MÓDULO OCULTO PARA IMPRESSÃO DA ESCALA     -->
+    <!-- ========================================== -->
     <div id="modulo-impressao-escala" class="hidden bg-white text-black p-4 max-w-4xl mx-auto font-sans text-[11px] leading-tight">
         <div class="flex flex-col items-center mb-3 text-center">
-            <img src="IMG_1500.png" alt="Brasão PMMT" class="h-20 mb-2" onerror="this.style.display='none'">
+            <img src="logo_sem_fundo.png" alt="Brasão PMMT" class="h-20 mb-2 transform scale-110" onerror="this.style.display='none'">
             <h1 class="font-bold text-sm uppercase">POLÍCIA MILITAR DO ESTADO DE MATO GROSSO</h1>
             <h2 class="font-bold text-xs uppercase">DIRETORIA DE ENSINO INSTRUÇÃO E PESQUISA</h2>
             <h2 class="font-bold text-xs uppercase">ESCOLA SUPERIOR DE FORMAÇÃO E APERFEIÇOAMENTO DE PRAÇAS</h2>
@@ -590,8 +661,7 @@
             <p class="font-bold text-xs uppercase">HORÁRIO: 06H00MIN ÀS 06H00MIN (24H)</p>
         </div>
 
-        <div class="grid grid-cols-2 gap-y-1 gap-x-8 mb-3 uppercase font-bold" id="printListaEquipe">
-            </div>
+        <div class="grid grid-cols-2 gap-y-1 gap-x-8 mb-3 uppercase font-bold" id="printListaEquipe"></div>
 
         <div class="mb-3">
             <h4 class="font-bold text-center underline mb-1 uppercase">ORIENTAÇÕES E DETERMINAÇÕES</h4>
@@ -605,8 +675,7 @@
             </ul>
         </div>
         
-        <div class="mt-3 uppercase font-bold text-[10px]" id="postosServico">
-            </div>
+        <div class="mt-3 uppercase font-bold text-[10px]" id="postosServico"></div>
         
         <div class="mt-8 text-center font-bold uppercase text-xs">
             <p>CÁCERES – MT, <span id="printDataAssinatura">-- DATA --</span></p>
@@ -616,7 +685,7 @@
         </div>
     </div>
 
-
+    <!-- SCRIPTS -->
     <script>
         let supabaseClient;
         let grafico;
@@ -1297,7 +1366,7 @@
             
             const dataBase = new Date('2026-08-03T12:00:00Z'); 
             const seqEquipes = ['ALFA', 'BRAVO', 'CHARLIE', 'DELTA'];
-            const seqSgts = ['SGT MAURIZON', 'SGT SOUZA', 'SGT ORTIZ'];
+            const seqSgts = ['2º SGT PM MAURIZON', '2º SGT PM SOUZA', '2º SGT PM ORTIZ'];
 
             let hoje = new Date();
             hoje.setHours(12, 0, 0, 0); 
@@ -1346,7 +1415,7 @@
                         <p class="text-base md:text-lg font-bold text-slate-800 leading-tight">${dataAlvo.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'})}</p>
                         
                         <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-sys-blue text-white mt-1.5 w-full text-center tracking-wider">${equipeDoDia}</span>
-                        <span class="text-[9px] font-extrabold px-1 py-0.5 rounded bg-slate-200 text-slate-700 mt-1 w-full text-center truncate shadow-inner" title="Comandante: ${sgtDoDia}">CMT: ${sgtDoDia}</span>
+                        <span class="text-[9px] font-extrabold px-1 py-0.5 rounded bg-slate-200 text-slate-700 mt-1 w-full text-center truncate shadow-inner" title="Comandante: ${sgtDoDia}">CMT: ${sgtDoDia.replace('2º SGT PM ', '')}</span>
                         
                         <div class="mt-2 pt-1.5 border-t border-slate-300 border-dashed w-full flex flex-col items-center group">
                             <span class="text-[8px] text-slate-400 uppercase font-black tracking-widest mb-0.5">Aluno de Dia</span>
@@ -1355,7 +1424,7 @@
                                 ${isAdmin ? `<button onclick="abrirModalFuncao('ALUNO_DIA', '${dataIso}', '${equipeDoDia}')" class="text-slate-300 hover:text-amber-500 transition-colors admin-only"><i class="fa-solid fa-pen text-[9px]"></i></button>` : ''}
                             </div>
                         </div>
-                        <button onclick="imprimirEscalaEspecifica('${dataIso}', '${equipeDoDia}', '${sgtDoDia}', '${idAlunoDiaToPass}')" class="absolute top-2 right-2 text-slate-400 hover:text-sys-dark transition-colors" title="Imprimir Escala do Dia"><i class="fa-solid fa-print text-[11px]"></i></button>
+                        <button onclick="abrirPreviaEscala('${dataIso}', '${equipeDoDia}', '${sgtDoDia}', '${idAlunoDiaToPass}')" class="absolute top-2 right-2 text-slate-400 hover:text-sys-dark transition-colors" title="Pré-Visualizar Escala"><i class="fa-solid fa-magnifying-glass text-[11px]"></i></button>
                     </div>
                 `;
             }
@@ -1368,7 +1437,7 @@
             
             const dataBase = new Date('2026-08-03T12:00:00Z'); 
             const seqEquipes = ['ALFA', 'BRAVO', 'CHARLIE', 'DELTA'];
-            const seqSgts = ['SGT MAURIZON', 'SGT SOUZA', 'SGT ORTIZ'];
+            const seqSgts = ['2º SGT PM MAURIZON', '2º SGT PM SOUZA', '2º SGT PM ORTIZ'];
 
             let diferencaDias = Math.floor((hoje - dataBase) / (1000 * 60 * 60 * 24));
             
@@ -1392,10 +1461,58 @@
             
             let alunoDiaId = alunoDiaFinal ? alunoDiaFinal.id : '';
 
-            imprimirEscalaEspecifica(dataIso, equipeDoDia, sgtDoDia, alunoDiaId);
+            abrirPreviaEscala(dataIso, equipeDoDia, sgtDoDia, alunoDiaId);
         }
 
-        function imprimirEscalaEspecifica(dataIso, equipe, sgt, alunoDiaId) {
+        function abrirPreviaEscala(dataIso, equipe, sgt, alunoDiaId) {
+            const dataAlvo = new Date(dataIso + 'T12:00:00Z');
+            const dia = dataAlvo.getDate().toString().padStart(2, '0');
+            const meses = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
+            const dataFormatada = `${dia}/${meses[dataAlvo.getMonth()]}/${dataAlvo.getFullYear()}`;
+            
+            document.getElementById('txtPreviaHeader').innerText = `${dataFormatada} - Equipe ${equipe}`;
+            document.getElementById('prevDataIso').value = dataIso;
+            document.getElementById('prevEquipeNome').value = equipe;
+            
+            // Popula os Selects com todos os alunos em ordem de antiguidade (Permite substituir por alguém de outra equipe)
+            let optionsHtml = `<option value="">-- VAZIO (Ninguém escalado) --</option>`;
+            [...listaAlunosFull].sort((a,b) => a.numero - b.numero).forEach(a => {
+                let num = "5" + a.numero.toString().padStart(2, '0');
+                let qra = a.qra ? a.qra.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase() : a.nome.split(' ')[0].toUpperCase();
+                optionsHtml += `<option value="${a.id}">${num} - ${qra} (${a.equipe})</option>`;
+            });
+
+            const selects = ['prevAlunoDia', 'prevP1_23', 'prevP1_03', 'prevP1_01', 'prevP2_23', 'prevP2_03', 'prevP2_01'];
+            selects.forEach(selId => { document.getElementById(selId).innerHTML = optionsHtml; });
+
+            document.getElementById('prevGraduado').value = sgt;
+
+            // Lógica rigorosa de Antiguidade vs Postos/Horários:
+            let teamSorted = [...listaAlunosFull].filter(a => a.equipe === equipe).sort((a,b) => a.numero - b.numero);
+            
+            let objAlunoDia = teamSorted.find(a => a.id == alunoDiaId);
+            if (!objAlunoDia && teamSorted.length > 0) objAlunoDia = teamSorted[0];
+            
+            if(objAlunoDia) document.getElementById('prevAlunoDia').value = objAlunoDia.id;
+
+            let remaining = teamSorted.filter(a => !objAlunoDia || a.id !== objAlunoDia.id);
+
+            // Mapeando do mais antigo (índice 0) para o mais moderno
+            document.getElementById('prevP1_23').value = remaining[0] ? remaining[0].id : '';
+            document.getElementById('prevP2_23').value = remaining[1] ? remaining[1].id : '';
+            document.getElementById('prevP1_03').value = remaining[2] ? remaining[2].id : '';
+            document.getElementById('prevP2_03').value = remaining[3] ? remaining[3].id : '';
+            document.getElementById('prevP1_01').value = remaining[4] ? remaining[4].id : '';
+            document.getElementById('prevP2_01').value = remaining[5] ? remaining[5].id : '';
+
+            document.getElementById('modalPreviaEscala').classList.remove('hidden');
+        }
+
+        function confirmarImpressaoEscala() {
+            const dataIso = document.getElementById('prevDataIso').value;
+            const equipe = document.getElementById('prevEquipeNome').value;
+            const sgtSelect = document.getElementById('prevGraduado').value;
+            
             const dataAlvo = new Date(dataIso + 'T12:00:00Z');
             const dia = dataAlvo.getDate().toString().padStart(2, '0');
             const meses = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO', 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'];
@@ -1409,18 +1526,18 @@
             let graduado = 'A DEFINIR';
             let nomeAssinatura = '_______________________________________';
             
-            if (sgt.includes('MAURIZON')) {
+            if (sgtSelect.includes('MAURIZON')) {
                 graduado = '2º SGT PM MAURIZON - RGPMMT';
                 nomeAssinatura = 'MAURIZON GOMES DOS SANTOS – 2º SGT PM';
-            } else if (sgt.includes('SOUZA')) {
+            } else if (sgtSelect.includes('SOUZA')) {
                 graduado = '2º SGT PM SOUZA - RGPMMT';
                 nomeAssinatura = 'SOUZA – 2º SGT PM';
-            } else if (sgt.includes('ORTIZ')) {
+            } else if (sgtSelect.includes('ORTIZ')) {
                 graduado = '2º SGT PM ORTIZ - RGPMMT';
                 nomeAssinatura = 'ORTIZ – 2º SGT PM';
             } else {
-                graduado = sgt;
-                nomeAssinatura = sgt;
+                graduado = sgtSelect;
+                nomeAssinatura = sgtSelect;
             }
 
             document.getElementById('printEquipeNome').innerText = equipe;
@@ -1434,70 +1551,70 @@
             const numEscala = Math.floor(diffAno / 1000 / 60 / 60 / 24).toString().padStart(3, '0');
             document.getElementById('printNumEscala').innerText = numEscala;
 
-            const alunosDaEquipe = [...listaAlunosFull].filter(a => a.equipe === equipe).sort((a,b) => a.numero - b.numero);
-            
-            let alunoDiaObj = listaAlunosFull.find(a => a.id == alunoDiaId);
-            if (!alunoDiaObj && alunosDaEquipe.length > 0) {
-                alunoDiaObj = alunosDaEquipe[0];
+            // Busca os alunos selecionados nos Selects
+            function getAlunoObj(selectId) {
+                const val = document.getElementById(selectId).value;
+                if(!val) return null;
+                return listaAlunosFull.find(a => a.id == val);
             }
-            
-            if (alunoDiaObj) {
-                const qraAlunoDia = alunoDiaObj.qra ? alunoDiaObj.qra.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase() : alunoDiaObj.nome.split(' ')[0].toUpperCase();
-                document.getElementById('printAlunoDia').innerText = `AL SD PM ${qraAlunoDia} (RG: ____________)`;
+
+            let alDia = getAlunoObj('prevAlunoDia');
+            let p1_23 = getAlunoObj('prevP1_23'); let p1_03 = getAlunoObj('prevP1_03'); let p1_01 = getAlunoObj('prevP1_01');
+            let p2_23 = getAlunoObj('prevP2_23'); let p2_03 = getAlunoObj('prevP2_03'); let p2_01 = getAlunoObj('prevP2_01');
+
+            if (alDia) {
+                const qra = alDia.qra ? alDia.qra.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase() : alDia.nome.split(' ')[0].toUpperCase();
+                document.getElementById('printAlunoDia').innerText = `AL SD PM ${qra} (RG: ____________)`;
             } else {
                 document.getElementById('printAlunoDia').innerText = `___________________________ ( RG ________ )`;
             }
+            
+            // Relaciona quem vai aparecer no cabeçalho (Equipe original + adicionados manualmente)
+            let equipeOriginal = listaAlunosFull.filter(a => a.equipe === equipe);
+            let setImprimir = new Set(equipeOriginal.map(a => a.id));
+            [alDia, p1_23, p1_03, p1_01, p2_23, p2_03, p2_01].forEach(obj => { if(obj) setImprimir.add(obj.id); });
+
+            let arrayImprimir = Array.from(setImprimir).map(id => listaAlunosFull.find(a => a.id == id)).filter(x => x).sort((a,b) => a.numero - b.numero);
 
             const divAlunos = document.getElementById('printListaEquipe');
             divAlunos.innerHTML = '';
+            arrayImprimir.forEach(aluno => {
+                const numFormatado = "5" + aluno.numero.toString().padStart(2, '0');
+                const qra = aluno.qra ? aluno.qra.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase() : aluno.nome.split(' ')[0].toUpperCase();
+                divAlunos.innerHTML += `<p>AL SD PM ${qra} (${numFormatado})</p>`;
+            });
 
-            if (alunosDaEquipe.length === 0) {
-                divAlunos.innerHTML = `<p class="col-span-2 text-red-500">Nenhum aluno encontrado para a equipe ${equipe}.</p>`;
-            } else {
-                alunosDaEquipe.forEach(aluno => {
-                    const numFormatado = "5" + aluno.numero.toString().padStart(2, '0');
-                    const qra = aluno.qra ? aluno.qra.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase() : aluno.nome.split(' ')[0].toUpperCase();
-                    divAlunos.innerHTML += `<p>AL SD PM ${qra} (${numFormatado})</p>`;
-                });
+            // Preenche os postos
+            function formatText(obj) {
+                if(!obj) return '_________________________';
+                let q = obj.qra ? obj.qra.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase() : obj.nome.split(' ')[0].toUpperCase();
+                return `AL SD PM ${q} (${"5" + obj.numero.toString().padStart(2, '0')})`;
             }
-            
-            // Postos de Serviço (Otimizado os espaços)
-            const alunosPosto = alunosDaEquipe.filter(a => !alunoDiaObj || a.id != alunoDiaObj.id);
-            let slotsHTML1 = '';
-            let slotsHTML2 = '';
-            const horarios = ['DAS 23H00 ÀS 01H00', 'DAS 01H00 ÀS 03H00', 'DAS 03H00 ÀS 05H00'];
-            
-            for(let i=0; i<3; i++) {
-                let a1 = alunosPosto[i] ? `AL SD PM ${alunosPosto[i].qra ? alunosPosto[i].qra.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase() : alunosPosto[i].nome.split(' ')[0].toUpperCase()} (${"5" + alunosPosto[i].numero.toString().padStart(2, '0')})` : '_________________________';
-                slotsHTML1 += `<p class="font-normal mb-0.5">${horarios[i]}: ${a1}</p>`;
-                
-                let a2 = alunosPosto[i+3] ? `AL SD PM ${alunosPosto[i+3].qra ? alunosPosto[i+3].qra.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase() : alunosPosto[i+3].nome.split(' ')[0].toUpperCase()} (${"5" + alunosPosto[i+3].numero.toString().padStart(2, '0')})` : '_________________________';
-                slotsHTML2 += `<p class="font-normal mb-0.5">${horarios[i]}: ${a2}</p>`;
-            }
-            
+
             document.getElementById('postosServico').innerHTML = `
                 <div class="grid grid-cols-2 gap-8">
                     <div>
                         <p class="mb-1 font-bold underline">POSTO 01: PORTÃO E PÁTIO EXTERNO</p>
-                        ${slotsHTML1}
+                        <p class="font-normal mb-0.5">DAS 23H00 ÀS 01H00: ${formatText(p1_23)}</p>
+                        <p class="font-normal mb-0.5">DAS 01H00 ÀS 03H00: ${formatText(p1_01)}</p>
+                        <p class="font-normal mb-0.5">DAS 03H00 ÀS 05H00: ${formatText(p1_03)}</p>
                     </div>
                     <div>
                         <p class="mb-1 font-bold underline">POSTO 02: RECEPÇÃO</p>
-                        ${slotsHTML2}
+                        <p class="font-normal mb-0.5">DAS 23H00 ÀS 01H00: ${formatText(p2_23)}</p>
+                        <p class="font-normal mb-0.5">DAS 01H00 ÀS 03H00: ${formatText(p2_01)}</p>
+                        <p class="font-normal mb-0.5">DAS 03H00 ÀS 05H00: ${formatText(p2_03)}</p>
                     </div>
                 </div>
             `;
 
+            document.getElementById('modalPreviaEscala').classList.add('hidden');
             const printModule = document.getElementById('modulo-impressao-escala');
             printModule.classList.remove('hidden');
-            
-            // Adiciona a classe que sinaliza para o @media print exibir APENAS a escala
             document.body.classList.add('printing-escala');
 
             setTimeout(() => {
                 window.print();
-                
-                // Restaura o layout padrão para as impressões de tabelas no portal voltarem ao normal
                 printModule.classList.add('hidden');
                 document.body.classList.remove('printing-escala');
             }, 300);
