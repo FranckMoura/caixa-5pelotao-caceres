@@ -190,6 +190,7 @@
                     <div class="flex-1 overflow-y-auto py-3 px-3 space-y-0.5">
                         <p class="px-3 text-[9px] font-extrabold text-slate-400 uppercase tracking-widest mb-2 mt-1">Navegação Principal</p>
                         
+                        <button onclick="mudarModulo('institucional')" id="btn-institucional" class="menu-item rounded-lg"><i class="fa-solid fa-sitemap w-5 text-center text-base"></i> Cadeia de Comando</button>
                         <button onclick="mudarModulo('efetivo')" id="btn-efetivo" class="menu-item ativo rounded-lg"><i class="fa-solid fa-users-gear w-5 text-center text-base"></i> Efetivo e Escala</button>
                         <button onclick="mudarModulo('financeiro')" id="btn-financeiro" class="menu-item rounded-lg"><i class="fa-solid fa-vault w-5 text-center text-base"></i> Gestão Financeira</button>
                         <button onclick="mudarModulo('taf')" id="btn-taf" class="menu-item rounded-lg"><i class="fa-solid fa-person-running w-5 text-center text-base"></i> TAF e Fatos Obs.</button>
@@ -218,8 +219,100 @@
                         <p class="text-sm text-slate-700 font-medium">Seja bem-vindo(a) ao <strong>Portal Institucional do 35º CFSD - 5º Pelotão</strong>.</p>
                     </div>
 
+                    <!-- ========================================== -->
+                    <!-- MÓDULO INSTITUCIONAL / CADEIA DE COMANDO   -->
+                    <!-- ========================================== -->
+                    <section id="modulo-institucional" class="hidden space-y-6">
+                        <div class="bg-white shadow-md border border-slate-300 overflow-hidden rounded-xl">
+                            <div class="bg-sys-dark text-white px-6 py-5 flex justify-between items-center">
+                                <div>
+                                    <h2 class="text-base md:text-lg font-black tracking-widest uppercase"><i class="fa-solid fa-sitemap text-pmmt-gold mr-3"></i> Cadeia de Comando</h2>
+                                    <p class="text-[10px] md:text-[11px] text-slate-300 uppercase mt-0.5">Hierarquia do Estado e da Polícia Militar de MT</p>
+                                </div>
+                            </div>
+                            
+                            <div class="p-6 md:p-8">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                                    
+                                    <!-- 1. Governador -->
+                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col items-center text-center hover:shadow-lg transition-all border-b-4 border-b-pmmt-blue">
+                                        <div class="w-24 h-24 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-4 overflow-hidden shadow-inner text-slate-400 text-4xl">
+                                            <i class="fa-solid fa-user-tie"></i>
+                                        </div>
+                                        <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Governador do Estado</h3>
+                                        <p class="text-sm font-black text-sys-dark uppercase">Otaviano Pivetta</p>
+                                    </div>
+
+                                    <!-- 2. SESP -->
+                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col items-center text-center hover:shadow-lg transition-all border-b-4 border-b-pmmt-blue">
+                                        <div class="w-24 h-24 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-4 overflow-hidden shadow-inner text-slate-400 text-4xl">
+                                            <i class="fa-solid fa-user-shield"></i>
+                                        </div>
+                                        <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Secretário de Seg. Pública</h3>
+                                        <p class="text-sm font-black text-sys-dark uppercase">Cel PM Susane Tamanho</p>
+                                    </div>
+
+                                    <!-- 3. SESP Adjunto -->
+                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col items-center text-center hover:shadow-lg transition-all border-b-4 border-b-pmmt-blue">
+                                        <div class="w-24 h-24 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-4 overflow-hidden shadow-inner text-slate-400 text-4xl">
+                                            <i class="fa-solid fa-user-shield"></i>
+                                        </div>
+                                        <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Sec. Adjunto de Segurança</h3>
+                                        <p class="text-sm font-black text-sys-dark uppercase">Delegado Rodrigo Bastos</p>
+                                    </div>
+
+                                    <!-- 4. Comandante Geral -->
+                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col items-center text-center hover:shadow-lg transition-all border-b-4 border-b-pmmt-gold">
+                                        <div class="w-24 h-24 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-4 overflow-hidden shadow-inner text-slate-400 text-4xl">
+                                            <i class="fa-solid fa-star"></i>
+                                        </div>
+                                        <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Comandante-Geral PMMT</h3>
+                                        <p class="text-sm font-black text-sys-dark uppercase">Cel PM Cláudio Fernando</p>
+                                    </div>
+
+                                    <!-- 5. Subchefe Estado Maior -->
+                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col items-center text-center hover:shadow-lg transition-all border-b-4 border-b-pmmt-gold">
+                                        <div class="w-24 h-24 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-4 overflow-hidden shadow-inner text-slate-400 text-4xl">
+                                            <i class="fa-solid fa-star"></i>
+                                        </div>
+                                        <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Subchefe Estado-Maior</h3>
+                                        <p class="text-sm font-black text-sys-dark uppercase">Cel PM Grasielle Paes</p>
+                                    </div>
+
+                                    <!-- 6. Comandante 6º CR -->
+                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col items-center text-center hover:shadow-lg transition-all border-b-4 border-b-slate-800">
+                                        <div class="w-24 h-24 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-4 overflow-hidden shadow-inner text-slate-400 text-4xl">
+                                            <i class="fa-solid fa-building-shield"></i>
+                                        </div>
+                                        <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Comandante do 6º CR</h3>
+                                        <p class="text-sm font-black text-sys-dark uppercase">Ten-Cel PM Adão César</p>
+                                    </div>
+
+                                    <!-- 7. Comandante 6º BPM -->
+                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col items-center text-center hover:shadow-lg transition-all border-b-4 border-b-slate-800">
+                                        <div class="w-24 h-24 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-4 overflow-hidden shadow-inner text-slate-400 text-4xl">
+                                            <i class="fa-solid fa-shield-halved"></i>
+                                        </div>
+                                        <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Comandante 6º BPM</h3>
+                                        <p class="text-sm font-black text-sys-dark uppercase">Ten Cel PM Luiz Marcelo da Silva</p>
+                                    </div>
+
+                                    <!-- 8. Comandante Força Tática -->
+                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col items-center text-center hover:shadow-lg transition-all border-b-4 border-b-slate-800">
+                                        <div class="w-24 h-24 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-4 overflow-hidden shadow-inner text-slate-400 text-4xl">
+                                            <i class="fa-solid fa-bolt"></i>
+                                        </div>
+                                        <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Cmt Força Tática (23ª CIPM)</h3>
+                                        <p class="text-[11px] font-bold text-slate-400 uppercase mt-1">Major PM Abner James Lopes Campos</p>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
                     <!-- MÓDULO EFETIVO E ESCALA -->
-                    <section id="modulo-efetivo" class="space-y-6">
+                    <section id="modulo-efetivo" class="hidden space-y-6">
                         <div id="conteudo-efetivo-geral" class="space-y-6">
                             <div class="bg-sys-dark text-white rounded-xl shadow-lg border-b-4 border-pmmt-gold p-5 md:p-6 flex justify-between items-center relative overflow-hidden">
                                 <div class="z-10">
@@ -843,29 +936,36 @@
         }
 
         function mudarModulo(moduloDestino) {
-            const modulos = ['financeiro', 'efetivo', 'apoio', 'debate', 'taf'];
+            const modulos = ['financeiro', 'efetivo', 'taf', 'apoio', 'debate', 'institucional'];
             const nomes = {
                 'financeiro': 'Gestão Financeira',
                 'efetivo': 'Efetivo e Escala',
                 'taf': 'TAF e Fatos Observados',
                 'apoio': 'Material de Apoio',
-                'debate': 'Área Livre / Mural'
+                'debate': 'Área Livre / Mural',
+                'institucional': 'Cadeia de Comando'
             };
 
             modulos.forEach(m => {
-                document.getElementById('modulo-' + m).classList.add('hidden');
+                const elemento = document.getElementById('modulo-' + m);
+                if(elemento) elemento.classList.add('hidden');
+                
                 const btn = document.getElementById('btn-' + m);
-                if(btn) btn.className = "menu-item";
+                if(btn) btn.className = "w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold text-slate-300 hover:bg-white/10 hover:text-white transition-all";
             });
 
-            document.getElementById('modulo-' + moduloDestino).classList.remove('hidden');
+            const moduloAtivo = document.getElementById('modulo-' + moduloDestino);
+            if(moduloAtivo) moduloAtivo.classList.remove('hidden');
+
             const btnAtivo = document.getElementById('btn-' + moduloDestino);
-            if(btnAtivo) btnAtivo.className = "menu-item ativo rounded-lg shadow-sm";
+            if(btnAtivo) btnAtivo.className = "w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold transition-all bg-pmmt-gold text-sys-dark shadow-md";
             
-            document.getElementById('txt-breadcrumb').innerText = nomes[moduloDestino];
+            const breadcrumb = document.getElementById('txt-breadcrumb');
+            if(breadcrumb) breadcrumb.innerText = nomes[moduloDestino];
 
             if (window.innerWidth < 768) {
-                document.getElementById('wrapperLateral').classList.add('hidden');
+                const wrapper = document.getElementById('wrapperLateral');
+                if(wrapper) wrapper.classList.add('hidden');
             }
         }
 
