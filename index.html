@@ -42,7 +42,7 @@
         ::-webkit-scrollbar-thumb { background: #c1c1c1; }
         ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
         
-        /* MENU LATERAL COMPACTADO PARA NÃO PRECISAR ROLAR */
+        /* MENU LATERAL COMPACTADO E ESTILIZADO */
         .menu-item { 
             display: flex; align-items: center; gap: 0.75rem; 
             padding: 0.6rem 1rem; font-size: 12px; font-weight: 600; 
@@ -57,19 +57,19 @@
 
         /* --- CONTROLE INTELIGENTE DE IMPRESSÃO --- */
         @media print {
-            body:not(.printing-escala) aside, 
-            body:not(.printing-escala) .no-print, 
-            body:not(.printing-escala) #telaLogin, 
-            body:not(.printing-escala) header, 
-            body:not(.printing-escala) #breadcrumb-bar { display: none !important; }
+            body:not(.printing-escala):not(.printing-cautela) aside, 
+            body:not(.printing-escala):not(.printing-cautela) .no-print, 
+            body:not(.printing-escala):not(.printing-cautela) #telaLogin, 
+            body:not(.printing-escala):not(.printing-cautela) header, 
+            body:not(.printing-escala):not(.printing-cautela) #breadcrumb-bar { display: none !important; }
             
-            body:not(.printing-escala) main { margin: 0 !important; padding: 0 !important; width: 100% !important; background: white; }
-            body:not(.printing-escala) { background: white; color: black; }
-            body:not(.printing-escala) table, 
-            body:not(.printing-escala) th, 
-            body:not(.printing-escala) td { border: 1px solid #cbd5e1 !important; color: black !important; }
+            body:not(.printing-escala):not(.printing-cautela) main { margin: 0 !important; padding: 0 !important; width: 100% !important; background: white; }
+            body:not(.printing-escala):not(.printing-cautela) { background: white; color: black; }
+            body:not(.printing-escala):not(.printing-cautela) table, 
+            body:not(.printing-escala):not(.printing-cautela) th, 
+            body:not(.printing-escala):not(.printing-cautela) td { border: 1px solid #cbd5e1 !important; color: black !important; }
 
-            /* PRINT OFICIAL: ESCALA DE SERVIÇO (Compactado para 1 Página) */
+            /* PRINT OFICIAL: ESCALA DE SERVIÇO */
             body.printing-escala * { visibility: hidden; }
             body.printing-escala #modulo-impressao-escala, 
             body.printing-escala #modulo-impressao-escala * { visibility: visible; }
@@ -77,6 +77,21 @@
                 position: absolute; left: 0; top: 0; width: 100%; display: block !important;
             }
             body.printing-escala #painelPrincipal { display: none !important; }
+            
+            /* PRINT OFICIAL: LIVRO DE CAUTELA */
+            body.printing-cautela * { visibility: hidden; }
+            body.printing-cautela #modulo-cautela, 
+            body.printing-cautela #modulo-cautela * { visibility: visible; }
+            body.printing-cautela #modulo-cautela {
+                position: absolute; left: 0; top: 0; width: 100%; display: block !important; margin: 0; padding: 0;
+            }
+            body.printing-cautela .no-print { display: none !important; }
+            body.printing-cautela table, 
+            body.printing-cautela th, 
+            body.printing-cautela td { border: 1px solid #000 !important; color: #000 !important; }
+            body.printing-cautela .bg-slate-200 { background-color: #e2e8f0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+            /* Configuração Padrão (A4 Retrato para a escala) */
             @page { size: A4 portrait; margin: 10mm; }
         }
     </style>
@@ -98,7 +113,7 @@
                     
                     <!-- LADO ESQUERDO: BRASÃO GIGANTE -->
                     <div class="w-full md:w-1/2 flex flex-col items-center justify-center p-8 md:p-12 relative border-b md:border-b-0 md:border-r border-white/10">
-                        <img src="logo_brasao_5.png" alt="Brasão 5º Pelotão" class="w-64 h-64 md:w-80 md:h-80 lg:w-[26rem] lg:h-[26rem] object-contain drop-shadow-2xl z-10 hover:scale-105 transition-transform duration-700" onerror="this.onerror=null; this.src='logo_brasao_5.png';">
+                        <img src="logo_brasao_5.png" alt="Brasão 5º Pelotão" class="w-64 h-64 md:w-80 md:h-80 lg:w-[26rem] lg:h-[26rem] object-contain drop-shadow-2xl z-10 hover:scale-105 transition-transform duration-700" onerror="this.onerror=null; this.src='https://via.placeholder.com/300?text=Brasao+PMMT';">
                         
                         <div class="text-center mt-6 z-10">
                             <h2 class="text-2xl md:text-3xl font-black text-pmmt-gold tracking-widest uppercase drop-shadow-md">5º PELOTÃO</h2>
@@ -110,7 +125,7 @@
                     <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center relative">
                         <!-- Logo PMMT Topo -->
                         <div class="flex flex-col items-center justify-center mb-8 border-b border-white/10 pb-6">
-                            <img src="logo_pmmt_branco_para_fundo_azul.png" alt="PMMT" class="h-16 object-contain mb-3 drop-shadow-md">
+                            <img src="logo_pmmt_branco_para_fundo_azul.png" alt="PMMT" class="h-16 object-contain mb-3 drop-shadow-md" onerror="this.style.display='none'">
                             <h3 class="text-sm font-extrabold tracking-widest text-pmmt-gold uppercase text-center drop-shadow-md">Polícia Militar de Mato Grosso</h3>
                             <p class="text-[10px] text-slate-300 uppercase tracking-widest mt-1">Portal Institucional do 35º CFSD</p>
                         </div>
@@ -140,7 +155,7 @@
                 </div>
             </div>
 
-            <!-- RODAPÉ DA TELA DE LOGIN -->
+            <!-- RODAPÉ TELA DE LOGIN -->
             <div class="w-full text-center z-10 shrink-0 mt-8 pb-2">
                 <p class="text-[10px] text-slate-400/80 font-bold uppercase tracking-wider drop-shadow-md">
                     Desenvolvido por: AL SD PM WILLYS - 5º PELOTÃO - 35º CFSD
@@ -156,7 +171,7 @@
                         <i class="fa-solid fa-bars"></i>
                     </button>
                     <div class="flex items-center gap-4">
-                        <img src="logo_pmmt_branco_para_fundo_azul.png" alt="Logo PMMT" class="h-10 md:h-14 object-contain drop-shadow-md">
+                        <img src="logo_pmmt_branco_para_fundo_azul.png" alt="Logo PMMT" class="h-10 md:h-14 object-contain drop-shadow-md" onerror="this.style.display='none'">
                         <div class="border-l border-white/20 pl-4">
                             <h1 class="text-base md:text-xl font-extrabold tracking-wider">35º CFSD PMMT <span class="text-pmmt-gold">| 6º CR</span></h1>
                             <p class="text-[10px] md:text-xs font-semibold text-slate-300 uppercase tracking-widest mt-0.5">Portal Institucional Integrado</p>
@@ -176,22 +191,22 @@
 
             <div class="flex-1 flex overflow-hidden">
                 <!-- ========================================== -->
-                <!-- MENU LATERAL REFORMULADO (AZUL CONTÍNUO)   -->
+                <!-- MENU LATERAL REFORMULADO                   -->
                 <!-- ========================================== -->
                 <aside id="wrapperLateral" class="w-64 bg-pmmt-blue flex flex-col shadow-2xl z-50 hidden md:flex shrink-0">
-                    <!-- TOPO AZUL CONTÍNUO PARA O BRASÃO -->
                     <div class="py-6 px-4 text-center flex flex-col items-center justify-center relative shrink-0 border-b border-white/10">
-                        <img src="logo_brasao_5.png" alt="Brasão 5º Pelotão" class="w-32 h-32 md:w-40 md:h-40 object-contain mb-3 relative z-10 drop-shadow-2xl hover:scale-105 transition-transform" onerror="this.onerror=null; this.src='logo_brasao_5.png';">
+                        <img src="logo_brasao_5.png" alt="Brasão 5º Pelotão" class="w-32 h-32 md:w-40 md:h-40 object-contain mb-3 relative z-10 drop-shadow-2xl hover:scale-105 transition-transform" onerror="this.onerror=null; this.src='https://via.placeholder.com/150?text=Brasao';">
                         <h2 class="text-base font-black text-pmmt-gold tracking-widest uppercase relative z-10">5º PELOTÃO</h2>
                         <p class="text-[10px] font-bold text-slate-300 uppercase tracking-widest mt-0.5 relative z-10">Força Tática - Cáceres</p>
                     </div>
 
-                    <!-- ITENS DO MENU COMPACTADOS -->
+                    <!-- ITENS DO MENU -->
                     <div class="flex-1 overflow-y-auto py-3 px-3 space-y-0.5">
                         <p class="px-3 text-[9px] font-extrabold text-slate-400 uppercase tracking-widest mb-2 mt-1">Navegação Principal</p>
                         
                         <button onclick="mudarModulo('institucional')" id="btn-institucional" class="menu-item rounded-lg"><i class="fa-solid fa-sitemap w-5 text-center text-base"></i> Cadeia de Comando</button>
                         <button onclick="mudarModulo('efetivo')" id="btn-efetivo" class="menu-item ativo rounded-lg"><i class="fa-solid fa-users-gear w-5 text-center text-base"></i> Efetivo e Escala</button>
+                        <button onclick="mudarModulo('cautela')" id="btn-cautela" class="menu-item rounded-lg"><i class="fa-solid fa-gun w-5 text-center text-base"></i> Cautela de Armamento</button>
                         <button onclick="mudarModulo('financeiro')" id="btn-financeiro" class="menu-item rounded-lg"><i class="fa-solid fa-vault w-5 text-center text-base"></i> Gestão Financeira</button>
                         <button onclick="mudarModulo('taf')" id="btn-taf" class="menu-item rounded-lg"><i class="fa-solid fa-person-running w-5 text-center text-base"></i> TAF e Fatos Obs.</button>
                         <button onclick="mudarModulo('apoio')" id="btn-apoio" class="menu-item rounded-lg"><i class="fa-solid fa-book-open w-5 text-center text-base"></i> Material de Apoio</button>
@@ -240,7 +255,7 @@
                                             <i class="fa-solid fa-user-tie"></i>
                                         </div>
                                         <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Governador do Estado</h3>
-                                        <p class="text-sm font-black text-sys-dark uppercase">Otaviano Pivetta</p>
+                                        <p class="text-sm font-black text-sys-dark uppercase">Mauro Mendes</p>
                                     </div>
 
                                     <!-- 2. SESP -->
@@ -249,7 +264,7 @@
                                             <i class="fa-solid fa-user-shield"></i>
                                         </div>
                                         <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Secretário de Seg. Pública</h3>
-                                        <p class="text-sm font-black text-sys-dark uppercase">Cel PM Susane Tamanho</p>
+                                        <p class="text-sm font-black text-sys-dark uppercase">Cel PM César Roveri</p>
                                     </div>
 
                                     <!-- 3. SESP Adjunto -->
@@ -258,7 +273,7 @@
                                             <i class="fa-solid fa-user-shield"></i>
                                         </div>
                                         <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Sec. Adjunto de Segurança</h3>
-                                        <p class="text-sm font-black text-sys-dark uppercase">Delegado Rodrigo Bastos</p>
+                                        <p class="text-sm font-black text-sys-dark uppercase">Cel PM Heverton Mourett</p>
                                     </div>
 
                                     <!-- 4. Comandante Geral -->
@@ -267,7 +282,7 @@
                                             <i class="fa-solid fa-star"></i>
                                         </div>
                                         <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Comandante-Geral PMMT</h3>
-                                        <p class="text-sm font-black text-sys-dark uppercase">Cel PM Cláudio Fernando</p>
+                                        <p class="text-sm font-black text-sys-dark uppercase">Cel PM Alexandre Mendes</p>
                                     </div>
 
                                     <!-- 5. Subchefe Estado Maior -->
@@ -275,8 +290,8 @@
                                         <div class="w-24 h-24 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-4 overflow-hidden shadow-inner text-slate-400 text-4xl">
                                             <i class="fa-solid fa-star"></i>
                                         </div>
-                                        <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Subchefe Estado-Maior</h3>
-                                        <p class="text-sm font-black text-sys-dark uppercase">Cel PM Grasielle Paes</p>
+                                        <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Chefe do Estado-Maior</h3>
+                                        <p class="text-sm font-black text-sys-dark uppercase">Cel PM José Nildo</p>
                                     </div>
 
                                     <!-- 6. Comandante 6º CR -->
@@ -285,7 +300,7 @@
                                             <i class="fa-solid fa-building-shield"></i>
                                         </div>
                                         <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Comandante do 6º CR</h3>
-                                        <p class="text-sm font-black text-sys-dark uppercase">Ten-Cel PM Adão César</p>
+                                        <p class="text-sm font-black text-sys-dark uppercase">Cel PM Otovaldo Gonçalves</p>
                                     </div>
 
                                     <!-- 7. Comandante 6º BPM -->
@@ -303,7 +318,7 @@
                                             <i class="fa-solid fa-bolt"></i>
                                         </div>
                                         <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Cmt Força Tática (23ª CIPM)</h3>
-                                        <p class="text-[11px] font-bold text-slate-400 uppercase mt-1">Major PM Abner James Lopes Campos</p>
+                                        <p class="text-sm font-black text-sys-dark uppercase">Major PM Abner James Lopes Campos</p>
                                     </div>
 
                                 </div>
@@ -394,7 +409,69 @@
                         </div>
                     </section>
 
-                    <!-- DEMAIS MÓDULOS -->
+                    <!-- ============================================================== -->
+                    <!-- MÓDULO: LIVRO DE CAUTELA DE ARMAMENTO E COLETE                 -->
+                    <!-- ============================================================== -->
+                    <section id="modulo-cautela" class="hidden space-y-6">
+                        <div class="bg-white shadow-md border border-slate-300 rounded-xl overflow-hidden mb-6">
+                            
+                            <!-- CABEÇALHO DO MÓDULO -->
+                            <div class="bg-sys-dark px-6 py-5 flex justify-between items-center border-b-4 border-pmmt-gold shrink-0">
+                                <div>
+                                    <h2 class="text-base md:text-lg font-black tracking-widest uppercase text-white">
+                                        <i class="fa-solid fa-gun text-pmmt-gold mr-3"></i>Livro de Cautela de Armamento/Colete
+                                    </h2>
+                                    <p class="text-slate-300 text-[10px] md:text-xs font-bold mt-1 uppercase tracking-widest">
+                                        Controle Diário de Material Bélico - PMMT
+                                    </p>
+                                </div>
+                                <div class="flex gap-3 no-print">
+                                    <button onclick="abrirModalCautela()" class="admin-only bg-pmmt-blue hover:bg-sys-blue text-white font-black px-4 py-2.5 rounded-lg shadow-lg transition text-xs uppercase flex items-center gap-2 tracking-widest border border-white/20">
+                                        <i class="fa-solid fa-plus"></i> Novo Registro
+                                    </button>
+                                    <button onclick="imprimirLivroCautela()" class="bg-pmmt-gold hover:bg-yellow-500 text-sys-dark font-black px-4 py-2.5 rounded-lg shadow-lg transition text-xs uppercase flex items-center gap-2 tracking-widest">
+                                        <i class="fa-solid fa-print"></i> Imprimir
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- DESCRIÇÃO INSTITUCIONAL E BASE LEGAL -->
+                            <div class="p-5 border-b border-slate-200 bg-slate-50 no-print">
+                                <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl flex gap-3 items-start shadow-sm">
+                                    <i class="fa-solid fa-circle-info text-blue-500 mt-0.5 text-lg"></i>
+                                    <div class="text-xs text-blue-800 font-semibold leading-relaxed space-y-2">
+                                        <p>O controle bélico na Polícia Militar do Estado de Mato Grosso segue regras estritas do <strong>Decreto nº 961/2012 da PMMT</strong>.</p>
+                                        <p><strong>Instrução:</strong> Você pode inserir as cautelas digitalmente clicando em "Novo Registro" ou simplesmente clicar em "Imprimir" para gerar a folha em branco (em formato <strong>Paisagem</strong>) para preenchimento manual no livro de capa dura da reserva de armas.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TABELA / PLANILHA DE CAUTELA -->
+                            <div class="overflow-x-auto p-4 bg-white">
+                                <table class="w-full text-left border-collapse min-w-[1100px]">
+                                    <thead>
+                                        <tr class="bg-slate-200 text-sys-dark text-[10px] uppercase tracking-wider border border-slate-300">
+                                            <th class="p-3 border border-slate-400 font-black text-center w-24">Data / Hora</th>
+                                            <th class="p-3 border border-slate-400 font-black text-center w-24">Posto/Grad.</th>
+                                            <th class="p-3 border border-slate-400 font-black w-48">Nome Completo</th>
+                                            <th class="p-3 border border-slate-400 font-black text-center w-24">RE / Matrícula</th>
+                                            <th class="p-3 border border-slate-400 font-black text-center w-32">Espécie/Marca</th>
+                                            <th class="p-3 border border-slate-400 font-black text-center w-28">Nº Pat. / Série</th>
+                                            <th class="p-3 border border-slate-400 font-black text-center w-16">Qtde Mun.</th>
+                                            <th class="p-3 border border-slate-400 font-black text-center w-32">Nº Colete / Val.</th>
+                                            <th class="p-3 border border-slate-400 font-black text-center w-32">Assinatura Retirada</th>
+                                            <th class="p-3 border border-slate-400 font-black text-center w-32">Hora / Visto Devol.</th>
+                                        </tr>
+                                    </thead>
+                                    <!-- LINHAS SÃO RENDERIZADAS PELO JS -->
+                                    <tbody id="tabelaCautela" class="divide-y divide-slate-200 text-xs text-slate-800 font-medium">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- MÓDULO FINANCEIRO -->
                     <section id="modulo-financeiro" class="hidden space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                             <div class="bg-white border-t-4 border-emerald-500 shadow-md p-5 flex items-center justify-between rounded-xl">
@@ -619,7 +696,7 @@
                         </div>
                     </section>
 
-                    <!-- RODAPÉ DA PÁGINA LOGADA -->
+                    <!-- RODAPÉ PÁGINA LOGADA -->
                     <footer class="mt-auto pt-8 pb-2 text-[10px] text-slate-400 font-bold uppercase tracking-wider no-print w-full shrink-0 text-center relative z-10 border-t border-slate-200 mt-8">
                         Desenvolvido por: AL SD PM WILLYS - 5º PELOTÃO - 35º CFSD
                     </footer>
@@ -628,7 +705,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE ALTERAR FUNÇÃO DO SISTEMA (XERIFE/ALUNO_DIA BASE) -->
+    <!-- MODAL DE ALTERAR FUNÇÃO DO SISTEMA -->
     <div id="modalFuncao" class="fixed inset-0 bg-slate-900/80 z-[200] hidden flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden border border-slate-300">
             <div class="bg-sys-dark px-5 py-4 flex justify-between items-center border-b border-slate-400/30">
@@ -652,6 +729,56 @@
                 </button>
                 <button type="button" id="btnRestaurarPadrao" onclick="restaurarFuncaoPadrao()" class="hidden w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-3 rounded-lg shadow-sm transition text-xs uppercase tracking-widest mt-2 flex items-center justify-center gap-2">
                     <i class="fa-solid fa-rotate-left"></i> Restaurar Automático
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL NOVA CAUTELA -->
+    <div id="modalCautela" class="fixed inset-0 bg-slate-900/80 z-[300] hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-slate-300">
+            <div class="bg-sys-dark px-5 py-4 flex justify-between items-center border-b-4 border-pmmt-gold">
+                <h3 class="text-white font-black text-sm uppercase tracking-wider"><i class="fa-solid fa-gun text-pmmt-gold mr-2"></i> Lançar Cautela</h3>
+                <button type="button" onclick="fecharModalCautela()" class="text-white/70 hover:text-white transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <form id="formCautela" onsubmit="salvarCautela(event)" class="p-6 space-y-4">
+                <input type="hidden" id="cautelaId">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Data/Hora Retirada</label>
+                        <input type="datetime-local" id="cautelaDataHora" required class="w-full bg-slate-50 border border-slate-300 p-2.5 rounded-lg text-sm font-bold text-slate-800 outline-none focus:border-sys-dark shadow-sm">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Policial/Aluno</label>
+                        <select id="cautelaAluno" required class="w-full bg-white border border-slate-300 p-2.5 rounded-lg text-sm font-bold text-slate-800 outline-none focus:border-sys-dark shadow-sm"></select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Espécie/Marca</label>
+                        <input type="text" id="cautelaArma" required placeholder="Ex: Pistola Glock G22" class="w-full bg-white border border-slate-300 p-2.5 rounded-lg text-sm font-bold text-slate-800 outline-none focus:border-sys-dark shadow-sm">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Nº Série / Patrimônio</label>
+                        <input type="text" id="cautelaSerie" required placeholder="Ex: ABC1234" class="w-full bg-white border border-slate-300 p-2.5 rounded-lg text-sm font-bold text-slate-800 outline-none focus:border-sys-dark shadow-sm">
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Munições</label>
+                        <input type="number" id="cautelaMunicoes" required placeholder="Qtd" value="30" class="w-full bg-white border border-slate-300 p-2.5 rounded-lg text-sm font-bold text-slate-800 outline-none focus:border-sys-dark shadow-sm text-center">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Nº Colete</label>
+                        <input type="text" id="cautelaColete" placeholder="Opcional" class="w-full bg-white border border-slate-300 p-2.5 rounded-lg text-sm font-bold text-slate-800 outline-none focus:border-sys-dark shadow-sm text-center">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Validade Colete</label>
+                        <input type="text" id="cautelaValidade" placeholder="Ex: 12/2028" class="w-full bg-white border border-slate-300 p-2.5 rounded-lg text-sm font-bold text-slate-800 outline-none focus:border-sys-dark shadow-sm text-center">
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-sys-dark hover:bg-pmmt-blue text-white font-black py-3 rounded-lg shadow-lg transition text-xs uppercase tracking-widest mt-4 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-save"></i> Gravar Cautela
                 </button>
             </form>
         </div>
@@ -755,7 +882,6 @@
     <!-- ========================================== -->
     <div id="modulo-impressao-escala" class="hidden bg-white text-black p-4 max-w-4xl mx-auto font-sans text-[11px] leading-tight">
         <div class="flex flex-col items-center mb-3 text-center">
-            <!-- LOGO PARA A IMPRESSÃO -->
             <img src="logo_brasao_5.png" alt="Brasão PMMT" class="h-20 mb-2 object-contain" onerror="this.style.display='none'">
             <h1 class="font-bold text-sm uppercase">POLÍCIA MILITAR DO ESTADO DE MATO GROSSO</h1>
             <h2 class="font-bold text-xs uppercase">DIRETORIA DE ENSINO INSTRUÇÃO E PESQUISA</h2>
@@ -811,7 +937,8 @@
         let listaAlunosFull = []; 
         let transacoesGlobais = [];
         let previsoesGlobais = []; 
-        let funcoesComandoGlobais = []; 
+        let funcoesComandoGlobais = [];
+        let cautelasGlobais = []; 
         let isAdmin = false;
         
         let colunaOrdenacao = 'data';
@@ -915,6 +1042,7 @@
                 await carregarTransacoes();
                 await carregarPrevisoes();
                 await carregarMateriaisApoio();
+                await carregarCautelas();
 
                 const iframe = document.getElementById('iframeTaf');
                 if (iframe && iframe.contentWindow) {
@@ -936,14 +1064,15 @@
         }
 
         function mudarModulo(moduloDestino) {
-            const modulos = ['financeiro', 'efetivo', 'taf', 'apoio', 'debate', 'institucional'];
+            const modulos = ['institucional', 'efetivo', 'cautela', 'financeiro', 'taf', 'apoio', 'debate'];
             const nomes = {
-                'financeiro': 'Gestão Financeira',
+                'institucional': 'Cadeia de Comando',
                 'efetivo': 'Efetivo e Escala',
+                'cautela': 'Cautela de Armamento',
+                'financeiro': 'Gestão Financeira',
                 'taf': 'TAF e Fatos Observados',
                 'apoio': 'Material de Apoio',
-                'debate': 'Área Livre / Mural',
-                'institucional': 'Cadeia de Comando'
+                'debate': 'Área Livre / Mural'
             };
 
             modulos.forEach(m => {
@@ -1039,8 +1168,8 @@
                 <option value="LOTE">-- Em Lote: Lançar para TODOS os Alunos --</option>
             `;
 
-            listaAlunosFull = dbData;
-            dbData.forEach(aluno => { 
+            listaAlunosFull = dbData || [];
+            listaAlunosFull.forEach(aluno => { 
                 let nomeExibicaoBruto = aluno.qra ? aluno.qra : aluno.nome;
                 let nomeExibicao = nomeExibicaoBruto.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase();
                 const numeroFormatado = "5" + aluno.numero.toString().padStart(2, '0');
@@ -1599,7 +1728,6 @@
             document.getElementById('prevDataIso').value = dataIso;
             document.getElementById('prevEquipeNome').value = equipe;
             
-            // Popula os Selects com todos os alunos em ordem de antiguidade (Permite substituir por alguém de outra equipe)
             let optionsHtml = `<option value="">-- VAZIO (Ninguém escalado) --</option>`;
             [...listaAlunosFull].sort((a,b) => a.numero - b.numero).forEach(a => {
                 let num = "5" + a.numero.toString().padStart(2, '0');
@@ -1612,7 +1740,6 @@
 
             document.getElementById('prevGraduado').value = sgt;
 
-            // Lógica rigorosa de Antiguidade vs Postos/Horários:
             let teamSorted = [...listaAlunosFull].filter(a => a.equipe === equipe).sort((a,b) => a.numero - b.numero);
             
             let objAlunoDia = teamSorted.find(a => a.id == alunoDiaId);
@@ -1622,7 +1749,6 @@
 
             let remaining = teamSorted.filter(a => !objAlunoDia || a.id !== objAlunoDia.id);
 
-            // Mapeando do mais antigo (índice 0) para o mais moderno
             document.getElementById('prevP1_23').value = remaining[0] ? remaining[0].id : '';
             document.getElementById('prevP2_23').value = remaining[1] ? remaining[1].id : '';
             document.getElementById('prevP1_03').value = remaining[2] ? remaining[2].id : '';
@@ -1676,7 +1802,6 @@
             const numEscala = Math.floor(diffAno / 1000 / 60 / 60 / 24).toString().padStart(3, '0');
             document.getElementById('printNumEscala').innerText = numEscala;
 
-            // Busca os alunos selecionados nos Selects
             function getAlunoObj(selectId) {
                 const val = document.getElementById(selectId).value;
                 if(!val) return null;
@@ -1694,7 +1819,6 @@
                 document.getElementById('printAlunoDia').innerText = `___________________________ ( RG ________ )`;
             }
             
-            // Relaciona quem vai aparecer no cabeçalho (Equipe original + adicionados manualmente)
             let equipeOriginal = listaAlunosFull.filter(a => a.equipe === equipe);
             let setImprimir = new Set(equipeOriginal.map(a => a.id));
             [alDia, p1_23, p1_03, p1_01, p2_23, p2_03, p2_01].forEach(obj => { if(obj) setImprimir.add(obj.id); });
@@ -1709,7 +1833,6 @@
                 divAlunos.innerHTML += `<p>AL SD PM ${qra} (${numFormatado})</p>`;
             });
 
-            // Preenche os postos
             function formatText(obj) {
                 if(!obj) return '_________________________';
                 let q = obj.qra ? obj.qra.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase() : obj.nome.split(' ')[0].toUpperCase();
@@ -1743,6 +1866,171 @@
                 printModule.classList.add('hidden');
                 document.body.classList.remove('printing-escala');
             }, 300);
+        }
+
+        // ===============================================
+        // --- FUNÇÕES DE RENDERIZAR E IMPRIMIR CAUTELA --
+        // ===============================================
+        async function carregarCautelas() {
+            const { data, error } = await supabaseClient.from('cautela_armamento').select('*').order('data_hora', { ascending: false });
+            if (!error) {
+                cautelasGlobais = data || [];
+                renderizarLinhasCautela();
+            }
+        }
+
+        function abrirModalCautela() {
+            document.getElementById('formCautela').reset();
+            document.getElementById('cautelaId').value = '';
+            
+            const select = document.getElementById('cautelaAluno');
+            select.innerHTML = '<option value="">Selecione um Policial/Aluno...</option>';
+            [...listaAlunosFull].sort((a,b) => a.numero - b.numero).forEach(a => {
+                let num = "5" + a.numero.toString().padStart(2, '0');
+                let qra = a.qra ? a.qra.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase() : a.nome.split(' ')[0].toUpperCase();
+                select.add(new Option(`${num} - ${qra}`, a.id));
+            });
+
+            let now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            document.getElementById('cautelaDataHora').value = now.toISOString().slice(0,16);
+
+            document.getElementById('modalCautela').classList.remove('hidden');
+        }
+
+        function fecharModalCautela() {
+            document.getElementById('modalCautela').classList.add('hidden');
+        }
+
+        async function salvarCautela(e) {
+            e.preventDefault();
+            mostrarLoading(true);
+            
+            const id = document.getElementById('cautelaId').value;
+            const payload = {
+                data_hora: document.getElementById('cautelaDataHora').value,
+                aluno_id: document.getElementById('cautelaAluno').value,
+                arma: document.getElementById('cautelaArma').value.toUpperCase(),
+                arma_serie: document.getElementById('cautelaSerie').value.toUpperCase(),
+                municoes: document.getElementById('cautelaMunicoes').value,
+                colete: document.getElementById('cautelaColete').value,
+                colete_validade: document.getElementById('cautelaValidade').value
+            };
+
+            let error;
+            if(id) {
+                const res = await supabaseClient.from('cautela_armamento').update(payload).eq('id', id);
+                error = res.error;
+            } else {
+                const res = await supabaseClient.from('cautela_armamento').insert([payload]);
+                error = res.error;
+            }
+
+            if(!error) {
+                fecharModalCautela();
+                await carregarCautelas();
+            } else {
+                alert("Erro ao gravar cautela!");
+                console.error(error);
+            }
+            mostrarLoading(false);
+        }
+
+        async function deletarCautela(id) {
+            if(confirm("Deseja realmente excluir este registro de cautela?")) {
+                mostrarLoading(true);
+                await supabaseClient.from('cautela_armamento').delete().eq('id', id);
+                await carregarCautelas();
+                mostrarLoading(false);
+            }
+        }
+
+        async function devolverCautela(id) {
+            const hora = prompt("Informe a hora da devolução (Ex: 06:00) ou deixe vazio para usar a hora atual:");
+            if(hora !== null) {
+                mostrarLoading(true);
+                let horaFinal = hora.trim() === "" ? new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}) : hora;
+                await supabaseClient.from('cautela_armamento').update({ hora_devolucao: horaFinal }).eq('id', id);
+                await carregarCautelas();
+                mostrarLoading(false);
+            }
+        }
+
+        function renderizarLinhasCautela() {
+            const tbody = document.getElementById('tabelaCautela');
+            if(!tbody) return;
+            let html = '';
+
+            // 1. Injeta os dados que estão salvos no Supabase
+            cautelasGlobais.forEach(c => {
+                let dataObj = new Date(c.data_hora);
+                let dataStr = dataObj.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit', year: 'numeric'});
+                let horaStr = dataObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+                
+                let aluno = listaAlunosFull.find(a => a.id == c.aluno_id);
+                let nomeCompleto = aluno ? aluno.nome : 'N/A';
+                let mat = '123456'; 
+                
+                let devolucaoHtml = c.hora_devolucao 
+                    ? `<span class="text-emerald-600 font-bold">${c.hora_devolucao}<br><i class="fa-solid fa-check"></i></span>` 
+                    : `___:___<br>________`;
+
+                let acoesHtml = isAdmin ? `
+                    <div class="flex justify-center gap-2 mt-1 no-print">
+                        ${!c.hora_devolucao ? `<button onclick="devolverCautela('${c.id}')" class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded border border-emerald-300 hover:bg-emerald-200 transition" title="Registrar Devolução da Arma"><i class="fa-solid fa-arrow-rotate-left"></i></button>` : ''}
+                        <button onclick="deletarCautela('${c.id}')" class="text-[10px] bg-rose-100 text-rose-700 px-2 py-0.5 rounded border border-rose-300 hover:bg-rose-200 transition" title="Excluir Cautela"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                ` : '';
+
+                html += `<tr class="hover:bg-slate-50 transition bg-white">
+                            <td class="p-2 border border-slate-300 text-center font-bold">${dataStr}<br>${horaStr}</td>
+                            <td class="p-2 border border-slate-300 text-center">AL SD PM</td>
+                            <td class="p-2 border border-slate-300 uppercase font-bold text-[10px]">${nomeCompleto}</td>
+                            <td class="p-2 border border-slate-300 text-center">${mat}</td>
+                            <td class="p-2 border border-slate-300 text-center text-slate-600">${c.arma}</td>
+                            <td class="p-2 border border-slate-300 text-center font-mono">${c.arma_serie}</td>
+                            <td class="p-2 border border-slate-300 text-center font-bold text-rose-600">${c.municoes}</td>
+                            <td class="p-2 border border-slate-300 text-center">${c.colete || '-'} <br><span class="text-[9px] text-slate-400">V: ${c.colete_validade || '-'}</span></td>
+                            <td class="p-2 border border-slate-300 text-center text-[10px] text-slate-400 font-bold italic">Assinatura Digital</td>
+                            <td class="p-2 border border-slate-300 text-center text-slate-400">${devolucaoHtml} ${acoesHtml}</td>
+                        </tr>`;
+            });
+
+            // 2. Calcula quantas linhas em branco faltam para completar a folha A4 Paisagem (múltiplos de 14 linhas)
+            let totalRendered = cautelasGlobais.length;
+            let rowsToAdd = 14 - (totalRendered % 14);
+            if(rowsToAdd === 0 && totalRendered === 0) rowsToAdd = 14; 
+
+            for(let i=0; i<rowsToAdd; i++) {
+                html += `<tr class="h-14 hover:bg-slate-50 transition">
+                            <td class="p-2 border border-slate-300 text-center text-slate-400">___/___/___<br>___:___</td>
+                            <td class="p-2 border border-slate-300 text-center"></td>
+                            <td class="p-2 border border-slate-300"></td>
+                            <td class="p-2 border border-slate-300"></td>
+                            <td class="p-2 border border-slate-300"></td>
+                            <td class="p-2 border border-slate-300"></td>
+                            <td class="p-2 border border-slate-300"></td>
+                            <td class="p-2 border border-slate-300"></td>
+                            <td class="p-2 border border-slate-300"></td>
+                            <td class="p-2 border border-slate-300 text-center text-slate-400">___:___<br>________</td>
+                        </tr>`;
+            }
+            tbody.innerHTML = html;
+        }
+
+        function imprimirLivroCautela() {
+            const style = document.createElement('style');
+            style.innerHTML = `@page { size: A4 landscape; margin: 10mm; }`;
+            document.head.appendChild(style);
+
+            document.body.classList.add('printing-cautela');
+            
+            window.print();
+
+            setTimeout(() => {
+                document.body.classList.remove('printing-cautela');
+                document.head.removeChild(style);
+            }, 500);
         }
 
         // ===============================================
