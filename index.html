@@ -670,23 +670,37 @@
                         <iframe id="iframeTaf" src="taf.html" class="w-full h-full border border-slate-300 bg-white shadow-xl rounded-2xl"></iframe>
                     </section>
 
-                    <section id="modulo-apoio" class="hidden space-y-6">
-                        <div class="bg-white shadow-md border border-slate-300 overflow-hidden rounded-xl">
-                            <div class="bg-sys-dark text-white px-6 py-5 flex justify-between items-center">
-                                <div>
-                                    <h2 class="text-base md:text-lg font-black tracking-widest uppercase"><i class="fa-solid fa-folder-open text-pmmt-gold mr-3"></i> Repositório Acadêmico</h2>
-                                </div>
-                                <button onclick="carregarMateriaisApoio()" class="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-4 py-2 rounded-lg transition font-bold text-xs uppercase tracking-wide flex items-center gap-2">
-                                    <i class="fa-solid fa-arrows-rotate"></i> Atualizar
-                                </button>
-                            </div>
-                            <div class="p-6 md:p-8">
-                                <div id="containerMateriais" class="space-y-8">
-                                    <p class="text-sm text-slate-500 text-center py-10 font-semibold"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Carregando acervo do Pelotão...</p>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
+<section id="modulo-apoio" class="hidden space-y-6">
+    <div class="bg-white shadow-md border border-slate-300 overflow-hidden rounded-xl">
+        <div class="bg-sys-dark text-white px-6 py-5 flex justify-between items-center">
+            <div>
+                <h2 class="text-base md:text-lg font-black tracking-widest uppercase"><i class="fa-solid fa-folder-open text-pmmt-gold mr-3"></i> Repositório Acadêmico</h2>
+            </div>
+            <button onclick="carregarMateriaisApoio()" class="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-4 py-2 rounded-lg transition font-bold text-xs uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-arrows-rotate"></i> Atualizar
+            </button>
+        </div>
+        
+        <div class="p-6 md:p-8">
+            <!-- DESTAQUE NOVO: BANNER PARA O ESTUDO POP INTERATIVO -->
+            <div class="mb-8 bg-gradient-to-r from-sys-dark to-pmmt-blue rounded-xl p-6 md:p-8 text-white shadow-lg border border-pmmt-gold/30 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+                <i class="fa-solid fa-shield-halved absolute -right-4 -bottom-6 text-8xl text-white/5 pointer-events-none"></i>
+                <div class="relative z-10 text-center md:text-left">
+                    <h3 class="text-xl font-black uppercase tracking-widest text-pmmt-gold mb-1"><i class="fa-solid fa-book-open-reader mr-2"></i> Módulo Interativo POP PMMT</h3>
+                    <p class="text-sm font-medium text-slate-300">Acesse o sistema de estudo dinâmico do Procedimento Operacional Padrão.</p>
+                </div>
+                <a href="estudo_pop.html" target="_blank" class="relative z-10 bg-pmmt-gold hover:bg-yellow-500 text-sys-dark font-black px-6 py-3.5 rounded-lg shadow-xl transition uppercase tracking-widest text-xs whitespace-nowrap flex items-center gap-2 border border-yellow-400">
+                    Acessar Sistema <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+            </div>
+
+            <!-- Arquivos vindos do Supabase -->
+            <div id="containerMateriais" class="space-y-8">
+                <p class="text-sm text-slate-500 text-center py-10 font-semibold"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Carregando acervo do Pelotão...</p>
+            </div>
+        </div>
+    </div>
+</section>
                     
                     <section id="modulo-debate" class="hidden space-y-6">
                         <div class="bg-white shadow-md border border-slate-300 p-10 text-center mt-4 rounded-xl">
