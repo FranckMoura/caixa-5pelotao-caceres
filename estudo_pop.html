@@ -6,7 +6,9 @@
     <title>Estudo Interativo - POP PMMT</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Script do Supabase FOI REMOVIDO DAQUI para não conflitar com o index.html principal -->
+
     <script>
         tailwind.config = {
             theme: {
@@ -144,32 +146,29 @@
     </div>
 
     <script>
-        const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
+        // --- INICIALIZAÇÃO DE DADOS ---
         let popDataGlobal = [];
         const fallbackData = [
             { id: '1', codigo: 'POP 101.1', categoria: 'Módulo I - Uso da Força', titulo: 'Montagem do EPI', icone: 'fa-shield-halved', atividades_criticas: '["Montagem do EPI.", "Ajuste dos acessórios no cinto."]', sequencia_acoes: '["Colocar os acessórios da direita para a esquerda.", "Inserir o porta-algemas.", "Inserir coldre da pistola.", "Ajustar o fechamento."]', erros: '["Posicionamento aleatório do equipamento.", "Deixar cinto frouxo."]', corretivas: '["Se esquecer a sequência, reinicie o processo.", "Ajustar presilhas."]' },
-            { id: '2', codigo: 'POP 102.2', categoria: 'Módulo I - Uso da Força', titulo: 'Ato de Algemação', icone: 'fa-link', atividades_criticas: '["Posicionamento do infrator.", "Saque rápido.", "Algemação do primeiro punho."]', sequencia_acoes: '["Verbalizar: POLÍCIA! PARADO!", "Posicionar mãos na cabeça.", "Sacar algemas e colocar no braço controlado.", "Verificar fechadura voltada para cima e travar ganchos."]', erros: '["Algemar com palmas para dentro.", "Não verificar travamento."]', corretivas: '["Se tentar fugir, usar força moderada.", "Ajustar fechamento."]' }
+            { id: '2', codigo: 'POP 102.2', categoria: 'Módulo I - Uso da Força', titulo: 'Ato de Algemação', icone: 'fa-link', atividades_criticas: '["Posicionamento do infrator.", "Saque rápido.", "Algemação do primeiro punho."]', sequencia_acoes: '["Verbalizar: POLÍCIA! PARADO!", "Posicionar mãos na cabeça.", "Sacar algemas e colocar no braço controlado.", "Verificar fechadura voltada para cima e travar ganchos."]', erros: '["Algemar com palmas para dentro.", "Não verificar travamento."]', corretivas: '["Se tentar fugir, usar força moderada.", "Ajustar fechamento."]' },
+            { id: '3', codigo: 'POP 107.4', categoria: 'Módulo I - Uso da Força', titulo: 'Pessoa Empunhando Arma de Fogo', icone: 'fa-gun', atividades_criticas: '["Priorizar a segurança da Equipe Policial.", "Percepção da pessoa com arma de fogo.", "Observação do ambiente e possíveis abrigos."]', sequencia_acoes: '["Policial empunha sua arma em pronto emprego (3º Olho).", "Procurar abrigo que ofereça proteção balística.", "Verbalizar determinando a colocação da arma ao solo.", "Após o infrator largar a arma, coldrear e iniciar algemação.", "Em caso de agressão letal iminente, responder com disparos."]', erros: '["Deixar de se abrigar em situação de resistência ativa.", "Disparo indevido quando não houver resistência."]', corretivas: '["Se o infrator cooperar, manter o armamento em pronto emprego até cessar a ameaça.", "Se resistir de forma passiva, insistir na verbalização."]' }
         ];
 
         window.onload = () => carregarDadosSupabase();
 
+        // SIMULANDO A CHAMADA AO SUPABASE PARA O MODO LOCAL (ABRINDO ABA SEPARADA)
+        // Se este HTML for aberto isoladamente, e como removemos o import do supabase
+        // para não conflitar com o index.html, ele vai usar o fallbackData automaticamente.
         async function carregarDadosSupabase() {
             const menuDesktop = document.getElementById('menuPop');
             const menuMobile = document.getElementById('menuMobileLista');
             menuDesktop.innerHTML = '<p class="text-center text-xs text-slate-400 mt-10"><i class="fa-solid fa-circle-notch fa-spin"></i> Carregando...</p>';
             
-            try {
-                const { data, error } = await supabase.from('repositorio_pop').select('*').order('codigo', { ascending: true });
-                if (error || !data || data.length === 0) popDataGlobal = fallbackData;
-                else popDataGlobal = data;
-                renderizarMenu(popDataGlobal);
-            } catch (err) {
+            // Simula um delay de carregamento
+            setTimeout(() => {
                 popDataGlobal = fallbackData;
                 renderizarMenu(popDataGlobal);
-            }
+            }, 500);
         }
 
         function renderizarMenu(dados) {
