@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repositório POP PMMT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Cliente Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'pmmt-blue': '#1e3a8a',
+                        'pmmt-gold': '#d97706',
+                        'sys-dark': '#0f172a',
+                        'sys-bg': '#f8fafc'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        .accordion-content { transition: max-height 0.3s ease-in-out, padding 0.3s ease; overflow: hidden; max-height: 0; }
+        .accordion-content.open { max-height: 1000px; padding-bottom: 1rem; }
+    </style>
+</head>
+<body class="bg-sys-bg h-screen flex flex-col font-sans overflow-hidden">
+
+    <!-- Header Interno -->
+    <header class="bg-white border-b border-slate-200 p-4 flex justify-between items-center shrink-0 shadow-sm">
+        <div class="flex items-center gap-3">
+            <div class="bg-pmmt-blue text-white p-2 rounded-lg shadow-inner"><i class="fa-solid fa-book-open-reader text-pmmt-gold"></i></div>
+            <div>
+                <h1 class="text-sm md:text-base font-black text-sys-dark uppercase tracking-widest">Estudo Interativo POP</h1>
+                <p class="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider">Módulo Dinâmico de Doutrina PMMT</p>
+            </div>
+        </div>
+        <button onclick="carregarDadosSupabase()" class="text-[10px] md:text-xs font-bold bg-slate-100 border border-slate-200 text-slate-600 px-3 py-1.5 rounded hover:bg-slate-200 transition flex items-center gap-2 shadow-sm">
+            <i class="fa-solid fa-arrows-rotate"></i> <span class="hidden md:inline">Sincronizar Doutrina</span>
+        </button>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+        
+        <!-- Sidebar: Índice do POP (Escondida no Mobile) -->
+        <aside class="w-80 bg-white border-r border-slate-200 flex flex-col h-full shrink-0 hidden md:flex shadow-lg z-10">
+            <div class="p-4 border-b border-slate-100 bg-slate-50">
+                <div class="relative">
+                    <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400 text-sm"></i>
+                    <input type="text" id="searchInput" onkeyup="filtrarMenu()" placeholder="Pesquisar manual..." class="w-full pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-semibold outline-none focus:border-pmmt-blue focus:ring-1 focus:ring-pmmt-blue transition shadow-sm">
+                </div>
+            </div>
+            <div class="flex-1 overflow-y-auto p-3 space-y-1" id="menuPop">
+                <p class="text-center text-xs text-slate-400 mt-10"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Carregando manuais do banco...</p>
+            </div>
+        </aside>
+
+        <!-- Main Content: Leitor do POP -->
+        <main class="flex-1 bg-slate-50 h-full overflow-y-auto p-4 md:p-8 scroll-smooth" id="readerContainer">
+            
+            <!-- Tela Inicial Vazia -->
+            <div id="emptyState" class="h-full flex flex-col items-center justify-center text-center p-6">
+                <div class="bg-white p-6 rounded-full shadow-sm mb-6 border border-slate-100">
+                    <i class="fa-solid fa-shield-halved text-6xl text-slate-300"></i>
+                </div>
+                <h2 class="text-xl md:text-2xl font-black text-slate-400 uppercase tracking-widest">Procedimento Operacional Padrão</h2>
+                <p class="text-sm font-semibold text-slate-400 mt-3 max-w-md">Selecione um tópico no menu lateral para visualizar o checklist de atividades críticas, sequência de ações e erros comuns.</p>
+            </div>
+
+            <!-- Container do POP Ativo -->
+            <div id="popContent" class="hidden max-w-4xl mx-auto space-y-6 pb-20 md:pb-6">
+                
+                <!-- Cabeçalho do POP -->
+                <div class="bg-white border border-slate-200 rounded-2xl p-6 md:p-8 shadow-sm relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-pmmt-gold text-white text-[10px] font-black px-4 py-1.5 rounded-bl-xl uppercase tracking-widest shadow-sm" id="popCodigo">CÓDIGO</div>
+                    <p class="text-[10px] md:text-xs font-bold text-pmmt-blue uppercase tracking-widest mb-2 flex items-center gap-2"><i class="fa-solid fa-layer-group"></i> <span id="popCategoria">CATEGORIA</span></p>
+                    <h2 class="text-2xl md:text-3xl font-black text-sys-dark uppercase leading-tight" id="popTitulo">TÍTULO DO POP</h2>
+                </div>
+
+                <!-- 1. Atividades Críticas (Checklist Interativo) -->
+                <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                    <button class="w-full bg-slate-100 px-6 py-4 flex justify-between items-center focus:outline-none hover:bg-slate-200 transition" onclick="toggleAccordion('acc-criticas', 'icon-criticas')">
+                        <span class="font-black text-sys-dark uppercase tracking-widest text-sm flex items-center"><div class="bg-amber-100 p-1.5 rounded mr-3"><i class="fa-solid fa-triangle-exclamation text-amber-600 text-lg"></i></div> Atividades Críticas</span>
+                        <i class="fa-solid fa-chevron-down text-slate-500 transition-transform" id="icon-criticas"></i>
+                    </button>
+                    <div id="acc-criticas" class="accordion-content px-6 open">
+                        <p class="text-[10px] text-slate-400 font-bold mb-4 mt-4 uppercase tracking-wider"><i class="fa-solid fa-check-double mr-1"></i> Marque as etapas para fixação mental</p>
+                        <div class="space-y-3" id="listaCriticas"></div>
+                    </div>
+                </div>
+
+                <!-- 2. Sequência de Ações -->
+                <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                    <button class="w-full bg-slate-100 px-6 py-4 flex justify-between items-center focus:outline-none hover:bg-slate-200 transition" onclick="toggleAccordion('acc-acoes', 'icon-acoes')">
+                        <span class="font-black text-sys-dark uppercase tracking-widest text-sm flex items-center"><div class="bg-blue-100 p-1.5 rounded mr-3"><i class="fa-solid fa-list-ol text-pmmt-blue text-lg"></i></div> Sequência de Ações</span>
+                        <i class="fa-solid fa-chevron-down text-slate-500 transition-transform" id="icon-acoes"></i>
+                    </button>
+                    <div id="acc-acoes" class="accordion-content px-6 open">
+                        <div class="mt-6 border-l-2 border-slate-200 pl-4 space-y-6" id="listaAcoes"></div>
+                    </div>
+                </div>
+
+                <!-- 3. Erros e Ações Corretivas (Lado a Lado no Desktop) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- Erros -->
+                    <div class="bg-rose-50 border border-rose-200 rounded-xl overflow-hidden shadow-sm h-full">
+                        <div class="bg-rose-100/50 px-5 py-3 border-b border-rose-200 flex items-center gap-2">
+                            <i class="fa-solid fa-circle-xmark text-rose-600 text-lg"></i>
+                            <span class="font-black text-rose-900 uppercase tracking-widest text-xs">Possibilidades de Erro</span>
+                        </div>
+                        <div class="p-5 space-y-4" id="listaErros"></div>
+                    </div>
+
+                    <!-- Corretivas -->
+                    <div class="bg-emerald-50 border border-emerald-200 rounded-xl overflow-hidden shadow-sm h-full">
+                        <div class="bg-emerald-100/50 px-5 py-3 border-b border-emerald-200 flex items-center gap-2">
+                            <i class="fa-solid fa-wrench text-emerald-600 text-lg"></i>
+                            <span class="font-black text-emerald-900 uppercase tracking-widest text-xs">Ações Corretivas</span>
+                        </div>
+                        <div class="p-5 space-y-4" id="listaCorretivas"></div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Botão Flutuante Mobile -->
+    <button onclick="toggleMobileMenu()" class="md:hidden fixed bottom-6 right-6 bg-pmmt-gold text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-2xl z-50 border-2 border-white focus:outline-none">
+        <i class="fa-solid fa-list-ul"></i>
+    </button>
+
+    <!-- Menu Mobile (Offcanvas) -->
+    <div id="mobileMenu" class="fixed inset-0 bg-sys-dark/90 z-[100] hidden backdrop-blur-sm transition-opacity">
+        <div class="w-4/5 max-w-sm h-full bg-white shadow-2xl flex flex-col">
+             <div class="p-5 bg-pmmt-blue flex justify-between items-center text-white border-b-4 border-pmmt-gold">
+                 <h3 class="font-black uppercase tracking-widest text-sm"><i class="fa-solid fa-book-open text-pmmt-gold mr-2"></i> Índice de Manuais</h3>
+                 <button onclick="toggleMobileMenu()" class="text-white text-2xl focus:outline-none"><i class="fa-solid fa-xmark"></i></button>
+             </div>
+             <div class="p-4 border-b border-slate-100 bg-slate-50">
+                 <input type="text" id="searchInputMobile" onkeyup="filtrarMenuMobile()" placeholder="Pesquisar manual..." class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-semibold outline-none focus:border-pmmt-blue transition shadow-sm">
+             </div>
+             <div class="p-4 overflow-y-auto flex-1 space-y-1" id="menuMobileLista">
+                 <!-- Preenchido via JS -->
+             </div>
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURAÇÃO DO SEU BANCO DE DADOS (SUPABASE)
+        const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let popDataGlobal = [];
+
+        // FALLBACK: Dados que serão usados se a tabela no banco ainda não existir ou a internet cair
+        const fallbackData = [
+            {
+                id: 'fallback-1',
+                codigo: 'POP 101.1',
+                categoria: 'Módulo I - Uso da Força',
+                titulo: 'Montagem do EPI no Cinto',
+                icone: 'fa-shield-halved',
+                atividades_criticas: '["Montagem do EPI.", "Ajuste dos acessórios no cinto de guarnição."]',
+                sequencia_acoes: '["Colocar os acessórios do cinto da direita para a esquerda (se destro).", "Inserção do porta-algemas.", "Inserção do coldre para pistola 9mm.", "Inserção do fiel (Espiral).", "Inserção do porta-espargidor de gás.", "Ajuste do fechamento e fixação do cinto."]',
+                erros: '["Posicionamento aleatório do equipamento.", "Deixar faltar qualquer um dos itens obrigatórios.", "Manter o cinto de guarnição frouxo."]',
+                corretivas: '["Caso tenha esquecido a sequência, reinicie.", "Se o EPI não ficar equilibrado, verifique as presilhas de sustentação."]'
+            },
+            {
+                id: 'fallback-2',
+                codigo: 'POP 102.2',
+                categoria: 'Módulo I - Uso da Força',
+                titulo: 'Ato de Algemação',
+                icone: 'fa-link',
+                atividades_criticas: '["Posicionamento do infrator da lei.", "Saque rápido das algemas na posição correta.", "Algemação do primeiro punho."]',
+                sequencia_acoes: '["O 1º homem é o encarregado da verbalização (POLÍCIA! PARADO!).", "Posicionar o infrator com mãos na cabeça e realizar busca pessoal.", "Sacar as algemas e iniciar pelo pulso do braço controlado.", "Verificar o grau de aperto e travar os ganchos de fechamento com a chave.", "Garantir que as fechaduras estejam voltadas para cima."]',
+                erros: '["Iniciar o processo sem a devida cautela de segurança.", "O indivíduo ser algemado com as palmas para dentro.", "As algemas serem colocadas muito apertadas ou folgadas.", "Não verificar o travamento dos ganchos."]',
+                corretivas: '["Determinar insistentemente para que o infrator desista da ideia de reagir.", "Se o infrator tentar fugir, usar de força moderada para impedi-lo."]'
+            }
+        ];
+
+        // INICIALIZAÇÃO
+        window.onload = () => {
+            carregarDadosSupabase();
+        };
+
+        // BUSCA NO BANCO DE DADOS
+        async function carregarDadosSupabase() {
+            const menuDesktop = document.getElementById('menuPop');
+            const menuMobile = document.getElementById('menuMobileLista');
+            const loadingHTML = '<p class="text-center text-xs text-slate-400 mt-10"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Conectando ao Servidor...</p>';
+            
+            menuDesktop.innerHTML = loadingHTML;
+            menuMobile.innerHTML = loadingHTML;
+
+            try {
+                // Tenta puxar a tabela que o script SQL cria
+                const { data, error } = await supabase.from('repositorio_pop').select('*').order('codigo', { ascending: true });
+                
+                if (error || !data || data.length === 0) {
+                    console.log('Sem dados no Supabase. Usando Fallback local...');
+                    popDataGlobal = fallbackData;
+                } else {
+                    popDataGlobal = data;
+                }
+                
+                renderizarMenu(popDataGlobal);
+
+            } catch (err) {
+                console.error("Erro fatal ao conectar:", err);
+                popDataGlobal = fallbackData;
+                renderizarMenu(popDataGlobal);
+            }
+        }
+
+        // MONTAGEM DO MENU LATERAL (DESKTOP E MOBILE)
+        function renderizarMenu(dados) {
+            const menuDesktop = document.getElementById('menuPop');
+            const menuMobile = document.getElementById('menuMobileLista');
+            
+            menuDesktop.innerHTML = '';
+            menuMobile.innerHTML = '';
+            
+            const categorias = {};
+            dados.forEach(item => {
+                if (!categorias[item.categoria]) categorias[item.categoria] = [];
+                categorias[item.categoria].push(item);
+            });
+
+            Object.keys(categorias).sort().forEach(cat => {
+                const headerHTML = `<h4 class="text-[10px] font-black text-pmmt-blue uppercase mt-5 mb-2 tracking-widest px-2 border-b border-slate-100 pb-1">${cat}</h4>`;
+                menuDesktop.innerHTML += headerHTML;
+                menuMobile.innerHTML += headerHTML;
+                
+                categorias[cat].forEach(item => {
+                    const btnHTML = `
+                        <button onclick="abrirPop('${item.id}')" class="menu-btn w-full text-left p-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition flex items-center gap-3 mb-1" data-title="${item.titulo.toLowerCase()} ${item.codigo.toLowerCase()}">
+                            <div class="bg-slate-100 p-1.5 rounded text-slate-400 icone-box"><i class="fa-solid ${item.icone || 'fa-book-open'} w-4 text-center"></i></div>
+                            <div class="truncate">
+                                <span class="text-[10px] font-black block text-slate-400 codigo-txt">${item.codigo}</span>
+                                <span class="truncate block -mt-0.5 text-xs text-txt">${item.titulo}</span>
+                            </div>
+                        </button>
+                    `;
+                    menuDesktop.innerHTML += btnHTML;
+                    menuMobile.innerHTML += btnHTML;
+                });
+            });
+        }
+
+        // FUNCIONALIDADE DE BUSCA
+        function filtrarMenu() {
+            const termo = document.getElementById('searchInput').value.toLowerCase();
+            aplicarFiltro(termo);
+        }
+        function filtrarMenuMobile() {
+            const termo = document.getElementById('searchInputMobile').value.toLowerCase();
+            aplicarFiltro(termo);
+        }
+        function aplicarFiltro(termo) {
+            const botoes = document.querySelectorAll('.menu-btn');
+            botoes.forEach(btn => {
+                if (btn.getAttribute('data-title').includes(termo)) {
+                    btn.style.display = 'flex';
+                } else {
+                    btn.style.display = 'none';
+                }
+            });
+        }
+
+        // CARREGAMENTO DO CONTEÚDO PRINCIPAL
+        function abrirPop(id) {
+            const pop = popDataGlobal.find(p => p.id === id);
+            if (!pop) return;
+
+            // Transição de tela
+            document.getElementById('emptyState').classList.add('hidden');
+            const content = document.getElementById('popContent');
+            content.classList.remove('hidden');
+
+            // Preenchimento de Títulos
+            document.getElementById('popCodigo').innerText = pop.codigo;
+            document.getElementById('popCategoria').innerText = pop.categoria;
+            document.getElementById('popTitulo').innerText = pop.titulo;
+
+            // Função helper para parser do JSONB do banco ou Fallback
+            const parseJsonb = (campo) => {
+                if (!campo) return [];
+                if (typeof campo === 'string') {
+                    try { return JSON.parse(campo); } catch(e) { return [campo]; }
+                }
+                return campo;
+            };
+
+            // 1. Atividades Críticas (Checklist)
+            const divCriticas = document.getElementById('listaCriticas');
+            divCriticas.innerHTML = '';
+            const arrCriticas = parseJsonb(pop.atividades_criticas);
+            
+            if(arrCriticas.length > 0) {
+                arrCriticas.forEach((critica) => {
+                    divCriticas.innerHTML += `
+                        <label class="flex items-start gap-3 p-4 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-100 hover:border-pmmt-blue/30 transition group">
+                            <input type="checkbox" class="mt-0.5 w-5 h-5 accent-pmmt-gold rounded cursor-pointer">
+                            <span class="text-sm font-semibold text-slate-700 group-hover:text-sys-dark transition">${critica}</span>
+                        </label>
+                    `;
+                });
+            } else { divCriticas.innerHTML = '<p class="text-sm text-slate-400 italic">Nenhuma atividade crítica informada.</p>'; }
+
+            // 2. Sequência de Ações
+            const divAcoes = document.getElementById('listaAcoes');
+            divAcoes.innerHTML = '';
+            const arrAcoes = parseJsonb(pop.sequencia_acoes);
+            
+            if(arrAcoes.length > 0) {
+                arrAcoes.forEach((acao, i) => {
+                    divAcoes.innerHTML += `
+                        <div class="relative pl-6 pb-2">
+                            <div class="absolute left-[-1.4rem] top-0 bg-pmmt-blue text-white w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black border-2 border-white shadow-md z-10">${i+1}</div>
+                            <p class="text-sm font-medium text-slate-700 leading-relaxed bg-white p-3 rounded-lg border border-slate-100 shadow-sm ml-2">${acao}</p>
+                        </div>
+                    `;
+                });
+            } else { divAcoes.innerHTML = '<p class="text-sm text-slate-400 italic">Nenhuma sequência informada.</p>'; }
+
+            // 3. Erros
+            const divErros = document.getElementById('listaErros');
+            divErros.innerHTML = '';
+            const arrErros = parseJsonb(pop.erros);
+            
+            if(arrErros.length > 0) {
+                arrErros.forEach(erro => {
+                    divErros.innerHTML += `
+                        <div class="flex gap-3 items-start bg-white p-3 rounded-lg shadow-sm border border-rose-100">
+                            <i class="fa-solid fa-circle-exclamation text-rose-500 mt-0.5 text-lg"></i>
+                            <p class="text-xs font-bold text-rose-900 leading-relaxed">${erro}</p>
+                        </div>`;
+                });
+            } else { divErros.innerHTML = '<p class="text-xs text-slate-400 italic">Não especificado.</p>'; }
+
+            // 4. Corretivas
+            const divCorretivas = document.getElementById('listaCorretivas');
+            divCorretivas.innerHTML = '';
+            const arrCorretivas = parseJsonb(pop.corretivas);
+            
+            if(arrCorretivas.length > 0) {
+                arrCorretivas.forEach(corr => {
+                    divCorretivas.innerHTML += `
+                        <div class="flex gap-3 items-start bg-white p-3 rounded-lg shadow-sm border border-emerald-100">
+                            <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-lg"></i>
+                            <p class="text-xs font-bold text-emerald-900 leading-relaxed">${corr}</p>
+                        </div>`;
+                });
+            } else { divCorretivas.innerHTML = '<p class="text-xs text-slate-400 italic">Não especificado.</p>'; }
+
+            // Resetar Scrollbar
+            document.getElementById('readerContainer').scrollTo({top: 0, behavior: 'smooth'});
+
+            // Estilização do Menu Ativo
+            document.querySelectorAll('.menu-btn').forEach(b => {
+                b.classList.remove('bg-pmmt-blue', 'text-white', 'shadow-md');
+                b.classList.add('text-slate-600');
+                
+                const iconeBox = b.querySelector('.icone-box');
+                iconeBox.classList.remove('bg-white/20', 'text-pmmt-gold');
+                iconeBox.classList.add('bg-slate-100', 'text-slate-400');
+                
+                b.querySelector('.codigo-txt').classList.remove('text-slate-300');
+                b.querySelector('.codigo-txt').classList.add('text-slate-400');
+                
+                b.querySelector('.text-txt').classList.remove('text-white');
+            });
+
+            // Localizar botões correspondentes (tanto desktop quanto mobile)
+            const botoesAtivos = document.querySelectorAll(`[onclick="abrirPop('${id}')"]`);
+            botoesAtivos.forEach(btnAtivo => {
+                btnAtivo.classList.add('bg-pmmt-blue', 'text-white', 'shadow-md');
+                btnAtivo.classList.remove('text-slate-600', 'hover:bg-white', 'hover:border-slate-200');
+                
+                const iconeBox = btnAtivo.querySelector('.icone-box');
+                iconeBox.classList.add('bg-white/20', 'text-pmmt-gold');
+                iconeBox.classList.remove('bg-slate-100', 'text-slate-400');
+                
+                btnAtivo.querySelector('.codigo-txt').classList.add('text-slate-300');
+                btnAtivo.querySelector('.codigo-txt').classList.remove('text-slate-400');
+                
+                btnAtivo.querySelector('.text-txt').classList.add('text-white');
+            });
+
+            // Fechar Menu Mobile automaticamente
+            const mobileMenu = document.getElementById('mobileMenu');
+            if(!mobileMenu.classList.contains('hidden')) {
+                toggleMobileMenu();
+            }
+        }
+
+        // ANIMAR ACCORDIONS
+        function toggleAccordion(contentId, iconId) {
+            const content = document.getElementById(contentId);
+            const icon = document.getElementById(iconId);
+            if (content.classList.contains('open')) {
+                content.classList.remove('open');
+                icon.style.transform = 'rotate(-90deg)';
+            } else {
+                content.classList.add('open');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // TOGGLE MENU MOBILE
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+            } else {
+                menu.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
