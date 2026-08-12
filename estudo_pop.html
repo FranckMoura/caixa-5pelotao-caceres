@@ -7,8 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Script do Supabase FOI REMOVIDO DAQUI para não conflitar com o index.html principal -->
-
     <script>
         tailwind.config = {
             theme: {
@@ -45,8 +43,8 @@
             </div>
         </div>
         <div class="flex gap-2">
-            <button onclick="carregarDadosSupabase()" class="text-xs font-bold bg-slate-100 border border-slate-200 text-slate-600 px-3 py-1.5 rounded hover:bg-slate-200 transition flex items-center gap-2">
-                <i class="fa-solid fa-arrows-rotate"></i> Atualizar Doutrina
+            <button onclick="carregarDadosPop()" class="text-xs font-bold bg-slate-100 border border-slate-200 text-slate-600 px-3 py-1.5 rounded hover:bg-slate-200 transition flex items-center gap-2">
+                <i class="fa-solid fa-arrows-rotate"></i> Recarregar
             </button>
             <button onclick="window.close()" class="text-xs font-bold bg-rose-100 border border-rose-200 text-rose-600 px-3 py-1.5 rounded hover:bg-rose-200 transition flex items-center gap-2">
                 <i class="fa-solid fa-xmark"></i> Fechar
@@ -146,29 +144,26 @@
     </div>
 
     <script>
-        // --- INICIALIZAÇÃO DE DADOS ---
         let popDataGlobal = [];
         const fallbackData = [
             { id: '1', codigo: 'POP 101.1', categoria: 'Módulo I - Uso da Força', titulo: 'Montagem do EPI', icone: 'fa-shield-halved', atividades_criticas: '["Montagem do EPI.", "Ajuste dos acessórios no cinto."]', sequencia_acoes: '["Colocar os acessórios da direita para a esquerda.", "Inserir o porta-algemas.", "Inserir coldre da pistola.", "Ajustar o fechamento."]', erros: '["Posicionamento aleatório do equipamento.", "Deixar cinto frouxo."]', corretivas: '["Se esquecer a sequência, reinicie o processo.", "Ajustar presilhas."]' },
             { id: '2', codigo: 'POP 102.2', categoria: 'Módulo I - Uso da Força', titulo: 'Ato de Algemação', icone: 'fa-link', atividades_criticas: '["Posicionamento do infrator.", "Saque rápido.", "Algemação do primeiro punho."]', sequencia_acoes: '["Verbalizar: POLÍCIA! PARADO!", "Posicionar mãos na cabeça.", "Sacar algemas e colocar no braço controlado.", "Verificar fechadura voltada para cima e travar ganchos."]', erros: '["Algemar com palmas para dentro.", "Não verificar travamento."]', corretivas: '["Se tentar fugir, usar força moderada.", "Ajustar fechamento."]' },
-            { id: '3', codigo: 'POP 107.4', categoria: 'Módulo I - Uso da Força', titulo: 'Pessoa Empunhando Arma de Fogo', icone: 'fa-gun', atividades_criticas: '["Priorizar a segurança da Equipe Policial.", "Percepção da pessoa com arma de fogo.", "Observação do ambiente e possíveis abrigos."]', sequencia_acoes: '["Policial empunha sua arma em pronto emprego (3º Olho).", "Procurar abrigo que ofereça proteção balística.", "Verbalizar determinando a colocação da arma ao solo.", "Após o infrator largar a arma, coldrear e iniciar algemação.", "Em caso de agressão letal iminente, responder com disparos."]', erros: '["Deixar de se abrigar em situação de resistência ativa.", "Disparo indevido quando não houver resistência."]', corretivas: '["Se o infrator cooperar, manter o armamento em pronto emprego até cessar a ameaça.", "Se resistir de forma passiva, insistir na verbalização."]' }
+            { id: '3', codigo: 'POP 107.4', categoria: 'Módulo I - Uso da Força', titulo: 'Pessoa Empunhando Arma de Fogo', icone: 'fa-gun', atividades_criticas: '["Priorizar a segurança da Equipe Policial.", "Percepção da pessoa com arma de fogo.", "Observação do ambiente e possíveis abrigos."]', sequencia_acoes: '["Policial empunha sua arma em pronto emprego (3º Olho).", "Procurar abrigo que ofereça proteção balística.", "Verbalizar determinando a colocação da arma ao solo.", "Após o infrator largar a arma, coldrear e iniciar algemação.", "Em caso de agressão letal iminente, responder com disparos."]', erros: '["Deixar de se abrigar em situação de resistência ativa.", "Disparo indevido quando não houver resistência."]', corretivas: '["Se o infrator cooperar, manter o armamento em pronto emprego até cessar a ameaça.", "Se resistir de forma passiva, insistir na verbalização."]' },
+            { id: '4', codigo: 'POP 202', categoria: 'Módulo II - Abordagens Policiais', titulo: 'Fundada Suspeita', icone: 'fa-eye', atividades_criticas: '["Foco na averiguação e quebra de expectativa.", "O policial de cobertura não participa da busca física."]', sequencia_acoes: '["Aproximação com segurança e arma em posição de pronto-retido ou pronto-baixo.", "Verbalização clara: Polícia! Parado!, Mãos na cabeça!."]', erros: '["Aproximar-se demais do suspeito sem cobertura.", "Tratar suspeito como infrator da lei."]', corretivas: '["Manter distância de segurança.", "Ajustar o tom da verbalização após a busca."]' }
         ];
 
-        window.onload = () => carregarDadosSupabase();
+        window.onload = () => carregarDadosPop();
 
-        // SIMULANDO A CHAMADA AO SUPABASE PARA O MODO LOCAL (ABRINDO ABA SEPARADA)
-        // Se este HTML for aberto isoladamente, e como removemos o import do supabase
-        // para não conflitar com o index.html, ele vai usar o fallbackData automaticamente.
-        async function carregarDadosSupabase() {
+        function carregarDadosPop() {
             const menuDesktop = document.getElementById('menuPop');
             const menuMobile = document.getElementById('menuMobileLista');
             menuDesktop.innerHTML = '<p class="text-center text-xs text-slate-400 mt-10"><i class="fa-solid fa-circle-notch fa-spin"></i> Carregando...</p>';
             
-            // Simula um delay de carregamento
+            // Simula um delay de carregamento e carrega os dados estáticos
             setTimeout(() => {
                 popDataGlobal = fallbackData;
                 renderizarMenu(popDataGlobal);
-            }, 500);
+            }, 300);
         }
 
         function renderizarMenu(dados) {
