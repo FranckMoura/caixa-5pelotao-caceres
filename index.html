@@ -352,10 +352,10 @@
             <div class="bg-sys-dark px-5 py-4 flex justify-between items-center border-b border-slate-400/30"><h3 class="text-white font-black text-sm uppercase tracking-wider" id="modalFuncaoTitle">Alterar Função</h3><button onclick="fecharModalFuncao()" class="text-white/70 hover:text-white transition"><i class="fa-solid fa-xmark text-xl"></i></button></div>
             <form onsubmit="salvarFuncaoComando(event)" class="p-6 space-y-5">
                 <input type="hidden" id="modalFuncaoTipo"><input type="hidden" id="modalFuncaoData">
-                <div><label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5" id="modalFuncaoLabelData">Data</label><input type="text" id="modalFuncaoDataDisplay" disabled class="w-full bg-slate-100 border border-slate-200 p-2.5 rounded-lg text-xs text-slate-600 font-bold cursor-not-allowed text-center"></div>
-                <div><label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Selecione o Aluno</label><select id="modalFuncaoAluno" required class="w-full bg-white border border-slate-300 p-2.5 rounded-lg text-xs font-bold text-slate-800 outline-none focus:border-sys-dark shadow-sm"></select></div>
-                <button type="submit" class="w-full bg-sys-dark hover:bg-pmmt-blue text-white font-bold py-2.5 rounded-lg shadow transition text-xs uppercase tracking-widest mt-2 flex items-center justify-center gap-2"><i class="fa-solid fa-check"></i> Confirmar</button>
-                <button type="button" id="btnRestaurarPadrao" onclick="restaurarFuncaoPadrao()" class="hidden w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2.5 rounded-lg shadow-sm transition text-xs uppercase tracking-widest mt-1 flex items-center justify-center gap-2"><i class="fa-solid fa-rotate-left"></i> Restaurar Auto</button>
+                <div><label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5" id="modalFuncaoLabelData">Data</label><input type="text" id="modalFuncaoDataDisplay" disabled class="w-full bg-slate-100 border border-slate-200 p-3 rounded-lg text-sm text-slate-600 font-bold cursor-not-allowed text-center"></div>
+                <div><label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Selecione o Aluno (Ordem Antiguidade)</label><select id="modalFuncaoAluno" required class="w-full bg-white border border-slate-300 p-3 rounded-lg text-sm font-bold text-slate-800 outline-none focus:border-sys-dark shadow-sm"></select></div>
+                <button type="submit" class="w-full bg-sys-dark hover:bg-pmmt-blue text-white font-bold py-3 rounded-lg shadow-lg transition text-xs uppercase tracking-widest mt-2 flex items-center justify-center gap-2"><i class="fa-solid fa-check"></i> Confirmar Designação</button>
+                <button type="button" id="btnRestaurarPadrao" onclick="restaurarFuncaoPadrao()" class="hidden w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-3 rounded-lg shadow-sm transition text-xs uppercase tracking-widest mt-2 flex items-center justify-center gap-2"><i class="fa-solid fa-rotate-left"></i> Restaurar Automático</button>
             </form>
         </div>
     </div>
@@ -390,17 +390,17 @@
                     <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
                         <div class="bg-sys-dark px-4 py-2 border-b border-slate-200 text-center"><h4 class="text-[10px] font-black text-white uppercase tracking-widest">Posto 01: Portão</h4></div>
                         <div class="p-4 space-y-3">
-                            <div><label class="block text-[10px] font-black text-emerald-600 uppercase mb-1 tracking-wider">Das 23h às 01h <span class="text-slate-400">(+Antigo)</span></label><div class="flex gap-2"><select id="prevP1_23" class="w-full border border-slate-300 p-2 rounded text-xs font-bold text-slate-700 outline-none shadow-sm mb-1"></select><select id="prevP1_23_extra" class="w-full border border-emerald-200 bg-emerald-50 p-2 rounded text-[10px] font-bold text-emerald-700 outline-none shadow-sm mb-1"><option value="">-- VAZIO / SEM EXTRA --</option></select></div></div>
-                            <div><label class="block text-[10px] font-black text-amber-600 uppercase mb-1 tracking-wider">Das 03h às 05h <span class="text-slate-400">(Interm.)</span></label><div class="flex gap-2"><select id="prevP1_03" class="w-full border border-slate-300 p-2 rounded text-xs font-bold text-slate-700 outline-none shadow-sm mb-1"></select><select id="prevP1_03_extra" class="w-full border border-amber-200 bg-amber-50 p-2 rounded text-[10px] font-bold text-amber-700 outline-none shadow-sm mb-1"><option value="">-- VAZIO / SEM EXTRA --</option></select></div></div>
-                            <div><label class="block text-[10px] font-black text-rose-600 uppercase mb-1 tracking-wider">Das 01h às 03h <span class="text-slate-400">(+Moderno)</span></label><div class="flex gap-2"><select id="prevP1_01" class="w-full border border-slate-300 p-2 rounded text-xs font-bold text-slate-700 outline-none shadow-sm mb-1"></select><select id="prevP1_01_extra" class="w-full border border-rose-200 bg-rose-50 p-2 rounded text-[10px] font-bold text-rose-700 outline-none shadow-sm mb-1"><option value="">-- VAZIO / SEM EXTRA --</option></select></div></div>
+                            <div><label class="block text-[10px] font-black text-emerald-600 uppercase mb-1 tracking-wider">Das 23h às 01h <span class="text-slate-400">(+Antigo)</span></label><div class="flex gap-2"><select id="prevP1_23" class="w-full border border-slate-300 p-2 rounded text-xs font-bold text-slate-700 outline-none shadow-sm mb-1"></select><select id="prevP1_23_extra" class="w-full border border-emerald-200 bg-emerald-50 p-2 rounded text-[10px] font-bold text-emerald-700 outline-none shadow-sm mb-1"></select></div></div>
+                            <div><label class="block text-[10px] font-black text-amber-600 uppercase mb-1 tracking-wider">Das 03h às 05h <span class="text-slate-400">(Interm.)</span></label><div class="flex gap-2"><select id="prevP1_03" class="w-full border border-slate-300 p-2 rounded text-xs font-bold text-slate-700 outline-none shadow-sm mb-1"></select><select id="prevP1_03_extra" class="w-full border border-amber-200 bg-amber-50 p-2 rounded text-[10px] font-bold text-amber-700 outline-none shadow-sm mb-1"></select></div></div>
+                            <div><label class="block text-[10px] font-black text-rose-600 uppercase mb-1 tracking-wider">Das 01h às 03h <span class="text-slate-400">(+Moderno)</span></label><div class="flex gap-2"><select id="prevP1_01" class="w-full border border-slate-300 p-2 rounded text-xs font-bold text-slate-700 outline-none shadow-sm mb-1"></select><select id="prevP1_01_extra" class="w-full border border-rose-200 bg-rose-50 p-2 rounded text-[10px] font-bold text-rose-700 outline-none shadow-sm mb-1"></select></div></div>
                         </div>
                     </div>
                     <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
                         <div class="bg-sys-dark px-4 py-2 border-b border-slate-200 text-center"><h4 class="text-[10px] font-black text-white uppercase tracking-widest">Posto 02: Recepção</h4></div>
                         <div class="p-4 space-y-3">
-                            <div><label class="block text-[10px] font-black text-emerald-600 uppercase mb-1 tracking-wider">Das 23h às 01h <span class="text-slate-400">(+Antigo)</span></label><div class="flex gap-2"><select id="prevP2_23" class="w-full border border-slate-300 p-2 rounded text-xs font-bold text-slate-700 outline-none shadow-sm mb-1"></select><select id="prevP2_23_extra" class="w-full border border-emerald-200 bg-emerald-50 p-2 rounded text-[10px] font-bold text-emerald-700 outline-none shadow-sm mb-1"><option value="">-- VAZIO / SEM EXTRA --</option></select></div></div>
-                            <div><label class="block text-[10px] font-black text-amber-600 uppercase mb-1 tracking-wider">Das 03h às 05h <span class="text-slate-400">(Interm.)</span></label><div class="flex gap-2"><select id="prevP2_03" class="w-full border border-slate-300 p-2 rounded text-xs font-bold text-slate-700 outline-none shadow-sm mb-1"></select><select id="prevP2_03_extra" class="w-full border border-amber-200 bg-amber-50 p-2 rounded text-[10px] font-bold text-amber-700 outline-none shadow-sm mb-1"><option value="">-- VAZIO / SEM EXTRA --</option></select></div></div>
-                            <div><label class="block text-[10px] font-black text-rose-600 uppercase mb-1 tracking-wider">Das 01h às 03h <span class="text-slate-400">(+Moderno)</span></label><div class="flex gap-2"><select id="prevP2_01" class="w-full border border-slate-300 p-2 rounded text-xs font-bold text-slate-700 outline-none shadow-sm mb-1"></select><select id="prevP2_01_extra" class="w-full border border-rose-200 bg-rose-50 p-2 rounded text-[10px] font-bold text-rose-700 outline-none shadow-sm mb-2"><option value="">-- VAZIO / SEM EXTRA --</option></select></div></div>
+                            <div><label class="block text-[10px] font-black text-emerald-600 uppercase mb-1 tracking-wider">Das 23h às 01h <span class="text-slate-400">(+Antigo)</span></label><div class="flex gap-2"><select id="prevP2_23" class="w-full border border-slate-300 p-2 rounded text-xs font-bold text-slate-700 outline-none shadow-sm mb-1"></select><select id="prevP2_23_extra" class="w-full border border-emerald-200 bg-emerald-50 p-2 rounded text-[10px] font-bold text-emerald-700 outline-none shadow-sm mb-1"></select></div></div>
+                            <div><label class="block text-[10px] font-black text-amber-600 uppercase mb-1 tracking-wider">Das 03h às 05h <span class="text-slate-400">(Interm.)</span></label><div class="flex gap-2"><select id="prevP2_03" class="w-full border border-slate-300 p-2 rounded text-xs font-bold text-slate-700 outline-none shadow-sm mb-1"></select><select id="prevP2_03_extra" class="w-full border border-amber-200 bg-amber-50 p-2 rounded text-[10px] font-bold text-amber-700 outline-none shadow-sm mb-1"></select></div></div>
+                            <div><label class="block text-[10px] font-black text-rose-600 uppercase mb-1 tracking-wider">Das 01h às 03h <span class="text-slate-400">(+Moderno)</span></label><div class="flex gap-2"><select id="prevP2_01" class="w-full border border-slate-300 p-2 rounded text-xs font-bold text-slate-700 outline-none shadow-sm mb-1"></select><select id="prevP2_01_extra" class="w-full border border-rose-200 bg-rose-50 p-2 rounded text-[10px] font-bold text-rose-700 outline-none shadow-sm mb-2"></select></div></div>
                         </div>
                     </div>
                 </div>
@@ -782,6 +782,172 @@
                 alert("⚠️ ERRO DETALHADO DO SUPABASE:\n\n" + err.message + "\n\nDetalhes: " + (err.details || err.hint || "Nenhum detalhe adicional."));
             }
             mostrarLoading(false);
+        }
+
+        // ===============================================
+        // LÓGICA DE ABERTURA E IMPRESSÃO DA ESCALA (ATUALIZADO)
+        // ===============================================
+        function abrirPreviaEscala(dataIso, equipe, sgt, alunoDiaId) {
+            const dataAlvo = new Date(dataIso + 'T12:00:00Z');
+            const dia = dataAlvo.getDate().toString().padStart(2, '0');
+            const meses = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
+            const dataFormatada = `${dia}/${meses[dataAlvo.getMonth()]}/${dataAlvo.getFullYear()}`;
+
+            document.getElementById('txtPreviaHeader').innerText = `${dataFormatada} - Equipe ${equipe}`;
+            document.getElementById('prevDataIso').value = dataIso;
+            document.getElementById('prevEquipeNome').value = equipe;
+
+            // Popula os Selects com todos os alunos em ordem de antiguidade, garantindo o "VAZIO" em primeiro
+            let optionsHtml = '<option value="">-- VAZIO / SEM EXTRA --</option>';
+            [...listaAlunosFull].sort((a,b) => a.numero - b.numero).forEach(a => {
+                let num = "5" + a.numero.toString().padStart(2, '0');
+                let qra = a.qra ? a.qra.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase() : a.nome.split(' ')[0].toUpperCase();
+                optionsHtml += `<option value="${a.id}">${num} - ${qra} (${a.equipe})</option>`;
+            });
+
+            // Adiciona as caixinhas "extra" na lista de elementos que recebem os alunos
+            const selects = [
+                'prevAlunoDia', 
+                'prevP1_23', 'prevP1_03', 'prevP1_01', 
+                'prevP2_23', 'prevP2_03', 'prevP2_01',
+                'prevP1_23_extra', 'prevP1_03_extra', 'prevP1_01_extra', 
+                'prevP2_23_extra', 'prevP2_03_extra', 'prevP2_01_extra'
+            ];
+            
+            selects.forEach(selId => { 
+                let el = document.getElementById(selId);
+                if(el) el.innerHTML = optionsHtml; 
+            });
+
+            document.getElementById('prevGraduado').value = sgt;
+
+            let teamSorted = [...listaAlunosFull].filter(a => a.equipe === equipe).sort((a,b) => a.numero - b.numero);
+
+            let objAlunoDia = teamSorted.find(a => a.id == alunoDiaId);
+            if (!objAlunoDia && teamSorted.length > 0) objAlunoDia = teamSorted[0];
+
+            if(objAlunoDia) document.getElementById('prevAlunoDia').value = objAlunoDia.id;
+
+            let remaining = teamSorted.filter(a => !objAlunoDia || a.id !== objAlunoDia.id);
+
+            // Preenche os 6 alunos principais
+            document.getElementById('prevP1_23').value = remaining[0] ? remaining[0].id : '';
+            document.getElementById('prevP2_23').value = remaining[1] ? remaining[1].id : '';
+            document.getElementById('prevP1_03').value = remaining[2] ? remaining[2].id : '';
+            document.getElementById('prevP2_03').value = remaining[3] ? remaining[3].id : '';
+            document.getElementById('prevP1_01').value = remaining[4] ? remaining[4].id : '';
+            document.getElementById('prevP2_01').value = remaining[5] ? remaining[5].id : '';
+
+            // Se houver mais de 6 alunos, preenche os alunos "Extras" (O segundo aluno do posto)
+            document.getElementById('prevP1_23_extra').value = remaining[6] ? remaining[6].id : '';
+            document.getElementById('prevP2_23_extra').value = remaining[7] ? remaining[7].id : '';
+            document.getElementById('prevP1_03_extra').value = remaining[8] ? remaining[8].id : '';
+            document.getElementById('prevP2_03_extra').value = remaining[9] ? remaining[9].id : '';
+            document.getElementById('prevP1_01_extra').value = remaining[10] ? remaining[10].id : '';
+            document.getElementById('prevP2_01_extra').value = remaining[11] ? remaining[11].id : '';
+
+            document.getElementById('modalPreviaEscala').classList.remove('hidden');
+        }
+
+        function getAlunoObj(elementId) {
+            const val = document.getElementById(elementId).value;
+            if(!val) return null;
+            return listaAlunosFull.find(a => a.id == val);
+        }
+
+        function confirmarImpressaoEscala() {
+            const dataIso = document.getElementById('prevDataIso').value;
+            const equipe = document.getElementById('prevEquipeNome').value;
+
+            const dataAlvo = new Date(dataIso + 'T12:00:00Z');
+            document.getElementById('printDataAtual').innerText = dataAlvo.toLocaleDateString('pt-BR');
+            document.getElementById('printDataAssinatura').innerText = dataAlvo.toLocaleDateString('pt-BR', {day:'2-digit', month:'long', year:'numeric'});
+
+            document.getElementById('printNumEscala').innerText = document.getElementById('prevNumEscala').value || '001';
+            document.getElementById('printGraduado').innerText = document.getElementById('prevGraduado').value;
+            document.getElementById('printNomeAssinatura').innerText = document.getElementById('prevGraduado').value;
+            document.getElementById('printEquipeNome').innerText = equipe;
+
+            // Busca os alunos dos 13 campos possíveis na escala
+            let alDia = getAlunoObj('prevAlunoDia');
+            let p1_23 = getAlunoObj('prevP1_23'); let p1_03 = getAlunoObj('prevP1_03'); let p1_01 = getAlunoObj('prevP1_01');
+            let p2_23 = getAlunoObj('prevP2_23'); let p2_03 = getAlunoObj('prevP2_03'); let p2_01 = getAlunoObj('prevP2_01');
+            let p1_23_extra = getAlunoObj('prevP1_23_extra'); let p1_03_extra = getAlunoObj('prevP1_03_extra'); let p1_01_extra = getAlunoObj('prevP1_01_extra');
+            let p2_23_extra = getAlunoObj('prevP2_23_extra'); let p2_03_extra = getAlunoObj('prevP2_03_extra'); let p2_01_extra = getAlunoObj('prevP2_01_extra');
+
+            // Impressão Aluno de Dia
+            if (alDia) {
+                const qra = alDia.qra ? alDia.qra.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase() : alDia.nome.split(' ')[0].toUpperCase();
+                document.getElementById('printAlunoDia').innerText = `AL SD PM ${qra} (RG: ____________)`;
+            } else {
+                document.getElementById('printAlunoDia').innerText = `___________________________ ( RG ________ )`;
+            }
+
+            // Gerar a listagem nominal de quem foi escalado
+            let equipeOriginal = listaAlunosFull.filter(a => a.equipe === equipe);
+            let setImprimir = new Set(equipeOriginal.map(a => a.id)); // Puxa todos da equipe primeiro
+            
+            // Adiciona quem mais tiver sido escalado (aluno extra ou de outra equipe escalado manualmente)
+            [alDia, p1_23, p1_03, p1_01, p2_23, p2_03, p2_01, p1_23_extra, p1_03_extra, p1_01_extra, p2_23_extra, p2_03_extra, p2_01_extra].forEach(obj => { 
+                if(obj) setImprimir.add(obj.id); 
+            });
+
+            let arrayImprimir = Array.from(setImprimir).map(id => listaAlunosFull.find(a => a.id == id)).filter(x => x).sort((a,b) => a.numero - b.numero);
+
+            const divAlunos = document.getElementById('printListaEquipe');
+            divAlunos.innerHTML = '';
+            arrayImprimir.forEach(aluno => {
+                const numFormatado = "5" + aluno.numero.toString().padStart(2, '0');
+                const qra = aluno.qra ? aluno.qra.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase() : aluno.nome.split(' ')[0].toUpperCase();
+                divAlunos.innerHTML += `<p>AL SD PM ${qra} (${numFormatado})</p>`;
+            });
+
+            // Função que une o Nome 1 e o Nome 2 (se houver) no mesmo Posto/Horário
+            function formatText(obj, objExtra) {
+                let str = '';
+                if(!obj && !objExtra) return '_________________________'; // Ninguém escalado
+                
+                if(obj) {
+                    let q = obj.qra ? obj.qra.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase() : obj.nome.split(' ')[0].toUpperCase();
+                    str += `AL SD PM ${q} (${"5" + obj.numero.toString().padStart(2, '0')})`;
+                } else {
+                    str += '_________________________'; // Caso tenha só o extra e o titular esteja vazio (incomum)
+                }
+
+                if(objExtra) {
+                    let qE = objExtra.qra ? objExtra.qra.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase() : objExtra.nome.split(' ')[0].toUpperCase();
+                    str += ` E AL SD PM ${qE} (${"5" + objExtra.numero.toString().padStart(2, '0')})`;
+                }
+                return str;
+            }
+
+            document.getElementById('postosServico').innerHTML = `
+                <div class="grid grid-cols-2 gap-8">
+                    <div>
+                        <p class="mb-1 font-bold underline">POSTO 01: PORTÃO E PÁTIO EXTERNO</p>
+                        <p class="font-normal mb-0.5">DAS 23H00 ÀS 01H00: ${formatText(p1_23, p1_23_extra)}</p>
+                        <p class="font-normal mb-0.5">DAS 01H00 ÀS 03H00: ${formatText(p1_01, p1_01_extra)}</p>
+                        <p class="font-normal mb-0.5">DAS 03H00 ÀS 05H00: ${formatText(p1_03, p1_03_extra)}</p>
+                    </div>
+                    <div>
+                        <p class="mb-1 font-bold underline">POSTO 02: RECEPÇÃO</p>
+                        <p class="font-normal mb-0.5">DAS 23H00 ÀS 01H00: ${formatText(p2_23, p2_23_extra)}</p>
+                        <p class="font-normal mb-0.5">DAS 01H00 ÀS 03H00: ${formatText(p2_01, p2_01_extra)}</p>
+                        <p class="font-normal mb-0.5">DAS 03H00 ÀS 05H00: ${formatText(p2_03, p2_03_extra)}</p>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('modalPreviaEscala').classList.add('hidden');
+            const printModule = document.getElementById('modulo-impressao-escala');
+            printModule.classList.remove('hidden');
+            document.body.classList.add('printing-escala');
+
+            setTimeout(() => {
+                window.print();
+                printModule.classList.add('hidden');
+                document.body.classList.remove('printing-escala');
+            }, 300);
         }
 
         // ===============================================
