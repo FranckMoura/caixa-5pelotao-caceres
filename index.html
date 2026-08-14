@@ -579,7 +579,7 @@
                             </div>
                         </div>
 
-                        <div class="bg-white shadow-md border border-slate-300 rounded-xl overflow-hidden">
+                        <div class="bg-white shadow-md border border-slate-200 rounded-xl overflow-hidden">
                             <div class="bg-slate-100 border-b border-slate-300 px-5 py-4 flex justify-between items-center cursor-pointer hover:bg-slate-200 transition" onclick="togglePainel('conteudoHistorico', 'iconeHistorico')">
                                 <h3 class="text-sm font-bold text-sys-dark uppercase tracking-wide"><i class="fa-solid fa-list-check text-pmmt-gold mr-2"></i>Livro Caixa (Histórico Completo)</h3>
                                 <div class="flex items-center gap-5 no-print">
@@ -773,6 +773,7 @@
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                    <!-- POSTO 01 -->
                     <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                         <div class="bg-sys-dark px-5 py-3 border-b border-slate-200 text-center">
                             <h4 class="text-xs font-black text-white uppercase tracking-widest">Posto 01: Portão e Pátio Externo</h4>
@@ -780,19 +781,23 @@
                         <div class="p-5 space-y-4">
                             <div>
                                 <label class="block text-[11px] font-black text-emerald-600 uppercase mb-1.5 tracking-wider"><i class="fa-solid fa-clock mr-1"></i> Das 23h00 às 01h00 <span class="text-slate-400 font-bold ml-1">(Mais Antigo)</span></label>
-                                <select id="prevP1_23" class="w-full border border-slate-300 p-2.5 rounded-lg text-sm font-bold text-slate-700 outline-none focus:border-sys-dark shadow-sm"></select>
+                                <select id="prevP1_23" class="w-full border border-slate-300 p-2.5 rounded-lg text-sm font-bold text-slate-700 outline-none focus:border-sys-dark shadow-sm mb-1"></select>
+                                <select id="prevP1_23_extra" class="w-full border border-slate-200 bg-slate-50 p-2 rounded-lg text-xs font-bold text-slate-500 outline-none focus:border-sys-dark shadow-sm"></select>
                             </div>
                             <div>
                                 <label class="block text-[11px] font-black text-amber-600 uppercase mb-1.5 tracking-wider"><i class="fa-solid fa-clock mr-1"></i> Das 03h00 às 05h00 <span class="text-slate-400 font-bold ml-1">(Intermediário)</span></label>
-                                <select id="prevP1_03" class="w-full border border-slate-300 p-2.5 rounded-lg text-sm font-bold text-slate-700 outline-none focus:border-sys-dark shadow-sm"></select>
+                                <select id="prevP1_03" class="w-full border border-slate-300 p-2.5 rounded-lg text-sm font-bold text-slate-700 outline-none focus:border-sys-dark shadow-sm mb-1"></select>
+                                <select id="prevP1_03_extra" class="w-full border border-slate-200 bg-slate-50 p-2 rounded-lg text-xs font-bold text-slate-500 outline-none focus:border-sys-dark shadow-sm"></select>
                             </div>
                             <div>
                                 <label class="block text-[11px] font-black text-rose-600 uppercase mb-1.5 tracking-wider"><i class="fa-solid fa-clock mr-1"></i> Das 01h00 às 03h00 <span class="text-slate-400 font-bold ml-1">(Mais Moderno)</span></label>
-                                <select id="prevP1_01" class="w-full border border-slate-300 p-2.5 rounded-lg text-sm font-bold text-slate-700 outline-none focus:border-sys-dark shadow-sm"></select>
+                                <select id="prevP1_01" class="w-full border border-slate-300 p-2.5 rounded-lg text-sm font-bold text-slate-700 outline-none focus:border-sys-dark shadow-sm mb-1"></select>
+                                <select id="prevP1_01_extra" class="w-full border border-slate-200 bg-slate-50 p-2 rounded-lg text-xs font-bold text-slate-500 outline-none focus:border-sys-dark shadow-sm"></select>
                             </div>
                         </div>
                     </div>
 
+                    <!-- POSTO 02 -->
                     <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                         <div class="bg-sys-dark px-5 py-3 border-b border-slate-200 text-center">
                             <h4 class="text-xs font-black text-white uppercase tracking-widest">Posto 02: Recepção</h4>
@@ -800,17 +805,18 @@
                         <div class="p-5 space-y-4">
                             <div>
                                 <label class="block text-[11px] font-black text-emerald-600 uppercase mb-1.5 tracking-wider"><i class="fa-solid fa-clock mr-1"></i> Das 23h00 às 01h00 <span class="text-slate-400 font-bold ml-1">(Mais Antigo)</span></label>
-                                <select id="prevP2_23" class="w-full border border-slate-300 p-2.5 rounded-lg text-sm font-bold text-slate-700 outline-none focus:border-sys-dark shadow-sm"></select>
+                                <select id="prevP2_23" class="w-full border border-slate-300 p-2.5 rounded-lg text-sm font-bold text-slate-700 outline-none focus:border-sys-dark shadow-sm mb-1"></select>
+                                <select id="prevP2_23_extra" class="w-full border border-slate-200 bg-slate-50 p-2 rounded-lg text-xs font-bold text-slate-500 outline-none focus:border-sys-dark shadow-sm"></select>
                             </div>
                             <div>
                                 <label class="block text-[11px] font-black text-amber-600 uppercase mb-1.5 tracking-wider"><i class="fa-solid fa-clock mr-1"></i> Das 03h00 às 05h00 <span class="text-slate-400 font-bold ml-1">(Intermediário)</span></label>
-                                <select id="prevP2_03" class="w-full border border-slate-300 p-2.5 rounded-lg text-sm font-bold text-slate-700 outline-none focus:border-sys-dark shadow-sm"></select>
+                                <select id="prevP2_03" class="w-full border border-slate-300 p-2.5 rounded-lg text-sm font-bold text-slate-700 outline-none focus:border-sys-dark shadow-sm mb-1"></select>
+                                <select id="prevP2_03_extra" class="w-full border border-slate-200 bg-slate-50 p-2 rounded-lg text-xs font-bold text-slate-500 outline-none focus:border-sys-dark shadow-sm"></select>
                             </div>
                             <div>
-                                <label class="block text-[11px] font-black text-rose-600 uppercase mb-1.5 tracking-wider"><i class="fa-solid fa-clock mr-1"></i> Das 01h00 às 03h00 <span class="text-slate-400 font-bold ml-1">(Mais Moderno / Extra)</span></label>
-                                <select id="prevP2_01" class="w-full border border-slate-300 p-2.5 rounded-lg text-sm font-bold text-slate-700 outline-none focus:border-sys-dark shadow-sm mb-2"></select>
-                                <!-- Campo opcional para o 8º Aluno -->
-                                <select id="prevP2_01_extra" class="w-full border border-rose-300 bg-rose-50 p-2.5 rounded-lg text-sm font-bold text-slate-700 outline-none focus:border-sys-dark shadow-sm"></select>
+                                <label class="block text-[11px] font-black text-rose-600 uppercase mb-1.5 tracking-wider"><i class="fa-solid fa-clock mr-1"></i> Das 01h00 às 03h00 <span class="text-slate-400 font-bold ml-1">(Mais Moderno)</span></label>
+                                <select id="prevP2_01" class="w-full border border-slate-300 p-2.5 rounded-lg text-sm font-bold text-slate-700 outline-none focus:border-sys-dark shadow-sm mb-1"></select>
+                                <select id="prevP2_01_extra" class="w-full border border-slate-200 bg-slate-50 p-2 rounded-lg text-xs font-bold text-slate-500 outline-none focus:border-sys-dark shadow-sm mb-2"></select>
                             </div>
                         </div>
                     </div>
@@ -818,7 +824,7 @@
                 
                 <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl flex gap-3 items-start shadow-sm mt-4">
                     <i class="fa-solid fa-circle-info text-blue-500 mt-0.5 text-lg"></i>
-                    <p class="text-xs text-blue-800 font-semibold leading-relaxed">A relação preenchida acima foi distribuída automaticamente pelo sistema respeitando a rigorosa ordem de antiguidade e peso dos postos. Se a equipe tiver 8 alunos, o último aluno será escalado como "Extra" no Posto 02 no horário mais moderno.</p>
+                    <p class="text-xs text-blue-800 font-semibold leading-relaxed">A relação foi distribuída automaticamente por antiguidade. Se a equipe tiver mais de 7 alunos, o excedente será escalado na opção extra do Posto 02 no horário mais moderno, mas <strong>você pode alterar livremente</strong> os alunos extras para qualquer outro posto/horário usando as caixas adicionais.</p>
                 </div>
             </div>
             
@@ -1700,14 +1706,17 @@
             const numEscalaPreCalc = Math.floor(diffAno / 1000 / 60 / 60 / 24).toString().padStart(3, '0');
             document.getElementById('prevNumEscala').value = numEscalaPreCalc;
 
-            let optionsHtml = `<option value="">-- VAZIO (Ninguém escalado) --</option>`;
+            let optionsHtml = `<option value="">-- VAZIO / SEM ALUNO EXTRA --</option>`;
             [...listaAlunosFull].sort((a,b) => a.numero - b.numero).forEach(a => {
                 let num = "5" + a.numero.toString().padStart(2, '0');
                 let qra = a.qra ? a.qra.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase() : a.nome.split(' ')[0].toUpperCase();
                 optionsHtml += `<option value="${a.id}">${num} - ${qra} (${a.equipe})</option>`;
             });
 
-            const selects = ['prevAlunoDia', 'prevP1_23', 'prevP1_03', 'prevP1_01', 'prevP2_23', 'prevP2_03', 'prevP2_01', 'prevP2_01_extra'];
+            const selects = [
+                'prevAlunoDia', 'prevP1_23', 'prevP1_03', 'prevP1_01', 'prevP2_23', 'prevP2_03', 'prevP2_01',
+                'prevP1_23_extra', 'prevP1_03_extra', 'prevP1_01_extra', 'prevP2_23_extra', 'prevP2_03_extra', 'prevP2_01_extra'
+            ];
             selects.forEach(selId => { document.getElementById(selId).innerHTML = optionsHtml; });
 
             document.getElementById('prevGraduado').value = sgt;
@@ -1728,7 +1737,12 @@
             document.getElementById('prevP1_01').value = remaining[4] ? remaining[4].id : '';
             document.getElementById('prevP2_01').value = remaining[5] ? remaining[5].id : '';
             
-            // O 8º Aluno que sobra, vai pro extra no P2 (01h-03h)
+            // Limpa todos os extras por padrão
+            ['prevP1_23_extra', 'prevP1_03_extra', 'prevP1_01_extra', 'prevP2_23_extra', 'prevP2_03_extra', 'prevP2_01_extra'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+            
+            // O 8º Aluno que sobra, vai pro extra no P2 (01h-03h) por padrão, mas pode ser alterado
             document.getElementById('prevP2_01_extra').value = remaining[6] ? remaining[6].id : '';
 
             document.getElementById('modalPreviaEscala').classList.remove('hidden');
@@ -1785,7 +1799,9 @@
             let alDia = getAlunoObj('prevAlunoDia');
             let p1_23 = getAlunoObj('prevP1_23'); let p1_03 = getAlunoObj('prevP1_03'); let p1_01 = getAlunoObj('prevP1_01');
             let p2_23 = getAlunoObj('prevP2_23'); let p2_03 = getAlunoObj('prevP2_03'); let p2_01 = getAlunoObj('prevP2_01');
-            let p2_01_extra = getAlunoObj('prevP2_01_extra');
+            
+            let p1_23_ex = getAlunoObj('prevP1_23_extra'); let p1_03_ex = getAlunoObj('prevP1_03_extra'); let p1_01_ex = getAlunoObj('prevP1_01_extra');
+            let p2_23_ex = getAlunoObj('prevP2_23_extra'); let p2_03_ex = getAlunoObj('prevP2_03_extra'); let p2_01_ex = getAlunoObj('prevP2_01_extra');
 
             if (alDia) {
                 const qra = alDia.qra ? alDia.qra.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase() : alDia.nome.split(' ')[0].toUpperCase();
@@ -1796,7 +1812,7 @@
             
             let equipeOriginal = listaAlunosFull.filter(a => a.equipe === equipe);
             let setImprimir = new Set(equipeOriginal.map(a => a.id));
-            [alDia, p1_23, p1_03, p1_01, p2_23, p2_03, p2_01, p2_01_extra].forEach(obj => { if(obj) setImprimir.add(obj.id); });
+            [alDia, p1_23, p1_03, p1_01, p2_23, p2_03, p2_01, p1_23_ex, p1_03_ex, p1_01_ex, p2_23_ex, p2_03_ex, p2_01_ex].forEach(obj => { if(obj) setImprimir.add(obj.id); });
 
             let arrayImprimir = Array.from(setImprimir).map(id => listaAlunosFull.find(a => a.id == id)).filter(x => x).sort((a,b) => a.numero - b.numero);
 
@@ -1814,24 +1830,31 @@
                 return `AL SD PM ${q} (${"5" + obj.numero.toString().padStart(2, '0')})`;
             }
 
-            // Inserindo o 8º aluno (se houver) embaixo do 7º aluno na escala impressa
-            let txtP2_01 = formatText(p2_01);
-            let htmlP2_01_extra = p2_01_extra ? `<p class="font-normal mb-0.5" style="margin-top:-2px; padding-left: 140px;">E ${formatText(p2_01_extra)}</p>` : '';
+            function buildShiftHtml(mainObj, extraObj) {
+                if (!mainObj && !extraObj) return '_________________________';
+                let txt = '';
+                if (mainObj) txt += formatText(mainObj);
+                else txt += '_________________________';
+                
+                if (extraObj) {
+                    txt += `<br><span style="padding-left: 140px;">E ${formatText(extraObj)}</span>`;
+                }
+                return txt;
+            }
 
             document.getElementById('postosServico').innerHTML = `
                 <div class="grid grid-cols-2 gap-8">
                     <div>
                         <p class="mb-1 font-bold underline">POSTO 01: PORTÃO E PÁTIO EXTERNO</p>
-                        <p class="font-normal mb-0.5">DAS 23H00 ÀS 01H00: ${formatText(p1_23)}</p>
-                        <p class="font-normal mb-0.5">DAS 01H00 ÀS 03H00: ${formatText(p1_01)}</p>
-                        <p class="font-normal mb-0.5">DAS 03H00 ÀS 05H00: ${formatText(p1_03)}</p>
+                        <p class="font-normal mb-0.5 leading-tight">DAS 23H00 ÀS 01H00: ${buildShiftHtml(p1_23, p1_23_ex)}</p>
+                        <p class="font-normal mb-0.5 leading-tight">DAS 01H00 ÀS 03H00: ${buildShiftHtml(p1_01, p1_01_ex)}</p>
+                        <p class="font-normal mb-0.5 leading-tight">DAS 03H00 ÀS 05H00: ${buildShiftHtml(p1_03, p1_03_ex)}</p>
                     </div>
                     <div>
                         <p class="mb-1 font-bold underline">POSTO 02: RECEPÇÃO</p>
-                        <p class="font-normal mb-0.5">DAS 23H00 ÀS 01H00: ${formatText(p2_23)}</p>
-                        <p class="font-normal mb-0.5">DAS 01H00 ÀS 03H00: ${txtP2_01}</p>
-                        ${htmlP2_01_extra}
-                        <p class="font-normal mb-0.5">DAS 03H00 ÀS 05H00: ${formatText(p2_03)}</p>
+                        <p class="font-normal mb-0.5 leading-tight">DAS 23H00 ÀS 01H00: ${buildShiftHtml(p2_23, p2_23_ex)}</p>
+                        <p class="font-normal mb-0.5 leading-tight">DAS 01H00 ÀS 03H00: ${buildShiftHtml(p2_01, p2_01_ex)}</p>
+                        <p class="font-normal mb-0.5 leading-tight">DAS 03H00 ÀS 05H00: ${buildShiftHtml(p2_03, p2_03_ex)}</p>
                     </div>
                 </div>
             `;
