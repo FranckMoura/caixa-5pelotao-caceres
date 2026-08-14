@@ -1102,75 +1102,75 @@
             discs.forEach(d => sel.add(new Option(d, d))); sel.add(new Option("➕ Cadastrar Nova...", "NOVA"));
         }
 function toggleNovaDisciplina() {
-            const sel = document.getElementById('selDisciplinaNotas'); 
-            const inp = document.getElementById('novaDisciplinaInput'); 
-            const icon = document.getElementById('iconBtnDisciplina');
-            
-            if(inp.classList.contains('hidden')) {
-                sel.classList.add('hidden'); 
-                inp.classList.remove('hidden'); 
-                inp.focus(); 
-                icon.classList.replace('fa-plus', 'fa-times');
-                
-                // CORREÇÃO: Força a tabela a abrir a lista de alunos imediatamente para a nova disciplina
-                renderizarTabelaNotas('---NOVA---');
-            } else {
-                inp.value = ''; 
-                sel.classList.remove('hidden'); 
-                inp.classList.add('hidden'); 
-                icon.classList.replace('fa-times', 'fa-plus'); 
-                sel.selectedIndex = 0;
-                document.getElementById('tabelaNotas').innerHTML = '<tr><td colspan="6" class="text-center p-4 text-slate-400">Selecione uma disciplina.</td></tr>';
+            const sel=document.getElementById('selDisciplinaNotas'), inp=document.getElementById('novaDisciplinaInput'), icon=document.getElementById('iconBtnDisciplina');
+            if(inp.classList.contains('hidden')){
+                sel.classList.add('hidden'); inp.classList.remove('hidden'); inp.focus(); icon.classList.replace('fa-plus','fa-times');
+                // GERA A LISTA DE ALUNOS ZERADA PARA A NOVA DISCIPLINA IMEDIATAMENTE
+                carregarNotasDisciplina(true);
+            }
+            else{
+                inp.value=''; sel.classList.remove('hidden'); inp.classList.add('hidden'); icon.classList.replace('fa-times','fa-plus'); sel.selectedIndex=0;
+                document.getElementById('tabelaNotas').innerHTML='<tr><td colspan="6" class="text-center p-4 text-slate-400">Selecione uma disciplina.</td></tr>';
             }
         }
 
+        function carregarNotasDisciplina(forcarNova = false) {
+            const sel=document.getElementById('selDisciplinaNotas'); 
+            if(sel.value==='NOVA' && !forcarNova){toggleNovaDisciplina();return;}
+            
+            if(!sel.value && !forcarNova){document.getElementById('tabelaNotas').innerHTML='<tr><td colspan="6" class="text-center p-4 text-slate-400">Selecione uma disciplina.</td></tr>'; return;}
+            
+            const tb=document.getElementById('tabelaNotas'); tb.innerHTML='';
+            [...listaAlunosFull].sort((a,b)=>a.numero-b.numero).forEach(al => {
+                let n = (!forcarNova) ? (notasGlobais.find(x => x.aluno_id === al.id && x.disciplina === sel.value) || { nota_vc: 0, nota_prova: 0, faltas: 0 }) : { nota_vc: 0, nota_prova: 0, faltas: 0 };
+                let med = ((parseFloat(n.nota_vc) + parseFloat(n.nota_prova)) / 2).toFixed(2);
+                let bG = med >= 6 ? 'bg-emerald-100 text-emerald-800' : (med > 0 ? 'bg-rose-100 text-rose-800' : 'bg-slate-100 text-slate-500');
+                tb.innerHTML += `<tr class="hover:bg-slate-50 border-b border-slate-100" data-aluno-id="${al.id}"><td class="p-2 text-center font-bold text-slate-400">5${al.numero.toString().padStart(2,'0')}</td><td class="p-2 font-black text-sys-dark text-[10px] uppercase">${al.nome}</td><td class="p-2"><input type="number" step="0.1" min="0" max="10" value="${n.nota_vc}" class="nota-input w-full p-1 border rounded text-center text-xs font-bold outline-none focus:border-pmmt-gold" data-tipo="vc" ${!isAdmin?'disabled':''}></td><td class="p-2"><input type="number" step="0.1" min="0" max="10" value="${n.nota_prova}" class="nota-input w-full p-1 border rounded text-center text-xs font-bold outline-none focus:border-pmmt-gold" data-tipo="prova" ${!isAdmin?'disabled':''}></td><td class="p-2 text-center"><span class="px-2 py-0.5 rounded font-black ${bG}">${med}</span></td><td class="p-2"><input type="number" min="0" value="${n.faltas}" class="nota-input w-full p-1 border rounded text-center text-xs text-rose-600 font-bold outline-none focus:border-pmmt-gold" data-tipo="faltas" ${!isAdmin?'disabled':''}></td></tr>`;
+            });
+        }
+
         async function salvarTodasNotas() {
-            let disc = document.getElementById('selDisciplinaNotas').value;
-            const inpNova = document.getElementById('novaDisciplinaInput');
+            let disc = document.getElementById('selDisciplinaNotas').value; 
+            const inpN = document.getElementById('novaDisciplinaInput');
             
-            // Se estiver criando uma nova, pega o texto digitado
-            if(!inpNova.classList.contains('hidden') && inpNova.value.trim() !== '') {
-                disc = inpNova.value.trim().toUpperCase();
+            if(!inpN.classList.contains('hidden') && inpN.value.trim()!=='') {
+                disc = inpN.value.trim().toUpperCase();
             }
             
-            if(!disc || disc === 'NOVA') { 
-                alert("Selecione ou digite uma disciplina."); 
-                return; 
-            }
+            if(!disc || disc==='NOVA') { alert("Selecione ou digite uma disciplina."); return; }
             
-            mostrarLoading(true);
-            let payloads = [];
-            
-            // Captura todos os alunos que estão na tabela
+            mostrarLoading(true); 
+            let pay = [];
             document.querySelectorAll('#tabelaNotas tr[data-aluno-id]').forEach(tr => {
-                let alId = tr.getAttribute('data-aluno-id');
-                let vc = parseFloat(tr.querySelector('input[data-tipo="vc"]').value.replace(',', '.')) || 0;
-                let pr = parseFloat(tr.querySelector('input[data-tipo="prova"]').value.replace(',', '.')) || 0;
-                let fl = parseInt(tr.querySelector('input[data-tipo="faltas"]').value) || 0;
-                
-                payloads.push({ aluno_id: alId, disciplina: disc, nota_vc: vc, nota_prova: pr, faltas: fl });
+                pay.push({ 
+                    aluno_id: tr.getAttribute('data-aluno-id'), 
+                    disciplina: disc, 
+                    nota_vc: parseFloat(tr.querySelector('input[data-tipo="vc"]').value)||0, 
+                    nota_prova: parseFloat(tr.querySelector('input[data-tipo="prova"]').value)||0, 
+                    faltas: parseInt(tr.querySelector('input[data-tipo="faltas"]').value)||0 
+                });
             });
 
-            if(payloads.length === 0) {
-                alert("A tabela de alunos está vazia. Não há o que salvar.");
-                mostrarLoading(false);
-                return;
+            if(pay.length === 0) { 
+                alert("A tabela de alunos está vazia. Não há o que salvar."); 
+                mostrarLoading(false); 
+                return; 
             }
 
-            // Salva na nuvem
-            const { error } = await supabaseClient.from('notas_alunos').upsert(payloads, { onConflict: 'aluno_id, disciplina' });
+            const {error} = await supabaseClient.from('notas_alunos').upsert(pay, { onConflict: 'aluno_id, disciplina' });
             
             if(!error) { 
-                alert("Notas e Faltas salvas com sucesso!"); 
-                if(!inpNova.classList.contains('hidden')) toggleNovaDisciplina(); 
+                alert("Notas Salvas com sucesso!"); 
+                if(!inpN.classList.contains('hidden')) toggleNovaDisciplina(); 
                 await carregarNotas(); 
-                document.getElementById('selDisciplinaNotas').value = disc; 
+                document.getElementById('selDisciplinaNotas').value=disc; 
                 carregarNotasDisciplina(); 
             } else {
                 console.error(error);
-                alert("ERRO DO BANCO: " + error.message + "\\n\\nCertifique-se de ter rodado o script SQL no Supabase.");
+                alert("Erro ao salvar! Verifique o console.");
             }
             mostrarLoading(false);
+        
         }
 
         async function carregarQTSList() {
