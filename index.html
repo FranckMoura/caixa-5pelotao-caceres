@@ -612,9 +612,6 @@
             const dataBase = new Date('2026-08-11T12:00:00Z'); 
             const seqEq = ['ALFA', 'BRAVO', 'CHARLIE', 'DELTA'];
             const seqSgt = ['2º SGT PM MAURIZON', '2º SGT PM SOUZA'];
-            
-            // CORREÇÃO DO OFFSET DE ANTIGUIDADE DE ALUNO DE DIA (Para Willys ser na terça)
-            const teamOffsets = { 'ALFA': 0, 'BRAVO': 0, 'CHARLIE': 0, 'DELTA': 2 };
 
             let hoje = new Date(); hoje.setHours(12, 0, 0, 0); 
             
@@ -624,11 +621,13 @@
                 let diffDias = Math.round((new Date(Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate(), 12, 0, 0)) - dataBase) / 86400000);
                 
                 let eq = seqEq[(diffDias % 4 + 4) % 4];
-                let sgt = seqSgt[(diffDias % seqSgt.length + seqSgt.length) % seqSgt.length];
+                
+                let sgtCalculado = seqSgt[(diffDias % seqSgt.length + seqSgt.length) % seqSgt.length];
+                let overrideSgt = funcoesComandoGlobais.find(f => f.tipo === 'CMT' && f.data_referencia === dtIso);
+                let sgtFinal = (overrideSgt && overrideSgt.valor_texto) ? overrideSgt.valor_texto : sgtCalculado;
                 
                 let alunosEq = [...listaAlunosFull].filter(a => a.equipe === eq).sort((a, b) => a.numero - b.numero);
-                let turnosPassados = Math.floor(diffDias / 4);
-                let idxAluno = (turnosPassados + (teamOffsets[eq] || 0)) % alunosEq.length;
+                let idxAluno = Math.floor(diffDias / 4) % alunosEq.length;
                 if (idxAluno < 0) idxAluno += alunosEq.length;
                 
                 let alDia = funcoesComandoGlobais.find(f => f.tipo === 'ALUNO_DIA' && f.data_referencia === dtIso)
@@ -644,7 +643,12 @@
                         <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">${dt.toLocaleDateString('pt-BR', {weekday: 'short'})}</p>
                         <p class="text-lg font-black text-slate-800 leading-tight mt-0.5">${dt.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'})}</p>
                         <span class="text-[9px] font-black px-2 py-0.5 rounded bg-sys-blue text-white mt-2 w-full text-center tracking-widest">${eq}</span>
-                        <span class="text-[9px] font-bold px-1 py-0.5 rounded border border-slate-300 bg-white text-black mt-1 w-full text-center break-words leading-tight shadow-sm tracking-wide">CMT: ${sgt.replace('2º SGT PM ','')}</span>
+                        
+                        <div class="text-[9px] font-bold px-1 py-0.5 rounded border border-slate-300 bg-white text-black mt-1 w-full text-center break-words leading-tight shadow-sm tracking-wide flex items-center justify-center gap-1">
+                            CMT: ${sgtFinal.replace('2º SGT PM ','')}
+                            ${isAdmin ? `<button onclick="abrirModalFuncao('CMT', '${dtIso}', '')" class="text-slate-400 hover:text-pmmt-gold admin-only shrink-0"><i class="fa-solid fa-pen text-[9px]"></i></button>` : ''}
+                        </div>
+
                         <div class="mt-2 pt-1 border-t border-slate-300 border-dashed w-full flex flex-col items-center">
                             <span class="text-[8px] text-slate-500 uppercase font-bold tracking-widest mb-0.5">Aluno de Dia</span>
                             <div class="flex items-center gap-1 w-full justify-center">
@@ -652,125 +656,132 @@
                                 ${isAdmin ? `<button onclick="abrirModalFuncao('ALUNO_DIA', '${dtIso}', '${eq}')" class="text-slate-400 hover:text-pmmt-gold admin-only shrink-0"><i class="fa-solid fa-pen text-[9px]"></i></button>` : ''}
                             </div>
                         </div>
-                        <button onclick="abrirPreviaEscala('${dtIso}', '${eq}', '${sgt}', '${alDia.id||''}')" class="absolute top-1.5 right-1.5 text-slate-400 hover:text-sys-dark"><i class="fa-solid fa-magnifying-glass text-[10px]"></i></button>
+                        <button onclick="abrirPreviaEscala('${dtIso}', '${eq}', '${sgtFinal}', '${alDia.id||''}')" class="absolute top-1.5 right-1.5 text-slate-400 hover:text-sys-dark"><i class="fa-solid fa-magnifying-glass text-[10px]"></i></button>
                     </div>`;
             }
-        }
-
-        function abrirModalFuncao(tipo, dataRef, eqAtual) {
-            document.getElementById('modalFuncao').classList.remove('hidden');
-            document.getElementById('modalFuncaoTipo').value = tipo; document.getElementById('modalFuncaoData').value = dataRef;
-            const sel = document.getElementById('modalFuncaoAluno'); sel.innerHTML = '';
-            
-            const alunos = [...listaAlunosFull].sort((a,b) => a.numero - b.numero);
-            if(tipo === 'XERIFE') {
-                document.getElementById('modalFuncaoTitle').innerText = 'Definir Xerife da Semana';
-                document.getElementById('modalFuncaoLabelData').innerText = 'Semana Iniciada Em';
-                document.getElementById('modalFuncaoDataDisplay').value = dataRef.split('-').reverse().join('/');
-                alunos.forEach(a => sel.add(new Option(`5${a.numero.toString().padStart(2, '0')} - ${(a.qra||a.nome.split(' ')[0]).replace(/AL SD PM /gi, '')}`, a.id)));
-            } else {
-                document.getElementById('modalFuncaoTitle').innerText = 'Definir Aluno de Dia';
-                document.getElementById('modalFuncaoLabelData').innerText = `Data do Serviço (${eqAtual})`;
-                document.getElementById('modalFuncaoDataDisplay').value = dataRef.split('-').reverse().join('/');
-                alunos.filter(a => a.equipe === eqAtual).forEach(a => sel.add(new Option(`5${a.numero.toString().padStart(2, '0')} - ${(a.qra||a.nome.split(' ')[0]).replace(/AL SD PM /gi, '')}`, a.id)));
-            }
-            const ext = funcoesComandoGlobais.find(f => f.tipo === tipo && f.data_referencia === dataRef);
-            if(ext) { document.getElementById('btnRestaurarPadrao').classList.remove('hidden'); sel.value = ext.aluno_id; } 
-            else document.getElementById('btnRestaurarPadrao').classList.add('hidden');
-        }
-
-        function fecharModalFuncao() { document.getElementById('modalFuncao').classList.add('hidden'); }
-
-        async function salvarFuncaoComando(e) {
-            e.preventDefault(); mostrarLoading(true);
-            const t = document.getElementById('modalFuncaoTipo').value, d = document.getElementById('modalFuncaoData').value, a = document.getElementById('modalFuncaoAluno').value;
-            const ext = funcoesComandoGlobais.find(f => f.tipo === t && f.data_referencia === d);
-            let err;
-            if(ext) { const res = await supabaseClient.from('funcoes_comando').update({aluno_id:a}).eq('id', ext.id); err = res.error; } 
-            else { const res = await supabaseClient.from('funcoes_comando').insert([{tipo:t, data_referencia:d, aluno_id:a}]); err = res.error; }
-            if(!err) { fecharModalFuncao(); await carregarFuncoesComando(); renderizarEscala(); renderizarXerife(); } else alert("Erro!");
-            mostrarLoading(false);
-        }
-
-        async function restaurarFuncaoPadrao() {
-            const t = document.getElementById('modalFuncaoTipo').value, d = document.getElementById('modalFuncaoData').value;
-            const ext = funcoesComandoGlobais.find(f => f.tipo === t && f.data_referencia === d);
-            if(ext) { mostrarLoading(true); const {error} = await supabaseClient.from('funcoes_comando').delete().eq('id', ext.id); if(!error){ fecharModalFuncao(); await carregarFuncoesComando(); renderizarEscala(); renderizarXerife(); } mostrarLoading(false); }
         }
 
         function imprimirEscalaDeHoje() {
             let hoje = new Date(); hoje.setHours(12, 0, 0, 0); let dataIso = hoje.toISOString().split('T')[0];
             const dataBase = new Date('2026-08-11T12:00:00Z'); 
-            const seqEq = ['ALFA', 'BRAVO', 'CHARLIE', 'DELTA']; const seqSgt = ['2º SGT PM MAURIZON', '2º SGT PM SOUZA'];
+            const seqEq = ['ALFA', 'BRAVO', 'CHARLIE', 'DELTA']; 
+            const seqSgt = ['2º SGT PM MAURIZON', '2º SGT PM SOUZA'];
+            
             let diffDias = Math.round((new Date(Date.UTC(hoje.getFullYear(), hoje.getMonth(), hoje.getDate(), 12, 0, 0)) - dataBase) / 86400000);
-            let eq = seqEq[(diffDias % 4 + 4) % 4]; let sgt = seqSgt[(diffDias % seqSgt.length + seqSgt.length) % seqSgt.length];
+            let eq = seqEq[(diffDias % 4 + 4) % 4]; 
+            
+            let sgtCalculado = seqSgt[(diffDias % seqSgt.length + seqSgt.length) % seqSgt.length];
+            let overrideSgt = funcoesComandoGlobais.find(f => f.tipo === 'CMT' && f.data_referencia === dataIso);
+            let sgtFinal = (overrideSgt && overrideSgt.valor_texto) ? overrideSgt.valor_texto : sgtCalculado;
+
             const alunosEq = [...listaAlunosFull].filter(a => a.equipe === eq).sort((a, b) => a.numero - b.numero);
             let idx = Math.floor(diffDias / 4) % alunosEq.length; if(idx < 0) idx += alunosEq.length;
+            
             let alDia = funcoesComandoGlobais.find(f => f.tipo === 'ALUNO_DIA' && f.data_referencia === dataIso) ? listaAlunosFull.find(a => a.id == funcoesComandoGlobais.find(f => f.tipo === 'ALUNO_DIA' && f.data_referencia === dataIso).aluno_id) || alunosEq[idx] : alunosEq[idx];
-            abrirPreviaEscala(dataIso, eq, sgt, alDia ? alDia.id : '');
+            
+            abrirPreviaEscala(dataIso, eq, sgtFinal, alDia ? alDia.id : '');
         }
 
-        function abrirPreviaEscala(dataIso, equipe, sgt, alunoDiaId) {
-            const dt = new Date(dataIso + 'T12:00:00Z');
-            document.getElementById('txtPreviaHeader').innerText = `${dt.getDate().toString().padStart(2,'0')}/${['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'][dt.getMonth()]}/${dt.getFullYear()} - Equipe ${equipe}`;
-            document.getElementById('prevDataIso').value = dataIso; document.getElementById('prevEquipeNome').value = equipe;
-            document.getElementById('prevNumEscala').value = Math.floor((dt - new Date(dt.getFullYear(), 0, 0)) / 86400000).toString().padStart(3, '0');
+        function abrirModalFuncao(tipo, dataRef, eqAtual) {
+            document.getElementById('modalFuncao').classList.remove('hidden');
+            document.getElementById('modalFuncaoTipo').value = tipo; 
+            document.getElementById('modalFuncaoData').value = dataRef;
+            const sel = document.getElementById('modalFuncaoAluno'); 
+            sel.innerHTML = '';
             
-            let opts = `<option value="">-- VAZIO / SEM EXTRA --</option>`;
-            [...listaAlunosFull].sort((a,b) => a.numero - b.numero).forEach(a => { opts += `<option value="${a.id}">5${a.numero.toString().padStart(2,'0')} - ${(a.qra||a.nome.split(' ')[0]).toUpperCase()} (${a.equipe})</option>`; });
+            const label = sel.previousElementSibling;
+            const alunos = [...listaAlunosFull].sort((a,b) => a.numero - b.numero);
             
-            const sels = ['prevAlunoDia', 'prevP1_23', 'prevP1_03', 'prevP1_01', 'prevP2_23', 'prevP2_03', 'prevP2_01', 'prevP1_23_extra', 'prevP1_03_extra', 'prevP1_01_extra', 'prevP2_23_extra', 'prevP2_03_extra', 'prevP2_01_extra'];
-            sels.forEach(id => document.getElementById(id).innerHTML = opts);
-            
-            document.getElementById('prevGraduado').value = sgt;
-            let eqSort = [...listaAlunosFull].filter(a => a.equipe === equipe).sort((a,b) => a.numero - b.numero);
-            let alDia = eqSort.find(a => a.id == alunoDiaId) || eqSort[0];
-            if(alDia) document.getElementById('prevAlunoDia').value = alDia.id;
-            
-            let rem = eqSort.filter(a => !alDia || a.id !== alDia.id);
-            document.getElementById('prevP1_23').value = rem[0]?.id||''; document.getElementById('prevP2_23').value = rem[1]?.id||'';
-            document.getElementById('prevP1_03').value = rem[2]?.id||''; document.getElementById('prevP2_03').value = rem[3]?.id||'';
-            document.getElementById('prevP1_01').value = rem[4]?.id||''; document.getElementById('prevP2_01').value = rem[5]?.id||'';
-            
-            ['prevP1_23_extra', 'prevP1_03_extra', 'prevP1_01_extra', 'prevP2_23_extra', 'prevP2_03_extra', 'prevP2_01_extra'].forEach(id => document.getElementById(id).value = '');
-            if(rem[6]) document.getElementById('prevP2_01_extra').value = rem[6].id;
+            if(tipo === 'XERIFE') {
+                document.getElementById('modalFuncaoTitle').innerText = 'Definir Xerife da Semana';
+                document.getElementById('modalFuncaoLabelData').innerText = 'Semana Iniciada Em';
+                document.getElementById('modalFuncaoDataDisplay').value = dataRef.split('-').reverse().join('/');
+                label.innerText = 'Selecione o Aluno (Ordem Antiguidade)';
+                alunos.forEach(a => sel.add(new Option(`5${a.numero.toString().padStart(2, '0')} - ${(a.qra||a.nome.split(' ')[0]).replace(/AL SD PM /gi, '')}`, a.id)));
+            } else if(tipo === 'ALUNO_DIA') {
+                document.getElementById('modalFuncaoTitle').innerText = 'Definir Aluno de Dia';
+                document.getElementById('modalFuncaoLabelData').innerText = `Data do Serviço (${eqAtual})`;
+                document.getElementById('modalFuncaoDataDisplay').value = dataRef.split('-').reverse().join('/');
+                label.innerText = 'Selecione o Aluno (Ordem Antiguidade)';
+                alunos.filter(a => a.equipe === eqAtual).forEach(a => sel.add(new Option(`5${a.numero.toString().padStart(2, '0')} - ${(a.qra||a.nome.split(' ')[0]).replace(/AL SD PM /gi, '')}`, a.id)));
+            } else if(tipo === 'CMT') {
+                document.getElementById('modalFuncaoTitle').innerText = 'Definir Graduado (CMT)';
+                document.getElementById('modalFuncaoLabelData').innerText = `Data do Serviço`;
+                document.getElementById('modalFuncaoDataDisplay').value = dataRef.split('-').reverse().join('/');
+                label.innerText = 'Selecione o Comandante (Sargento)';
+                sel.add(new Option('2º SGT PM MAURIZON', '2º SGT PM MAURIZON'));
+                sel.add(new Option('2º SGT PM SOUZA', '2º SGT PM SOUZA'));
+                sel.add(new Option('2º SGT PM ORTIZ', '2º SGT PM ORTIZ'));
+                sel.add(new Option('A DEFINIR', 'A DEFINIR'));
+            }
 
-            document.getElementById('modalPreviaEscala').classList.remove('hidden');
+            const ext = funcoesComandoGlobais.find(f => f.tipo === tipo && f.data_referencia === dataRef);
+            if(ext) { 
+                document.getElementById('btnRestaurarPadrao').classList.remove('hidden'); 
+                sel.value = (tipo === 'CMT') ? ext.valor_texto : ext.aluno_id; 
+            } else {
+                document.getElementById('btnRestaurarPadrao').classList.add('hidden');
+            }
         }
 
-        function confirmarImpressaoEscala() {
-            const dtIso = document.getElementById('prevDataIso').value, eq = document.getElementById('prevEquipeNome').value, sgtSel = document.getElementById('prevGraduado').value;
-            const dt = new Date(dtIso + 'T12:00:00Z'); const dia = dt.getDate().toString().padStart(2,'0'), mes = ['JANEIRO','FEVEREIRO','MARÇO','ABRIL','MAIO','JUNHO','JULHO','AGOSTO','SETEMBRO','OUTUBRO','NOVEMBRO','DEZEMBRO'][dt.getMonth()], ano = dt.getFullYear();
+        function fecharModalFuncao() {
+            document.getElementById('modalFuncao').classList.add('hidden');
+        }
+
+        async function restaurarFuncaoPadrao() {
+            if(!confirm("Deseja remover a alteração manual e restaurar a definição automática?")) return;
+            mostrarLoading(true);
+            const t = document.getElementById('modalFuncaoTipo').value;
+            const d = document.getElementById('modalFuncaoData').value;
             
-            let sgtTxt = sgtSel.includes('MAURIZON') ? '2º SGT PM MAURIZON - RGPMMT' : (sgtSel.includes('SOUZA') ? '2º SGT PM SOUZA - RGPMMT' : sgtSel);
-            let sgtAss = sgtSel.includes('MAURIZON') ? 'MAURIZON GOMES DOS SANTOS – 2º SGT PM' : (sgtSel.includes('SOUZA') ? 'SOUZA – 2º SGT PM' : sgtSel);
-
-            document.getElementById('printEquipeNome').innerText = eq; document.getElementById('printDataAtual').innerText = `${dia} DE ${mes} DE ${ano} – ${['DOMINGO','SEGUNDA-FEIRA','TERÇA-FEIRA','QUARTA-FEIRA','QUINTA-FEIRA','SEXTA-FEIRA','SÁBADO'][dt.getDay()]} (24 HORAS)`;
-            document.getElementById('printGraduado').innerText = sgtTxt; document.getElementById('printDataAssinatura').innerText = `${dia} DE ${mes} DE ${ano}`; document.getElementById('printNomeAssinatura').innerText = sgtAss;
-            document.getElementById('printNumEscala').innerText = document.getElementById('prevNumEscala').value.padStart(3, '0');
-
-            const getAl = (id) => { const v = document.getElementById(id).value; return v ? listaAlunosFull.find(a=>a.id==v) : null; };
-            const fmtTxt = (o) => o ? `AL SD PM ${(o.qra||o.nome.split(' ')[0]).replace(/AL SD PM /gi, '').trim().toUpperCase()} (5${o.numero.toString().padStart(2,'0')})` : '_________________________';
+            const ext = funcoesComandoGlobais.find(f => f.tipo === t && f.data_referencia === d);
             
-            let alD = getAl('prevAlunoDia'); document.getElementById('printAlunoDia').innerText = alD ? `AL SD PM ${(alD.qra||alD.nome.split(' ')[0]).replace(/AL SD PM /gi, '').toUpperCase()} (RG: ____________)` : `___________________________ ( RG ________ )`;
+            if(ext) {
+                await supabaseClient.from('funcoes_comando').delete().eq('id', ext.id);
+                fecharModalFuncao();
+                await carregarFuncoesComando();
+                renderizarEscala();
+                renderizarXerife();
+            }
+            mostrarLoading(false);
+        }
+
+        async function salvarFuncaoComando(e) {
+            e.preventDefault(); mostrarLoading(true);
+            const t = document.getElementById('modalFuncaoTipo').value;
+            const d = document.getElementById('modalFuncaoData').value;
+            const a = document.getElementById('modalFuncaoAluno').value;
             
-            let p123=getAl('prevP1_23'), p103=getAl('prevP1_03'), p101=getAl('prevP1_01'), p223=getAl('prevP2_23'), p203=getAl('prevP2_03'), p201=getAl('prevP2_01');
-            let ex123=getAl('prevP1_23_extra'), ex103=getAl('prevP1_03_extra'), ex101=getAl('prevP1_01_extra'), ex223=getAl('prevP2_23_extra'), ex203=getAl('prevP2_03_extra'), ex201=getAl('prevP2_01_extra');
+            const ext = funcoesComandoGlobais.find(f => f.tipo === t && f.data_referencia === d);
             
-            let setPrint = new Set(listaAlunosFull.filter(a=>a.equipe===eq).map(a=>a.id));
-            [alD,p123,p103,p101,p223,p203,p201,ex123,ex103,ex101,ex223,ex203,ex201].forEach(o=>{if(o)setPrint.add(o.id)});
-            document.getElementById('printListaEquipe').innerHTML = Array.from(setPrint).map(id=>listaAlunosFull.find(a=>a.id==id)).filter(x=>x).sort((a,b)=>a.numero-b.numero).map(a=>`<p>AL SD PM ${(a.qra||a.nome.split(' ')[0]).replace(/AL SD PM /gi,'').toUpperCase()} (5${a.numero.toString().padStart(2,'0')})</p>`).join('');
+            let payload = { tipo: t, data_referencia: d };
+            if (t === 'CMT') { 
+                payload.valor_texto = a; 
+                payload.aluno_id = null; // Fica nulo pois não é um aluno
+            } else { 
+                payload.aluno_id = a; 
+                payload.valor_texto = null;
+            }
 
-            const bld = (m, e) => { let t = fmtTxt(m); if(e) t += `<br><span style="padding-left: 140px;">E ${fmtTxt(e)}</span>`; return t; };
-
-            document.getElementById('postosServico').innerHTML = `
-                <div class="grid grid-cols-2 gap-8">
-                    <div><p class="mb-1 font-bold underline">POSTO 01: PORTÃO E PÁTIO EXTERNO</p><p class="font-normal mb-0.5 leading-tight">DAS 23H00 ÀS 01H00: ${bld(p123, ex123)}</p><p class="font-normal mb-0.5 leading-tight">DAS 01H00 ÀS 03H00: ${bld(p101, ex101)}</p><p class="font-normal mb-0.5 leading-tight">DAS 03H00 ÀS 05H00: ${bld(p103, ex103)}</p></div>
-                    <div><p class="mb-1 font-bold underline">POSTO 02: RECEPÇÃO</p><p class="font-normal mb-0.5 leading-tight">DAS 23H00 ÀS 01H00: ${bld(p223, ex223)}</p><p class="font-normal mb-0.5 leading-tight">DAS 01H00 ÀS 03H00: ${bld(p201, ex201)}</p><p class="font-normal mb-0.5 leading-tight">DAS 03H00 ÀS 05H00: ${bld(p203, ex203)}</p></div>
-                </div>`;
-
-            document.getElementById('modalPreviaEscala').classList.add('hidden'); document.getElementById('modulo-impressao-escala').classList.remove('hidden'); document.body.classList.add('printing-escala');
-            setTimeout(() => { window.print(); document.getElementById('modulo-impressao-escala').classList.add('hidden'); document.body.classList.remove('printing-escala'); }, 300);
+            let err;
+            if(ext) { 
+                const res = await supabaseClient.from('funcoes_comando').update(payload).eq('id', ext.id); 
+                err = res.error; 
+            } else { 
+                const res = await supabaseClient.from('funcoes_comando').insert([payload]); 
+                err = res.error; 
+            }
+            
+            if(!err) { 
+                fecharModalFuncao(); 
+                await carregarFuncoesComando(); 
+                renderizarEscala(); 
+                renderizarXerife(); 
+            } else {
+                console.error("ERRO DO BANCO:", err);
+                alert("⚠️ ERRO DETALHADO DO SUPABASE:\n\n" + err.message + "\n\nDetalhes: " + (err.details || err.hint || "Nenhum detalhe adicional."));
+            }
+            mostrarLoading(false);
         }
 
         // ===============================================
@@ -879,10 +890,12 @@
                 tb.innerHTML+=`<tr class="${p.status==='CONCLUIDO'?'bg-slate-50 opacity-60':'hover:bg-slate-50 transition'}"><td class="p-3 whitespace-nowrap text-slate-700 text-sm">${p.data_limite?p.data_limite.split('-').reverse().join('/'):'-'}</td><td class="p-3 whitespace-nowrap"><p class="font-bold text-slate-800 text-sm">${p.descricao}</p><p class="text-[10px] text-slate-500 uppercase tracking-widest font-semibold">${p.categoria}</p></td><td class="p-3 text-right font-bold text-slate-700 text-sm">${v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</td><td class="p-3 text-center">${p.status==='CONCLUIDO'?`<span class="text-emerald-600 text-[10px] font-black uppercase tracking-wider"><i class="fa-solid fa-check mr-1"></i> Comprado</span>`:(isAdmin?`<button onclick="concluirPrevisao('${p.id}')" class="text-sys-dark hover:underline text-[10px] font-black uppercase tracking-wider">Pendente</button>`:`<span class="text-sys-dark font-black uppercase text-[10px] tracking-wider">Pendente</span>`)}</td>${isAdmin?`<td class="p-3 text-center admin-only"><button onclick="deletarPrevisao('${p.id}')" class="text-slate-400 hover:text-rose-500 transition"><i class="fa-solid fa-trash"></i></button></td>`:''}</tr>`;
             });
             const sText=document.getElementById('valorSaldo').innerText.replace('R$','').replace(/\./g,'').replace(',','.').trim(); const sAtual=parseFloat(sText)||0; const sProj=sAtual-tot;
-            document.getElementById('projCaixaAtual').innerText=sAtual.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); document.getElementById('projTotalPrevisto').innerText=tot.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); document.getElementById('valorSaldoLivreIndicador').innerText=sProj.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); document.getElementById('projSaldoFinal').innerText=sProj.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-            const box=document.getElementById('boxSaldoProjetado'), txt=document.getElementById('projSaldoFinal'), ind=document.getElementById('valorSaldoLivreIndicador'), al=document.getElementById('projAlertaCota');
-            if(sProj<0){ box.className="border border-rose-300 p-4 rounded-xl bg-rose-50 shadow-sm"; txt.className="text-xl font-black text-rose-700 mt-1"; ind.className="text-rose-500 font-bold"; al.classList.remove('hidden'); document.getElementById('valorCotaExtra').innerText=(Math.abs(sProj)/(listaAlunosFull.length||30)).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
-            else{ box.className="border border-emerald-300 p-4 rounded-xl bg-emerald-50 shadow-sm"; txt.className="text-xl font-black text-emerald-700 mt-1"; ind.className="text-emerald-500 font-bold"; al.classList.add('hidden');}
+            if (document.getElementById('projCaixaAtual')) {
+                document.getElementById('projCaixaAtual').innerText=sAtual.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); document.getElementById('projTotalPrevisto').innerText=tot.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); document.getElementById('valorSaldoLivreIndicador').innerText=sProj.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); document.getElementById('projSaldoFinal').innerText=sProj.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+                const box=document.getElementById('boxSaldoProjetado'), txt=document.getElementById('projSaldoFinal'), ind=document.getElementById('valorSaldoLivreIndicador'), al=document.getElementById('projAlertaCota');
+                if(sProj<0){ box.className="border border-rose-300 p-4 rounded-xl bg-rose-50 shadow-sm"; txt.className="text-xl font-black text-rose-700 mt-1"; ind.className="text-rose-500 font-bold"; al.classList.remove('hidden'); document.getElementById('valorCotaExtra').innerText=(Math.abs(sProj)/(listaAlunosFull.length||30)).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
+                else{ box.className="border border-emerald-300 p-4 rounded-xl bg-emerald-50 shadow-sm"; txt.className="text-xl font-black text-emerald-700 mt-1"; ind.className="text-emerald-500 font-bold"; al.classList.add('hidden');}
+            }
         }
 
         // ===============================================
