@@ -76,7 +76,6 @@
 </head>
 <body class="h-screen flex flex-col overflow-hidden antialiased">
     <div class="flex-1 flex overflow-hidden relative w-full">
-        <!-- LOGIN -->
         <div id="telaLogin" class="flex flex-col items-center justify-between w-full h-full bg-slate-900 p-4 z-[100] relative overflow-y-auto">
             <div class="fixed inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 z-0 pointer-events-none"></div>
             <div class="fixed inset-0 bg-gradient-to-br from-pmmt-blue to-slate-900 z-0 pointer-events-none opacity-95"></div>
@@ -104,7 +103,6 @@
             <div class="w-full text-center z-10 shrink-0 mt-4 pb-2"><p class="text-[9px] text-slate-400/80 font-bold uppercase tracking-wider drop-shadow-md">Desenvolvido por: AL SD PM WILLYS - 5º PELOTÃO - 35º CFSD</p></div>
         </div>
 
-        <!-- PAINEL PRINCIPAL -->
         <div id="painelPrincipal" class="hidden h-full flex flex-col overflow-hidden w-full">
             <header class="bg-pmmt-blue text-white h-14 md:h-16 flex items-center justify-between px-4 z-40 shrink-0 shadow-md border-b-2 border-pmmt-gold">
                 <div class="flex items-center gap-3 w-full">
@@ -155,7 +153,6 @@
                         <i class="fa-solid fa-shield-check text-xl text-pmmt-gold"></i><p class="text-xs text-slate-700 font-medium">Seja bem-vindo(a) ao <strong>Portal Institucional do 35º CFSD - 5º Pelotão</strong>.</p>
                     </div>
 
-                    <!-- MÓDULO INSTITUCIONAL -->
                     <section id="modulo-institucional" class="hidden space-y-6">
                         <div class="bg-white shadow-sm border border-slate-300 overflow-hidden rounded-xl">
                             <div class="bg-sys-dark text-white px-5 py-4 flex justify-between items-center">
@@ -172,7 +169,6 @@
                         </div>
                     </section>
 
-                    <!-- MÓDULO EFETIVO E ESCALA -->
                     <section id="modulo-efetivo" class="hidden space-y-5">
                         <div class="bg-sys-dark text-white rounded-xl shadow-md border-b-4 border-pmmt-gold p-4 md:p-5 flex justify-between items-center relative overflow-hidden">
                             <div class="z-10">
@@ -216,7 +212,6 @@
                         </div>
                     </section>
 
-                    <!-- MÓDULO CAUTELA -->
                     <section id="modulo-cautela" class="hidden space-y-5">
                         <div class="bg-white shadow-sm border border-slate-300 rounded-xl overflow-hidden mb-4">
                             <div class="bg-sys-dark px-5 py-4 flex justify-between items-center border-b-4 border-pmmt-gold shrink-0">
@@ -232,7 +227,6 @@
                         </div>
                     </section>
 
-                    <!-- MÓDULO FINANCEIRO -->
                     <section id="modulo-financeiro" class="hidden space-y-5">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div class="bg-white border-t-4 border-emerald-500 shadow-sm p-4 flex items-center justify-between rounded-xl"><div><p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Arrecadado</p><h2 id="valorReceitas" class="text-xl font-black text-emerald-600 mt-0.5">R$ 0,00</h2></div><div class="bg-emerald-50 p-2.5 rounded-full"><i class="fa-solid fa-money-bill-wave text-xl text-emerald-500"></i></div></div>
@@ -265,10 +259,8 @@
                         </div>
                     </section>
 
-                    <!-- MÓDULO TAF -->
                     <section id="modulo-taf" class="hidden flex-1 flex flex-col h-full min-h-[85vh]"><iframe id="iframeTaf" src="taf.html" class="w-full h-full border border-slate-200 bg-white shadow-sm rounded-xl"></iframe></section>
 
-                    <!-- ÁREA DO ALUNO -->
                     <section id="modulo-aluno" class="hidden flex-1 flex flex-col h-full min-h-[85vh] space-y-4">
                         <div class="bg-white shadow-sm border border-slate-200 overflow-hidden rounded-xl flex flex-col h-full">
                             <div class="bg-sys-dark text-white px-5 py-4 flex justify-between items-center shrink-0"><div><h2 class="text-sm font-black tracking-widest uppercase"><i class="fa-solid fa-user-graduate text-pmmt-gold mr-2"></i> Área do Aluno</h2><p class="text-[9px] text-slate-300 uppercase mt-0.5">Material, Notas e Quadro de Trabalho</p></div></div>
@@ -278,12 +270,10 @@
                                 <button onclick="abrirAbaAluno('aba-qts', this)" class="aba-btn flex-1 py-3 px-4 text-xs font-bold uppercase tracking-wider text-slate-500 border-b-2 border-transparent hover:bg-slate-100 transition whitespace-nowrap"><i class="fa-solid fa-table-cells mr-1.5"></i> QTS (Semanal)</button>
                             </div>
                             <div class="p-4 md:p-6 bg-white flex-1 overflow-y-auto relative">
-                                <!-- ABA 1: MATERIAL -->
                                 <div id="aba-material" class="aba-content block space-y-6">
                                     <div class="bg-gradient-to-r from-sys-dark to-pmmt-blue rounded-xl p-6 text-white shadow border border-pmmt-gold/30 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-4"><i class="fa-solid fa-shield-halved absolute -right-4 -bottom-6 text-7xl text-white/5 pointer-events-none"></i><div class="relative z-10 text-center md:text-left"><h3 class="text-lg font-black uppercase tracking-widest text-pmmt-gold mb-1"><i class="fa-solid fa-book-open-reader mr-2"></i> Módulo Interativo POP PMMT</h3><p class="text-xs font-medium text-slate-300">Acesse o sistema dinâmico do Procedimento Operacional Padrão.</p></div><a href="estudo_pop.html" target="_blank" class="relative z-10 bg-pmmt-gold hover:bg-yellow-500 text-sys-dark font-black px-5 py-2.5 rounded shadow-lg transition uppercase tracking-widest text-[10px] whitespace-nowrap flex items-center gap-2 border border-yellow-400">Acessar POP <i class="fa-solid fa-arrow-up-right-from-square"></i></a></div>
                                     <div id="containerMateriais" class="space-y-4"><p class="text-xs text-slate-500 text-center py-6"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Carregando acervo...</p></div>
                                 </div>
-                                <!-- ABA 2: NOTAS -->
                                 <div id="aba-notas" class="aba-content hidden space-y-4">
                                     <div class="flex flex-col md:flex-row justify-between gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
                                         <div class="flex-1"><label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Disciplina</label><div class="flex gap-2"><select id="selDisciplinaNotas" class="w-full border border-slate-300 rounded p-2 text-xs font-semibold text-slate-700 outline-none" onchange="carregarNotasDisciplina()"></select><input type="text" id="novaDisciplinaInput" placeholder="Nova Disciplina..." class="hidden w-full border border-slate-300 rounded p-2 text-xs outline-none"><button onclick="toggleNovaDisciplina()" class="admin-only bg-slate-200 px-3 rounded text-slate-600 hover:bg-slate-300 text-xs font-bold"><i class="fa-solid fa-plus" id="iconBtnDisciplina"></i></button></div></div>
@@ -293,7 +283,6 @@
                                         <table class="w-full text-left text-xs border-collapse"><thead class="bg-sys-dark text-white"><tr><th class="p-2 w-16 text-center">Nº</th><th class="p-2">Aluno</th><th class="p-2 w-24 text-center">V.C. (0-10)</th><th class="p-2 w-24 text-center">Prova (0-10)</th><th class="p-2 w-24 text-center">Média</th><th class="p-2 w-20 text-center">Faltas</th></tr></thead><tbody id="tabelaNotas" class="divide-y divide-slate-100 bg-white"><tr><td colspan="6" class="text-center p-4 text-slate-400">Selecione ou crie uma disciplina.</td></tr></tbody></table>
                                     </div>
                                 </div>
-                                <!-- ABA 3: QTS -->
                                 <div id="aba-qts" class="aba-content hidden space-y-4">
                                     <div class="flex justify-between items-center bg-slate-50 p-3 rounded-lg border border-slate-200 no-print">
                                         <div class="flex items-center gap-3 w-full max-w-md"><label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest whitespace-nowrap">Semana Ref:</label><select id="selQtsSemana" class="w-full border border-slate-300 rounded p-1.5 text-xs font-semibold outline-none" onchange="carregarQTS()"></select><button onclick="novaSemanaQTS()" class="admin-only bg-slate-200 px-3 py-1.5 rounded text-slate-600 hover:bg-slate-300 text-xs font-bold" title="Criar Nova"><i class="fa-solid fa-plus"></i></button></div>
@@ -346,7 +335,6 @@
         </div>
     </div>
 
-    <!-- MODAIS DE FUNÇÃO E CAUTELA -->
     <div id="modalFuncao" class="fixed inset-0 bg-slate-900/80 z-[200] hidden flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden border border-slate-300">
             <div class="bg-sys-dark px-5 py-4 flex justify-between items-center border-b border-slate-400/30"><h3 class="text-white font-black text-sm uppercase tracking-wider" id="modalFuncaoTitle">Alterar Função</h3><button onclick="fecharModalFuncao()" class="text-white/70 hover:text-white transition"><i class="fa-solid fa-xmark text-xl"></i></button></div>
@@ -373,7 +361,6 @@
         </div>
     </div>
 
-    <!-- MODAL: PRÉ-VISUALIZAÇÃO DA ESCALA -->
     <div id="modalPreviaEscala" class="fixed inset-0 bg-slate-900/80 z-[300] hidden flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden border border-slate-300 flex flex-col max-h-[95vh]">
             <div class="bg-sys-dark px-5 py-4 flex justify-between items-center border-b-4 border-pmmt-gold shrink-0">
@@ -409,7 +396,6 @@
         </div>
     </div>
 
-    <!-- MÓDULO OCULTO PARA IMPRESSÃO DA ESCALA -->
     <div id="modulo-impressao-escala" class="hidden bg-white text-black p-4 max-w-4xl mx-auto font-sans text-[11px] leading-tight">
         <div class="flex flex-col items-center mb-3 text-center"><img src="logo_brasao_5.png" alt="Brasão" class="h-20 mb-2 object-contain" onerror="this.style.display='none'"><h1 class="font-bold text-sm uppercase">POLÍCIA MILITAR DO ESTADO DE MATO GROSSO</h1><h2 class="font-bold text-xs uppercase">DIRETORIA DE ENSINO INSTRUÇÃO E PESQUISA</h2><h2 class="font-bold text-xs uppercase">ESCOLA SUPERIOR DE FORMAÇÃO E APERFEIÇOAMENTO DE PRAÇAS</h2><h2 class="font-bold text-xs uppercase">COORDENAÇÃO ACADÊMICA DO 35° CFSD - 5º PELOTÃO - POLO CÁCERES</h2></div>
         <div class="text-center mb-3"><p id="printDataAtual" class="font-bold text-xs uppercase">-- DATA --</p><p class="font-bold text-sm mt-1 underline uppercase">ESCALA DE SERVIÇO Nº <span id="printNumEscala">001</span></p></div>
@@ -1101,16 +1087,27 @@
             sel.innerHTML = '<option value="">-- Selecione uma Disciplina --</option>';
             discs.forEach(d => sel.add(new Option(d, d))); sel.add(new Option("➕ Cadastrar Nova...", "NOVA"));
         }
-function toggleNovaDisciplina() {
-            const sel=document.getElementById('selDisciplinaNotas'), inp=document.getElementById('novaDisciplinaInput'), icon=document.getElementById('iconBtnDisciplina');
-            if(inp.classList.contains('hidden')){
-                sel.classList.add('hidden'); inp.classList.remove('hidden'); inp.focus(); icon.classList.replace('fa-plus','fa-times');
-                // GERA A LISTA DE ALUNOS ZERADA PARA A NOVA DISCIPLINA IMEDIATAMENTE
+        
+        function toggleNovaDisciplina() {
+            const sel = document.getElementById('selDisciplinaNotas'); 
+            const inp = document.getElementById('novaDisciplinaInput'); 
+            const icon = document.getElementById('iconBtnDisciplina');
+            
+            if(inp.classList.contains('hidden')) {
+                sel.classList.add('hidden'); 
+                inp.classList.remove('hidden'); 
+                inp.focus(); 
+                icon.classList.replace('fa-plus', 'fa-times');
+                
+                // CORREÇÃO: Força a tabela a abrir a lista de alunos imediatamente para a nova disciplina
                 carregarNotasDisciplina(true);
-            }
-            else{
-                inp.value=''; sel.classList.remove('hidden'); inp.classList.add('hidden'); icon.classList.replace('fa-times','fa-plus'); sel.selectedIndex=0;
-                document.getElementById('tabelaNotas').innerHTML='<tr><td colspan="6" class="text-center p-4 text-slate-400">Selecione uma disciplina.</td></tr>';
+            } else {
+                inp.value = ''; 
+                sel.classList.remove('hidden'); 
+                inp.classList.add('hidden'); 
+                icon.classList.replace('fa-times', 'fa-plus'); 
+                sel.selectedIndex = 0;
+                document.getElementById('tabelaNotas').innerHTML = '<tr><td colspan="6" class="text-center p-4 text-slate-400">Selecione uma disciplina.</td></tr>';
             }
         }
 
@@ -1130,47 +1127,52 @@ function toggleNovaDisciplina() {
         }
 
         async function salvarTodasNotas() {
-            let disc = document.getElementById('selDisciplinaNotas').value; 
-            const inpN = document.getElementById('novaDisciplinaInput');
+            let disc = document.getElementById('selDisciplinaNotas').value;
+            const inpNova = document.getElementById('novaDisciplinaInput');
             
-            if(!inpN.classList.contains('hidden') && inpN.value.trim()!=='') {
-                disc = inpN.value.trim().toUpperCase();
+            // Se estiver criando uma nova, pega o texto digitado
+            if(!inpNova.classList.contains('hidden') && inpNova.value.trim() !== '') {
+                disc = inpNova.value.trim().toUpperCase();
             }
             
-            if(!disc || disc==='NOVA') { alert("Selecione ou digite uma disciplina."); return; }
-            
-            mostrarLoading(true); 
-            let pay = [];
-            document.querySelectorAll('#tabelaNotas tr[data-aluno-id]').forEach(tr => {
-                pay.push({ 
-                    aluno_id: tr.getAttribute('data-aluno-id'), 
-                    disciplina: disc, 
-                    nota_vc: parseFloat(tr.querySelector('input[data-tipo="vc"]').value)||0, 
-                    nota_prova: parseFloat(tr.querySelector('input[data-tipo="prova"]').value)||0, 
-                    faltas: parseInt(tr.querySelector('input[data-tipo="faltas"]').value)||0 
-                });
-            });
-
-            if(pay.length === 0) { 
-                alert("A tabela de alunos está vazia. Não há o que salvar."); 
-                mostrarLoading(false); 
+            if(!disc || disc === 'NOVA') { 
+                alert("Selecione ou digite uma disciplina."); 
                 return; 
             }
+            
+            mostrarLoading(true);
+            let payloads = [];
+            
+            // Captura todos os alunos que estão na tabela
+            document.querySelectorAll('#tabelaNotas tr[data-aluno-id]').forEach(tr => {
+                let alId = tr.getAttribute('data-aluno-id');
+                let vc = parseFloat(tr.querySelector('input[data-tipo="vc"]').value.replace(',', '.')) || 0;
+                let pr = parseFloat(tr.querySelector('input[data-tipo="prova"]').value.replace(',', '.')) || 0;
+                let fl = parseInt(tr.querySelector('input[data-tipo="faltas"]').value) || 0;
+                
+                payloads.push({ aluno_id: alId, disciplina: disc, nota_vc: vc, nota_prova: pr, faltas: fl });
+            });
 
-            const {error} = await supabaseClient.from('notas_alunos').upsert(pay, { onConflict: 'aluno_id, disciplina' });
+            if(payloads.length === 0) {
+                alert("A tabela de alunos está vazia. Não há o que salvar.");
+                mostrarLoading(false);
+                return;
+            }
+
+            // Salva na nuvem
+            const { error } = await supabaseClient.from('notas_alunos').upsert(payloads, { onConflict: 'aluno_id, disciplina' });
             
             if(!error) { 
-                alert("Notas Salvas com sucesso!"); 
-                if(!inpN.classList.contains('hidden')) toggleNovaDisciplina(); 
+                alert("Notas e Faltas salvas com sucesso!"); 
+                if(!inpNova.classList.contains('hidden')) toggleNovaDisciplina(); 
                 await carregarNotas(); 
-                document.getElementById('selDisciplinaNotas').value=disc; 
+                document.getElementById('selDisciplinaNotas').value = disc; 
                 carregarNotasDisciplina(); 
             } else {
                 console.error(error);
-                alert("Erro ao salvar! Verifique o console.");
+                alert("ERRO DO BANCO: " + error.message + "\\n\\nCertifique-se de ter rodado o script SQL no Supabase.");
             }
             mostrarLoading(false);
-        
         }
 
         async function carregarQTSList() {
