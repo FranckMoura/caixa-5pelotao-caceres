@@ -119,7 +119,7 @@
             </header>
 
             <div id="breadcrumb-bar" class="bg-slate-200 text-slate-700 px-6 py-2 text-xs flex items-center shrink-0 shadow-inner border-b border-slate-300 font-semibold tracking-wide">
-                <i class="fa-solid fa-home text-sys-dark mr-2"></i> Home <span class="mx-2 text-slate-400">/</span> <span id="txt-breadcrumb" class="font-bold text-sys-dark uppercase">Efetivo e Escala</span>
+                <i class="fa-solid fa-home text-sys-dark mr-2"></i> Home <span class="mx-2 text-slate-400">/</span> <span id="txt-breadcrumb" class="font-bold text-sys-dark uppercase">Painel Diário</span>
             </div>
 
             <div class="flex-1 flex overflow-hidden">
@@ -130,8 +130,10 @@
                     </div>
                     <div class="flex-1 overflow-y-auto py-2 px-2 space-y-0.5">
                         <p class="px-2 text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1 mt-1">Menu Principal</p>
+                        
+                        <button onclick="mudarModulo('home')" id="btn-home" class="menu-item ativo"><i class="fa-solid fa-house"></i> Início / Painel Diário</button>
                         <button onclick="mudarModulo('institucional')" id="btn-institucional" class="menu-item"><i class="fa-solid fa-sitemap"></i> Cadeia de Comando</button>
-                        <button onclick="mudarModulo('efetivo')" id="btn-efetivo" class="menu-item ativo"><i class="fa-solid fa-users-gear"></i> Efetivo e Escala</button>
+                        <button onclick="mudarModulo('efetivo')" id="btn-efetivo" class="menu-item"><i class="fa-solid fa-users-gear"></i> Efetivo e Escala</button>
                         <button onclick="mudarModulo('cautela')" id="btn-cautela" class="menu-item"><i class="fa-solid fa-gun"></i> Cautela Armamento</button>
                         <button onclick="mudarModulo('financeiro')" id="btn-financeiro" class="menu-item"><i class="fa-solid fa-vault"></i> Gestão Financeira</button>
                         <button onclick="mudarModulo('taf')" id="btn-taf" class="menu-item"><i class="fa-solid fa-person-running"></i> TAF e Fatos Obs.</button>
@@ -145,14 +147,36 @@
                     </div>
                 </aside>
 
-                <main class="flex-1 overflow-y-auto p-4 md:p-6 bg-sys-bg flex flex-col">
+                <main class="flex-1 overflow-y-auto p-4 md:p-6 bg-sys-bg flex flex-col relative">
                     <div id="loaderAlert" class="hidden bg-amber-100 border border-amber-300 text-amber-800 px-4 py-2 rounded-lg mb-4 flex items-center gap-3 shadow-sm transition-opacity shrink-0">
                         <i class="fa-solid fa-circle-notch fa-spin text-sm"></i><span class="text-xs font-semibold">Sincronizando dados com o servidor...</span>
                     </div>
 
-                    <div class="bg-white border-l-4 border-pmmt-blue p-3 mb-4 shadow-sm no-print rounded-r-lg shrink-0 flex items-center gap-3">
-                        <i class="fa-solid fa-shield-check text-xl text-pmmt-gold"></i><p class="text-xs text-slate-700 font-medium">Seja bem-vindo(a) ao <strong>Portal Institucional do 35º CFSD - 5º Pelotão</strong>.</p>
-                    </div>
+                    <section id="modulo-home" class="space-y-5">
+                        <div class="bg-white border-l-4 border-pmmt-blue p-3 shadow-sm no-print rounded-r-lg shrink-0 flex items-center gap-3">
+                            <i class="fa-solid fa-shield-check text-xl text-pmmt-gold"></i><p class="text-xs text-slate-700 font-medium">Seja bem-vindo(a) ao <strong>Portal Institucional do 35º CFSD - 5º Pelotão</strong>.</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
+                                <div class="bg-sys-dark px-4 py-3 border-b-4 border-pmmt-gold">
+                                    <h3 class="text-xs font-bold text-white uppercase tracking-wide"><i class="fa-solid fa-user-shield text-pmmt-gold mr-2"></i>Serviço Diário (Hoje)</h3>
+                                </div>
+                                <div id="homeEscalaDia" class="p-4 flex-1 flex flex-col justify-center min-h-[150px]">
+                                    <div class="w-full text-center py-6 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><p class="text-[10px] uppercase tracking-widest font-bold">Carregando escala...</p></div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
+                                <div class="bg-sys-dark px-4 py-3 border-b-4 border-pmmt-gold">
+                                    <h3 class="text-xs font-bold text-white uppercase tracking-wide"><i class="fa-solid fa-list-check text-pmmt-gold mr-2"></i>Missões / QTS (Atual)</h3>
+                                </div>
+                                <div id="homeQtsDia" class="p-4 flex-1 flex items-center justify-center bg-slate-50">
+                                    <div class="w-full text-center py-6 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><p class="text-[10px] uppercase tracking-widest font-bold">Carregando QTS...</p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
 
                     <section id="modulo-institucional" class="hidden space-y-6">
                         <div class="bg-white shadow-sm border border-slate-300 overflow-hidden rounded-xl">
@@ -487,7 +511,8 @@
             const statusEl = document.getElementById('statusConexao');
             if (statusEl) statusEl.innerHTML = '<i class="fa-solid fa-circle text-[8px] text-emerald-500 mr-1"></i> BD OK';
             
-            mudarModulo('efetivo');
+            // FORÇA A ABERTURA DO NOVO MÓDULO HOME LOGO APÓS O LOGIN
+            mudarModulo('home');
             await sincronizarDadosManualmente();
         }
 
@@ -496,6 +521,10 @@
                 mostrarLoading(true);
                 await carregarFuncoesComando(); await carregarAlunos(); await carregarTransacoes();
                 await carregarCautelas(); await carregarQTSList(); await carregarMateriaisApoio();
+                
+                // NOVO: Renderiza o painel inicial da Home Page
+                await renderizarDashboardHome();
+
                 const iframeTaf = document.getElementById('iframeTaf');
                 if (iframeTaf && iframeTaf.contentWindow) iframeTaf.contentWindow.location.reload();
                 const iframeAcad = document.getElementById('iframeAcademico');
@@ -508,8 +537,8 @@
         }
 
         function mudarModulo(moduloDestino) {
-            const modulos = ['institucional', 'efetivo', 'cautela', 'financeiro', 'taf', 'academico', 'aluno', 'debate'];
-            const nomes = { 'institucional': 'Cadeia de Comando', 'efetivo': 'Efetivo e Escala', 'cautela': 'Cautela de Armamento', 'financeiro': 'Gestão Financeira', 'taf': 'TAF e Fatos', 'academico': 'Módulo Acadêmico', 'aluno': 'Área do Aluno', 'debate': 'Área Livre' };
+            const modulos = ['home', 'institucional', 'efetivo', 'cautela', 'financeiro', 'taf', 'academico', 'aluno', 'debate'];
+            const nomes = { 'home': 'Painel Diário', 'institucional': 'Cadeia de Comando', 'efetivo': 'Efetivo e Escala', 'cautela': 'Cautela de Armamento', 'financeiro': 'Gestão Financeira', 'taf': 'TAF e Fatos', 'academico': 'Módulo Acadêmico', 'aluno': 'Área do Aluno', 'debate': 'Área Livre' };
 
             modulos.forEach(m => {
                 const el = document.getElementById('modulo-' + m); if(el) el.classList.add('hidden');
@@ -523,6 +552,84 @@
             if (window.innerWidth < 768) { const wrapper = document.getElementById('wrapperLateral'); if(wrapper) wrapper.classList.add('hidden'); }
             if(moduloDestino === 'aluno') abrirAbaAluno('aba-material', document.querySelector('.aba-btn'));
         }
+
+        // ===============================================
+        // --- NOVA FUNÇÃO: RENDERIZAR DASHBOARD HOME ---
+        // ===============================================
+        async function renderizarDashboardHome() {
+            // 1. DADOS DA ESCALA DE HOJE
+            const dataBase = new Date('2026-08-11T12:00:00Z'); 
+            const seqEq = ['ALFA', 'BRAVO', 'CHARLIE', 'DELTA'];
+            const seqSgt = ['2º SGT PM MAURIZON', '2º SGT PM SOUZA'];
+
+            let hoje = new Date(); hoje.setHours(12, 0, 0, 0); 
+            let dtIso = hoje.toISOString().split('T')[0];
+            let diffDias = Math.round((new Date(Date.UTC(hoje.getFullYear(), hoje.getMonth(), hoje.getDate(), 12, 0, 0)) - dataBase) / 86400000);
+            
+            let eq = seqEq[(diffDias % 4 + 4) % 4];
+            let sgtCalculado = seqSgt[(diffDias % seqSgt.length + seqSgt.length) % seqSgt.length];
+            let overrideSgt = funcoesComandoGlobais.find(f => f.tipo === 'CMT' && f.data_referencia === dtIso);
+            let sgtFinal = (overrideSgt && overrideSgt.valor_texto) ? overrideSgt.valor_texto : sgtCalculado;
+            
+            let alunosEq = [...listaAlunosFull].filter(a => a.equipe === eq).sort((a, b) => a.numero - b.numero);
+            let idxAluno = Math.floor(diffDias / 4) % alunosEq.length;
+            if (idxAluno < 0) idxAluno += alunosEq.length;
+            
+            let alDia = funcoesComandoGlobais.find(f => f.tipo === 'ALUNO_DIA' && f.data_referencia === dtIso)
+                ? listaAlunosFull.find(a => a.id == funcoesComandoGlobais.find(f => f.tipo === 'ALUNO_DIA' && f.data_referencia === dtIso).aluno_id) || alunosEq[idxAluno]
+                : alunosEq[idxAluno];
+
+            let nomeEx = alDia && alDia.numero ? `5${alDia.numero.toString().padStart(2, '0')} - ${(alDia.qra || alDia.nome).replace(/AL SD PM |AL SD /gi, '').trim().toUpperCase()}` : 'A DEFINIR';
+
+            document.getElementById('homeEscalaDia').innerHTML = `
+                <div class="w-full space-y-3">
+                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded border border-slate-200">
+                        <span class="text-[10px] font-bold text-slate-500 uppercase">Equipe de Serviço</span>
+                        <span class="text-[11px] font-black bg-sys-blue text-white px-2.5 py-1 rounded shadow-sm">${eq}</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded border border-slate-200">
+                        <span class="text-[10px] font-bold text-slate-500 uppercase">Graduado (CMT)</span>
+                        <span class="text-[11px] font-bold text-slate-800">${sgtFinal}</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded border border-slate-200">
+                        <span class="text-[10px] font-bold text-slate-500 uppercase">Aluno de Dia</span>
+                        <span class="text-[11px] font-black text-slate-800">${nomeEx}</span>
+                    </div>
+                    <button onclick="mudarModulo('efetivo'); abrirPreviaEscala('${dtIso}', '${eq}', '${sgtFinal}', '${alDia ? alDia.id : ''}')" class="w-full mt-2 bg-pmmt-gold hover:bg-yellow-500 text-sys-dark font-black text-[10px] py-3 rounded shadow uppercase tracking-widest transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-clipboard-user"></i> Ver Escala e Postos Completos
+                    </button>
+                </div>
+            `;
+
+            // 2. DADOS DO QTS (Extraindo do Banco a Tabela Atual)
+            const { data } = await supabaseClient.from('qts_semanal').select('*').order('atualizado_em', { ascending: false }).limit(1).single();
+            const divQts = document.getElementById('homeQtsDia');
+            if (data && data.dados_html) {
+                // Remove edições e trava a tabela apenas para visualização
+                let safeHtml = data.dados_html.replace(/id="/g, 'data-old-id="').replace(/contenteditable="true"/g, '').replace(/admin-edit/g, '');
+                
+                divQts.innerHTML = `
+                    <div class="w-full flex flex-col h-full bg-white">
+                        <div class="overflow-x-auto border border-slate-200 rounded flex-1">
+                            <div class="min-w-[600px] pointer-events-none opacity-95 text-[9px] p-2">
+                                ${safeHtml}
+                            </div>
+                        </div>
+                        <div class="mt-3 text-center shrink-0">
+                            <button onclick="mudarModulo('aluno'); abrirAbaAluno('aba-qts', document.querySelectorAll('.aba-btn')[1]);" class="w-full bg-pmmt-blue hover:bg-sys-dark text-pmmt-gold font-bold py-3 rounded shadow uppercase tracking-widest transition text-[10px] flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-table-cells"></i> Expandir Quadro de Trabalho
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                divQts.innerHTML = `<div class="w-full flex flex-col items-center justify-center text-slate-400 py-10"><i class="fa-solid fa-file-circle-xmark text-4xl mb-2 text-slate-300"></i><p class="text-[10px] font-bold uppercase tracking-widest">Nenhum QTS lançado ainda.</p></div>`;
+            }
+        }
+
+        // ===============================================
+        // --- FUNÇÕES GERAIS ---
+        // ===============================================
 
         function togglePainel(conteudoId, iconeId) {
             const conteudo = document.getElementById(conteudoId), icone = document.getElementById(iconeId);
@@ -563,7 +670,6 @@
             if (data) funcoesComandoGlobais = data;
         }
 
-        // --- NOVA FUNÇÃO PARA PUXAR POSTOS SALVOS ---
         function getSavedPosto(tipo, dataIso, defaultVal) {
             const saved = funcoesComandoGlobais.find(f => f.tipo === tipo && f.data_referencia === dataIso);
             return saved ? saved.aluno_id : defaultVal;
@@ -745,6 +851,7 @@
                 await carregarFuncoesComando();
                 renderizarEscala();
                 renderizarXerife();
+                renderizarDashboardHome(); // Atualiza a Home também!
             }
             mostrarLoading(false);
         }
@@ -760,7 +867,7 @@
             let payload = { tipo: t, data_referencia: d };
             if (t === 'CMT') { 
                 payload.valor_texto = a; 
-                payload.aluno_id = null; // Fica nulo pois não é um aluno
+                payload.aluno_id = null;
             } else { 
                 payload.aluno_id = a; 
                 payload.valor_texto = null;
@@ -780,6 +887,7 @@
                 await carregarFuncoesComando(); 
                 renderizarEscala(); 
                 renderizarXerife(); 
+                renderizarDashboardHome(); // Atualiza a Home
             } else {
                 console.error("ERRO DO BANCO:", err);
                 alert("⚠️ ERRO DETALHADO DO SUPABASE:\n\n" + err.message + "\n\nDetalhes: " + (err.details || err.hint || "Nenhum detalhe adicional."));
@@ -787,9 +895,6 @@
             mostrarLoading(false);
         }
 
-        // ===============================================
-        // LÓGICA DE ABERTURA E IMPRESSÃO DA ESCALA (ATUALIZADO PARA SALVAR POSTOS)
-        // ===============================================
         function abrirPreviaEscala(dataIso, equipe, sgt, alunoDiaId) {
             const dataAlvo = new Date(dataIso + 'T12:00:00Z');
             const dia = dataAlvo.getDate().toString().padStart(2, '0');
@@ -800,7 +905,6 @@
             document.getElementById('prevDataIso').value = dataIso;
             document.getElementById('prevEquipeNome').value = equipe;
 
-            // Popula os Selects com todos os alunos em ordem de antiguidade
             let optionsHtml = '<option value="">-- VAZIO / SEM EXTRA --</option>';
             [...listaAlunosFull].sort((a,b) => a.numero - b.numero).forEach(a => {
                 let num = "5" + a.numero.toString().padStart(2, '0');
@@ -808,7 +912,6 @@
                 optionsHtml += `<option value="${a.id}">${num} - ${qra} (${a.equipe})</option>`;
             });
 
-            // Adiciona as caixinhas "extra" na lista de elementos que recebem os alunos
             const selects = [
                 'prevAlunoDia', 
                 'prevP1_23', 'prevP1_03', 'prevP1_01', 
@@ -831,7 +934,6 @@
 
             let remaining = teamSorted.filter(a => !objAlunoDia || a.id !== objAlunoDia.id);
 
-            // AGORA BUSCAMOS DO BANCO ANTES DE PREENCHER COM A LÓGICA AUTOMÁTICA
             document.getElementById('prevAlunoDia').value = getSavedPosto('ALUNO_DIA', dataIso, objAlunoDia ? objAlunoDia.id : '');
 
             document.getElementById('prevP1_23').value = getSavedPosto('P1_23', dataIso, remaining[0] ? remaining[0].id : '');
@@ -857,13 +959,11 @@
             return listaAlunosFull.find(a => a.id == val);
         }
 
-        // --- FUNÇÃO QUE SALVA TODA A ESCALA E DEPOIS IMPRIME ---
         async function confirmarImpressaoEscala() {
             mostrarLoading(true);
             const dataIso = document.getElementById('prevDataIso').value;
             const equipe = document.getElementById('prevEquipeNome').value;
 
-            // 1. Array com todas as posições para salvar
             const typesToSave = [
                 {tipo: 'CMT', valTxt: document.getElementById('prevGraduado').value, alId: null},
                 {tipo: 'ALUNO_DIA', valTxt: null, alId: document.getElementById('prevAlunoDia').value},
@@ -884,37 +984,22 @@
             let payloads = [];
             typesToSave.forEach(t => {
                 if (t.valTxt || t.alId) {
-                    payloads.push({
-                        tipo: t.tipo,
-                        data_referencia: dataIso,
-                        valor_texto: t.valTxt || null,
-                        aluno_id: t.alId || null
-                    });
+                    payloads.push({ tipo: t.tipo, data_referencia: dataIso, valor_texto: t.valTxt || null, aluno_id: t.alId || null });
                 }
             });
 
-            // 2. Se for admin, grava no banco as posições para não perder mais!
             if (isAdmin) { 
                 const typeNames = typesToSave.map(t => t.tipo);
-                
-                // Primeiro deleta as configurações antigas destas posições nesta data
-                const { error: delErr } = await supabaseClient
-                    .from('funcoes_comando')
-                    .delete()
-                    .eq('data_referencia', dataIso)
-                    .in('tipo', typeNames);
+                const { error: delErr } = await supabaseClient.from('funcoes_comando').delete().eq('data_referencia', dataIso).in('tipo', typeNames);
 
-                // Depois insere as novas posições selecionadas na tela
                 if (!delErr && payloads.length > 0) {
                     await supabaseClient.from('funcoes_comando').insert(payloads);
                 }
                 
-                // Recarrega o estado global para que o painel azul reflita as mudanças caso o CMT mude
                 await carregarFuncoesComando();
                 renderizarEscala();
             }
 
-            // 3. Monta o layout de impressão (Código original mantido intacto)
             const dataAlvo = new Date(dataIso + 'T12:00:00Z');
             document.getElementById('printDataAtual').innerText = dataAlvo.toLocaleDateString('pt-BR');
             document.getElementById('printDataAssinatura').innerText = dataAlvo.toLocaleDateString('pt-BR', {day:'2-digit', month:'long', year:'numeric'});
@@ -1164,7 +1249,7 @@
             const t = document.getElementById('qtsTitulo').innerText.trim(); if(!t){alert("Título vazio.");return;} mostrarLoading(true);
             document.activeElement.blur(); const d = document.getElementById('box-qts-print').innerHTML; const id = document.getElementById('selQtsSemana').value;
             const {error} = id ? await supabaseClient.from('qts_semanal').update({titulo_semana:t, dados_html:d}).eq('id',id) : await supabaseClient.from('qts_semanal').insert([{titulo_semana:t, dados_html:d}]);
-            if(!error){ alert("Salvo!"); await carregarQTSList(); }else alert("Erro!"); mostrarLoading(false);
+            if(!error){ alert("Salvo!"); await carregarQTSList(); renderizarDashboardHome(); }else alert("Erro!"); mostrarLoading(false);
         }
         function novaSemanaQTS() { document.getElementById('selQtsSemana').value=''; document.getElementById('qtsTitulo').innerText="NOVO QUADRO SEMANAL... (EDITE AQUI)"; document.querySelectorAll('#qtsTbody td.cell-editable').forEach(td=>td.innerText=''); document.querySelectorAll('.tabela-qts thead tr.text-\\[8px\\] td').forEach(td=>td.innerText='Data: DD/MM/AAAA'); }
         function imprimirQTS() {
