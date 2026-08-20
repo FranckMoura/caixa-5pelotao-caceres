@@ -351,6 +351,9 @@
         // ==========================================
         // SALVAR NO BANCO DE DADOS
         // ==========================================
+// ==========================================
+        // SALVAR NO BANCO DE DADOS
+        // ==========================================
         async function salvarNotaLinha(alunoId) {
             const selectDisc = document.getElementById('disciplinaSelect');
             const option = selectDisc.options[selectDisc.selectedIndex];
@@ -368,9 +371,14 @@
             const mgm = calcularMGM(vc1, vc2, vf, tipo);
             const statusObj = avaliarStatus(mgm, faltas, ch, vse);
 
+            // Objeto de dados agora enviando as notas cruas também!
             const dadosInsercao = {
                 aluno_id: alunoId,
                 disciplina_nome: disciplinaNome,
+                vc1: vc1,
+                vc2: vc2,
+                vf: vf,
+                vse: vse !== "" ? parseFloat(vse) : null,
                 mgm: mgm,
                 faltas_horas: faltas,
                 status_final: statusObj.texto,

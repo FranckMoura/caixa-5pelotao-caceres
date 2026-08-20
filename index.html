@@ -135,7 +135,8 @@
                         <button onclick="mudarModulo('cautela')" id="btn-cautela" class="menu-item"><i class="fa-solid fa-gun"></i> Cautela Armamento</button>
                         <button onclick="mudarModulo('financeiro')" id="btn-financeiro" class="menu-item"><i class="fa-solid fa-vault"></i> Gestão Financeira</button>
                         <button onclick="mudarModulo('taf')" id="btn-taf" class="menu-item"><i class="fa-solid fa-person-running"></i> TAF e Fatos Obs.</button>
-                        <button onclick="mudarModulo('aluno')" id="btn-aluno" class="menu-item"><i class="fa-solid fa-user-graduate"></i> Área do Aluno</button>
+                        <button onclick="mudarModulo('academico')" id="btn-academico" class="menu-item"><i class="fa-solid fa-graduation-cap"></i> Módulo Acadêmico</button>
+                        <button onclick="mudarModulo('aluno')" id="btn-aluno" class="menu-item"><i class="fa-solid fa-folder-open"></i> Área do Aluno</button>
                         <button onclick="mudarModulo('debate')" id="btn-debate" class="menu-item"><i class="fa-solid fa-comments"></i> Área Livre / Mural</button>
                     </div>
                     <div class="p-2 border-t border-white/10 flex justify-between items-center bg-slate-900/50 shrink-0">
@@ -259,14 +260,19 @@
                         </div>
                     </section>
 
-                    <section id="modulo-taf" class="hidden flex-1 flex flex-col h-full min-h-[85vh]"><iframe id="iframeTaf" src="taf.html" class="w-full h-full border border-slate-200 bg-white shadow-sm rounded-xl"></iframe></section>
+                    <section id="modulo-taf" class="hidden flex-1 flex flex-col h-full min-h-[85vh]">
+                        <iframe id="iframeTaf" src="taf.html" class="w-full h-full border border-slate-200 bg-white shadow-sm rounded-xl"></iframe>
+                    </section>
+
+                    <section id="modulo-academico" class="hidden flex-1 flex flex-col h-full min-h-[85vh]">
+                        <iframe id="iframeAcademico" src="academico.html" class="w-full h-full border border-slate-200 bg-white shadow-sm rounded-xl"></iframe>
+                    </section>
 
                     <section id="modulo-aluno" class="hidden flex-1 flex flex-col h-full min-h-[85vh] space-y-4">
                         <div class="bg-white shadow-sm border border-slate-200 overflow-hidden rounded-xl flex flex-col h-full">
-                            <div class="bg-sys-dark text-white px-5 py-4 flex justify-between items-center shrink-0"><div><h2 class="text-sm font-black tracking-widest uppercase"><i class="fa-solid fa-user-graduate text-pmmt-gold mr-2"></i> Área do Aluno</h2><p class="text-[9px] text-slate-300 uppercase mt-0.5">Material, Notas e Quadro de Trabalho</p></div></div>
+                            <div class="bg-sys-dark text-white px-5 py-4 flex justify-between items-center shrink-0"><div><h2 class="text-sm font-black tracking-widest uppercase"><i class="fa-solid fa-folder-open text-pmmt-gold mr-2"></i> Área do Aluno</h2><p class="text-[9px] text-slate-300 uppercase mt-0.5">Material de Estudo e Quadro de Trabalho (QTS)</p></div></div>
                             <div class="flex border-b border-slate-200 bg-slate-50 overflow-x-auto shrink-0">
-                                <button onclick="abrirAbaAluno('aba-material', this)" class="aba-btn flex-1 py-3 px-4 text-xs font-black uppercase tracking-wider text-pmmt-blue border-b-2 border-pmmt-blue bg-white transition whitespace-nowrap"><i class="fa-solid fa-folder-open mr-1.5"></i> Material de Apoio</button>
-                                <button onclick="abrirAbaAluno('aba-notas', this)" class="aba-btn flex-1 py-3 px-4 text-xs font-bold uppercase tracking-wider text-slate-500 border-b-2 border-transparent hover:bg-slate-100 transition whitespace-nowrap"><i class="fa-solid fa-file-pen mr-1.5"></i> Notas e Faltas</button>
+                                <button onclick="abrirAbaAluno('aba-material', this)" class="aba-btn flex-1 py-3 px-4 text-xs font-black uppercase tracking-wider text-pmmt-blue border-b-2 border-pmmt-blue bg-white transition whitespace-nowrap"><i class="fa-solid fa-book mr-1.5"></i> Material de Apoio</button>
                                 <button onclick="abrirAbaAluno('aba-qts', this)" class="aba-btn flex-1 py-3 px-4 text-xs font-bold uppercase tracking-wider text-slate-500 border-b-2 border-transparent hover:bg-slate-100 transition whitespace-nowrap"><i class="fa-solid fa-table-cells mr-1.5"></i> QTS (Semanal)</button>
                             </div>
                             <div class="p-4 md:p-6 bg-white flex-1 overflow-y-auto relative">
@@ -274,21 +280,12 @@
                                     <div class="bg-gradient-to-r from-sys-dark to-pmmt-blue rounded-xl p-6 text-white shadow border border-pmmt-gold/30 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-4"><i class="fa-solid fa-shield-halved absolute -right-4 -bottom-6 text-7xl text-white/5 pointer-events-none"></i><div class="relative z-10 text-center md:text-left"><h3 class="text-lg font-black uppercase tracking-widest text-pmmt-gold mb-1"><i class="fa-solid fa-book-open-reader mr-2"></i> Módulo Interativo POP PMMT</h3><p class="text-xs font-medium text-slate-300">Acesse o sistema dinâmico do Procedimento Operacional Padrão.</p></div><a href="estudo_pop.html" target="_blank" class="relative z-10 bg-pmmt-gold hover:bg-yellow-500 text-sys-dark font-black px-5 py-2.5 rounded shadow-lg transition uppercase tracking-widest text-[10px] whitespace-nowrap flex items-center gap-2 border border-yellow-400">Acessar POP <i class="fa-solid fa-arrow-up-right-from-square"></i></a></div>
                                     <div id="containerMateriais" class="space-y-4"><p class="text-xs text-slate-500 text-center py-6"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Carregando acervo...</p></div>
                                 </div>
-                                <div id="aba-notas" class="aba-content hidden space-y-4">
-                                    <div class="flex flex-col md:flex-row justify-between gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
-                                        <div class="flex-1"><label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Disciplina</label><div class="flex gap-2"><select id="selDisciplinaNotas" class="w-full border border-slate-300 rounded p-2 text-xs font-semibold text-slate-700 outline-none" onchange="carregarNotasDisciplina()"></select><input type="text" id="novaDisciplinaInput" placeholder="Nova Disciplina..." class="hidden w-full border border-slate-300 rounded p-2 text-xs outline-none"><button onclick="toggleNovaDisciplina()" class="admin-only bg-slate-200 px-3 rounded text-slate-600 hover:bg-slate-300 text-xs font-bold"><i class="fa-solid fa-plus" id="iconBtnDisciplina"></i></button></div></div>
-                                        <div class="flex items-end admin-only"><button onclick="salvarTodasNotas()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded text-xs font-bold uppercase tracking-wider shadow flex items-center gap-2 transition"><i class="fa-solid fa-save"></i> Salvar Planilha</button></div>
-                                    </div>
-                                    <div class="overflow-x-auto border border-slate-200 rounded-lg">
-                                        <table class="w-full text-left text-xs border-collapse"><thead class="bg-sys-dark text-white"><tr><th class="p-2 w-16 text-center">Nº</th><th class="p-2">Aluno</th><th class="p-2 w-24 text-center">V.C. (0-10)</th><th class="p-2 w-24 text-center">Prova (0-10)</th><th class="p-2 w-24 text-center">Média</th><th class="p-2 w-20 text-center">Faltas</th></tr></thead><tbody id="tabelaNotas" class="divide-y divide-slate-100 bg-white"><tr><td colspan="6" class="text-center p-4 text-slate-400">Selecione ou crie uma disciplina.</td></tr></tbody></table>
-                                    </div>
-                                </div>
                                 <div id="aba-qts" class="aba-content hidden space-y-4">
                                     <div class="flex justify-between items-center bg-slate-50 p-3 rounded-lg border border-slate-200 no-print">
                                         <div class="flex items-center gap-3 w-full max-w-md"><label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest whitespace-nowrap">Semana Ref:</label><select id="selQtsSemana" class="w-full border border-slate-300 rounded p-1.5 text-xs font-semibold outline-none" onchange="carregarQTS()"></select><button onclick="novaSemanaQTS()" class="admin-only bg-slate-200 px-3 py-1.5 rounded text-slate-600 hover:bg-slate-300 text-xs font-bold" title="Criar Nova"><i class="fa-solid fa-plus"></i></button></div>
                                         <div class="flex gap-2"><button onclick="salvarQTS()" class="admin-only bg-pmmt-blue hover:bg-sys-blue text-white px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider shadow flex items-center gap-1.5"><i class="fa-solid fa-save"></i> Salvar</button><button onclick="imprimirQTS()" class="bg-slate-600 hover:bg-slate-700 text-white px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider shadow flex items-center gap-1.5"><i class="fa-solid fa-print"></i> Imprimir</button></div>
                                     </div>
-<div class="overflow-x-auto pb-4" id="box-qts-print">
+                                    <div class="overflow-x-auto pb-4" id="box-qts-print">
                                         <div class="min-w-[800px] border border-black bg-white text-black p-2 font-sans">
                                             <div class="text-center mb-2 leading-tight">
                                                 <div class="flex justify-between items-end border-b border-black pb-1 mb-1"><div class="w-24"></div><div class="text-[10px] font-bold uppercase"><p>Estado de Mato Grosso</p><p>Polícia Militar</p><p>DEIP</p><p>ESFAP</p></div><div class="text-[10px] font-bold text-right">VISTO EM:<br>___/___/_____<br><br>Coordenador</div></div>
@@ -335,6 +332,9 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
                     </section>
                     
                     <section id="modulo-debate" class="hidden space-y-6">
@@ -380,7 +380,7 @@
                 <input type="hidden" id="prevDataIso"><input type="hidden" id="prevEquipeNome">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200"><label class="block text-xs font-black text-sys-dark uppercase tracking-widest mb-2 border-b border-slate-100 pb-1">Nº da Escala</label><input type="number" id="prevNumEscala" class="w-full bg-slate-50 border border-slate-300 p-2 rounded text-xs font-bold text-slate-800 outline-none shadow-sm"></div>
-                    <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200"><label class="block text-xs font-black text-sys-dark uppercase tracking-widest mb-2 border-b border-slate-100 pb-1">Graduado (CMT)</label><select id="prevGraduado" class="w-full bg-slate-50 border border-slate-300 p-2 rounded text-xs font-bold text-slate-800 outline-none shadow-sm"><option value="2º SGT PM MAURIZON">2º SGT PM MAURIZON</option><option value="2º SGT PM SOUZA">2º SGT PM SOUZA</option><option value="A DEFINIR">A DEFINIR</option></select></div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200"><label class="block text-xs font-black text-sys-dark uppercase tracking-widest mb-2 border-b border-slate-100 pb-1">Graduado (CMT)</label><select id="prevGraduado" class="w-full bg-slate-50 border border-slate-300 p-2 rounded text-xs font-bold text-slate-800 outline-none shadow-sm"><option value="2º SGT PM MAURIZON">2º SGT PM MAURIZON</option><option value="2º SGT PM SOUZA">2º SGT PM SOUZA</option><option value="2º SGT PM ORTIZ">2º SGT PM ORTIZ</option><option value="A DEFINIR">A DEFINIR</option></select></div>
                     <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200"><label class="block text-xs font-black text-sys-dark uppercase tracking-widest mb-2 border-b border-slate-100 pb-1">Aluno de Dia</label><select id="prevAlunoDia" class="w-full bg-slate-50 border border-slate-300 p-2 rounded text-xs font-bold text-slate-800 outline-none shadow-sm"></select></div>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -402,7 +402,7 @@
                     </div>
                 </div>
             </div>
-            <div class="bg-white p-4 border-t border-slate-300 shrink-0 flex justify-end gap-3"><button onclick="document.getElementById('modalPreviaEscala').classList.add('hidden')" class="px-5 py-2.5 rounded border border-slate-300 text-slate-600 font-bold text-[10px] hover:bg-slate-100 transition uppercase tracking-widest">Cancelar</button><button onclick="confirmarImpressaoEscala()" class="px-5 py-2.5 rounded bg-pmmt-gold hover:bg-yellow-500 text-sys-dark font-black text-[10px] shadow transition flex items-center gap-2 uppercase tracking-widest"><i class="fa-solid fa-print"></i> Gerar PDF</button></div>
+            <div class="bg-white p-4 border-t border-slate-300 shrink-0 flex justify-end gap-3"><button onclick="document.getElementById('modalPreviaEscala').classList.add('hidden')" class="px-5 py-2.5 rounded border border-slate-300 text-slate-600 font-bold text-[10px] hover:bg-slate-100 transition uppercase tracking-widest">Cancelar</button><button onclick="confirmarImpressaoEscala()" class="px-5 py-2.5 rounded bg-pmmt-gold hover:bg-yellow-500 text-sys-dark font-black text-[10px] shadow transition flex items-center gap-2 uppercase tracking-widest"><i class="fa-solid fa-save"></i> Salvar e Gerar PDF</button></div>
         </div>
     </div>
 
@@ -426,7 +426,6 @@
         let previsoesGlobais = []; 
         let funcoesComandoGlobais = [];
         let cautelasGlobais = []; 
-        let notasGlobais = [];
         let isAdmin = false;
         
         let colunaOrdenacao = 'data';
@@ -496,9 +495,11 @@
             try {
                 mostrarLoading(true);
                 await carregarFuncoesComando(); await carregarAlunos(); await carregarTransacoes();
-                await carregarCautelas(); await carregarNotas(); await carregarQTSList(); await carregarMateriaisApoio();
-                const iframe = document.getElementById('iframeTaf');
-                if (iframe && iframe.contentWindow) iframe.contentWindow.location.reload();
+                await carregarCautelas(); await carregarQTSList(); await carregarMateriaisApoio();
+                const iframeTaf = document.getElementById('iframeTaf');
+                if (iframeTaf && iframeTaf.contentWindow) iframeTaf.contentWindow.location.reload();
+                const iframeAcad = document.getElementById('iframeAcademico');
+                if (iframeAcad && iframeAcad.contentWindow) iframeAcad.contentWindow.location.reload();
             } catch (err) { console.error("Erro Sync", err); } finally { mostrarLoading(false); }
         }
 
@@ -507,8 +508,8 @@
         }
 
         function mudarModulo(moduloDestino) {
-            const modulos = ['institucional', 'efetivo', 'cautela', 'financeiro', 'taf', 'aluno', 'debate'];
-            const nomes = { 'institucional': 'Cadeia de Comando', 'efetivo': 'Efetivo e Escala', 'cautela': 'Cautela de Armamento', 'financeiro': 'Gestão Financeira', 'taf': 'TAF e Fatos', 'aluno': 'Área do Aluno', 'debate': 'Área Livre' };
+            const modulos = ['institucional', 'efetivo', 'cautela', 'financeiro', 'taf', 'academico', 'aluno', 'debate'];
+            const nomes = { 'institucional': 'Cadeia de Comando', 'efetivo': 'Efetivo e Escala', 'cautela': 'Cautela de Armamento', 'financeiro': 'Gestão Financeira', 'taf': 'TAF e Fatos', 'academico': 'Módulo Acadêmico', 'aluno': 'Área do Aluno', 'debate': 'Área Livre' };
 
             modulos.forEach(m => {
                 const el = document.getElementById('modulo-' + m); if(el) el.classList.add('hidden');
@@ -560,6 +561,12 @@
         async function carregarFuncoesComando() {
             const { data } = await supabaseClient.from('funcoes_comando').select('*');
             if (data) funcoesComandoGlobais = data;
+        }
+
+        // --- NOVA FUNÇÃO PARA PUXAR POSTOS SALVOS ---
+        function getSavedPosto(tipo, dataIso, defaultVal) {
+            const saved = funcoesComandoGlobais.find(f => f.tipo === tipo && f.data_referencia === dataIso);
+            return saved ? saved.aluno_id : defaultVal;
         }
 
         function renderizarListasEfetivo() {
@@ -781,7 +788,7 @@
         }
 
         // ===============================================
-        // LÓGICA DE ABERTURA E IMPRESSÃO DA ESCALA (ATUALIZADO)
+        // LÓGICA DE ABERTURA E IMPRESSÃO DA ESCALA (ATUALIZADO PARA SALVAR POSTOS)
         // ===============================================
         function abrirPreviaEscala(dataIso, equipe, sgt, alunoDiaId) {
             const dataAlvo = new Date(dataIso + 'T12:00:00Z');
@@ -793,7 +800,7 @@
             document.getElementById('prevDataIso').value = dataIso;
             document.getElementById('prevEquipeNome').value = equipe;
 
-            // Popula os Selects com todos os alunos em ordem de antiguidade, garantindo o "VAZIO" em primeiro
+            // Popula os Selects com todos os alunos em ordem de antiguidade
             let optionsHtml = '<option value="">-- VAZIO / SEM EXTRA --</option>';
             [...listaAlunosFull].sort((a,b) => a.numero - b.numero).forEach(a => {
                 let num = "5" + a.numero.toString().padStart(2, '0');
@@ -822,25 +829,24 @@
             let objAlunoDia = teamSorted.find(a => a.id == alunoDiaId);
             if (!objAlunoDia && teamSorted.length > 0) objAlunoDia = teamSorted[0];
 
-            if(objAlunoDia) document.getElementById('prevAlunoDia').value = objAlunoDia.id;
-
             let remaining = teamSorted.filter(a => !objAlunoDia || a.id !== objAlunoDia.id);
 
-            // Preenche os 6 alunos principais
-            document.getElementById('prevP1_23').value = remaining[0] ? remaining[0].id : '';
-            document.getElementById('prevP2_23').value = remaining[1] ? remaining[1].id : '';
-            document.getElementById('prevP1_03').value = remaining[2] ? remaining[2].id : '';
-            document.getElementById('prevP2_03').value = remaining[3] ? remaining[3].id : '';
-            document.getElementById('prevP1_01').value = remaining[4] ? remaining[4].id : '';
-            document.getElementById('prevP2_01').value = remaining[5] ? remaining[5].id : '';
+            // AGORA BUSCAMOS DO BANCO ANTES DE PREENCHER COM A LÓGICA AUTOMÁTICA
+            document.getElementById('prevAlunoDia').value = getSavedPosto('ALUNO_DIA', dataIso, objAlunoDia ? objAlunoDia.id : '');
 
-            // Se houver mais de 6 alunos, preenche os alunos "Extras" (O segundo aluno do posto)
-            document.getElementById('prevP1_23_extra').value = remaining[6] ? remaining[6].id : '';
-            document.getElementById('prevP2_23_extra').value = remaining[7] ? remaining[7].id : '';
-            document.getElementById('prevP1_03_extra').value = remaining[8] ? remaining[8].id : '';
-            document.getElementById('prevP2_03_extra').value = remaining[9] ? remaining[9].id : '';
-            document.getElementById('prevP1_01_extra').value = remaining[10] ? remaining[10].id : '';
-            document.getElementById('prevP2_01_extra').value = remaining[11] ? remaining[11].id : '';
+            document.getElementById('prevP1_23').value = getSavedPosto('P1_23', dataIso, remaining[0] ? remaining[0].id : '');
+            document.getElementById('prevP2_23').value = getSavedPosto('P2_23', dataIso, remaining[1] ? remaining[1].id : '');
+            document.getElementById('prevP1_03').value = getSavedPosto('P1_03', dataIso, remaining[2] ? remaining[2].id : '');
+            document.getElementById('prevP2_03').value = getSavedPosto('P2_03', dataIso, remaining[3] ? remaining[3].id : '');
+            document.getElementById('prevP1_01').value = getSavedPosto('P1_01', dataIso, remaining[4] ? remaining[4].id : '');
+            document.getElementById('prevP2_01').value = getSavedPosto('P2_01', dataIso, remaining[5] ? remaining[5].id : '');
+
+            document.getElementById('prevP1_23_extra').value = getSavedPosto('P1_23_EXTRA', dataIso, remaining[6] ? remaining[6].id : '');
+            document.getElementById('prevP2_23_extra').value = getSavedPosto('P2_23_EXTRA', dataIso, remaining[7] ? remaining[7].id : '');
+            document.getElementById('prevP1_03_extra').value = getSavedPosto('P1_03_EXTRA', dataIso, remaining[8] ? remaining[8].id : '');
+            document.getElementById('prevP2_03_extra').value = getSavedPosto('P2_03_EXTRA', dataIso, remaining[9] ? remaining[9].id : '');
+            document.getElementById('prevP1_01_extra').value = getSavedPosto('P1_01_EXTRA', dataIso, remaining[10] ? remaining[10].id : '');
+            document.getElementById('prevP2_01_extra').value = getSavedPosto('P2_01_EXTRA', dataIso, remaining[11] ? remaining[11].id : '');
 
             document.getElementById('modalPreviaEscala').classList.remove('hidden');
         }
@@ -851,10 +857,64 @@
             return listaAlunosFull.find(a => a.id == val);
         }
 
-        function confirmarImpressaoEscala() {
+        // --- FUNÇÃO QUE SALVA TODA A ESCALA E DEPOIS IMPRIME ---
+        async function confirmarImpressaoEscala() {
+            mostrarLoading(true);
             const dataIso = document.getElementById('prevDataIso').value;
             const equipe = document.getElementById('prevEquipeNome').value;
 
+            // 1. Array com todas as posições para salvar
+            const typesToSave = [
+                {tipo: 'CMT', valTxt: document.getElementById('prevGraduado').value, alId: null},
+                {tipo: 'ALUNO_DIA', valTxt: null, alId: document.getElementById('prevAlunoDia').value},
+                {tipo: 'P1_23', valTxt: null, alId: document.getElementById('prevP1_23').value},
+                {tipo: 'P1_03', valTxt: null, alId: document.getElementById('prevP1_03').value},
+                {tipo: 'P1_01', valTxt: null, alId: document.getElementById('prevP1_01').value},
+                {tipo: 'P2_23', valTxt: null, alId: document.getElementById('prevP2_23').value},
+                {tipo: 'P2_03', valTxt: null, alId: document.getElementById('prevP2_03').value},
+                {tipo: 'P2_01', valTxt: null, alId: document.getElementById('prevP2_01').value},
+                {tipo: 'P1_23_EXTRA', valTxt: null, alId: document.getElementById('prevP1_23_extra').value},
+                {tipo: 'P1_03_EXTRA', valTxt: null, alId: document.getElementById('prevP1_03_extra').value},
+                {tipo: 'P1_01_EXTRA', valTxt: null, alId: document.getElementById('prevP1_01_extra').value},
+                {tipo: 'P2_23_EXTRA', valTxt: null, alId: document.getElementById('prevP2_23_extra').value},
+                {tipo: 'P2_03_EXTRA', valTxt: null, alId: document.getElementById('prevP2_03_extra').value},
+                {tipo: 'P2_01_EXTRA', valTxt: null, alId: document.getElementById('prevP2_01_extra').value}
+            ];
+
+            let payloads = [];
+            typesToSave.forEach(t => {
+                if (t.valTxt || t.alId) {
+                    payloads.push({
+                        tipo: t.tipo,
+                        data_referencia: dataIso,
+                        valor_texto: t.valTxt || null,
+                        aluno_id: t.alId || null
+                    });
+                }
+            });
+
+            // 2. Se for admin, grava no banco as posições para não perder mais!
+            if (isAdmin) { 
+                const typeNames = typesToSave.map(t => t.tipo);
+                
+                // Primeiro deleta as configurações antigas destas posições nesta data
+                const { error: delErr } = await supabaseClient
+                    .from('funcoes_comando')
+                    .delete()
+                    .eq('data_referencia', dataIso)
+                    .in('tipo', typeNames);
+
+                // Depois insere as novas posições selecionadas na tela
+                if (!delErr && payloads.length > 0) {
+                    await supabaseClient.from('funcoes_comando').insert(payloads);
+                }
+                
+                // Recarrega o estado global para que o painel azul reflita as mudanças caso o CMT mude
+                await carregarFuncoesComando();
+                renderizarEscala();
+            }
+
+            // 3. Monta o layout de impressão (Código original mantido intacto)
             const dataAlvo = new Date(dataIso + 'T12:00:00Z');
             document.getElementById('printDataAtual').innerText = dataAlvo.toLocaleDateString('pt-BR');
             document.getElementById('printDataAssinatura').innerText = dataAlvo.toLocaleDateString('pt-BR', {day:'2-digit', month:'long', year:'numeric'});
@@ -864,14 +924,12 @@
             document.getElementById('printNomeAssinatura').innerText = document.getElementById('prevGraduado').value;
             document.getElementById('printEquipeNome').innerText = equipe;
 
-            // Busca os alunos dos 13 campos possíveis na escala
             let alDia = getAlunoObj('prevAlunoDia');
             let p1_23 = getAlunoObj('prevP1_23'); let p1_03 = getAlunoObj('prevP1_03'); let p1_01 = getAlunoObj('prevP1_01');
             let p2_23 = getAlunoObj('prevP2_23'); let p2_03 = getAlunoObj('prevP2_03'); let p2_01 = getAlunoObj('prevP2_01');
             let p1_23_extra = getAlunoObj('prevP1_23_extra'); let p1_03_extra = getAlunoObj('prevP1_03_extra'); let p1_01_extra = getAlunoObj('prevP1_01_extra');
             let p2_23_extra = getAlunoObj('prevP2_23_extra'); let p2_03_extra = getAlunoObj('prevP2_03_extra'); let p2_01_extra = getAlunoObj('prevP2_01_extra');
 
-            // Impressão Aluno de Dia
             if (alDia) {
                 const qra = alDia.qra ? alDia.qra.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase() : alDia.nome.split(' ')[0].toUpperCase();
                 document.getElementById('printAlunoDia').innerText = `AL SD PM ${qra} (RG: ____________)`;
@@ -879,11 +937,9 @@
                 document.getElementById('printAlunoDia').innerText = `___________________________ ( RG ________ )`;
             }
 
-            // Gerar a listagem nominal de quem foi escalado
             let equipeOriginal = listaAlunosFull.filter(a => a.equipe === equipe);
-            let setImprimir = new Set(equipeOriginal.map(a => a.id)); // Puxa todos da equipe primeiro
+            let setImprimir = new Set(equipeOriginal.map(a => a.id)); 
             
-            // Adiciona quem mais tiver sido escalado (aluno extra ou de outra equipe escalado manualmente)
             [alDia, p1_23, p1_03, p1_01, p2_23, p2_03, p2_01, p1_23_extra, p1_03_extra, p1_01_extra, p2_23_extra, p2_03_extra, p2_01_extra].forEach(obj => { 
                 if(obj) setImprimir.add(obj.id); 
             });
@@ -898,16 +954,15 @@
                 divAlunos.innerHTML += `<p>AL SD PM ${qra} (${numFormatado})</p>`;
             });
 
-            // Função que une o Nome 1 e o Nome 2 (se houver) no mesmo Posto/Horário
             function formatText(obj, objExtra) {
                 let str = '';
-                if(!obj && !objExtra) return '_________________________'; // Ninguém escalado
+                if(!obj && !objExtra) return '_________________________'; 
                 
                 if(obj) {
                     let q = obj.qra ? obj.qra.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase() : obj.nome.split(' ')[0].toUpperCase();
                     str += `AL SD PM ${q} (${"5" + obj.numero.toString().padStart(2, '0')})`;
                 } else {
-                    str += '_________________________'; // Caso tenha só o extra e o titular esteja vazio (incomum)
+                    str += '_________________________'; 
                 }
 
                 if(objExtra) {
@@ -938,6 +993,8 @@
             const printModule = document.getElementById('modulo-impressao-escala');
             printModule.classList.remove('hidden');
             document.body.classList.add('printing-escala');
+
+            mostrarLoading(false);
 
             setTimeout(() => {
                 window.print();
@@ -1061,7 +1118,7 @@
         }
 
         // ===============================================
-        // --- MÓDULO ÁREA DO ALUNO (TABS, NOTAS, QTS) ---
+        // --- MÓDULO ÁREA DO ALUNO (TABS, MATERIAL, QTS) ---
         // ===============================================
         function abrirAbaAluno(abaId, btnElement) {
             document.querySelectorAll('.aba-content').forEach(el => el.classList.add('hidden'));
@@ -1089,100 +1146,6 @@
                 sec.innerHTML = `<div class="mb-4 border-b-2 border-slate-200 pb-2"><h3 class="text-sm font-black text-sys-dark uppercase tracking-widest"><i class="fa-solid fa-tags text-pmmt-gold mr-2"></i>${cat}</h3></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">${h}</div>`;
                 c.appendChild(sec);
             });
-        }
-
-        async function carregarNotas() {
-            const { data } = await supabaseClient.from('notas_alunos').select('*'); notasGlobais=data||[];
-            const sel = document.getElementById('selDisciplinaNotas'); let discs = [...new Set(notasGlobais.map(n => n.disciplina))].sort();
-            sel.innerHTML = '<option value="">-- Selecione uma Disciplina --</option>';
-            discs.forEach(d => sel.add(new Option(d, d))); sel.add(new Option("➕ Cadastrar Nova...", "NOVA"));
-        }
-        
-        function toggleNovaDisciplina() {
-            const sel = document.getElementById('selDisciplinaNotas'); 
-            const inp = document.getElementById('novaDisciplinaInput'); 
-            const icon = document.getElementById('iconBtnDisciplina');
-            
-            if(inp.classList.contains('hidden')) {
-                sel.classList.add('hidden'); 
-                inp.classList.remove('hidden'); 
-                inp.focus(); 
-                icon.classList.replace('fa-plus', 'fa-times');
-                
-                // CORREÇÃO: Força a tabela a abrir a lista de alunos imediatamente para a nova disciplina
-                carregarNotasDisciplina(true);
-            } else {
-                inp.value = ''; 
-                sel.classList.remove('hidden'); 
-                inp.classList.add('hidden'); 
-                icon.classList.replace('fa-times', 'fa-plus'); 
-                sel.selectedIndex = 0;
-                document.getElementById('tabelaNotas').innerHTML = '<tr><td colspan="6" class="text-center p-4 text-slate-400">Selecione uma disciplina.</td></tr>';
-            }
-        }
-
-        function carregarNotasDisciplina(forcarNova = false) {
-            const sel=document.getElementById('selDisciplinaNotas'); 
-            if(sel.value==='NOVA' && !forcarNova){toggleNovaDisciplina();return;}
-            
-            if(!sel.value && !forcarNova){document.getElementById('tabelaNotas').innerHTML='<tr><td colspan="6" class="text-center p-4 text-slate-400">Selecione uma disciplina.</td></tr>'; return;}
-            
-            const tb=document.getElementById('tabelaNotas'); tb.innerHTML='';
-            [...listaAlunosFull].sort((a,b)=>a.numero-b.numero).forEach(al => {
-                let n = (!forcarNova) ? (notasGlobais.find(x => x.aluno_id === al.id && x.disciplina === sel.value) || { nota_vc: 0, nota_prova: 0, faltas: 0 }) : { nota_vc: 0, nota_prova: 0, faltas: 0 };
-                let med = ((parseFloat(n.nota_vc) + parseFloat(n.nota_prova)) / 2).toFixed(2);
-                let bG = med >= 6 ? 'bg-emerald-100 text-emerald-800' : (med > 0 ? 'bg-rose-100 text-rose-800' : 'bg-slate-100 text-slate-500');
-                tb.innerHTML += `<tr class="hover:bg-slate-50 border-b border-slate-100" data-aluno-id="${al.id}"><td class="p-2 text-center font-bold text-slate-400">5${al.numero.toString().padStart(2,'0')}</td><td class="p-2 font-black text-sys-dark text-[10px] uppercase">${al.nome}</td><td class="p-2"><input type="number" step="0.1" min="0" max="10" value="${n.nota_vc}" class="nota-input w-full p-1 border rounded text-center text-xs font-bold outline-none focus:border-pmmt-gold" data-tipo="vc" ${!isAdmin?'disabled':''}></td><td class="p-2"><input type="number" step="0.1" min="0" max="10" value="${n.nota_prova}" class="nota-input w-full p-1 border rounded text-center text-xs font-bold outline-none focus:border-pmmt-gold" data-tipo="prova" ${!isAdmin?'disabled':''}></td><td class="p-2 text-center"><span class="px-2 py-0.5 rounded font-black ${bG}">${med}</span></td><td class="p-2"><input type="number" min="0" value="${n.faltas}" class="nota-input w-full p-1 border rounded text-center text-xs text-rose-600 font-bold outline-none focus:border-pmmt-gold" data-tipo="faltas" ${!isAdmin?'disabled':''}></td></tr>`;
-            });
-        }
-
-        async function salvarTodasNotas() {
-            let disc = document.getElementById('selDisciplinaNotas').value;
-            const inpNova = document.getElementById('novaDisciplinaInput');
-            
-            // Se estiver criando uma nova, pega o texto digitado
-            if(!inpNova.classList.contains('hidden') && inpNova.value.trim() !== '') {
-                disc = inpNova.value.trim().toUpperCase();
-            }
-            
-            if(!disc || disc === 'NOVA') { 
-                alert("Selecione ou digite uma disciplina."); 
-                return; 
-            }
-            
-            mostrarLoading(true);
-            let payloads = [];
-            
-            // Captura todos os alunos que estão na tabela
-            document.querySelectorAll('#tabelaNotas tr[data-aluno-id]').forEach(tr => {
-                let alId = tr.getAttribute('data-aluno-id');
-                let vc = parseFloat(tr.querySelector('input[data-tipo="vc"]').value.replace(',', '.')) || 0;
-                let pr = parseFloat(tr.querySelector('input[data-tipo="prova"]').value.replace(',', '.')) || 0;
-                let fl = parseInt(tr.querySelector('input[data-tipo="faltas"]').value) || 0;
-                
-                payloads.push({ aluno_id: alId, disciplina: disc, nota_vc: vc, nota_prova: pr, faltas: fl });
-            });
-
-            if(payloads.length === 0) {
-                alert("A tabela de alunos está vazia. Não há o que salvar.");
-                mostrarLoading(false);
-                return;
-            }
-
-            // Salva na nuvem
-            const { error } = await supabaseClient.from('notas_alunos').upsert(payloads, { onConflict: 'aluno_id, disciplina' });
-            
-            if(!error) { 
-                alert("Notas e Faltas salvas com sucesso!"); 
-                if(!inpNova.classList.contains('hidden')) toggleNovaDisciplina(); 
-                await carregarNotas(); 
-                document.getElementById('selDisciplinaNotas').value = disc; 
-                carregarNotasDisciplina(); 
-            } else {
-                console.error(error);
-                alert("ERRO DO BANCO: " + error.message + "\\n\\nCertifique-se de ter rodado o script SQL no Supabase.");
-            }
-            mostrarLoading(false);
         }
 
         async function carregarQTSList() {
