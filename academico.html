@@ -87,7 +87,7 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+        <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden mb-8">
             <div class="bg-slate-50 border-b p-4 flex justify-between items-center">
                 <div class="flex items-center gap-3">
                     <div class="bg-pmmt-gold p-2 rounded-lg text-pmmt-blue">
@@ -119,6 +119,65 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md border border-slate-200 p-6">
+            <div class="flex items-center gap-3 border-b pb-3 mb-4">
+                <div class="bg-pmmt-blue p-2 rounded-lg text-pmmt-gold">
+                    <i class="fa-solid fa-circle-info"></i>
+                </div>
+                <h2 class="text-xl font-bold text-pmmt-blue">Critérios de Avaliação e Legendas (PPC/ESFAP)</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-700">
+                <div>
+                    <h3 class="font-bold text-pmmt-blue mb-2 border-b border-slate-100 pb-1"><i class="fa-solid fa-calculator text-pmmt-gold mr-1"></i> Fórmulas de Cálculo (MGM)</h3>
+                    <ul class="space-y-3 mt-3">
+                        <li class="flex items-start gap-2">
+                            <span class="bg-slate-200 px-2 py-0.5 rounded text-xs font-bold text-slate-700 mt-0.5">Até 60h</span>
+                            <div>
+                                <p class="font-bold">Disciplinas com até 60 horas-aula:</p>
+                                <p class="text-slate-500 text-xs">MGM = ((VC1 x 2) + (VF x 3)) / 5</p>
+                                <p class="text-xs italic mt-1">Apenas 1 Verificação Corrente (VC) e 1 Verificação Final (VF).</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="bg-pmmt-blue px-2 py-0.5 rounded text-xs font-bold text-pmmt-gold mt-0.5">> 60h</span>
+                            <div>
+                                <p class="font-bold">Disciplinas com mais de 60 horas-aula:</p>
+                                <p class="text-slate-500 text-xs">MGM = ((VC1 x 2) + (VC2 x 2) + (VF x 3)) / 7</p>
+                                <p class="text-xs italic mt-1">Acrescenta-se a Verificação Corrente 2 (VC2) ao cálculo.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-pmmt-blue mb-2 border-b border-slate-100 pb-1"><i class="fa-solid fa-tags text-pmmt-gold mr-1"></i> Status e Frequência</h3>
+                    <ul class="space-y-2 mt-3">
+                        <li class="flex items-center gap-2">
+                            <span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded text-xs font-bold w-36 text-center shadow-sm">APROVADO</span>
+                            <span class="text-xs">Média Geral da Matéria (MGM) igual ou superior a 5,00.</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="bg-yellow-100 text-yellow-800 border border-yellow-400 px-2 py-0.5 rounded text-xs font-bold w-36 text-center shadow-sm">EM RECUPERAÇÃO</span>
+                            <span class="text-xs">MGM inferior a 5,00. Aluno submetido à Verificação de Segunda Época (VSE).</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="bg-blue-100 text-blue-700 border border-blue-300 px-2 py-0.5 rounded text-xs font-bold w-36 text-center shadow-sm">APROVADO (2ª ÉPOCA)</span>
+                            <span class="text-xs">Nota na VSE igual ou superior a 5,00 (A nota da VSE não altera a MGM).</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="bg-red-100 text-red-800 border border-red-300 px-2 py-0.5 rounded text-xs font-bold w-36 text-center shadow-sm">REPROVADO (NOTA)</span>
+                            <span class="text-xs">Nota na VSE inferior a 5,00.</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="bg-red-100 text-red-800 border border-red-300 px-2 py-0.5 rounded text-xs font-bold w-36 text-center shadow-sm">REPROVADO (FALTAS)</span>
+                            <span class="text-xs">Faltas superiores a 25% da carga horária da disciplina.</span>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
 
@@ -173,7 +232,6 @@
             select.innerHTML = '<option value="" data-tipo="1" data-ch="0">-- Selecione a Disciplina --</option>';
             
             if (data.length === 0) {
-                // Adicionando o tipo_calculo nas matérias padrão também para evitar o mesmo erro!
                 const padroes = [
                     { nome: "Metodologia de Pesquisa", carga_horaria: 45, tipo_calculo: 1 },
                     { nome: "Técnicas Gerais de Policiamento (TGP)", carga_horaria: 45, tipo_calculo: 1 },
@@ -219,7 +277,6 @@
             });
 
             if (formValues) {
-                // CORREÇÃO AQUI: Calculando o "tipo_calculo" antes de enviar pro banco
                 const tipo_calc = formValues.carga_horaria > 60 ? 2 : 1;
 
                 const { error } = await dbClient
@@ -227,7 +284,7 @@
                     .insert([{ 
                         nome: formValues.nome, 
                         carga_horaria: formValues.carga_horaria,
-                        tipo_calculo: tipo_calc // Variável agora sendo enviada com sucesso
+                        tipo_calculo: tipo_calc 
                     }]);
 
                 if (error) {
@@ -351,9 +408,6 @@
         // ==========================================
         // SALVAR NO BANCO DE DADOS
         // ==========================================
-// ==========================================
-        // SALVAR NO BANCO DE DADOS
-        // ==========================================
         async function salvarNotaLinha(alunoId) {
             const selectDisc = document.getElementById('disciplinaSelect');
             const option = selectDisc.options[selectDisc.selectedIndex];
@@ -371,7 +425,7 @@
             const mgm = calcularMGM(vc1, vc2, vf, tipo);
             const statusObj = avaliarStatus(mgm, faltas, ch, vse);
 
-            // Objeto de dados agora enviando as notas cruas também!
+            // Objeto de dados formatado corretamente para a nova tabela academico_notas
             const dadosInsercao = {
                 aluno_id: alunoId,
                 disciplina_nome: disciplinaNome,
@@ -439,6 +493,7 @@
                 if(item.status_final.includes("APROVADO")) badgeClass = "bg-emerald-100 text-emerald-800 border border-emerald-300";
                 if(item.status_final.includes("REPROVADO")) badgeClass = "bg-red-100 text-red-800 border border-red-300";
                 if(item.status_final.includes("RECUPERAÇÃO")) badgeClass = "bg-yellow-100 text-yellow-800 border border-yellow-400";
+                if(item.status_final.includes("2ª ÉPOCA")) badgeClass = "bg-blue-100 text-blue-700 border border-blue-300";
                 
                 const alu = item.alunos_pelotao;
                 const nomeFormatado = alu ? `<span class="text-pmmt-blue">${alu.numero || ''}</span> - ${alu.qra || alu.nome}` : 'Desconhecido';
