@@ -85,7 +85,7 @@
                         </tr>
                     </thead>
                     <tbody id="tabelaPlanilha" class="text-sm divide-y divide-slate-100">
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -129,12 +129,15 @@
 
     <script>
         // ==========================================
-        // CREDENCIAIS SUPABASE (INSERIR AQUI)
+        // CREDENCIAIS SUPABASE 
         // ==========================================
         const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
 
-        let listaAlunos = []; // Variável global para guardar o efetivo em memória
+        // CORREÇÃO AQUI: Mudamos o nome da constante para 'dbClient' para não dar conflito
+        const dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let listaAlunos = []; 
 
         // ==========================================
         // INICIALIZAÇÃO
@@ -157,9 +160,9 @@
         // FUNÇÕES DE LÓGICA DA PLANILHA DE NOTAS
         // ==========================================
 
-        // Carrega todos os alunos uma única vez para não sobrecarregar o banco
         async function carregarEfetivoEmMemoria() {
-            const { data, error } = await supabase
+            // Usando dbClient
+            const { data, error } = await dbClient
                 .from('alunos_pelotao')
                 .select('id, nome, qra, numero')
                 .order('numero', { ascending: true });
@@ -169,7 +172,6 @@
             }
         }
 
-        // Gera a tabela (Pauta) com base na disciplina selecionada
         function carregarPautaTurma() {
             const selectDisc = document.getElementById('disciplinaSelect');
             const option = selectDisc.options[selectDisc.selectedIndex];
@@ -177,34 +179,28 @@
             const tbody = document.getElementById('tabelaPlanilha');
             const colunaVC2 = document.getElementById('colunaVC2');
 
-            // Se não houver disciplina selecionada, esconde a tabela
             if(!option || option.value === "") {
                 areaPlanilha.classList.add('hidden');
                 return;
             }
 
-            // Exibe a tabela e limpa as linhas antigas
             areaPlanilha.classList.remove('hidden');
             tbody.innerHTML = '';
 
             const tipo = option.getAttribute('data-tipo');
-            const isVC2Disabled = (tipo === "1"); // Tipo 1 = Até 60h (Não tem VC2)
+            const isVC2Disabled = (tipo === "1"); 
 
-            // Ajusta o visual da coluna (cabeçalho) da VC2
             if(isVC2Disabled) {
                 colunaVC2.classList.add('opacity-40', 'line-through');
             } else {
                 colunaVC2.classList.remove('opacity-40', 'line-through');
             }
 
-            // Gera uma linha para cada aluno
             listaAlunos.forEach(aluno => {
-                // Formatação: "501 - NOME"
                 const indentificacao = `<span class="text-pmmt-blue font-bold">${aluno.numero || '-'}</span> - ${aluno.qra || aluno.nome}`;
                 const classInputBase = "w-full border rounded p-1.5 text-center text-sm outline-none focus:ring-2 font-semibold";
                 
-                // Classes específicas baseadas na matéria
-                const classVC2 = isVC2Disabled ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'focus:ring-pmmt-blue';
+                const classVC2 = isVC2Disabled ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'focus:ring-pmmt-blue bg-white';
 
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-blue-50 transition';
@@ -242,7 +238,7 @@
         }
 
         // ==========================================
-        // REGRAS MATEMÁTICAS DO PPC (Páginas 26 a 30)
+        // REGRAS MATEMÁTICAS DO PPC 
         // ==========================================
         function calcularMGM(vc1, vc2, vf, tipoCalculo) {
             let mgm = 0;
@@ -280,11 +276,10 @@
             const ch = parseInt(option.getAttribute('data-ch'));
             const disciplinaNome = option.text;
 
-            // Pega os valores daquela linha específica através do ID
             const vc1 = parseFloat(document.getElementById(`vc1_${alunoId}`).value) || 0;
             const vc2 = parseFloat(document.getElementById(`vc2_${alunoId}`).value) || 0;
             const vf = parseFloat(document.getElementById(`vf_${alunoId}`).value) || 0;
-            const vse = document.getElementById(`vse_${alunoId}`).value; // Mantém texto para verificar se foi preenchido
+            const vse = document.getElementById(`vse_${alunoId}`).value; 
             const faltas = parseInt(document.getElementById(`faltas_${alunoId}`).value) || 0;
 
             const mgm = calcularMGM(vc1, vc2, vf, tipo);
@@ -299,13 +294,12 @@
                 percentual_faltas: statusObj.perc
             };
 
-            // Efeito visual de salvamento no Botão
             const btn = document.getElementById(`btn_${alunoId}`);
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
             btn.className = "w-full bg-slate-400 text-white text-xs font-bold py-2 px-2 rounded shadow flex items-center justify-center gap-2 cursor-wait";
 
-            // Envia para o Supabase
-            const { error } = await supabase.from('academico_notas').insert([dadosInsercao]);
+            // Usando dbClient
+            const { error } = await dbClient.from('academico_notas').insert([dadosInsercao]);
 
             if (error) {
                 console.error(error);
@@ -317,18 +311,15 @@
                     btn.className = "w-full bg-pmmt-blue hover:bg-blue-900 text-pmmt-gold text-xs font-bold py-2 px-2 rounded transition shadow flex items-center justify-center gap-2";
                 }, 3000);
             } else {
-                // Efeito visual de Sucesso!
                 btn.innerHTML = '<i class="fa-solid fa-check-double"></i> Salvo';
                 btn.className = "w-full bg-emerald-600 text-white text-xs font-bold py-2 px-2 rounded shadow flex items-center justify-center gap-2";
                 
-                // Desabilita as caixas de texto para evitar reenvio acidental
                 document.getElementById(`vc1_${alunoId}`).disabled = true;
                 document.getElementById(`vc2_${alunoId}`).disabled = true;
                 document.getElementById(`vf_${alunoId}`).disabled = true;
                 document.getElementById(`faltas_${alunoId}`).disabled = true;
                 document.getElementById(`vse_${alunoId}`).disabled = true;
 
-                // Atualiza o boletim geral no final da página
                 carregarBoletim();
             }
         }
@@ -336,11 +327,12 @@
         async function carregarBoletim() {
             const tbody = document.getElementById('tabelaBoletim');
             
-            const { data, error } = await supabase
+            // Usando dbClient
+            const { data, error } = await dbClient
                 .from('academico_notas')
                 .select(`id, disciplina_nome, mgm, faltas_horas, status_final, percentual_faltas, alunos_pelotao(nome, qra, numero)`)
                 .order('id', { ascending: false })
-                .limit(20); // Mostra os 20 últimos lançamentos
+                .limit(20); 
 
             if (error) {
                 tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500">Erro ao carregar boletim.</td></tr>`;
@@ -359,7 +351,6 @@
                 if(item.status_final.includes("REPROVADO")) badgeClass = "bg-red-100 text-red-800 border border-red-300";
                 if(item.status_final.includes("RECUPERAÇÃO")) badgeClass = "bg-yellow-100 text-yellow-800 border border-yellow-400";
                 
-                // Formatação: "501 - QRA"
                 const alu = item.alunos_pelotao;
                 const nomeFormatado = alu ? `<span class="text-pmmt-blue">${alu.numero || ''}</span> - ${alu.qra || alu.nome}` : 'Desconhecido';
 
