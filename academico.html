@@ -78,45 +78,10 @@
                             <th class="p-3 font-bold w-24 text-center">V. Final</th>
                             <th class="p-3 font-bold w-24 text-center text-red-700">Faltas (h)</th>
                             <th class="p-3 font-bold w-24 text-center text-yellow-700">V.S.E.</th>
-                            <th class="p-3 font-bold w-28 text-center">Ação</th>
+                            <th class="p-3 font-bold w-36 text-center">Ações</th>
                         </tr>
                     </thead>
                     <tbody id="tabelaPlanilha" class="text-sm divide-y divide-slate-100">
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden mb-8">
-            <div class="bg-slate-50 border-b p-4 flex justify-between items-center">
-                <div class="flex items-center gap-3">
-                    <div class="bg-pmmt-gold p-2 rounded-lg text-pmmt-blue">
-                        <i class="fa-solid fa-ranking-star"></i>
-                    </div>
-                    <h2 class="text-xl font-bold text-pmmt-blue">Boletim Histórico</h2>
-                </div>
-                <button onclick="carregarBoletim()" class="text-sm bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1.5 rounded font-bold transition">
-                    <i class="fa-solid fa-arrows-rotate"></i> Atualizar
-                </button>
-            </div>
-            
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse whitespace-nowrap">
-                    <thead>
-                        <tr class="bg-pmmt-blue text-white text-sm">
-                            <th class="p-3">Aluno</th>
-                            <th class="p-3">Disciplina</th>
-                            <th class="p-3 text-center">MGM</th>
-                            <th class="p-3 text-center">Faltas (%)</th>
-                            <th class="p-3 text-center">Status ESFAP</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabelaBoletim" class="text-sm divide-y divide-slate-200">
-                        <tr>
-                            <td colspan="5" class="p-6 text-center text-slate-500 font-bold">
-                                <i class="fa-solid fa-spinner fa-spin mr-2"></i> Carregando dados do Supabase...
-                            </td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -183,6 +148,50 @@
 
     </main>
 
+    <div id="modalBoletim" class="fixed inset-0 bg-slate-900/80 z-[200] hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden border border-slate-300 flex flex-col max-h-[90vh]">
+            <div class="bg-pmmt-blue px-5 py-4 flex justify-between items-center border-b-4 border-pmmt-gold shrink-0">
+                <div>
+                    <h3 class="text-white font-black text-sm uppercase tracking-wider"><i class="fa-solid fa-address-card text-pmmt-gold mr-2"></i>Boletim Histórico Individual</h3>
+                    <p id="boletimAlunoNome" class="text-slate-300 text-[10px] font-bold mt-0.5 uppercase tracking-widest">AL SD PM ...</p>
+                </div>
+                <button onclick="fecharBoletimAluno()" class="text-white/70 hover:text-white transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="p-5 overflow-y-auto flex-1 bg-slate-50">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+                    <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm text-center">
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Disciplinas Cursadas</p>
+                        <p id="boletimTotalDisc" class="text-xl font-black text-pmmt-blue mt-1">0 / 36</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm text-center">
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Média Geral Parcial</p>
+                        <p id="boletimMediaGeral" class="text-xl font-black text-pmmt-blue mt-1">0.00</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm text-center">
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Status Atual</p>
+                        <p id="boletimStatusGeral" class="text-lg font-black mt-1">-</p>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto border border-slate-200 rounded-lg shadow-sm">
+                    <table class="w-full text-left border-collapse whitespace-nowrap text-xs bg-white">
+                        <thead class="bg-slate-100 text-slate-700">
+                            <tr>
+                                <th class="p-3 border-b border-slate-200">Disciplina</th>
+                                <th class="p-3 text-center border-b border-slate-200">MGM</th>
+                                <th class="p-3 text-center border-b border-slate-200">Faltas</th>
+                                <th class="p-3 text-center border-b border-slate-200">Situação</th>
+                                <th class="p-3 text-center border-b border-slate-200 w-16">Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaBoletimIndividual" class="divide-y divide-slate-100">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ==========================================
         // CREDENCIAIS SUPABASE 
@@ -193,6 +202,7 @@
         const dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let listaAlunos = []; 
+        let notasAtuaisDisciplina = []; 
 
         // ==========================================
         // INICIALIZAÇÃO
@@ -204,7 +214,6 @@
                 
                 await carregarEfetivoEmMemoria();
                 await carregarDisciplinas();
-                await carregarBoletim();
             } catch (error) {
                 console.error("Erro ao conectar:", error);
                 document.getElementById('statusConexao').innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Erro de Conexão';
@@ -231,26 +240,9 @@
 
             select.innerHTML = '<option value="" data-tipo="1" data-ch="0">-- Selecione a Disciplina --</option>';
             
-            if (data.length === 0) {
-                const padroes = [
-                    { nome: "Metodologia de Pesquisa", carga_horaria: 45, tipo_calculo: 1 },
-                    { nome: "Técnicas Gerais de Policiamento (TGP)", carga_horaria: 45, tipo_calculo: 1 },
-                    { nome: "Procedimento Operacional Padrão 1 (POP 1)", carga_horaria: 60, tipo_calculo: 1 },
-                    { nome: "Procedimento Operacional Padrão 2 (POP 2)", carga_horaria: 75, tipo_calculo: 2 },
-                    { nome: "Tiro Policial", carga_horaria: 100, tipo_calculo: 2 },
-                    { nome: "Direito Penal e Processual Penal", carga_horaria: 60, tipo_calculo: 1 },
-                    { nome: "Policiamento de Trânsito", carga_horaria: 65, tipo_calculo: 2 },
-                    { nome: "Trabalho de Conclusão de Curso (TCC)", carga_horaria: 12, tipo_calculo: 1 }
-                ];
-                
-                await dbClient.from('academico_disciplinas').insert(padroes);
-                await carregarDisciplinas(); 
-                return;
-            }
-
             data.forEach(disc => {
                 const tipo = disc.tipo_calculo || (disc.carga_horaria > 60 ? 2 : 1);
-                select.innerHTML += `<option value="${disc.id}" data-tipo="${tipo}" data-ch="${disc.carga_horaria}">${disc.nome} (${disc.carga_horaria}h)</option>`;
+                select.innerHTML += `<option value="${disc.id}" data-nome="${disc.nome}" data-tipo="${tipo}" data-ch="${disc.carga_horaria}">${disc.nome} (${disc.carga_horaria}h)</option>`;
             });
         }
 
@@ -312,7 +304,7 @@
             }
         }
 
-        function carregarPautaTurma() {
+        async function carregarPautaTurma() {
             const selectDisc = document.getElementById('disciplinaSelect');
             const option = selectDisc.options[selectDisc.selectedIndex];
             const areaPlanilha = document.getElementById('areaPlanilha');
@@ -324,7 +316,22 @@
                 return;
             }
 
+            const disciplinaNome = option.getAttribute('data-nome');
+            
+            tbody.innerHTML = '<tr><td colspan="7" class="p-6 text-center text-slate-500 font-bold"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Carregando notas...</td></tr>';
             areaPlanilha.classList.remove('hidden');
+
+            const { data: notasDB, error } = await dbClient
+                .from('academico_notas')
+                .select('*')
+                .eq('disciplina_nome', disciplinaNome);
+            
+            if (!error && notasDB) {
+                notasAtuaisDisciplina = notasDB; 
+            } else {
+                notasAtuaisDisciplina = [];
+            }
+
             tbody.innerHTML = '';
 
             const tipo = option.getAttribute('data-tipo');
@@ -337,9 +344,15 @@
             }
 
             listaAlunos.forEach(aluno => {
-                const indentificacao = `<span class="text-pmmt-blue font-bold">${aluno.numero || '-'}</span> - ${aluno.qra || aluno.nome}`;
-                const classInputBase = "w-full border rounded p-1.5 text-center text-sm outline-none focus:ring-2 font-semibold";
+                const notaSalva = notasAtuaisDisciplina.find(n => n.aluno_id === aluno.id) || {};
                 
+                const qraAjustado = (aluno.qra || aluno.nome).replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase();
+                const indentificacao = `<span class="text-pmmt-blue font-bold">${aluno.numero || '-'}</span> - ${qraAjustado}`;
+                
+                // Variável limpa para o botão do boletim não bugar com aspas no nome
+                const nomeSeguroParaJS = qraAjustado.replace(/'/g, "\\'"); 
+
+                const classInputBase = "w-full border rounded p-1.5 text-center text-sm outline-none focus:ring-2 font-semibold";
                 const classVC2 = isVC2Disabled ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'focus:ring-pmmt-blue bg-white';
 
                 const tr = document.createElement('tr');
@@ -348,28 +361,31 @@
                     <td class="p-3 text-sm text-slate-700">${indentificacao}</td>
                     
                     <td class="p-2">
-                        <input type="number" step="0.01" min="0" max="10" id="vc1_${aluno.id}" class="${classInputBase} focus:ring-pmmt-blue text-blue-900 bg-white" placeholder="0.00">
+                        <input type="number" step="0.01" min="0" max="10" id="vc1_${aluno.id}" value="${notaSalva.vc1 !== undefined ? notaSalva.vc1 : ''}" class="${classInputBase} focus:ring-pmmt-blue text-blue-900 bg-white" placeholder="0.00">
                     </td>
                     
                     <td class="p-2">
-                        <input type="number" step="0.01" min="0" max="10" id="vc2_${aluno.id}" class="${classInputBase} ${classVC2}" placeholder="${isVC2Disabled ? '---' : '0.00'}" ${isVC2Disabled ? 'disabled' : ''}>
+                        <input type="number" step="0.01" min="0" max="10" id="vc2_${aluno.id}" value="${notaSalva.vc2 !== undefined ? notaSalva.vc2 : ''}" class="${classInputBase} ${classVC2}" placeholder="${isVC2Disabled ? '---' : '0.00'}" ${isVC2Disabled ? 'disabled' : ''}>
                     </td>
                     
                     <td class="p-2">
-                        <input type="number" step="0.01" min="0" max="10" id="vf_${aluno.id}" class="${classInputBase} focus:ring-pmmt-blue text-blue-900 bg-white" placeholder="0.00">
+                        <input type="number" step="0.01" min="0" max="10" id="vf_${aluno.id}" value="${notaSalva.vf !== undefined ? notaSalva.vf : ''}" class="${classInputBase} focus:ring-pmmt-blue text-blue-900 bg-white" placeholder="0.00">
                     </td>
                     
                     <td class="p-2">
-                        <input type="number" id="faltas_${aluno.id}" min="0" class="${classInputBase} focus:ring-red-500 text-red-700 bg-red-50" placeholder="0">
+                        <input type="number" id="faltas_${aluno.id}" min="0" value="${notaSalva.faltas_horas !== undefined ? notaSalva.faltas_horas : ''}" class="${classInputBase} focus:ring-red-500 text-red-700 bg-red-50" placeholder="0">
                     </td>
                     
                     <td class="p-2">
-                        <input type="number" step="0.01" min="0" max="10" id="vse_${aluno.id}" class="${classInputBase} focus:ring-yellow-600 text-yellow-700 bg-yellow-50" placeholder="0.00">
+                        <input type="number" step="0.01" min="0" max="10" id="vse_${aluno.id}" value="${notaSalva.vse !== undefined && notaSalva.vse !== null ? notaSalva.vse : ''}" class="${classInputBase} focus:ring-yellow-600 text-yellow-700 bg-yellow-50" placeholder="0.00">
                     </td>
                     
-                    <td class="p-2 text-center">
-                        <button onclick="salvarNotaLinha(${aluno.id})" id="btn_${aluno.id}" class="w-full bg-pmmt-blue hover:bg-blue-900 text-pmmt-gold text-xs font-bold py-2 px-2 rounded transition shadow flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-save"></i> Salvar
+                    <td class="p-2 flex gap-1 justify-center items-center h-full">
+                        <button onclick="abrirBoletimAluno(${aluno.id}, '${nomeSeguroParaJS}', ${aluno.numero})" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-2 rounded transition shadow-sm" title="Ver Histórico Deste Aluno">
+                            <i class="fa-solid fa-folder-open"></i>
+                        </button>
+                        <button onclick="salvarNotaLinha(${aluno.id}, ${notaSalva.id ? notaSalva.id : 'null'})" id="btn_${aluno.id}" class="flex-1 ${notaSalva.id ? 'bg-amber-600 hover:bg-amber-700 text-white' : 'bg-pmmt-blue hover:bg-blue-900 text-pmmt-gold'} text-xs font-bold py-2 px-2 rounded transition shadow flex items-center justify-center gap-2" title="${notaSalva.id ? 'Atualizar Nota' : 'Salvar Nota'}">
+                            <i class="fa-solid ${notaSalva.id ? 'fa-pen-to-square' : 'fa-save'}"></i> ${notaSalva.id ? 'Atual.' : 'Salvar'}
                         </button>
                     </td>
                 `;
@@ -395,6 +411,11 @@
             const percentualFaltas = ((faltas / cargaHoraria) * 100).toFixed(1);
 
             if (faltas > limiteFaltas) return { texto: "REPROVADO (FALTAS)", classe: "bg-red-100 text-red-700 font-bold", perc: percentualFaltas };
+            
+            if(mgm === 0 && (vse === null || vse === "")) {
+                return { texto: "CURSANDO", classe: "bg-slate-100 text-slate-700 font-bold", perc: percentualFaltas };
+            }
+
             if (mgm >= 5.0) return { texto: "APROVADO", classe: "bg-emerald-100 text-emerald-700 font-bold", perc: percentualFaltas };
             
             if (vse !== null && vse !== "" && !isNaN(vse)) {
@@ -408,13 +429,13 @@
         // ==========================================
         // SALVAR NO BANCO DE DADOS
         // ==========================================
-        async function salvarNotaLinha(alunoId) {
+        async function salvarNotaLinha(alunoId, notaIdExistente) {
             const selectDisc = document.getElementById('disciplinaSelect');
             const option = selectDisc.options[selectDisc.selectedIndex];
             
             const tipo = option.getAttribute('data-tipo');
             const ch = parseInt(option.getAttribute('data-ch'));
-            const disciplinaNome = option.text;
+            const disciplinaNome = option.getAttribute('data-nome');
 
             const vc1 = parseFloat(document.getElementById(`vc1_${alunoId}`).value) || 0;
             const vc2 = parseFloat(document.getElementById(`vc2_${alunoId}`).value) || 0;
@@ -425,7 +446,6 @@
             const mgm = calcularMGM(vc1, vc2, vf, tipo);
             const statusObj = avaliarStatus(mgm, faltas, ch, vse);
 
-            // Objeto de dados formatado corretamente para a nova tabela academico_notas
             const dadosInsercao = {
                 aluno_id: alunoId,
                 disciplina_nome: disciplinaNome,
@@ -441,9 +461,16 @@
 
             const btn = document.getElementById(`btn_${alunoId}`);
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-            btn.className = "w-full bg-slate-400 text-white text-xs font-bold py-2 px-2 rounded shadow flex items-center justify-center gap-2 cursor-wait";
+            btn.className = "flex-1 bg-slate-400 text-white text-xs font-bold py-2 px-2 rounded shadow flex items-center justify-center gap-2 cursor-wait";
 
-            const { error } = await dbClient.from('academico_notas').insert([dadosInsercao]);
+            let error;
+            if (notaIdExistente) {
+                const res = await dbClient.from('academico_notas').update(dadosInsercao).eq('id', notaIdExistente);
+                error = res.error;
+            } else {
+                const res = await dbClient.from('academico_notas').insert([dadosInsercao]);
+                error = res.error;
+            }
 
             if (error) {
                 console.error(error);
@@ -451,66 +478,129 @@
                 btn.classList.replace('bg-slate-400', 'bg-red-600');
                 
                 setTimeout(() => {
-                    btn.innerHTML = '<i class="fa-solid fa-save"></i> Salvar';
-                    btn.className = "w-full bg-pmmt-blue hover:bg-blue-900 text-pmmt-gold text-xs font-bold py-2 px-2 rounded transition shadow flex items-center justify-center gap-2";
+                    btn.innerHTML = `<i class="fa-solid ${notaIdExistente ? 'fa-pen-to-square' : 'fa-save'}"></i> ${notaIdExistente ? 'Atual.' : 'Salvar'}`;
+                    btn.className = `flex-1 ${notaIdExistente ? 'bg-amber-600 hover:bg-amber-700' : 'bg-pmmt-blue hover:bg-blue-900 text-pmmt-gold'} text-xs font-bold py-2 px-2 rounded transition shadow flex items-center justify-center gap-2`;
                 }, 3000);
             } else {
                 btn.innerHTML = '<i class="fa-solid fa-check-double"></i> Salvo';
-                btn.className = "w-full bg-emerald-600 text-white text-xs font-bold py-2 px-2 rounded shadow flex items-center justify-center gap-2";
+                btn.className = "flex-1 bg-emerald-600 text-white text-xs font-bold py-2 px-2 rounded shadow flex items-center justify-center gap-2";
                 
-                document.getElementById(`vc1_${alunoId}`).disabled = true;
-                document.getElementById(`vc2_${alunoId}`).disabled = true;
-                document.getElementById(`vf_${alunoId}`).disabled = true;
-                document.getElementById(`faltas_${alunoId}`).disabled = true;
-                document.getElementById(`vse_${alunoId}`).disabled = true;
-
-                carregarBoletim();
+                // Recarrega a pauta silenciosamente para atualizar a memória e o ID do botão
+                setTimeout(() => { carregarPautaTurma(); }, 1500); 
             }
         }
 
-        async function carregarBoletim() {
-            const tbody = document.getElementById('tabelaBoletim');
+        // ==========================================
+        // LÓGICA DO BOLETIM INDIVIDUAL (POPUP)
+        // ==========================================
+        async function abrirBoletimAluno(alunoId, alunoNome, alunoNumero) {
+            const numeroFormatado = "5" + alunoNumero.toString().padStart(2, '0');
+            document.getElementById('modalBoletim').classList.remove('hidden');
+            document.getElementById('boletimAlunoNome').innerText = `AL SD PM ${numeroFormatado} - ${alunoNome}`;
+            
+            const tbody = document.getElementById('tabelaBoletimIndividual');
+            tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-500 font-bold"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Buscando histórico de avaliações...</td></tr>';
             
             const { data, error } = await dbClient
                 .from('academico_notas')
-                .select(`id, disciplina_nome, mgm, faltas_horas, status_final, percentual_faltas, alunos_pelotao(nome, qra, numero)`)
-                .order('id', { ascending: false })
-                .limit(20); 
+                .select('*')
+                .eq('aluno_id', alunoId)
+                .order('disciplina_nome', { ascending: true });
 
             if (error) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500">Erro ao carregar boletim.</td></tr>`;
+                tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-red-500 font-bold">Erro ao buscar histórico. Tente novamente.</td></tr>';
                 return;
             }
 
-            if (data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500">Nenhuma nota lançada ainda.</td></tr>`;
-                return;
-            }
+            let somaMgm = 0;
+            let temReprovacao = false;
+            let temRecuperacao = false;
 
             tbody.innerHTML = '';
-            data.forEach(item => {
-                let badgeClass = "bg-slate-100 text-slate-700";
-                if(item.status_final.includes("APROVADO")) badgeClass = "bg-emerald-100 text-emerald-800 border border-emerald-300";
-                if(item.status_final.includes("REPROVADO")) badgeClass = "bg-red-100 text-red-800 border border-red-300";
-                if(item.status_final.includes("RECUPERAÇÃO")) badgeClass = "bg-yellow-100 text-yellow-800 border border-yellow-400";
-                if(item.status_final.includes("2ª ÉPOCA")) badgeClass = "bg-blue-100 text-blue-700 border border-blue-300";
-                
-                const alu = item.alunos_pelotao;
-                const nomeFormatado = alu ? `<span class="text-pmmt-blue">${alu.numero || ''}</span> - ${alu.qra || alu.nome}` : 'Desconhecido';
+            
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-500 font-bold">Nenhuma nota ou falta lançada para este aluno ainda.</td></tr>';
+                document.getElementById('boletimTotalDisc').innerText = '0 / 36';
+                document.getElementById('boletimMediaGeral').innerText = '0.00';
+                document.getElementById('boletimStatusGeral').innerText = 'AGUARDANDO';
+                document.getElementById('boletimStatusGeral').className = 'text-lg font-black mt-1 text-slate-400';
+                return;
+            }
 
+            data.forEach(item => {
+                somaMgm += parseFloat(item.mgm);
+                
+                let badgeClass = "bg-slate-100 text-slate-700";
+                if(item.status_final.includes("CURSANDO")) badgeClass = "bg-slate-100 text-slate-700 border border-slate-300";
+                if(item.status_final.includes("APROVADO")) badgeClass = "bg-emerald-100 text-emerald-800 border border-emerald-300";
+                if(item.status_final.includes("REPROVADO")) { badgeClass = "bg-red-100 text-red-800 border border-red-300"; temReprovacao = true; }
+                if(item.status_final.includes("RECUPERAÇÃO")) { badgeClass = "bg-yellow-100 text-yellow-800 border border-yellow-400"; temRecuperacao = true; }
+                if(item.status_final.includes("2ª ÉPOCA")) badgeClass = "bg-blue-100 text-blue-700 border border-blue-300";
+
+                // O nome e número do aluno são repassados para a função de deletar para que o modal possa se recarregar
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition">
-                        <td class="p-3 font-bold text-slate-700">${nomeFormatado}</td>
-                        <td class="p-3 text-slate-600 truncate max-w-xs">${item.disciplina_nome}</td>
-                        <td class="p-3 text-center font-bold text-pmmt-blue text-lg">${item.mgm.toFixed(2)}</td>
-                        <td class="p-3 text-center text-slate-600">${item.percentual_faltas}% <span class="text-xs">(${item.faltas_horas}h)</span></td>
+                        <td class="p-3 text-slate-700 font-semibold truncate max-w-[200px]" title="${item.disciplina_nome}">${item.disciplina_nome}</td>
+                        <td class="p-3 text-center font-black text-pmmt-blue">${item.mgm.toFixed(2)}</td>
+                        <td class="p-3 text-center text-slate-600">${item.percentual_faltas}% <span class="text-[10px]">(${item.faltas_horas}h)</span></td>
                         <td class="p-3 text-center">
-                            <span class="px-2 py-1 rounded text-xs font-bold shadow-sm ${badgeClass}">
+                            <span class="px-2 py-1 rounded text-[10px] font-bold shadow-sm whitespace-nowrap ${badgeClass}">
                                 ${item.status_final}
                             </span>
                         </td>
+                        <td class="p-3 text-center">
+                            <button onclick="deletarNotaModal(${item.id}, ${alunoId}, '${alunoNome.replace(/'/g, "\\'")}', ${alunoNumero})" class="text-rose-500 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 p-1.5 rounded transition" title="Excluir Lançamento">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
                     </tr>
                 `;
+            });
+
+            // Atualiza os cartões superiores do Modal
+            document.getElementById('boletimTotalDisc').innerText = `${data.length} / 36`;
+            document.getElementById('boletimMediaGeral').innerText = (somaMgm / data.length).toFixed(2);
+            
+            let statusGeral = "APROVADO PARCIAL";
+            let statusClass = "text-lg font-black mt-1 text-emerald-600";
+            
+            if (temReprovacao) {
+                statusGeral = "REPROVADO";
+                statusClass = "text-lg font-black mt-1 text-rose-600";
+            } else if (temRecuperacao) {
+                statusGeral = "EM RECUPERAÇÃO";
+                statusClass = "text-lg font-black mt-1 text-yellow-600";
+            }
+            
+            document.getElementById('boletimStatusGeral').innerText = statusGeral;
+            document.getElementById('boletimStatusGeral').className = statusClass;
+        }
+
+        function fecharBoletimAluno() {
+            document.getElementById('modalBoletim').classList.add('hidden');
+        }
+
+        async function deletarNotaModal(idNota, alunoId, alunoNome, alunoNumero) {
+            Swal.fire({
+                title: 'Tem certeza?',
+                text: "Isso apagará este lançamento do histórico do aluno!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sim, excluir!',
+                cancelButtonText: 'Cancelar'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    const { error } = await dbClient.from('academico_notas').delete().eq('id', idNota);
+                    if(!error) {
+                        Swal.fire('Excluído!', 'O lançamento foi apagado.', 'success');
+                        abrirBoletimAluno(alunoId, alunoNome, alunoNumero); // Recarrega o modal do aluno na hora
+                        carregarPautaTurma(); // Limpa a caixa de texto lá na pauta por trás
+                    } else {
+                        Swal.fire('Erro!', 'Não foi possível excluir.', 'error');
+                    }
+                }
             });
         }
     </script>
