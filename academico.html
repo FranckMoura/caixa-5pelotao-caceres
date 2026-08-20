@@ -46,28 +46,25 @@
     <main class="flex-grow max-w-7xl mx-auto px-4 py-8 w-full">
         
         <div class="bg-white rounded-xl shadow-md border border-slate-200 p-6 mb-8">
-            <div class="flex items-center gap-3 mb-6 border-b pb-3">
-                <div class="bg-pmmt-blue p-2 rounded-lg text-pmmt-gold">
-                    <i class="fa-solid fa-list-check"></i>
+            <div class="flex items-center justify-between border-b pb-3 mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="bg-pmmt-blue p-2 rounded-lg text-pmmt-gold">
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-pmmt-blue">Diário de Classe (Lançamento em Lote)</h2>
+                        <p class="text-xs text-slate-500">Selecione a disciplina para abrir a pauta do pelotão.</p>
+                    </div>
                 </div>
-                <div>
-                    <h2 class="text-xl font-bold text-pmmt-blue">Diário de Classe (Lançamento em Lote)</h2>
-                    <p class="text-xs text-slate-500">Selecione a disciplina para abrir a pauta do pelotão.</p>
-                </div>
+                <button onclick="cadastrarNovaDisciplina()" class="bg-pmmt-gold hover:bg-yellow-600 text-pmmt-blue font-bold text-xs py-2 px-3 rounded-lg shadow transition flex items-center gap-2">
+                    <i class="fa-solid fa-plus-circle"></i> Nova Disciplina
+                </button>
             </div>
 
             <div class="mb-6">
                 <label class="block text-sm font-bold text-slate-700 mb-1">Disciplina</label>
                 <select id="disciplinaSelect" onchange="carregarPautaTurma()" class="w-full md:w-1/2 border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-pmmt-blue outline-none font-semibold text-pmmt-blue">
-                    <option value="" data-tipo="1" data-ch="0">-- Selecione a Disciplina --</option>
-                    <option value="1" data-tipo="1" data-ch="45">Metodologia de Pesquisa (45h)</option>
-                    <option value="2" data-tipo="1" data-ch="45">Técnicas Gerais de Policiamento - TGP (45h)</option>
-                    <option value="3" data-tipo="1" data-ch="60">Procedimento Operacional Padrão 1 (60h)</option>
-                    <option value="4" data-tipo="2" data-ch="75">Procedimento Operacional Padrão 2 (75h)</option>
-                    <option value="5" data-tipo="2" data-ch="100">Tiro Policial (100h)</option>
-                    <option value="6" data-tipo="1" data-ch="60">Direito Penal e Processual Penal (60h)</option>
-                    <option value="7" data-tipo="2" data-ch="65">Policiamento de Trânsito (65h)</option>
-                    <option value="8" data-tipo="1" data-ch="12">Trabalho de Conclusão de Curso - TCC (12h)</option>
+                    <option value="" data-tipo="1" data-ch="0">-- Carregando disciplinas do banco... --</option>
                 </select>
             </div>
 
@@ -134,7 +131,6 @@
         const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
 
-        // CORREÇÃO AQUI: Mudamos o nome da constante para 'dbClient' para não dar conflito
         const dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let listaAlunos = []; 
@@ -148,6 +144,7 @@
                 document.getElementById('statusConexao').className = 'text-sm font-bold text-emerald-400';
                 
                 await carregarEfetivoEmMemoria();
+                await carregarDisciplinas();
                 await carregarBoletim();
             } catch (error) {
                 console.error("Erro ao conectar:", error);
@@ -157,11 +154,97 @@
         });
 
         // ==========================================
-        // FUNÇÕES DE LÓGICA DA PLANILHA DE NOTAS
+        // GESTÃO DINÂMICA DE DISCIPLINAS
+        // ==========================================
+        async function carregarDisciplinas() {
+            const select = document.getElementById('disciplinaSelect');
+            
+            const { data, error } = await dbClient
+                .from('academico_disciplinas')
+                .select('*')
+                .order('nome', { ascending: true });
+
+            if (error) {
+                console.error("Erro ao carregar disciplinas:", error);
+                select.innerHTML = '<option value="">Erro ao carregar disciplinas</option>';
+                return;
+            }
+
+            select.innerHTML = '<option value="" data-tipo="1" data-ch="0">-- Selecione a Disciplina --</option>';
+            
+            if (data.length === 0) {
+                // Adicionando o tipo_calculo nas matérias padrão também para evitar o mesmo erro!
+                const padroes = [
+                    { nome: "Metodologia de Pesquisa", carga_horaria: 45, tipo_calculo: 1 },
+                    { nome: "Técnicas Gerais de Policiamento (TGP)", carga_horaria: 45, tipo_calculo: 1 },
+                    { nome: "Procedimento Operacional Padrão 1 (POP 1)", carga_horaria: 60, tipo_calculo: 1 },
+                    { nome: "Procedimento Operacional Padrão 2 (POP 2)", carga_horaria: 75, tipo_calculo: 2 },
+                    { nome: "Tiro Policial", carga_horaria: 100, tipo_calculo: 2 },
+                    { nome: "Direito Penal e Processual Penal", carga_horaria: 60, tipo_calculo: 1 },
+                    { nome: "Policiamento de Trânsito", carga_horaria: 65, tipo_calculo: 2 },
+                    { nome: "Trabalho de Conclusão de Curso (TCC)", carga_horaria: 12, tipo_calculo: 1 }
+                ];
+                
+                await dbClient.from('academico_disciplinas').insert(padroes);
+                await carregarDisciplinas(); 
+                return;
+            }
+
+            data.forEach(disc => {
+                const tipo = disc.tipo_calculo || (disc.carga_horaria > 60 ? 2 : 1);
+                select.innerHTML += `<option value="${disc.id}" data-tipo="${tipo}" data-ch="${disc.carga_horaria}">${disc.nome} (${disc.carga_horaria}h)</option>`;
+            });
+        }
+
+        async function cadastrarNovaDisciplina() {
+            const { value: formValues } = await Swal.fire({
+                title: 'Cadastrar Nova Disciplina',
+                html:
+                    '<input id="swal-nome" class="swal2-input" placeholder="Nome da Disciplina (Ex: Armamento e Tiro)">' +
+                    '<input id="swal-ch" type="number" class="swal2-input" placeholder="Carga Horária em Horas (Ex: 60)">',
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonText: '<i class="fa-solid fa-save"></i> Salvar',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#0a2240',
+                preConfirm: () => {
+                    const nome = document.getElementById('swal-nome').value.trim();
+                    const ch = parseInt(document.getElementById('swal-ch').value);
+                    if (!nome || isNaN(ch) || ch <= 0) {
+                        Swal.showValidationMessage('Informe o nome e uma carga horária válida!');
+                        return false;
+                    }
+                    return { nome: nome, carga_horaria: ch };
+                }
+            });
+
+            if (formValues) {
+                // CORREÇÃO AQUI: Calculando o "tipo_calculo" antes de enviar pro banco
+                const tipo_calc = formValues.carga_horaria > 60 ? 2 : 1;
+
+                const { error } = await dbClient
+                    .from('academico_disciplinas')
+                    .insert([{ 
+                        nome: formValues.nome, 
+                        carga_horaria: formValues.carga_horaria,
+                        tipo_calculo: tipo_calc // Variável agora sendo enviada com sucesso
+                    }]);
+
+                if (error) {
+                    Swal.fire('Erro!', 'Não foi possível cadastrar no banco.', 'error');
+                    console.error(error);
+                } else {
+                    Swal.fire('Sucesso!', `Disciplina "${formValues.nome}" cadastrada com sucesso!`, 'success');
+                    await carregarDisciplinas();
+                }
+            }
+        }
+
+        // ==========================================
+        // FUNÇÕES DA PLANILHA DE NOTAS
         // ==========================================
 
         async function carregarEfetivoEmMemoria() {
-            // Usando dbClient
             const { data, error } = await dbClient
                 .from('alunos_pelotao')
                 .select('id, nome, qra, numero')
@@ -298,7 +381,6 @@
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
             btn.className = "w-full bg-slate-400 text-white text-xs font-bold py-2 px-2 rounded shadow flex items-center justify-center gap-2 cursor-wait";
 
-            // Usando dbClient
             const { error } = await dbClient.from('academico_notas').insert([dadosInsercao]);
 
             if (error) {
@@ -327,7 +409,6 @@
         async function carregarBoletim() {
             const tbody = document.getElementById('tabelaBoletim');
             
-            // Usando dbClient
             const { data, error } = await dbClient
                 .from('academico_notas')
                 .select(`id, disciplina_nome, mgm, faltas_horas, status_final, percentual_faltas, alunos_pelotao(nome, qra, numero)`)
