@@ -237,20 +237,98 @@
                         </div>
                     </section>
 
-                    <section id="modulo-cautela" class="hidden space-y-5">
-                        <div class="bg-white shadow-sm border border-slate-300 rounded-xl overflow-hidden mb-4">
-                            <div class="bg-sys-dark px-5 py-4 flex justify-between items-center border-b-4 border-pmmt-gold shrink-0">
-                                <div><h2 class="text-sm font-black tracking-widest uppercase text-white"><i class="fa-solid fa-gun text-pmmt-gold mr-2"></i>Livro de Cautela</h2><p class="text-slate-300 text-[9px] font-bold mt-0.5 uppercase tracking-widest">Controle Bélico</p></div>
-                                <div class="flex gap-2 no-print"><button onclick="abrirModalCautela()" class="admin-only bg-pmmt-blue hover:bg-sys-blue text-white font-bold px-3 py-1.5 rounded shadow transition text-[10px] uppercase flex items-center gap-1.5 border border-white/20"><i class="fa-solid fa-plus"></i> Novo</button><button onclick="imprimirLivroCautela()" class="bg-pmmt-gold hover:bg-yellow-500 text-sys-dark font-bold px-3 py-1.5 rounded shadow transition text-[10px] uppercase flex items-center gap-1.5"><i class="fa-solid fa-print"></i> Imprimir</button></div>
-                            </div>
-                            <div class="overflow-x-auto p-2 bg-white">
-                                <table class="w-full text-left border-collapse min-w-[1000px] text-[10px]">
-                                    <thead><tr class="bg-slate-100 text-sys-dark uppercase tracking-wider border border-slate-300"><th class="p-2 border border-slate-300 font-bold text-center w-20">Data/Hora</th><th class="p-2 border border-slate-300 font-bold text-center w-20">Posto/Grad.</th><th class="p-2 border border-slate-300 font-bold w-40">Nome Completo</th><th class="p-2 border border-slate-300 font-bold text-center w-20">RE/Mat.</th><th class="p-2 border border-slate-300 font-bold text-center w-28">Arma</th><th class="p-2 border border-slate-300 font-bold text-center w-24">Série</th><th class="p-2 border border-slate-300 font-bold text-center w-16">Mun</th><th class="p-2 border border-slate-300 font-bold text-center w-24">Colete</th><th class="p-2 border border-slate-300 font-bold text-center w-24">Retirada</th><th class="p-2 border border-slate-300 font-bold text-center w-24">Devolução</th></tr></thead>
-                                    <tbody id="tabelaCautela" class="divide-y divide-slate-100 text-slate-700"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </section>
+<!-- ============================================================== -->
+<!-- MÓDULO: LIVRO DE CAUTELA DE ARMAMENTO (CAUTELA FIXA)           -->
+<!-- ============================================================== -->
+<section id="modulo-cautela" class="space-y-6">
+    <div class="bg-white shadow-md border border-slate-300 rounded-xl overflow-hidden mb-6">
+        
+        <!-- CABEÇALHO DO MÓDULO -->
+        <div class="bg-sys-dark px-6 py-5 flex justify-between items-center border-b-4 border-pmmt-gold shrink-0">
+            <div>
+                <h3 class="text-white font-black text-lg uppercase tracking-wider">
+                    <i class="fa-solid fa-gun text-pmmt-gold mr-3"></i>Livro de Cautela Fixa
+                </h3>
+                <p class="text-slate-300 text-[10px] md:text-xs font-bold mt-1 uppercase tracking-widest">
+                    Controle de Material Bélico - 5º Pelotão PMMT
+                </p>
+            </div>
+            <!-- BOTÃO DE IMPRESSÃO DIRETA -->
+            <button onclick="window.print()" class="bg-pmmt-gold hover:bg-yellow-500 text-sys-dark font-black px-4 py-2.5 rounded-lg shadow-lg transition text-xs uppercase flex items-center gap-2 tracking-widest no-print">
+                <i class="fa-solid fa-print"></i> Imprimir Livro
+            </button>
+        </div>
+
+        <!-- TABELA / PLANILHA DE CAUTELA PRÉ-PREENCHIDA -->
+        <div class="overflow-x-auto p-4 bg-white">
+            <table class="w-full text-left border-collapse min-w-[1000px]">
+                <thead>
+                    <tr class="bg-slate-200 text-sys-dark text-[10px] uppercase tracking-wider border border-slate-300">
+                        <th class="p-3 border border-slate-400 font-black text-center w-24">Data / Hora</th>
+                        <th class="p-3 border border-slate-400 font-black text-center w-16">Nº</th>
+                        <th class="p-3 border border-slate-400 font-black w-48">QRA do Aluno</th>
+                        <th class="p-3 border border-slate-400 font-black text-center w-36">Material</th>
+                        <th class="p-3 border border-slate-400 font-black text-center w-28">Nº Série</th>
+                        <th class="p-3 border border-slate-400 font-black text-center w-40">Assinatura Retirada</th>
+                        <th class="p-3 border border-slate-400 font-black text-center w-32">Hora / Visto Devol.</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 text-[11px] text-slate-800 font-medium">
+                    
+                    <!-- DADOS EXTRAÍDOS DA FOTO DO LIVRO FÍSICO -->
+                    <script>
+                        const cautelasFixas = [
+                            { n: "501", qra: "AL SD PM ARLESSON", mat: "PT 100 Plus", serie: "SDY 81206" },
+                            { n: "502", qra: "AL SD PM ALEXANDRE", mat: "PT 100 Plus", serie: "SDY 81210" },
+                            { n: "503", qra: "AL SD PM PEDRO", mat: "PT 100 Plus", serie: "SDY 81212" },
+                            { n: "504", qra: "AL SD PM CARLA", mat: "PT 100 Plus", serie: "SDY 81250" },
+                            { n: "505", qra: "AL SD PM ESPIRITO SANTO", mat: "PT 100 Plus", serie: "SBU 29012" },
+                            { n: "506", qra: "AL SD PM CAMILLA", mat: "PT 100 Plus", serie: "SDY 81245" },
+                            { n: "507", qra: "AL SD PM QUEIROZ", mat: "PT 100 Plus", serie: "SDY 81222" },
+                            { n: "508", qra: "AL SD PM CORSINO", mat: "PT 100 Plus", serie: "SDY 81217" },
+                            { n: "509", qra: "AL SD PM JEFFERSON", mat: "PT 100 Plus", serie: "SDY 81218" },
+                            { n: "510", qra: "AL SD PM FIRMINO", mat: "PT 100 Plus", serie: "SDY 81251" },
+                            { n: "511", qra: "AL SD PM WUELISON", mat: "PT 100 Plus", serie: "SDY 81213" },
+                            { n: "512", qra: "AL SD PM WILLYS", mat: "PT 100 Plus", serie: "SBU 29011" },
+                            { n: "513", qra: "AL SD PM RABELO", mat: "PT 100 Plus", serie: "SBU 29006" },
+                            { n: "514", qra: "AL SD PM MATIAS", mat: "PT 100 Plus", serie: "SBU 29007" },
+                            { n: "515", qra: "AL SD PM LUIZ", mat: "PT 100 Plus", serie: "SDY 81741" },
+                            { n: "516", qra: "AL SD PM MARCO AURELIO", mat: "PT 100 Plus", serie: "SDY 81240" },
+                            { n: "517", qra: "AL SD PM MAIK", mat: "PT 100 Plus", serie: "SDY 81225" },
+                            { n: "518", qra: "AL SD PM OLEGARIO", mat: "PT 100 Plus", serie: "SBU 29009" },
+                            { n: "519", qra: "AL SD PM GUILHERME", mat: "PT 100 Plus", serie: "SCU 56532" },
+                            { n: "520", qra: "AL SD PM MAXIMIANO", mat: "PT 100 Plus", serie: "SDY 81247" },
+                            { n: "521", qra: "AL SD PM THAINÁ", mat: "PT 100 Plus", serie: "SDY 81205" },
+                            { n: "522", qra: "AL SD PM CLODOALDO", mat: "PT 100 Plus", serie: "SDY 81241" },
+                            { n: "523", qra: "AL SD PM PASSOS", mat: "PT 100 Plus", serie: "SBU 29010" },
+                            { n: "524", qra: "AL SD PM PEDROZO", mat: "PT 100 Plus", serie: "SDY 81226" },
+                            { n: "525", qra: "AL SD PM PRISCILA", mat: "PT 100 Plus", serie: "SDY 81253" },
+                            { n: "526", qra: "AL SD PM NEGRÃO", mat: "PT 100 Plus", serie: "SDY 81214" },
+                            { n: "527", qra: "AL SD PM RENATO", mat: "PT 100 Plus", serie: "SDY 81248" },
+                            { n: "528", qra: "AL SD PM KETELLYN", mat: "PT 100 Plus", serie: "SBU 29008" },
+                            { n: "529", qra: "AL SD PM GRACIELE", mat: "PT 100 Plus", serie: "SDY 81708" },
+                            { n: "530", qra: "AL SD PM MARINALVA", mat: "PT 100 Plus", serie: "SDV 81254" }
+                        ];
+
+                        cautelasFixas.forEach(item => {
+                            document.write(`
+                            <tr class="h-10 hover:bg-slate-50 transition">
+                                <td class="p-2 border border-slate-300 text-center text-slate-400 leading-tight">___/___/___<br>___:___</td>
+                                <td class="p-2 border border-slate-300 text-center font-bold text-pmmt-blue">${item.n}</td>
+                                <td class="p-2 border border-slate-300 font-bold uppercase">${item.qra}</td>
+                                <td class="p-2 border border-slate-300 text-center text-slate-600 font-semibold">${item.mat}</td>
+                                <td class="p-2 border border-slate-300 text-center font-mono font-black text-sys-dark">${item.serie}</td>
+                                <td class="p-2 border border-slate-300 text-center">__________________________</td>
+                                <td class="p-2 border border-slate-300 text-center text-slate-400 leading-tight">___:___<br>________</td>
+                            </tr>
+                            `);
+                        });
+                    </script>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
 
                     <section id="modulo-financeiro" class="hidden space-y-5">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
