@@ -290,9 +290,9 @@
                                     <button onclick="abrirModalCautelaFixa()" class="admin-only bg-pmmt-blue hover:bg-sys-blue text-white font-bold px-3 py-1.5 rounded shadow transition text-[10px] uppercase flex items-center gap-1.5 border border-white/20">
                                         <i class="fa-solid fa-plus"></i> Novo Registro
                                     </button>
-                                    <button onclick="window.print()" class="bg-pmmt-gold hover:bg-yellow-500 text-sys-dark font-bold px-3 py-1.5 rounded shadow transition text-[10px] uppercase flex items-center gap-1.5">
-                                        <i class="fa-solid fa-print"></i> Imprimir Livro
-                                    </button>
+<button onclick="imprimirCautelaFixa()" class="bg-pmmt-gold hover:bg-yellow-500 text-sys-dark font-bold px-3 py-1.5 rounded shadow transition text-[10px] uppercase flex items-center gap-1.5">
+    <i class="fa-solid fa-print"></i> Imprimir Livro
+</button>
                                 </div>
                             </div>
                             <div class="overflow-x-auto p-2 bg-white">
@@ -1247,6 +1247,31 @@
                 await carregarCautelasFixas();
                 mostrarLoading(false);
             }
+        }
+
+        function imprimirCautelaFixa() {
+            // Cria um estilo temporário exclusivo para a impressão da Cautela
+            const s = document.createElement('style'); 
+            
+            // Força a tabela a não exceder o limite da página, anulando os 1000px
+            s.innerHTML = `
+                @page { size: A4 portrait; margin: 10mm; }
+                body.printing-cautela table { min-width: 0 !important; width: 100% !important; }
+                body.printing-cautela th, body.printing-cautela td { word-wrap: break-word; white-space: normal !important; }
+            `;
+            document.head.appendChild(s); 
+            
+            // Ativa a sua classe CSS que isola o livro e esconde os menus
+            document.body.classList.add('printing-cautela'); 
+            
+            // Aciona o painel de impressão do navegador
+            window.print();
+            
+            // Restaura o sistema ao normal após fechar a janela de impressão
+            setTimeout(() => { 
+                document.body.classList.remove('printing-cautela'); 
+                document.head.removeChild(s); 
+            }, 500);
         }
 
         // ===============================================
