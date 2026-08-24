@@ -23,17 +23,30 @@
 <body class="bg-transparent text-slate-800 font-sans h-full w-full p-2">
     <div class="h-[95vh] flex flex-col bg-white rounded-xl shadow-md overflow-hidden border border-slate-200">
         <!-- Cabeçalho -->
-        <div class="bg-pmmt-blue text-white px-6 py-5 flex flex-col sm:flex-row justify-between items-center border-b-4 border-pmmt-gold gap-4 shrink-0">
-            <div class="flex items-center gap-4">
+        <div class="bg-pmmt-blue text-white px-6 py-5 flex flex-col lg:flex-row justify-between items-center border-b-4 border-pmmt-gold gap-4 shrink-0">
+            <div class="flex items-center gap-4 w-full lg:w-auto">
                 <i class="fa-solid fa-bullhorn text-pmmt-gold text-3xl"></i>
                 <div>
-                    <h2 class="text-lg md:text-xl font-black tracking-widest uppercase">Acervo de Toques de Corneta</h2>
+                    <h2 class="text-lg md:text-xl font-black tracking-widest uppercase">Acervo de Toques</h2>
                     <p class="text-[10px] md:text-xs text-slate-300 uppercase mt-0.5">Padrão Exército Brasileiro / PMMT</p>
                 </div>
             </div>
-            <div class="relative w-full sm:w-auto">
-                <input type="text" id="searchInput" onkeyup="filtrarToques()" placeholder="Buscar toque (ex: Apresentar Arma)..." class="w-full pl-9 pr-4 py-2 rounded-lg text-sm text-slate-800 outline-none focus:ring-2 focus:ring-pmmt-gold sm:w-64 transition-all">
-                <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400"></i>
+            
+            <div class="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
+                <!-- Controle de Playlist Oculto por padrão -->
+                <div id="boxSequencia" class="hidden flex items-center gap-2 bg-pmmt-gold/10 border border-pmmt-gold/50 p-1.5 rounded-lg w-full sm:w-auto animate-[fadeIn_0.3s_ease-out]">
+                    <button onclick="iniciarSequencia()" class="flex-1 sm:flex-none bg-pmmt-gold hover:bg-yellow-500 text-sys-dark px-3 py-1.5 rounded text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-2 transition shadow-sm whitespace-nowrap">
+                        <i class="fa-solid fa-layer-group"></i> Tocar Sequência (<span id="qtdSeq">0</span>)
+                    </button>
+                    <button onclick="limparSequencia()" class="bg-white/10 hover:bg-rose-500 hover:text-white text-rose-300 hover:border-rose-500 px-3 py-1.5 rounded text-[11px] font-bold transition border border-white/20" title="Limpar Seleção">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+                
+                <div class="relative w-full sm:w-auto">
+                    <input type="text" id="searchInput" onkeyup="filtrarToques()" placeholder="Buscar toque (ex: Apresentar)..." class="w-full pl-9 pr-4 py-2 rounded-lg text-sm text-slate-800 outline-none focus:ring-2 focus:ring-pmmt-gold sm:w-64 transition-all">
+                    <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400"></i>
+                </div>
             </div>
         </div>
         
@@ -76,28 +89,37 @@
     <script>
         const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
-        
-        // CORREÇÃO: Mudamos a constante para 'dbClient' para evitar conflito com a biblioteca base
         const dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let todosToques = [];
         let currentlyPlayingCard = null;
+        
+        // Variáveis da funcionalidade de Playlist/Sequência
+        let sequenciaSelecionada = [];
+        let isTocandoSequencia = false;
+        let indexSequenciaAtual = 0;
 
         document.addEventListener('DOMContentLoaded', async () => {
             await carregarToques();
             
+            // Lógica para quando um áudio acaba
             document.getElementById('globalAudio').addEventListener('ended', () => {
                 if(currentlyPlayingCard) {
                     currentlyPlayingCard.classList.remove('ring-2', 'ring-pmmt-gold', 'bg-slate-50');
                     currentlyPlayingCard.querySelector('.play-btn i').className = 'fa-solid fa-play';
                 }
+                document.getElementById('playIcon').className = 'fa-solid fa-music text-xl';
+                
+                // Se estiver no modo Playlist, toca o próximo!
+                if (isTocandoSequencia) {
+                    indexSequenciaAtual++;
+                    tocarProximoDaSequencia();
+                }
             });
         });
 
         async function carregarToques() {
-            // Usa o dbClient para chamar o Supabase
             const { data, error } = await dbClient.storage.from('toques_corneta').list();
-            
             document.getElementById('loading').classList.add('hidden');
             
             if (error || !data || data.length === 0) {
@@ -131,56 +153,147 @@
             document.getElementById('noResults').classList.add('hidden');
 
             lista.forEach(arquivo => {
-                // Usa o dbClient para gerar a URL pública
                 const url = dbClient.storage.from('toques_corneta').getPublicUrl(arquivo.name).data.publicUrl;
                 const nomeFormatado = formatarNome(arquivo.name);
+                const isChecked = sequenciaSelecionada.some(s => s.name === arquivo.name) ? 'checked' : '';
                 
                 const card = document.createElement('div');
                 card.id = 'card-' + arquivo.name.replace(/\./g, '-');
                 card.className = "toque-card bg-white border border-slate-200 rounded-xl p-3 flex items-center justify-between hover:border-pmmt-gold hover:shadow-md transition group cursor-pointer";
-                card.onclick = () => playAudio(url, nomeFormatado, card);
+                card.onclick = () => playAudioManual(url, nomeFormatado, card);
                 
                 card.innerHTML = `
                     <div class="flex items-center gap-3 overflow-hidden w-full">
                         <div class="bg-slate-100 group-hover:bg-pmmt-gold text-slate-500 group-hover:text-pmmt-blue w-10 h-10 rounded-lg flex items-center justify-center shrink-0 transition-colors play-btn">
                             <i class="fa-solid fa-play"></i>
                         </div>
-                        <h4 class="text-sm font-bold text-slate-700 truncate group-hover:text-pmmt-blue transition-colors flex-1">${nomeFormatado}</h4>
+                        <h4 class="text-sm font-bold text-slate-700 truncate group-hover:text-pmmt-blue transition-colors flex-1" title="${nomeFormatado}">${nomeFormatado}</h4>
                     </div>
-                    <a href="${url}" download target="_blank" onclick="event.stopPropagation()" class="text-slate-400 hover:text-pmmt-blue p-2 shrink-0 bg-slate-50 rounded hover:bg-slate-100 transition" title="Fazer Download">
-                        <i class="fa-solid fa-download"></i>
-                    </a>
+                    
+                    <div class="flex items-center gap-2 shrink-0 ml-2">
+                        <!-- Botão Checkbox da Playlist -->
+                        <label class="flex items-center justify-center w-8 h-8 rounded bg-slate-50 hover:bg-slate-200 cursor-pointer transition border border-slate-200" title="Adicionar à Sequência" onclick="event.stopPropagation()">
+                            <input type="checkbox" value="${arquivo.name}" onchange="toggleFila(this)" class="w-4 h-4 cursor-pointer accent-pmmt-gold seq-checkbox" ${isChecked}>
+                        </label>
+                        
+                        <!-- Botão de Download -->
+                        <a href="${url}" download target="_blank" onclick="event.stopPropagation()" class="text-slate-400 hover:text-pmmt-blue w-8 h-8 flex items-center justify-center bg-slate-50 border border-slate-200 rounded hover:bg-slate-100 transition" title="Fazer Download">
+                            <i class="fa-solid fa-download"></i>
+                        </a>
+                    </div>
                 `;
                 grid.appendChild(card);
             });
         }
 
-        function playAudio(url, titulo, cardElement) {
+        // ==========================================
+        // SISTEMA DE SEQUÊNCIA (PLAYLIST)
+        // ==========================================
+        function toggleFila(checkbox) {
+            const fileName = checkbox.value;
+            if (checkbox.checked) {
+                // Se marcou, adiciona na fila caso não exista
+                if(!sequenciaSelecionada.some(s => s.name === fileName)) {
+                    sequenciaSelecionada.push(todosToques.find(t => t.name === fileName));
+                }
+            } else {
+                // Se desmarcou, remove da fila
+                sequenciaSelecionada = sequenciaSelecionada.filter(t => t.name !== fileName);
+            }
+            atualizarInterfaceSequencia();
+        }
+
+        function atualizarInterfaceSequencia() {
+            const painel = document.getElementById('boxSequencia');
+            const spanQtd = document.getElementById('qtdSeq');
+            
+            if (sequenciaSelecionada.length > 0) {
+                painel.classList.remove('hidden');
+                spanQtd.innerText = sequenciaSelecionada.length;
+            } else {
+                painel.classList.add('hidden');
+                isTocandoSequencia = false;
+            }
+        }
+
+        function limparSequencia() {
+            sequenciaSelecionada = [];
+            document.querySelectorAll('.seq-checkbox').forEach(cb => cb.checked = false);
+            atualizarInterfaceSequencia();
+            isTocandoSequencia = false;
+        }
+
+        function iniciarSequencia() {
+            if (sequenciaSelecionada.length === 0) return;
+            isTocandoSequencia = true;
+            indexSequenciaAtual = 0;
+            tocarProximoDaSequencia();
+        }
+
+        function tocarProximoDaSequencia() {
+            if (indexSequenciaAtual >= sequenciaSelecionada.length) {
+                // A sequência terminou!
+                isTocandoSequencia = false;
+                document.getElementById('nowPlayingTitle').innerText = "Sequência Concluída!";
+                document.getElementById('playIcon').className = 'fa-solid fa-check text-xl text-emerald-500';
+                return;
+            }
+            
+            const arquivo = sequenciaSelecionada[indexSequenciaAtual];
+            const url = dbClient.storage.from('toques_corneta').getPublicUrl(arquivo.name).data.publicUrl;
+            
+            // Adiciona um contador no título [1/3]
+            const nomeOriginal = formatarNome(arquivo.name);
+            const tituloComPlaylist = `[${indexSequenciaAtual + 1}/${sequenciaSelecionada.length}] - ${nomeOriginal}`;
+            
+            const cardId = 'card-' + arquivo.name.replace(/\./g, '-');
+            const cardElement = document.getElementById(cardId);
+            
+            // Chama a função base de play
+            playAudioCore(url, tituloComPlaylist, cardElement);
+        }
+
+        // ==========================================
+        // SISTEMA BASE DE ÁUDIO
+        // ==========================================
+        function playAudioManual(url, titulo, cardElement) {
+            // Se o usuário clicar manualmente em um toque fora da ordem, a sequência é abortada
+            isTocandoSequencia = false;
+            playAudioCore(url, titulo, cardElement);
+        }
+
+        function playAudioCore(url, titulo, cardElement) {
             const container = document.getElementById('playerContainer');
             const audioPlayer = document.getElementById('globalAudio');
             const titleLabel = document.getElementById('nowPlayingTitle');
             const playIcon = document.getElementById('playIcon');
             
+            // Reseta estilo de todos os cards
             document.querySelectorAll('.toque-card').forEach(c => {
                 c.classList.remove('ring-2', 'ring-pmmt-gold', 'bg-slate-50');
                 c.querySelector('.play-btn i').className = 'fa-solid fa-play';
             });
 
-            if (currentlyPlayingCard === cardElement && !audioPlayer.paused) {
+            // Se for um clique manual no mesmo card tocando, apenas pausa
+            if (!isTocandoSequencia && currentlyPlayingCard === cardElement && !audioPlayer.paused && audioPlayer.src === url) {
                 audioPlayer.pause();
-                cardElement.querySelector('.play-btn i').className = 'fa-solid fa-play';
-                playIcon.className = 'fa-solid fa-music';
+                if(cardElement) cardElement.querySelector('.play-btn i').className = 'fa-solid fa-play';
+                playIcon.className = 'fa-solid fa-music text-xl';
                 return;
             }
 
-            cardElement.classList.add('ring-2', 'ring-pmmt-gold', 'bg-slate-50');
-            cardElement.querySelector('.play-btn i').className = 'fa-solid fa-pause';
+            // Ativa o visual do card clicado (se ele estiver visível na pesquisa)
+            if (cardElement) {
+                cardElement.classList.add('ring-2', 'ring-pmmt-gold', 'bg-slate-50');
+                cardElement.querySelector('.play-btn i').className = 'fa-solid fa-pause';
+            }
             currentlyPlayingCard = cardElement;
             
+            // Exibe e configura o player global animado
             container.classList.remove('hidden');
             container.classList.add('animate-[slideUp_0.3s_ease-out]');
             titleLabel.innerText = titulo;
-            playIcon.className = 'fa-solid fa-volume-high animate-pulse';
+            playIcon.className = 'fa-solid fa-volume-high animate-pulse text-xl';
             
             audioPlayer.src = url;
             audioPlayer.play();
@@ -189,6 +302,7 @@
         function fecharPlayer() {
             document.getElementById('playerContainer').classList.add('hidden');
             document.getElementById('globalAudio').pause();
+            isTocandoSequencia = false;
             if(currentlyPlayingCard) {
                 currentlyPlayingCard.classList.remove('ring-2', 'ring-pmmt-gold', 'bg-slate-50');
                 currentlyPlayingCard.querySelector('.play-btn i').className = 'fa-solid fa-play';
@@ -205,6 +319,10 @@
         @keyframes slideUp {
             from { transform: translateY(100%); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
     </style>
 </body>
