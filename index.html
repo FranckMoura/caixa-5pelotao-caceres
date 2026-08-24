@@ -131,7 +131,6 @@
                 <div class="flex items-center gap-4 w-full">
                     <button onclick="document.getElementById('wrapperLateral').classList.toggle('hidden')" class="md:hidden text-white text-2xl px-2 focus:outline-none hover:text-pmmt-gold transition"><i class="fa-solid fa-bars"></i></button>
                     <div class="flex items-center gap-4">
-                        <!-- DEIXANDO A LOGO CLICÁVEL PARA REDIRECIONAR À HOME -->
                         <img src="logo_pmmt_branco_para_fundo_azul.png" alt="Logo PMMT" onclick="mudarModulo('home')" class="h-10 object-contain drop-shadow-md cursor-pointer hover:scale-105 transition-transform" onerror="this.style.display='none'">
                         <div class="border-l border-white/20 pl-4">
                             <h1 class="text-base font-extrabold tracking-wider">35º CFSD PMMT <span class="text-pmmt-gold">| 6º CR</span></h1>
@@ -157,7 +156,6 @@
             <div class="flex-1 flex overflow-hidden">
                 <!-- MENU LATERAL COMPACTO -->
                 <aside id="wrapperLateral" class="w-56 bg-pmmt-blue flex flex-col shadow-2xl z-50 hidden md:flex shrink-0">
-                    <!-- Redução do Brasão para não ocupar muito espaço em monitores pequenos -->
                     <div class="py-3 px-3 text-center flex flex-col items-center justify-center relative shrink-0 border-b border-white/10">
                         <img src="logo_brasao_5.png" alt="Brasão 5º Pelotão" class="w-14 h-14 object-contain mb-1 relative z-10 drop-shadow-lg hover:scale-105 transition-transform" onerror="this.onerror=null; this.src='https://via.placeholder.com/150?text=Brasao';">
                         <h2 class="text-xs font-black text-pmmt-gold tracking-widest uppercase relative z-10">5º PELOTÃO</h2>
@@ -629,9 +627,10 @@
                         <div class="bg-white shadow-sm border border-slate-300 p-8 text-center rounded-xl"><i class="fa-solid fa-bullhorn text-5xl text-slate-300 mb-3"></i><h2 class="text-xl font-black text-sys-dark uppercase tracking-widest">Área Livre / Mural</h2></div>
                     </section>
 
+                    <!-- MÓDULO TOQUES DE CORNETA -->
                     <section id="modulo-toques" class="hidden flex-1 flex flex-col h-full min-h-[85vh]">
-    <iframe id="iframeToques" src="toques_corneta.html" class="w-full h-full border border-slate-200 bg-transparent shadow-sm rounded-xl"></iframe>
-</section>
+                        <iframe id="iframeToques" src="toques_corneta.html" class="w-full h-full border border-slate-200 bg-transparent shadow-sm rounded-xl"></iframe>
+                    </section>
 
                 </main>
             </div>
@@ -740,7 +739,7 @@
         let listaAlunosFull = []; 
         let transacoesGlobais = [];
         let previsoesGlobais = []; 
-        let funcoesComandoGlobais = [];
+        let funcoesComandoGlobais = []; 
         let cautelasFixasGlobais = []; 
         let isAdmin = false;
         
@@ -833,11 +832,9 @@
             if (confirm("Encerrar sessão?")) { await supabaseClient.auth.signOut(); window.location.reload(); }
         }
 
-function mudarModulo(moduloDestino) {
-    const modulos = ['home', 'institucional', 'efetivo', 'cautela', 'financeiro', 'taf', 'academico', 'aluno', 'debate', 'toques'];
-    const nomes = { 'home': 'Painel Diário', 'institucional': 'Cadeia de Comando', 'efetivo': 'Efetivo e Escala', 'cautela': 'Cautela Fixa (Armas)', 'financeiro': 'Gestão Financeira', 'taf': 'TAF e Fatos', 'academico': 'Módulo Acadêmico', 'aluno': 'Área do Aluno', 'debate': 'Área Livre', 'toques': 'Toques de Corneta' };
-
-    // ... o restante da função continua igual ...
+        function mudarModulo(moduloDestino) {
+            const modulos = ['home', 'institucional', 'efetivo', 'cautela', 'financeiro', 'taf', 'academico', 'aluno', 'debate', 'toques'];
+            const nomes = { 'home': 'Painel Diário', 'institucional': 'Cadeia de Comando', 'efetivo': 'Efetivo e Escala', 'cautela': 'Cautela Fixa (Armas)', 'financeiro': 'Gestão Financeira', 'taf': 'TAF e Fatos', 'academico': 'Módulo Acadêmico', 'aluno': 'Área do Aluno', 'debate': 'Área Livre', 'toques': 'Toques de Corneta' };
 
             modulos.forEach(m => {
                 const el = document.getElementById('modulo-' + m); if(el) el.classList.add('hidden');
