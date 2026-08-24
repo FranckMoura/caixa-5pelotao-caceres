@@ -20,8 +20,8 @@
         }
     </script>
 </head>
-<body class="bg-transparent text-slate-800 font-sans h-full w-full">
-    <div class="h-screen flex flex-col bg-white rounded-xl shadow-md overflow-hidden border border-slate-200">
+<body class="bg-transparent text-slate-800 font-sans h-full w-full p-2">
+    <div class="h-[95vh] flex flex-col bg-white rounded-xl shadow-md overflow-hidden border border-slate-200">
         <!-- Cabeçalho -->
         <div class="bg-pmmt-blue text-white px-6 py-5 flex flex-col sm:flex-row justify-between items-center border-b-4 border-pmmt-gold gap-4 shrink-0">
             <div class="flex items-center gap-4">
@@ -40,10 +40,10 @@
         <!-- Área de Listagem -->
         <div class="flex-1 overflow-y-auto p-6 bg-slate-50 relative">
             <div id="loading" class="text-center py-20 text-slate-500 font-bold">
-                <i class="fa-solid fa-circle-notch fa-spin text-3xl mb-3 text-pmmt-gold"></i><br>Carregando acervo criptografado...
+                <i class="fa-solid fa-circle-notch fa-spin text-3xl mb-3 text-pmmt-gold"></i><br>Carregando acervo de áudio...
             </div>
             
-            <div id="gridToques" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 hidden pb-24">
+            <div id="gridToques" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 hidden pb-20">
                 <!-- Cards de áudio entrarão aqui via JavaScript -->
             </div>
             
@@ -53,7 +53,7 @@
         </div>
         
         <!-- Global Player Fixo no Rodapé -->
-        <div id="playerContainer" class="bg-white border-t-2 border-pmmt-gold p-4 flex items-center justify-between fixed bottom-0 left-0 w-full hidden shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.1)] z-10">
+        <div id="playerContainer" class="bg-white border-t-2 border-pmmt-gold p-4 flex items-center justify-between absolute bottom-0 left-0 w-full hidden shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.1)] z-10">
             <div class="flex items-center gap-4 w-full max-w-4xl mx-auto">
                 <div class="bg-pmmt-blue text-pmmt-gold w-12 h-12 rounded-full flex items-center justify-center shrink-0 shadow-md">
                     <i id="playIcon" class="fa-solid fa-music text-xl"></i>
@@ -74,12 +74,11 @@
     </div>
 
     <script>
-        // ==========================================
-        // CREDENCIAIS SUPABASE (Mesmas do Portal)
-        // ==========================================
         const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        // CORREÇÃO: Mudamos a constante para 'dbClient' para evitar conflito com a biblioteca base
+        const dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let todosToques = [];
         let currentlyPlayingCard = null;
@@ -87,7 +86,6 @@
         document.addEventListener('DOMContentLoaded', async () => {
             await carregarToques();
             
-            // Quando o áudio terminar, limpa a formatação do card atual
             document.getElementById('globalAudio').addEventListener('ended', () => {
                 if(currentlyPlayingCard) {
                     currentlyPlayingCard.classList.remove('ring-2', 'ring-pmmt-gold', 'bg-slate-50');
@@ -97,27 +95,25 @@
         });
 
         async function carregarToques() {
-            // Lista todos os arquivos no bucket "toques_corneta"
-            const { data, error } = await supabase.storage.from('toques_corneta').list();
+            // Usa o dbClient para chamar o Supabase
+            const { data, error } = await dbClient.storage.from('toques_corneta').list();
             
             document.getElementById('loading').classList.add('hidden');
             
             if (error || !data || data.length === 0) {
-                document.getElementById('gridToques').innerHTML = '<div class="col-span-full text-center text-red-500 font-bold py-10">Não foi possível carregar os toques.<br>Certifique-se de ter rodado o script de upload para o bucket "toques_corneta".</div>';
+                document.getElementById('gridToques').innerHTML = '<div class="col-span-full text-center text-red-500 font-bold py-10">Não foi possível carregar os toques ou a pasta está vazia.<br>Certifique-se de ter rodado o script de upload para o bucket "toques_corneta" no Supabase.</div>';
                 document.getElementById('gridToques').classList.remove('hidden');
                 return;
             }
 
-            // Filtra MP3/WAV e organiza alfabeticamente
             todosToques = data.filter(f => f.name.endsWith('.mp3') || f.name.endsWith('.wav')).sort((a, b) => a.name.localeCompare(b.name));
             renderizarGrid(todosToques);
         }
 
-        // Limpa o nome do arquivo para ficar com uma estética melhor
         function formatarNome(nomeArquivo) {
             let nome = nomeArquivo.replace(/\.(mp3|wav)$/i, '');
-            nome = nome.replace(/^[0-9]+-/, ''); 
-            nome = nome.replace(/_/g, ' '); 
+            nome = nome.replace(/^[0-9]+-/, '');
+            nome = nome.replace(/_/g, ' ');
             return nome.charAt(0).toUpperCase() + nome.slice(1);
         }
 
@@ -135,7 +131,8 @@
             document.getElementById('noResults').classList.add('hidden');
 
             lista.forEach(arquivo => {
-                const url = supabase.storage.from('toques_corneta').getPublicUrl(arquivo.name).data.publicUrl;
+                // Usa o dbClient para gerar a URL pública
+                const url = dbClient.storage.from('toques_corneta').getPublicUrl(arquivo.name).data.publicUrl;
                 const nomeFormatado = formatarNome(arquivo.name);
                 
                 const card = document.createElement('div');
@@ -164,13 +161,11 @@
             const titleLabel = document.getElementById('nowPlayingTitle');
             const playIcon = document.getElementById('playIcon');
             
-            // Reseta todos os cards
             document.querySelectorAll('.toque-card').forEach(c => {
                 c.classList.remove('ring-2', 'ring-pmmt-gold', 'bg-slate-50');
                 c.querySelector('.play-btn i').className = 'fa-solid fa-play';
             });
 
-            // Se clicou no mesmo áudio que já está tocando, ele entra em Pausa
             if (currentlyPlayingCard === cardElement && !audioPlayer.paused) {
                 audioPlayer.pause();
                 cardElement.querySelector('.play-btn i').className = 'fa-solid fa-play';
@@ -178,12 +173,10 @@
                 return;
             }
 
-            // Ativa o visual do card clicado
             cardElement.classList.add('ring-2', 'ring-pmmt-gold', 'bg-slate-50');
             cardElement.querySelector('.play-btn i').className = 'fa-solid fa-pause';
             currentlyPlayingCard = cardElement;
             
-            // Exibe o player global animado
             container.classList.remove('hidden');
             container.classList.add('animate-[slideUp_0.3s_ease-out]');
             titleLabel.innerText = titulo;
