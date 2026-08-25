@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toques de Corneta - PMMT</title>
+    <title>Toques e Canções - PMMT</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -27,7 +27,7 @@
             <div class="flex items-center gap-4 w-full lg:w-auto">
                 <i class="fa-solid fa-bullhorn text-pmmt-gold text-3xl"></i>
                 <div>
-                    <h2 class="text-lg md:text-xl font-black tracking-widest uppercase">Acervo de Toques</h2>
+                    <h2 class="text-lg md:text-xl font-black tracking-widest uppercase">Acervo de Toques e Canções</h2>
                     <p class="text-[10px] md:text-xs text-slate-300 uppercase mt-0.5">Padrão Exército Brasileiro / PMMT</p>
                 </div>
             </div>
@@ -44,7 +44,7 @@
                 </div>
                 
                 <div class="relative w-full sm:w-auto">
-                    <input type="text" id="searchInput" onkeyup="filtrarToques()" placeholder="Buscar toque (ex: Apresentar)..." class="w-full pl-9 pr-4 py-2 rounded-lg text-sm text-slate-800 outline-none focus:ring-2 focus:ring-pmmt-gold sm:w-64 transition-all">
+                    <input type="text" id="searchInput" onkeyup="filtrarToques()" placeholder="Buscar áudio (ex: Hino Nacional)..." class="w-full pl-9 pr-4 py-2 rounded-lg text-sm text-slate-800 outline-none focus:ring-2 focus:ring-pmmt-gold sm:w-64 transition-all">
                     <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400"></i>
                 </div>
             </div>
@@ -132,10 +132,13 @@
             renderizarGrid(todosToques);
         }
 
+        // Função aprimorada para formatar os nomes dos Toques e das Canções Militares
         function formatarNome(nomeArquivo) {
             let nome = nomeArquivo.replace(/\.(mp3|wav)$/i, '');
-            nome = nome.replace(/^[0-9]+-/, '');
-            nome = nome.replace(/_/g, ' ');
+            // Remove numeração seguida de traço OU ponto (ex: "41-" ou "01.")
+            nome = nome.replace(/^[0-9]+[-\.]\s*/, '');
+            // Substitui traços e underlines por espaços
+            nome = nome.replace(/[-_]/g, ' ');
             return nome.charAt(0).toUpperCase() + nome.slice(1);
         }
 
