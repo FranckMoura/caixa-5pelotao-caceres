@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal Institucional - 5º Pelotão</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -318,40 +317,13 @@
                         </div>
                     </section>
 
-                    <section id="modulo-financeiro" class="hidden space-y-5">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div class="bg-white border-t-4 border-emerald-500 shadow-sm p-4 flex items-center justify-between rounded-xl"><div><p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Arrecadado</p><h2 id="valorReceitas" class="text-xl font-black text-emerald-600 mt-0.5">R$ 0,00</h2></div><div class="bg-emerald-50 p-2.5 rounded-full"><i class="fa-solid fa-money-bill-wave text-xl text-emerald-500"></i></div></div>
-                            <div class="bg-white border-t-4 border-rose-500 shadow-sm p-4 flex items-center justify-between rounded-xl"><div><p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Despesas</p><h2 id="valorDespesas" class="text-xl font-black text-rose-600 mt-0.5">R$ 0,00</h2></div><div class="bg-rose-50 p-2.5 rounded-full"><i class="fa-solid fa-file-invoice text-xl text-rose-500"></i></div></div>
-                            <div class="bg-white border-t-4 border-sys-dark shadow-sm p-4 flex items-center justify-between rounded-xl"><div><p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Saldo Caixa</p><h2 id="valorSaldo" class="text-xl font-black text-sys-dark mt-0.5">R$ 0,00</h2></div><div class="bg-slate-100 p-2.5 rounded-full"><i class="fa-solid fa-building-columns text-xl text-slate-400"></i></div></div>
-                        </div>
-                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 no-print">
-                            <div class="bg-white shadow-sm border border-slate-200 lg:col-span-1 rounded-xl overflow-hidden">
-                                <div class="bg-slate-50 border-b border-slate-100 px-4 py-3"><h3 class="text-xs font-bold text-sys-dark uppercase tracking-wide"><i class="fa-solid fa-pen-to-square text-pmmt-gold mr-2"></i>Lançar Movimentação</h3></div>
-                                <div class="admin-only p-4">
-                                    <form id="formCaixa" onsubmit="salvarTransacao(event)" class="space-y-3">
-                                        <div class="grid grid-cols-2 gap-2"><label class="border border-slate-200 bg-white rounded p-1.5 text-center cursor-pointer hover:bg-slate-50 shadow-sm" id="lblReceita"><input type="radio" name="tipoOp" value="receita" checked class="hidden" onchange="mudarTipoUi()"><span class="text-[10px] font-bold text-slate-700 uppercase"><i class="fa-solid fa-arrow-down text-emerald-500 mr-1"></i> Receita</span></label><label class="border border-slate-200 bg-white rounded p-1.5 text-center cursor-pointer hover:bg-slate-50 shadow-sm" id="lblDespesa"><input type="radio" name="tipoOp" value="despesa" class="hidden" onchange="mudarTipoUi()"><span class="text-[10px] font-bold text-slate-700 uppercase"><i class="fa-solid fa-arrow-up text-rose-500 mr-1"></i> Despesa</span></label></div>
-                                        <div><div class="flex gap-2"><select id="inputCategoria" required class="w-full border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700 outline-none focus:border-sys-dark" onchange="verificarNovaCategoria()"></select><input type="text" id="inputNovaCategoria" placeholder="Nova..." class="hidden w-full border border-slate-200 rounded p-2 text-xs outline-none"><button type="button" id="btnCancelarNovaCat" class="hidden bg-slate-200 px-2 rounded text-slate-600 hover:bg-slate-300 font-bold text-xs" onclick="cancelarNovaCategoria()"><i class="fa-solid fa-times"></i></button></div></div>
-                                        <div id="blocoAluno"><select id="inputAluno" class="w-full border border-slate-200 rounded p-2 text-xs font-bold text-slate-800 outline-none bg-slate-50"></select></div>
-                                        <div><input type="text" id="inputDescricao" required placeholder="Descrição (Ex: Materiais)" class="w-full border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700 outline-none"></div>
-                                        <div class="grid grid-cols-2 gap-2"><input type="number" step="0.01" id="inputValor" required placeholder="R$ 0.00" class="w-full border border-slate-200 rounded p-2 text-xs font-bold text-slate-700 outline-none"><input type="date" id="inputData" required class="w-full border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700 outline-none"></div>
-                                        <button type="submit" class="w-full bg-sys-dark hover:bg-pmmt-blue text-white font-bold py-2 rounded text-[10px] transition uppercase tracking-widest shadow mt-2">Gravar Registro</button>
-                                    </form>
-                                </div>
-                                <div class="viewer-only hidden p-6 flex flex-col items-center justify-center text-slate-400 min-h-[200px] bg-slate-50/50"><i class="fa-solid fa-lock text-3xl mb-2 text-slate-300"></i><p class="text-[9px] font-bold uppercase text-center tracking-wider">Acesso Restrito</p></div>
-                            </div>
-                            <div class="bg-white shadow-sm border border-slate-200 lg:col-span-2 flex flex-col rounded-xl overflow-hidden">
-                                <div class="bg-slate-50 border-b border-slate-100 px-4 py-3"><h3 class="text-xs font-bold text-sys-dark uppercase tracking-wide"><i class="fa-solid fa-chart-pie text-pmmt-gold mr-2"></i>Distribuição</h3></div>
-                                <div class="flex-1 flex items-center justify-center p-4"><div class="w-full max-w-[220px]"><canvas id="graficoTransacoes"></canvas></div></div>
-                            </div>
-                        </div>
-                        <div class="bg-white shadow-sm border border-slate-200 no-print rounded-xl overflow-hidden">
-                            <div class="bg-slate-50 border-b border-slate-100 px-4 py-3 flex justify-between items-center cursor-pointer hover:bg-slate-100 transition" onclick="togglePainel('conteudoCotas', 'iconeCotas')"><h3 class="text-xs font-bold text-sys-dark uppercase tracking-wide"><i class="fa-solid fa-users text-pmmt-gold mr-2"></i>Monitoramento de Cotas (R$ 150,00)</h3><i id="iconeCotas" class="fa-solid fa-chevron-up text-slate-400"></i></div>
-                            <div id="conteudoCotas" class="painel-conteudo bg-white" style="max-height: 2000px; padding: 1rem;"><div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3" id="gridCotas"></div></div>
-                        </div>
+                    <!-- MÓDULO FINANCEIRO (Agora em Iframe) -->
+                    <section id="modulo-financeiro" class="hidden flex-1 flex flex-col h-full min-h-[85vh]">
+                        <iframe id="iframeFinanceiro" src="financeiro.html" class="w-full h-full border border-slate-200 bg-transparent shadow-sm rounded-xl"></iframe>
                     </section>
 
                     <section id="modulo-efetivodados" class="hidden flex-1 flex flex-col h-full min-h-[85vh]">
-                    <iframe id="iframeEfetivoDados" src="efetivo_dados.html" class="w-full h-full border border-slate-200 bg-transparent shadow-sm rounded-xl"></iframe>
+                        <iframe id="iframeEfetivoDados" src="efetivo_dados.html" class="w-full h-full border border-slate-200 bg-transparent shadow-sm rounded-xl"></iframe>
                     </section>
 
                     <section id="modulo-academico" class="hidden flex-1 flex flex-col h-full min-h-[85vh]">
@@ -381,7 +353,7 @@
                                         <div class="flex items-center gap-3 w-full max-w-md"><label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest whitespace-nowrap">Semana Ref:</label><select id="selQtsSemana" class="w-full border border-slate-300 rounded p-1.5 text-xs font-semibold outline-none" onchange="carregarQTS()"></select><button onclick="novaSemanaQTS()" class="admin-only bg-slate-200 px-3 py-1.5 rounded text-slate-600 hover:bg-slate-300 text-xs font-bold" title="Criar Nova"><i class="fa-solid fa-plus"></i></button></div>
                                         <div class="flex gap-2"><button onclick="salvarQTS()" class="admin-only bg-pmmt-blue hover:bg-sys-blue text-white px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider shadow flex items-center gap-1.5"><i class="fa-solid fa-save"></i> Salvar</button><button onclick="imprimirQTS()" class="bg-slate-600 hover:bg-slate-700 text-white px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider shadow flex items-center gap-1.5"><i class="fa-solid fa-print"></i> Imprimir</button></div>
                                     </div>
-<div class="overflow-x-auto pb-4" id="box-qts-print">
+                                    <div class="overflow-x-auto pb-4" id="box-qts-print">
                                         <div class="min-w-[800px] border border-black bg-white text-black p-2 font-sans">
                                             <div class="text-center mb-2 leading-tight">
                                                 <div class="flex justify-between items-end border-b border-black pb-1 mb-1">
@@ -741,31 +713,16 @@
     <!-- MÓDULO JS -->
     <script>
         let supabaseClient;
-        let grafico;
         let alunosMap = {};
         let listaAlunosFull = []; 
-        let transacoesGlobais = [];
-        let previsoesGlobais = []; 
         let funcoesComandoGlobais = []; 
         let cautelasFixasGlobais = []; 
         let isAdmin = false;
-        
-        let colunaOrdenacao = 'data';
-        let direcaoOrdenacao = 'desc';
-        const VALOR_COTA = 150.00;
-        let catReceitas = ["Cota Inicial (R$ 150)", "Mensalidade CFSD", "Doação", "Arrecadação Rifa"];
-        let catDespesas = ["Alimentação", "Fardamento extra", "Manutenção Pelotão", "Material Limpeza/Água", "Solenidade"];
 
-        // SUPABASE CREDENCIAIS
         const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
 
-        if (document.getElementById('inputData')) {
-            document.getElementById('inputData').value = new Date().toISOString().split('T')[0];
-        }
-
         window.onload = async function() {
-            mudarTipoUi();
             await iniciarSupabase();
         };
 
@@ -821,17 +778,18 @@
                 mostrarLoading(true);
                 await carregarAlunos(); 
                 await carregarFuncoesComando(); 
-                await carregarTransacoes();
                 await carregarCautelasFixas(); 
                 await carregarQTSList(); 
                 await carregarMateriaisApoio();
                 
                 await renderizarDashboardHome();
 
-                const iframeTaf = document.getElementById('iframeTaf');
-                if (iframeTaf && iframeTaf.contentWindow) iframeTaf.contentWindow.location.reload();
-                const iframeAcad = document.getElementById('iframeAcademico');
-                if (iframeAcad && iframeAcad.contentWindow) iframeAcad.contentWindow.location.reload();
+                const iframesToReload = ['iframeEfetivoDados', 'iframeAcademico', 'iframeFinanceiro', 'iframeToques'];
+                iframesToReload.forEach(id => {
+                    const iframe = document.getElementById(id);
+                    if (iframe && iframe.contentWindow) iframe.contentWindow.location.reload();
+                });
+
             } catch (err) { console.error("Erro Sync", err); } finally { mostrarLoading(false); }
         }
 
@@ -840,8 +798,8 @@
         }
 
         function mudarModulo(moduloDestino) {
-            const modulos = ['home', 'institucional', 'efetivo', 'cautela', 'financeiro', 'mudarModulo', 'academico', 'aluno', 'debate', 'toques'];
-            const nomes = { 'home': 'Painel Diário', 'institucional': 'Cadeia de Comando', 'efetivo': 'Efetivo e Escala', 'cautela': 'Cautela Fixa (Armas)', 'financeiro': 'Gestão Financeira', 'taf': 'TAF e Fatos', 'academico': 'Módulo Acadêmico', 'aluno': 'Área do Aluno', 'debate': 'Área Livre', 'toques': 'Toques de Corneta' };
+            const modulos = ['home', 'institucional', 'efetivo', 'cautela', 'financeiro', 'efetivodados', 'academico', 'aluno', 'debate', 'toques'];
+            const nomes = { 'home': 'Painel Diário', 'institucional': 'Cadeia de Comando', 'efetivo': 'Efetivo e Escala', 'cautela': 'Cautela Fixa (Armas)', 'financeiro': 'Gestão Financeira', 'efetivodados': 'TAF e Dados', 'academico': 'Módulo Acadêmico', 'aluno': 'Área do Aluno', 'debate': 'Área Livre', 'toques': 'Toques de Corneta' };
 
             modulos.forEach(m => {
                 const el = document.getElementById('modulo-' + m); if(el) el.classList.add('hidden');
@@ -923,34 +881,18 @@
             }
         }
 
-        function togglePainel(conteudoId, iconeId) {
-            const conteudo = document.getElementById(conteudoId), icone = document.getElementById(iconeId);
-            if (conteudo.style.maxHeight !== '0px') {
-                conteudo.style.maxHeight = '0px'; icone.style.transform = 'rotate(180deg)';
-                if(conteudoId === 'conteudoCotas') conteudo.style.padding = '0px 1rem';
-            } else {
-                conteudo.style.maxHeight = '4000px'; icone.style.transform = 'rotate(0deg)';
-                if(conteudoId === 'conteudoCotas') conteudo.style.padding = '1rem';
-            }
-        }
-
         function mostrarLoading(show) { 
             const loader = document.getElementById('loaderAlert');
             if(show) loader.classList.remove('hidden'); else loader.classList.add('hidden');
         }
 
         async function carregarAlunos() {
-            const select = document.getElementById('inputAluno');
             const { data: dbData } = await supabaseClient.from('alunos_pelotao').select('*').order('numero', { ascending: true });
-            
-            if(select) select.innerHTML = '<option value="GERAL">-- Lançamento Geral (Caixa) --</option><option value="LOTE">-- Lançar em LOTE --</option>';
-
             listaAlunosFull = dbData || [];
             listaAlunosFull.forEach(aluno => { 
                 let nomeExibicao = (aluno.qra ? aluno.qra : aluno.nome).replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase();
                 const numeroFormatado = "5" + aluno.numero.toString().padStart(2, '0');
                 alunosMap[aluno.id] = `${numeroFormatado} - ${nomeExibicao}`; 
-                if(select) select.add(new Option(`${numeroFormatado} - ${nomeExibicao}`, aluno.id)); 
             });
             renderizarEscala(); renderizarXerife(); renderizarListasEfetivo();
         }
@@ -1053,15 +995,15 @@
                         <span class="text-[9px] font-black px-2 py-0.5 rounded bg-sys-blue text-white mt-2 w-full text-center tracking-widest">${eq}</span>
                         
                         <div class="text-[9px] font-bold px-1 py-0.5 rounded border border-slate-300 bg-white text-black mt-1 w-full text-center break-words leading-tight shadow-sm tracking-wide flex items-center justify-center gap-1">
-CMT: ${sgtFinal.replace('2º SGT PM ','')}
-<button onclick="abrirModalFuncao('CMT', '${dtIso}', '')" class="text-slate-400 hover:text-pmmt-gold shrink-0"><i class="fa-solid fa-pen text-[9px]"></i></button>
+                            CMT: ${sgtFinal.replace('2º SGT PM ','')}
+                            <button onclick="abrirModalFuncao('CMT', '${dtIso}', '')" class="text-slate-400 hover:text-pmmt-gold shrink-0"><i class="fa-solid fa-pen text-[9px]"></i></button>
                         </div>
 
                         <div class="mt-2 pt-1 border-t border-slate-300 border-dashed w-full flex flex-col items-center">
                             <span class="text-[8px] text-slate-500 uppercase font-bold tracking-widest mb-0.5">Aluno de Dia</span>
                             <div class="flex items-center gap-1 w-full justify-center">
-<span class="text-[9px] font-black text-black uppercase text-center break-words leading-tight w-full">${nomeEx}</span>
-<button onclick="abrirModalFuncao('ALUNO_DIA', '${dtIso}', '${eq}')" class="text-slate-400 hover:text-pmmt-gold shrink-0"><i class="fa-solid fa-pen text-[9px]"></i></button>
+                                <span class="text-[9px] font-black text-black uppercase text-center break-words leading-tight w-full">${nomeEx}</span>
+                                <button onclick="abrirModalFuncao('ALUNO_DIA', '${dtIso}', '${eq}')" class="text-slate-400 hover:text-pmmt-gold shrink-0"><i class="fa-solid fa-pen text-[9px]"></i></button>
                             </div>
                         </div>
                         <button onclick="abrirPreviaEscala('${dtIso}', '${eq}', '${sgtFinal}', '${alDia.id||''}')" class="absolute top-1.5 right-1.5 text-slate-400 hover:text-sys-dark"><i class="fa-solid fa-magnifying-glass text-[10px]"></i></button>
@@ -1454,68 +1396,18 @@ CMT: ${sgtFinal.replace('2º SGT PM ','')}
 
         function imprimirCautelaFixa() {
             const s = document.createElement('style'); 
-            
             s.innerHTML = `
                 @page { size: A4 portrait; margin: 10mm; }
                 body.printing-cautela table { min-width: 0 !important; width: 100% !important; }
                 body.printing-cautela th, body.printing-cautela td { word-wrap: break-word; white-space: normal !important; }
             `;
             document.head.appendChild(s); 
-            
             document.body.classList.add('printing-cautela'); 
-            
             window.print();
-            
             setTimeout(() => { 
                 document.body.classList.remove('printing-cautela'); 
                 document.head.removeChild(s); 
             }, 500);
-        }
-
-        function mudarTipoUi() {
-            const t = document.querySelector('input[name="tipoOp"]:checked').value; const sel = document.getElementById('inputCategoria'); sel.innerHTML=''; cancelarNovaCategoria();
-            (t==='receita'?catReceitas:catDespesas).sort().forEach(c=>sel.add(new Option(c,c))); sel.add(new Option("➕ Cadastrar Nova...", "NOVA"));
-        }
-        function verificarNovaCategoria() { if(document.getElementById('inputCategoria').value==='NOVA'){document.getElementById('inputCategoria').classList.add('hidden'); document.getElementById('inputNovaCategoria').classList.remove('hidden'); document.getElementById('btnCancelarNovaCat').classList.remove('hidden'); document.getElementById('inputNovaCategoria').focus();} }
-        function cancelarNovaCategoria() { document.getElementById('inputNovaCategoria').value=''; document.getElementById('inputNovaCategoria').classList.add('hidden'); document.getElementById('btnCancelarNovaCat').classList.add('hidden'); document.getElementById('inputCategoria').classList.remove('hidden'); document.getElementById('inputCategoria').selectedIndex=0; }
-        
-        async function carregarTransacoes() { 
-            const {data} = await supabaseClient.from('transacoes_caixa').select('*'); 
-            transacoesGlobais=data||[]; 
-            transacoesGlobais.forEach(t=>{if(t.tipo==='receita'&&!catReceitas.includes(t.categoria))catReceitas.push(t.categoria); if(t.tipo==='despesa'&&!catDespesas.includes(t.categoria))catDespesas.push(t.categoria);}); 
-            mudarTipoUi(); atualizarPainel(); 
-        }
-        
-        async function salvarTransacao(e) {
-            e.preventDefault(); mostrarLoading(true); const t=document.querySelector('input[name="tipoOp"]:checked').value; const a=document.getElementById('inputAluno').value;
-            let c=document.getElementById('inputCategoria').value==='NOVA'?document.getElementById('inputNovaCategoria').value.trim():document.getElementById('inputCategoria').value; if(!c)c="Outros";
-            const d=document.getElementById('inputDescricao').value, v=parseFloat(document.getElementById('inputValor').value), dt=document.getElementById('inputData').value;
-            let err; if(a==="LOTE"){const trs=listaAlunosFull.map(al=>({tipo:t,categoria:c,descricao:d,valor:v,data:dt,aluno_id:al.id})); const res=await supabaseClient.from('transacoes_caixa').insert(trs); err=res.error;}
-            else { const res=await supabaseClient.from('transacoes_caixa').insert([{tipo:t,categoria:c,descricao:d,valor:v,data:dt,aluno_id:a==="GERAL"?null:parseInt(a)}]); err=res.error;}
-            if(!err){document.getElementById('inputDescricao').value=''; document.getElementById('inputValor').value=''; document.getElementById('inputAluno').value='GERAL'; cancelarNovaCategoria(); await carregarTransacoes();}else alert("Erro!"); mostrarLoading(false);
-        }
-        
-        function atualizarPainel() {
-            let tr=0, td=0, catG={}, pagA={}; listaAlunosFull.forEach(a=>pagA[a.id]=0);
-            transacoesGlobais.forEach(t=>{const v=parseFloat(t.valor); if(t.tipo==='receita'){tr+=v; if(t.aluno_id&&(t.categoria.includes("Cota")||t.categoria.includes("Mensalidade"))) pagA[t.aluno_id]+=v;} if(t.tipo==='despesa')td+=v; catG[t.categoria]=(catG[t.categoria]||0)+v;});
-            document.getElementById('valorReceitas').innerText=tr.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); document.getElementById('valorDespesas').innerText=td.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); document.getElementById('valorSaldo').innerText=(tr-td).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-            renderizarGrafico(catG); renderizarPainelCotas(pagA);
-        }
-
-        function renderizarPainelCotas(pagamentos) {
-            const grid=document.getElementById('gridCotas'); if(!grid)return; grid.innerHTML='';
-            listaAlunosFull.forEach(a=>{
-                const p=pagamentos[a.id]||0; let s,cb,ct,bb;
-                if(p>=VALOR_COTA){s="EM DIA"; cb="border-emerald-200 bg-emerald-50"; ct="text-emerald-700"; bb="bg-emerald-500";} else if(p>0&&p<VALOR_COTA){s="PARCIAL"; cb="border-amber-200 bg-amber-50"; ct="text-amber-700"; bb="bg-amber-400";} else{s="PENDENTE"; cb="border-slate-200 bg-white"; ct="text-rose-600"; bb="bg-rose-400";}
-                grid.innerHTML+=`<div class="border rounded-xl p-3 shadow-sm ${cb}"><div class="flex justify-between items-center mb-1.5"><span class="text-[11px] font-black text-slate-500">5${a.numero.toString().padStart(2,'0')}</span><span class="text-[10px] font-black tracking-wider ${ct}">${s}</span></div><p class="text-xs font-bold text-slate-800 break-words line-clamp-2 leading-tight uppercase mb-2" title="${a.nome}">${(a.qra||a.nome.split(' ')[0]).replace(/AL SD PM /gi,'').toUpperCase()}</p><div class="w-full bg-slate-200 h-1.5 mb-1.5 rounded-full overflow-hidden"><div class="${bb} h-1.5" style="width: ${Math.min((p/VALOR_COTA)*100,100)}%"></div></div><p class="text-[10px] font-semibold text-slate-500">R$ ${p.toFixed(2).replace('.',',')} / 150</p></div>`;
-            });
-        }
-        
-        function renderizarGrafico(dados) {
-            const ctx = document.getElementById('graficoTransacoes')?.getContext('2d'); if(!ctx)return; if(grafico)grafico.destroy();
-            const lbl=Object.keys(dados), tonsV=['#10b981','#059669','#34d399','#047857','#6ee7b7'], tonsR=['#f43f5e','#e11d48','#fb7185','#be123c','#fca5a5']; let iV=0, iR=0;
-            const bg = lbl.map(c=>{const tx=transacoesGlobais.find(t=>t.categoria===c); return tx&&tx.tipo==='receita'?tonsV[iV++%tonsV.length]:tonsR[iR++%tonsR.length];});
-            grafico = new Chart(ctx, {type:'doughnut', data:{labels:lbl, datasets:[{data:Object.values(dados), backgroundColor:bg, borderWidth:1, borderColor:'#fff'}]}, options:{responsive:true, cutout:'65%', plugins:{legend:{position:'bottom', labels:{font:{family:'"Open Sans"',size:12},usePointStyle:true,boxWidth:8}}}}});
         }
 
         function abrirAbaAluno(abaId, btnElement) {
