@@ -19,6 +19,14 @@
             }
         }
     </script>
+    <style>
+        /* Regras exclusivas para Impressão */
+        @media print {
+            body > div:not(#printFichaArea) { display: none !important; }
+            #printFichaArea { display: block !important; position: absolute; top: 0; left: 0; width: 100%; margin: 0; padding: 20mm; background: white; }
+            @page { margin: 0; size: A4 portrait; }
+        }
+    </style>
 </head>
 <body class="bg-transparent text-slate-800 font-sans h-full w-full p-2">
     <div class="h-[95vh] flex flex-col bg-white rounded-xl shadow-md overflow-hidden border border-slate-200">
@@ -73,9 +81,14 @@
                                 <p class="text-sm font-bold text-pmmt-gold uppercase mt-1">AL SD PM <span id="fichaQRA">QRA</span> <span class="text-slate-400 text-xs ml-2">Nº <span id="fichaNum">000</span></span></p>
                             </div>
                         </div>
-                        <button id="btnEditar" onclick="habilitarEdicao()" class="text-[10px] font-bold uppercase tracking-widest bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1.5 rounded border border-slate-300 transition shadow-sm flex items-center gap-1.5">
-                            <i class="fa-solid fa-pen-to-square"></i> Editar
-                        </button>
+                        <div class="flex items-center gap-2">
+                            <button id="btnImprimirFicha" onclick="imprimirFichaAluno()" class="text-[10px] font-bold uppercase tracking-widest bg-pmmt-blue hover:bg-slate-700 text-pmmt-gold px-3 py-1.5 rounded transition shadow-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-print"></i> Imprimir Ficha
+                            </button>
+                            <button id="btnEditar" onclick="habilitarEdicao()" class="text-[10px] font-bold uppercase tracking-widest bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1.5 rounded border border-slate-300 transition shadow-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                            </button>
+                        </div>
                     </div>
 
                     <form id="formDadosAluno" onsubmit="salvarDados(event)" class="space-y-6">
@@ -128,6 +141,50 @@
                         </div>
                     </form>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MÓDULO DE IMPRESSÃO DA FICHA -->
+    <div id="printFichaArea" class="hidden font-sans bg-white text-black p-8">
+        <div class="flex flex-col items-center mb-8 text-center border-b-2 border-black pb-4">
+            <h1 class="font-bold text-xl uppercase mb-1">POLÍCIA MILITAR DO ESTADO DE MATO GROSSO</h1>
+            <h2 class="font-bold text-sm uppercase mb-1">DIRETORIA DE ENSINO INSTRUÇÃO E PESQUISA</h2>
+            <h2 class="font-bold text-sm uppercase mb-1">ESCOLA SUPERIOR DE FORMAÇÃO E APERFEIÇOAMENTO DE PRAÇAS</h2>
+            <h2 class="font-bold text-sm uppercase">35° CFSD - 5º PELOTÃO - POLO CÁCERES</h2>
+        </div>
+        
+        <h2 class="text-2xl font-black text-center mb-8 uppercase underline">Ficha de Dados do Aluno</h2>
+        
+        <div class="mb-8 border border-black p-6 rounded-lg bg-gray-50">
+            <h3 class="text-lg font-bold mb-4 border-b border-gray-300 pb-2 uppercase">Identificação</h3>
+            <div class="grid grid-cols-2 gap-4">
+                <p><strong>Número:</strong> <span id="printNum"></span></p>
+                <p><strong>Nome de Guerra (QRA):</strong> AL SD PM <span id="printQRA"></span></p>
+                <p class="col-span-2"><strong>Nome Completo:</strong> <span id="printNome"></span></p>
+                <p><strong>Equipe:</strong> <span id="printEquipe"></span></p>
+                <p><strong>CPF:</strong> <span id="printCPF"></span></p>
+                <p><strong>Data de Nascimento:</strong> <span id="printNasc"></span></p>
+            </div>
+        </div>
+
+        <div class="border border-black p-6 rounded-lg bg-gray-50">
+            <h3 class="text-lg font-bold mb-4 border-b border-gray-300 pb-2 uppercase">Dados Físicos e Médicos</h3>
+            <div class="grid grid-cols-2 gap-4">
+                <p><strong>Tipo Sanguíneo:</strong> <span id="printSangue"></span></p>
+                <p><strong>Altura:</strong> <span id="printAltura"></span> m</p>
+                <p><strong>Peso:</strong> <span id="printPeso"></span> kg</p>
+            </div>
+        </div>
+        
+        <div class="mt-32 pt-8 border-t border-black flex justify-between px-10 text-center text-sm font-bold">
+            <div>
+                <p>___________________________________</p>
+                <p class="mt-2">Assinatura do Aluno</p>
+            </div>
+            <div>
+                <p>___________________________________</p>
+                <p class="mt-2">Comando do 5º Pelotão</p>
             </div>
         </div>
     </div>
@@ -230,6 +287,7 @@
                 el.classList.add('bg-white', 'shadow-sm', 'border-pmmt-gold');
             });
             document.getElementById('btnEditar').classList.add('hidden');
+            document.getElementById('btnImprimirFicha').classList.add('hidden');
             document.getElementById('boxBotoes').classList.remove('hidden');
         }
 
@@ -252,6 +310,7 @@
             }
 
             document.getElementById('btnEditar').classList.remove('hidden');
+            document.getElementById('btnImprimirFicha').classList.remove('hidden');
             document.getElementById('boxBotoes').classList.add('hidden');
         }
 
@@ -299,6 +358,34 @@
                 (a.numero && a.numero.toString().includes(termo))
             );
             renderizarLista(filtrados);
+        }
+
+        function imprimirFichaAluno() {
+            if (!alunoSelecionado) return;
+            
+            // Formatador de data BR
+            let nascFormatada = 'Não informado';
+            if (alunoSelecionado.data_nascimento) {
+                const parts = alunoSelecionado.data_nascimento.split('-');
+                if (parts.length === 3) {
+                    nascFormatada = `${parts[2]}/${parts[1]}/${parts[0]}`;
+                }
+            }
+            
+            // Preenchendo as Tags da página oculta
+            document.getElementById('printNum').innerText = "5" + alunoSelecionado.numero.toString().padStart(2, '0');
+            document.getElementById('printQRA').innerText = (alunoSelecionado.qra || alunoSelecionado.nome).replace(/AL SD PM |AL SD /gi, '').trim().toUpperCase();
+            document.getElementById('printNome').innerText = alunoSelecionado.nome.toUpperCase();
+            document.getElementById('printEquipe').innerText = alunoSelecionado.equipe || 'N/A';
+            document.getElementById('printCPF').innerText = alunoSelecionado.cpf || 'Não informado';
+            document.getElementById('printNasc').innerText = nascFormatada;
+            
+            document.getElementById('printSangue').innerText = alunoSelecionado.tipo_sanguineo || 'Não informado';
+            document.getElementById('printAltura').innerText = alunoSelecionado.altura ? alunoSelecionado.altura.toFixed(2) : '---';
+            document.getElementById('printPeso').innerText = alunoSelecionado.peso ? alunoSelecionado.peso.toFixed(1) : '---';
+            
+            // Invoca a janela de impressão nativa do navegador
+            window.print();
         }
     </script>
 </body>
