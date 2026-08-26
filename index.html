@@ -1053,15 +1053,15 @@
                         <span class="text-[9px] font-black px-2 py-0.5 rounded bg-sys-blue text-white mt-2 w-full text-center tracking-widest">${eq}</span>
                         
                         <div class="text-[9px] font-bold px-1 py-0.5 rounded border border-slate-300 bg-white text-black mt-1 w-full text-center break-words leading-tight shadow-sm tracking-wide flex items-center justify-center gap-1">
-                            CMT: ${sgtFinal.replace('2º SGT PM ','')}
-                            ${isAdmin ? `<button onclick="abrirModalFuncao('CMT', '${dtIso}', '')" class="text-slate-400 hover:text-pmmt-gold admin-only shrink-0"><i class="fa-solid fa-pen text-[9px]"></i></button>` : ''}
+CMT: ${sgtFinal.replace('2º SGT PM ','')}
+<button onclick="abrirModalFuncao('CMT', '${dtIso}', '')" class="text-slate-400 hover:text-pmmt-gold shrink-0"><i class="fa-solid fa-pen text-[9px]"></i></button>
                         </div>
 
                         <div class="mt-2 pt-1 border-t border-slate-300 border-dashed w-full flex flex-col items-center">
                             <span class="text-[8px] text-slate-500 uppercase font-bold tracking-widest mb-0.5">Aluno de Dia</span>
                             <div class="flex items-center gap-1 w-full justify-center">
-                                <span class="text-[9px] font-black text-black uppercase text-center break-words leading-tight w-full">${nomeEx}</span>
-                                ${isAdmin ? `<button onclick="abrirModalFuncao('ALUNO_DIA', '${dtIso}', '${eq}')" class="text-slate-400 hover:text-pmmt-gold admin-only shrink-0"><i class="fa-solid fa-pen text-[9px]"></i></button>` : ''}
+<span class="text-[9px] font-black text-black uppercase text-center break-words leading-tight w-full">${nomeEx}</span>
+<button onclick="abrirModalFuncao('ALUNO_DIA', '${dtIso}', '${eq}')" class="text-slate-400 hover:text-pmmt-gold shrink-0"><i class="fa-solid fa-pen text-[9px]"></i></button>
                             </div>
                         </div>
                         <button onclick="abrirPreviaEscala('${dtIso}', '${eq}', '${sgtFinal}', '${alDia.id||''}')" class="absolute top-1.5 right-1.5 text-slate-400 hover:text-sys-dark"><i class="fa-solid fa-magnifying-glass text-[10px]"></i></button>
@@ -1259,13 +1259,11 @@
                 }
             });
 
-            if (isAdmin) { 
-                const typeNames = typesToSave.map(t => t.tipo);
-                const { error: delErr } = await supabaseClient.from('funcoes_comando').delete().eq('data_referencia', dataIso).in('tipo', typeNames);
-                if (!delErr && payloads.length > 0) { await supabaseClient.from('funcoes_comando').insert(payloads); }
-                await carregarFuncoesComando();
-                renderizarEscala();
-            }
+            const typeNames = typesToSave.map(t => t.tipo);
+            const { error: delErr } = await supabaseClient.from('funcoes_comando').delete().eq('data_referencia', dataIso).in('tipo', typeNames);
+            if (!delErr && payloads.length > 0) { await supabaseClient.from('funcoes_comando').insert(payloads); }
+            await carregarFuncoesComando();
+            renderizarEscala();
 
             const dataAlvo = new Date(dataIso + 'T12:00:00Z');
             document.getElementById('printDataAtual').innerText = dataAlvo.toLocaleDateString('pt-BR');
