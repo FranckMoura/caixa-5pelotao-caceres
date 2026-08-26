@@ -82,7 +82,7 @@
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
-                            <button id="btnImprimirFicha" onclick="imprimirFichaAluno()" class="text-[10px] font-bold uppercase tracking-widest bg-pmmt-blue hover:bg-slate-700 text-pmmt-gold px-3 py-1.5 rounded transition shadow-sm flex items-center gap-1.5">
+                            <button id="btnImprimirFicha" onclick="imprimirFichaAluno()" class="text-[10px] font-bold uppercase tracking-widest bg-pmmt-blue hover:bg-sys-blue text-white px-3 py-1.5 rounded transition shadow-sm flex items-center gap-1.5">
                                 <i class="fa-solid fa-print"></i> Imprimir Ficha
                             </button>
                             <button id="btnEditar" onclick="habilitarEdicao()" class="text-[10px] font-bold uppercase tracking-widest bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1.5 rounded border border-slate-300 transition shadow-sm flex items-center gap-1.5">
@@ -130,6 +130,12 @@
                                     </div>
                                 </div>
                             </div>
+                            
+                            <!-- Bloco de Anotações -->
+                            <div class="md:col-span-2">
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-clipboard text-pmmt-gold mr-1"></i> Fatos Observados / Anotações</label>
+                                <textarea id="inputAnotacoes" disabled rows="4" placeholder="Registre aqui observações de saúde, dispensas médicas, conduta, restrições ou outras informações relevantes..." class="w-full border border-slate-300 rounded-lg p-2.5 text-sm font-semibold text-slate-700 outline-none focus:border-pmmt-blue bg-slate-50 transition-colors resize-none"></textarea>
+                            </div>
                         </div>
 
                         <!-- Botões de Ação (Escondidos por padrão) -->
@@ -168,7 +174,7 @@
             </div>
         </div>
 
-        <div class="border border-black p-6 rounded-lg bg-gray-50">
+        <div class="mb-8 border border-black p-6 rounded-lg bg-gray-50">
             <h3 class="text-lg font-bold mb-4 border-b border-gray-300 pb-2 uppercase">Dados Físicos e Médicos</h3>
             <div class="grid grid-cols-2 gap-4">
                 <p><strong>Tipo Sanguíneo:</strong> <span id="printSangue"></span></p>
@@ -177,7 +183,12 @@
             </div>
         </div>
         
-        <div class="mt-32 pt-8 border-t border-black flex justify-between px-10 text-center text-sm font-bold">
+        <div class="border border-black p-6 rounded-lg bg-gray-50 mt-8">
+            <h3 class="text-lg font-bold mb-4 border-b border-gray-300 pb-2 uppercase">Fatos Observados / Anotações</h3>
+            <p id="printAnotacoes" class="text-sm whitespace-pre-wrap min-h-[80px]"></p>
+        </div>
+        
+        <div class="mt-20 pt-8 border-t border-black flex justify-between px-10 text-center text-sm font-bold">
             <div>
                 <p>___________________________________</p>
                 <p class="mt-2">Assinatura do Aluno</p>
@@ -272,6 +283,7 @@
             document.getElementById('inputSangue').value = aluno.tipo_sanguineo || '';
             document.getElementById('inputPeso').value = aluno.peso || '';
             document.getElementById('inputAltura').value = aluno.altura || '';
+            document.getElementById('inputAnotacoes').value = aluno.anotacoes || '';
 
             // Troca a tela inicial pela ficha
             document.getElementById('avisoNenhum').classList.add('hidden');
@@ -279,7 +291,7 @@
         }
 
         function habilitarEdicao() {
-            const inputs = ['inputCPF', 'inputNasc', 'inputSangue', 'inputPeso', 'inputAltura'];
+            const inputs = ['inputCPF', 'inputNasc', 'inputSangue', 'inputPeso', 'inputAltura', 'inputAnotacoes'];
             inputs.forEach(id => {
                 const el = document.getElementById(id);
                 el.disabled = false;
@@ -292,7 +304,7 @@
         }
 
         function cancelarEdicao() {
-            const inputs = ['inputCPF', 'inputNasc', 'inputSangue', 'inputPeso', 'inputAltura'];
+            const inputs = ['inputCPF', 'inputNasc', 'inputSangue', 'inputPeso', 'inputAltura', 'inputAnotacoes'];
             inputs.forEach(id => {
                 const el = document.getElementById(id);
                 el.disabled = true;
@@ -307,6 +319,7 @@
                 document.getElementById('inputSangue').value = alunoSelecionado.tipo_sanguineo || '';
                 document.getElementById('inputPeso').value = alunoSelecionado.peso || '';
                 document.getElementById('inputAltura').value = alunoSelecionado.altura || '';
+                document.getElementById('inputAnotacoes').value = alunoSelecionado.anotacoes || '';
             }
 
             document.getElementById('btnEditar').classList.remove('hidden');
@@ -327,7 +340,8 @@
                 data_nascimento: document.getElementById('inputNasc').value || null,
                 tipo_sanguineo: document.getElementById('inputSangue').value || null,
                 peso: document.getElementById('inputPeso').value ? parseFloat(document.getElementById('inputPeso').value) : null,
-                altura: document.getElementById('inputAltura').value ? parseFloat(document.getElementById('inputAltura').value) : null
+                altura: document.getElementById('inputAltura').value ? parseFloat(document.getElementById('inputAltura').value) : null,
+                anotacoes: document.getElementById('inputAnotacoes').value.trim() || null
             };
 
             const { error } = await dbClient.from('alunos_pelotao').update(payload).eq('id', id);
@@ -383,6 +397,8 @@
             document.getElementById('printSangue').innerText = alunoSelecionado.tipo_sanguineo || 'Não informado';
             document.getElementById('printAltura').innerText = alunoSelecionado.altura ? alunoSelecionado.altura.toFixed(2) : '---';
             document.getElementById('printPeso').innerText = alunoSelecionado.peso ? alunoSelecionado.peso.toFixed(1) : '---';
+            
+            document.getElementById('printAnotacoes').innerText = alunoSelecionado.anotacoes || 'Nenhuma alteração registrada.';
             
             // Invoca a janela de impressão nativa do navegador
             window.print();
