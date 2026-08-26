@@ -381,7 +381,7 @@
                                         <div class="flex items-center gap-3 w-full max-w-md"><label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest whitespace-nowrap">Semana Ref:</label><select id="selQtsSemana" class="w-full border border-slate-300 rounded p-1.5 text-xs font-semibold outline-none" onchange="carregarQTS()"></select><button onclick="novaSemanaQTS()" class="admin-only bg-slate-200 px-3 py-1.5 rounded text-slate-600 hover:bg-slate-300 text-xs font-bold" title="Criar Nova"><i class="fa-solid fa-plus"></i></button></div>
                                         <div class="flex gap-2"><button onclick="salvarQTS()" class="admin-only bg-pmmt-blue hover:bg-sys-blue text-white px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider shadow flex items-center gap-1.5"><i class="fa-solid fa-save"></i> Salvar</button><button onclick="imprimirQTS()" class="bg-slate-600 hover:bg-slate-700 text-white px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider shadow flex items-center gap-1.5"><i class="fa-solid fa-print"></i> Imprimir</button></div>
                                     </div>
-                                    <div class="overflow-x-auto pb-4" id="box-qts-print">
+<div class="overflow-x-auto pb-4" id="box-qts-print">
                                         <div class="min-w-[800px] border border-black bg-white text-black p-2 font-sans">
                                             <div class="text-center mb-2 leading-tight">
                                                 <div class="flex justify-between items-end border-b border-black pb-1 mb-1">
@@ -396,7 +396,7 @@
                                                         VISTO EM:<br>___/___/_____<br><br>Coordenador - CFSD
                                                     </div>
                                                 </div>
-                                                <h2 class="text-[11px] font-bold mt-2 outline-none admin-edit" id="qtsTitulo">Quadro de Trabalho Semanal do 5º Pelotão do Curso de Formação de Soldados - 8ª semana: 17/08/2026 a 23/08/2026</h2>
+                                                <h2 class="text-[11px] font-bold mt-2 outline-none admin-edit" id="qtsTitulo">Quadro de Trabalho Semanal do 5º Pelotão do Curso de Formação de Soldados - 9ª semana: 24/08/2026 a 30/08/2026</h2>
                                             </div>
                                             
                                             <!-- TABELA QTS FORMATADA -->
@@ -415,13 +415,13 @@
                                                         <th>Domingo</th>
                                                     </tr>
                                                     <tr class="text-[8px] bg-slate-100">
-                                                        <td class="cell-editable admin-edit font-bold">Data: 17/08/2026</td>
-                                                        <td class="cell-editable admin-edit font-bold">Data: 18/08/2026</td>
-                                                        <td class="cell-editable admin-edit font-bold">Data: 19/08/2026</td>
-                                                        <td class="cell-editable admin-edit font-bold">Data: 20/08/2026</td>
-                                                        <td class="cell-editable admin-edit font-bold">Data: 21/08/2026</td>
-                                                        <td class="cell-editable admin-edit font-bold">Data: 22/08/2026</td>
-                                                        <td class="cell-editable admin-edit font-bold">Data: 23/08/2026</td>
+                                                        <td class="cell-editable admin-edit font-bold">Data: 24/08/2026</td>
+                                                        <td class="cell-editable admin-edit font-bold">Data: 25/08/2026</td>
+                                                        <td class="cell-editable admin-edit font-bold">Data: 26/08/2026</td>
+                                                        <td class="cell-editable admin-edit font-bold">Data: 27/08/2026</td>
+                                                        <td class="cell-editable admin-edit font-bold">Data: 28/08/2026</td>
+                                                        <td class="cell-editable admin-edit font-bold">Data: 29/08/2026</td>
+                                                        <td class="cell-editable admin-edit font-bold">Data: 30/08/2026</td>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="qtsTbody">
@@ -436,28 +436,29 @@
                                                         <td class="cell-editable admin-edit">A disposição do C.A</td>
                                                         <td class="cell-editable admin-edit">A disposição do C.A</td>
                                                         <td class="cell-editable admin-edit">A disposição do C.A</td>
-                                                        <td class="cell-editable admin-edit font-bold"></td>
+                                                        <td class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
                                                     </tr>
                                                     <tr>
                                                         <td>1ª</td>
                                                         <td>07h00 às 08h00</td>
-                                                        <td class="cell-editable admin-edit">TP 01/100</td>
-                                                        <td class="cell-editable admin-edit">TP 12/100</td>
-                                                        <td class="cell-editable admin-edit">TP 23/100</td>
-                                                        <td class="cell-editable admin-edit">LPM 1/45</td>
-                                                        <td class="cell-editable admin-edit">LPM 5/45</td>
-                                                        <td class="cell-editable admin-edit">LPM 9/45</td>
-                                                        <td rowspan="2" class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
+                                                        <td class="cell-editable admin-edit">CCPM 39/60</td>
+                                                        <td class="cell-editable admin-edit">CCPM 48/60</td>
+                                                        <td class="cell-editable admin-edit">CCPM 57/60 - VF</td>
+                                                        <td class="cell-editable admin-edit">TGP 12/45</td>
+                                                        <td class="cell-editable admin-edit">MP 7/45</td>
+                                                        <td class="cell-editable admin-edit">A disposição do C.A</td>
+                                                        <td class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
                                                     </tr>
                                                     <tr>
                                                         <td>2ª</td>
                                                         <td>08h00 às 09h00</td>
-                                                        <td class="cell-editable admin-edit">TP 02/100</td>
-                                                        <td class="cell-editable admin-edit">TP 13/100</td>
-                                                        <td class="cell-editable admin-edit">TP 24/100</td>
-                                                        <td class="cell-editable admin-edit">LPM 2/45</td>
-                                                        <td class="cell-editable admin-edit">LPM 6/45</td>
-                                                        <td class="cell-editable admin-edit">LPM 10/45</td>
+                                                        <td class="cell-editable admin-edit">CCPM 40/60</td>
+                                                        <td class="cell-editable admin-edit">CCPM 49/60</td>
+                                                        <td class="cell-editable admin-edit">CCPM 58/60 - VF</td>
+                                                        <td class="cell-editable admin-edit">TGP 13/45</td>
+                                                        <td class="cell-editable admin-edit">MP 8/45</td>
+                                                        <td class="cell-editable admin-edit">A disposição do C.A</td>
+                                                        <td class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="row-intervalo">-</td>
@@ -467,23 +468,24 @@
                                                     <tr>
                                                         <td>3ª</td>
                                                         <td>09h30 às 10h30</td>
-                                                        <td class="cell-editable admin-edit">TP 03/100</td>
-                                                        <td class="cell-editable admin-edit">TP 14/100</td>
-                                                        <td class="cell-editable admin-edit">TP 25/100</td>
-                                                        <td class="cell-editable admin-edit">LPM 3/45</td>
-                                                        <td class="cell-editable admin-edit">LPM 7/45</td>
-                                                        <td class="cell-editable admin-edit">LPM 11/45</td>
-                                                        <td rowspan="2" class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
+                                                        <td class="cell-editable admin-edit">CCPM 41/60</td>
+                                                        <td class="cell-editable admin-edit">CCPM 50/60</td>
+                                                        <td class="cell-editable admin-edit">CCPM 59/60 - VF</td>
+                                                        <td class="cell-editable admin-edit">TGP 14/45</td>
+                                                        <td class="cell-editable admin-edit">MP 9/45</td>
+                                                        <td class="cell-editable admin-edit">A disposição do C.A</td>
+                                                        <td class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
                                                     </tr>
                                                     <tr>
                                                         <td>4ª</td>
                                                         <td>10h30 às 11h30</td>
-                                                        <td class="cell-editable admin-edit">TP 04/100</td>
-                                                        <td class="cell-editable admin-edit">TP 15/100</td>
-                                                        <td class="cell-editable admin-edit">TP 26/100</td>
-                                                        <td class="cell-editable admin-edit">LPM 4/45</td>
-                                                        <td class="cell-editable admin-edit">LPM 8/45</td>
-                                                        <td class="cell-editable admin-edit">LPM 12/45</td>
+                                                        <td class="cell-editable admin-edit">CCPM 42/60</td>
+                                                        <td class="cell-editable admin-edit">CCPM 51/60</td>
+                                                        <td class="cell-editable admin-edit">CCPM 60/60 - VF</td>
+                                                        <td class="cell-editable admin-edit">TGP 15/45</td>
+                                                        <td class="cell-editable admin-edit">MP 10/45</td>
+                                                        <td class="cell-editable admin-edit">A disposição do C.A</td>
+                                                        <td class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
                                                     </tr>
 
                                                     <!-- INTERVALO ALMOÇO -->
@@ -499,23 +501,24 @@
                                                         <th rowspan="6" class="col-periodo tracking-widest">VESPERTINO</th>
                                                         <td>5ª</td>
                                                         <td>13h30 às 14h30</td>
-                                                        <td class="cell-editable admin-edit">TP 05/100</td>
-                                                        <td class="cell-editable admin-edit">TP 16/100</td>
-                                                        <td class="cell-editable admin-edit">TP 27/100 - VC</td>
-                                                        <td class="cell-editable admin-edit">POP 2 - 16/75</td>
-                                                        <td class="cell-editable admin-edit">POP 2 - 21/75</td>
-                                                        <td class="cell-editable admin-edit">POP 2 - 26/75</td>
-                                                        <td rowspan="2" class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
+                                                        <td class="cell-editable admin-edit">CCPM 43/60</td>
+                                                        <td class="cell-editable admin-edit">CCPM 52/60</td>
+                                                        <td class="cell-editable admin-edit">TGP 7/45</td>
+                                                        <td class="cell-editable admin-edit">TGP 16/45</td>
+                                                        <td class="cell-editable admin-edit">MP 11/45</td>
+                                                        <td class="cell-editable admin-edit">DPDPP 04/60</td>
+                                                        <td class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
                                                     </tr>
                                                     <tr>
                                                         <td>6ª</td>
                                                         <td>14h30 às 15h30</td>
-                                                        <td class="cell-editable admin-edit">TP 06/100</td>
-                                                        <td class="cell-editable admin-edit">TP 17/100</td>
-                                                        <td class="cell-editable admin-edit">TP 28/100 - VC</td>
-                                                        <td class="cell-editable admin-edit">POP 2 - 17/75</td>
-                                                        <td class="cell-editable admin-edit">POP 2 - 22/75</td>
-                                                        <td class="cell-editable admin-edit">POP 2 - 27/75</td>
+                                                        <td class="cell-editable admin-edit">CCPM 44/60</td>
+                                                        <td class="cell-editable admin-edit">CCPM 53/60</td>
+                                                        <td class="cell-editable admin-edit">TGP 8/45</td>
+                                                        <td class="cell-editable admin-edit">TGP 17/45</td>
+                                                        <td class="cell-editable admin-edit">MP 12/45</td>
+                                                        <td class="cell-editable admin-edit">DPDPP 05/60</td>
+                                                        <td class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="row-intervalo">-</td>
@@ -525,33 +528,35 @@
                                                     <tr>
                                                         <td>7ª</td>
                                                         <td>16h00 às 17h00</td>
-                                                        <td class="cell-editable admin-edit">TP 07/100</td>
-                                                        <td class="cell-editable admin-edit">TP 18/100</td>
-                                                        <td class="cell-editable admin-edit">TP 29/100 - VC</td>
-                                                        <td class="cell-editable admin-edit">POP 2 - 18/75</td>
-                                                        <td class="cell-editable admin-edit">POP 2 - 23/75</td>
-                                                        <td class="cell-editable admin-edit">POP 2 - 28/75</td>
-                                                        <td rowspan="3" class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
+                                                        <td class="cell-editable admin-edit">CCPM 45/60</td>
+                                                        <td class="cell-editable admin-edit">CCPM 54/60</td>
+                                                        <td class="cell-editable admin-edit">TGP 9/45</td>
+                                                        <td class="cell-editable admin-edit">MP 1/45</td>
+                                                        <td class="cell-editable admin-edit">MP 13/45</td>
+                                                        <td class="cell-editable admin-edit">DPDPP 06/60</td>
+                                                        <td class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
                                                     </tr>
                                                     <tr>
                                                         <td>8ª</td>
                                                         <td>17h00 às 18h00</td>
-                                                        <td class="cell-editable admin-edit">TP 08/100</td>
-                                                        <td class="cell-editable admin-edit">TP 19/100</td>
-                                                        <td class="cell-editable admin-edit">TP 30/100</td>
-                                                        <td class="cell-editable admin-edit">POP 2 - 19/75</td>
-                                                        <td class="cell-editable admin-edit">POP 2 - 24/75</td>
-                                                        <td class="cell-editable admin-edit">POP 2 - 29/75</td>
+                                                        <td class="cell-editable admin-edit">CCPM 46/60</td>
+                                                        <td class="cell-editable admin-edit">CCPM 55/60</td>
+                                                        <td class="cell-editable admin-edit">TGP 10/45</td>
+                                                        <td class="cell-editable admin-edit">MP 2/45</td>
+                                                        <td class="cell-editable admin-edit">MP 14/45</td>
+                                                        <td class="cell-editable admin-edit">DPDPP 07/60</td>
+                                                        <td class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
                                                     </tr>
                                                     <tr>
                                                         <td>9ª</td>
                                                         <td>18h00 às 19h00</td>
-                                                        <td class="cell-editable admin-edit">TP 09/100</td>
-                                                        <td class="cell-editable admin-edit">TP 20/100</td>
-                                                        <td class="cell-editable admin-edit">TP 31/100</td>
-                                                        <td class="cell-editable admin-edit">POP 2 - 20/75</td>
-                                                        <td class="cell-editable admin-edit">POP 2 - 25/75</td>
-                                                        <td class="cell-editable admin-edit">POP 2 - 30/75</td>
+                                                        <td class="cell-editable admin-edit">CCPM 47/60</td>
+                                                        <td class="cell-editable admin-edit">CCPM 56/60</td>
+                                                        <td class="cell-editable admin-edit">TGP 11/45</td>
+                                                        <td class="cell-editable admin-edit">MP 3/45</td>
+                                                        <td class="cell-editable admin-edit">MP 15/45</td>
+                                                        <td class="cell-editable admin-edit">DPDPP 08/60</td>
+                                                        <td class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
                                                     </tr>
 
                                                     <!-- INTERVALO NOITE -->
@@ -567,34 +572,35 @@
                                                         <th rowspan="3" class="col-periodo tracking-widest">NOTURNO</th>
                                                         <td>10ª</td>
                                                         <td>20h00 às 21h00</td>
-                                                        <td class="cell-editable admin-edit">TP 10/100</td>
-                                                        <td class="cell-editable admin-edit">TP 21/100</td>
-                                                        <td class="cell-editable admin-edit">TP 32/100</td>
-                                                        <td class="cell-editable admin-edit">TGP 3/45</td>
-                                                        <td class="cell-editable admin-edit">TGP 5/45</td>
-                                                        <td class="cell-editable admin-edit">EF 13/32</td>
-                                                        <td rowspan="2" class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
+                                                        <td class="cell-editable admin-edit"></td>
+                                                        <td class="cell-editable admin-edit">EF 15/32</td>
+                                                        <td class="cell-editable admin-edit">NTCS 1/60</td>
+                                                        <td class="cell-editable admin-edit">MP 4/45</td>
+                                                        <td class="cell-editable admin-edit">DPDPP 01/60</td>
+                                                        <td class="cell-editable admin-edit">EF 17/32</td>
+                                                        <td class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
                                                     </tr>
                                                     <tr>
                                                         <td>11ª</td>
                                                         <td>21h00 às 22h00</td>
-                                                        <td class="cell-editable admin-edit">TP 11/100</td>
-                                                        <td class="cell-editable admin-edit">TP 22/100</td>
-                                                        <td class="cell-editable admin-edit">TP 33/100</td>
-                                                        <td class="cell-editable admin-edit">TGP 4/45</td>
-                                                        <td class="cell-editable admin-edit">TGP 6/45</td>
-                                                        <td class="cell-editable admin-edit">EF 14/32</td>
+                                                        <td class="cell-editable admin-edit"></td>
+                                                        <td class="cell-editable admin-edit">EF 16/32</td>
+                                                        <td class="cell-editable admin-edit">NTCS 2/60</td>
+                                                        <td class="cell-editable admin-edit">MP 5/45</td>
+                                                        <td class="cell-editable admin-edit">DPDPP 02/60</td>
+                                                        <td class="cell-editable admin-edit">EF 18/32</td>
+                                                        <td class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
                                                     </tr>
                                                     <tr>
                                                         <td>12ª</td>
                                                         <td>22h00 às 23h00</td>
                                                         <td class="cell-editable admin-edit"></td>
                                                         <td class="cell-editable admin-edit"></td>
+                                                        <td class="cell-editable admin-edit">NTCS 3/60</td>
+                                                        <td class="cell-editable admin-edit">MP 6/45</td>
+                                                        <td class="cell-editable admin-edit">DPDPP 03/60</td>
                                                         <td class="cell-editable admin-edit"></td>
-                                                        <td class="cell-editable admin-edit"></td>
-                                                        <td class="cell-editable admin-edit"></td>
-                                                        <td class="cell-editable admin-edit"></td>
-                                                        <td class="cell-editable admin-edit"></td>
+                                                        <td class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -602,15 +608,16 @@
                                             <!-- RODAPÉ E ASSINATURA -->
                                             <div class="mt-2 text-[9px] flex justify-between">
                                                 <div class="cell-editable admin-edit outline-none text-left leading-tight" id="qtsRodape1">
-                                                    <p>SIGLA: TP: Tiro Policial</p>
-                                                    <p>SIGLA: LPM: Legislação Policial Militar</p>
-                                                    <p>SIGLA: POP 2: Procedimento Operacional Padrão 2</p>
+                                                    <p>SIGLA: CCPM: Cultura e Cotidiano Policial Militar</p>
                                                     <p>SIGLA: TGP: Técnicas Gerais de Policiamento</p>
                                                     <p>SIGLA: EF: Educação Física</p>
-                                                    <p>SIGLA: VC: Verificação Corrente</p>
+                                                    <p>SIGLA: NTCS: Noções em Técnicas de Controle e Submissão</p>
+                                                    <p>SIGLA: MP: Metodologia de Pesquisa</p>
+                                                    <p>SIGLA: DPDPP: Direito Penal e Direito Processual Penal</p>
+                                                    <p>SIGLA: VF: Verificação Final</p>
                                                 </div>
                                                 <div class="text-right">
-                                                    <p class="cell-editable admin-edit outline-none mb-6" id="qtsRodape2">Cáceres-MT, 17 de Agosto de 2026</p>
+                                                    <p class="cell-editable admin-edit outline-none mb-6" id="qtsRodape2">Cáceres-MT, 24 de Agosto de 2026</p>
                                                     <p class="font-bold">___________________________________________________</p>
                                                     <p>Alex Sander Ortiz de Souza - 2º Ten PM</p>
                                                     <p>Sub-Coordenador do 5º Pelotão</p>
@@ -833,7 +840,7 @@
         }
 
         function mudarModulo(moduloDestino) {
-            const modulos = ['home', 'institucional', 'efetivo', 'cautela', 'financeiro', 'taf', 'academico', 'aluno', 'debate', 'toques'];
+            const modulos = ['home', 'institucional', 'efetivo', 'cautela', 'financeiro', 'mudarModulo', 'academico', 'aluno', 'debate', 'toques'];
             const nomes = { 'home': 'Painel Diário', 'institucional': 'Cadeia de Comando', 'efetivo': 'Efetivo e Escala', 'cautela': 'Cautela Fixa (Armas)', 'financeiro': 'Gestão Financeira', 'taf': 'TAF e Fatos', 'academico': 'Módulo Acadêmico', 'aluno': 'Área do Aluno', 'debate': 'Área Livre', 'toques': 'Toques de Corneta' };
 
             modulos.forEach(m => {
