@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Efetivo e Dados - PMMT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'pmmt-blue': '#0a2240',
+                        'pmmt-gold': '#d4af37',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-transparent text-slate-800 font-sans h-full w-full p-2">
+    <div class="h-[95vh] flex flex-col bg-white rounded-xl shadow-md overflow-hidden border border-slate-200">
+        
+        <!-- Cabeçalho -->
+        <div class="bg-pmmt-blue text-white px-6 py-5 flex flex-col lg:flex-row justify-between items-center border-b-4 border-pmmt-gold gap-4 shrink-0">
+            <div class="flex items-center gap-4 w-full lg:w-auto">
+                <i class="fa-solid fa-address-card text-pmmt-gold text-3xl"></i>
+                <div>
+                    <h2 class="text-lg md:text-xl font-black tracking-widest uppercase">Efetivo e Fatos Obsevados</h2>
+                    <p class="text-[10px] md:text-xs text-slate-300 uppercase mt-0.5">Gestão de Informações Pessoais</p>
+                </div>
+            </div>
+            <div class="relative w-full sm:w-auto">
+                <input type="text" id="searchInput" onkeyup="filtrarAlunos()" placeholder="Buscar por Nome ou QRA..." class="w-full pl-9 pr-4 py-2 rounded-lg text-sm text-slate-800 outline-none focus:ring-2 focus:ring-pmmt-gold sm:w-64 transition-all">
+                <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400"></i>
+            </div>
+        </div>
+
+        <!-- Área Central -->
+        <div class="flex-1 flex overflow-hidden">
+            
+            <!-- Lista Lateral de Alunos -->
+            <div class="w-1/3 border-r border-slate-200 bg-slate-50 flex flex-col h-full">
+                <div class="p-3 border-b border-slate-200 bg-white font-bold text-xs uppercase text-slate-500 tracking-wider flex justify-between items-center shrink-0">
+                    <span><i class="fa-solid fa-users text-pmmt-gold mr-2"></i> Relação (5º Pel)</span>
+                    <span id="contadorAlunos" class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded text-[9px]">0</span>
+                </div>
+                <div id="listaAlunos" class="flex-1 overflow-y-auto divide-y divide-slate-200">
+                    <div class="p-6 text-center text-slate-400 font-bold"><i class="fa-solid fa-circle-notch fa-spin text-2xl mb-2"></i><br>Carregando...</div>
+                </div>
+            </div>
+
+            <!-- Ficha do Aluno Selecionado -->
+            <div class="w-2/3 bg-white p-6 overflow-y-auto relative">
+                
+                <div id="avisoNenhum" class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 bg-slate-50/50 z-10">
+                    <i class="fa-solid fa-hand-pointer text-5xl mb-4 text-slate-300"></i>
+                    <h3 class="font-bold uppercase tracking-widest text-sm">Selecione um aluno</h3>
+                    <p class="text-xs mt-1">Para visualizar ou editar as informações.</p>
+                </div>
+
+                <div id="fichaAluno" class="hidden max-w-2xl mx-auto">
+                    <div class="flex justify-between items-end border-b-2 border-pmmt-gold pb-4 mb-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-16 h-16 bg-slate-100 border-2 border-pmmt-blue rounded-lg flex items-center justify-center text-2xl text-slate-400 shadow-inner">
+                                <i class="fa-solid fa-user-graduate"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-0.5" id="fichaEquipe">Equipe: --</p>
+                                <h2 class="text-2xl font-black text-pmmt-blue uppercase tracking-wider leading-none" id="fichaNomeCompleto">NOME DO ALUNO</h2>
+                                <p class="text-sm font-bold text-pmmt-gold uppercase mt-1">AL SD PM <span id="fichaQRA">QRA</span> <span class="text-slate-400 text-xs ml-2">Nº <span id="fichaNum">000</span></span></p>
+                            </div>
+                        </div>
+                        <button id="btnEditar" onclick="habilitarEdicao()" class="text-[10px] font-bold uppercase tracking-widest bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1.5 rounded border border-slate-300 transition shadow-sm flex items-center gap-1.5">
+                            <i class="fa-solid fa-pen-to-square"></i> Editar
+                        </button>
+                    </div>
+
+                    <form id="formDadosAluno" onsubmit="salvarDados(event)" class="space-y-6">
+                        <input type="hidden" id="inputId">
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Bloco Pessoal -->
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-id-card text-pmmt-gold mr-1"></i> CPF</label>
+                                    <input type="text" id="inputCPF" disabled placeholder="000.000.000-00" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm font-semibold text-slate-700 outline-none focus:border-pmmt-blue bg-slate-50 transition-colors">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-calendar-days text-pmmt-gold mr-1"></i> Data de Nascimento</label>
+                                    <input type="date" id="inputNasc" disabled class="w-full border border-slate-300 rounded-lg p-2.5 text-sm font-semibold text-slate-700 outline-none focus:border-pmmt-blue bg-slate-50 transition-colors">
+                                </div>
+                            </div>
+                            
+                            <!-- Bloco Físico/Médico -->
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-droplet text-rose-500 mr-1"></i> Tipo Sanguíneo</label>
+                                    <select id="inputSangue" disabled class="w-full border border-slate-300 rounded-lg p-2.5 text-sm font-semibold text-slate-700 outline-none focus:border-pmmt-blue bg-slate-50 transition-colors appearance-none">
+                                        <option value="">Não Informado</option>
+                                        <option value="A+">A+</option><option value="A-">A-</option>
+                                        <option value="B+">B+</option><option value="B-">B-</option>
+                                        <option value="AB+">AB+</option><option value="AB-">AB-</option>
+                                        <option value="O+">O+</option><option value="O-">O-</option>
+                                    </select>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-weight-scale text-pmmt-gold mr-1"></i> Peso (kg)</label>
+                                        <input type="number" step="0.1" id="inputPeso" disabled placeholder="Ex: 80.5" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm font-semibold text-slate-700 outline-none focus:border-pmmt-blue bg-slate-50 transition-colors">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-ruler-vertical text-pmmt-gold mr-1"></i> Altura (m)</label>
+                                        <input type="number" step="0.01" id="inputAltura" disabled placeholder="Ex: 1.75" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm font-semibold text-slate-700 outline-none focus:border-pmmt-blue bg-slate-50 transition-colors">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botões de Ação (Escondidos por padrão) -->
+                        <div id="boxBotoes" class="hidden flex justify-end gap-3 pt-4 border-t border-slate-100">
+                            <button type="button" onclick="cancelarEdicao()" class="px-5 py-2 text-xs font-bold text-slate-600 bg-slate-200 hover:bg-slate-300 rounded transition uppercase tracking-widest">Cancelar</button>
+                            <button type="submit" id="btnSalvar" class="px-5 py-2 text-xs font-black text-white bg-emerald-600 hover:bg-emerald-700 rounded shadow transition uppercase tracking-widest flex items-center gap-2">
+                                <i class="fa-solid fa-save"></i> Salvar Alterações
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
+        const dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let todosAlunos = [];
+        let alunoSelecionado = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await carregarDados();
+        });
+
+        async function carregarDados() {
+            const { data, error } = await dbClient.from('alunos_pelotao').select('*').order('numero', { ascending: true });
+            
+            if (error) {
+                document.getElementById('listaAlunos').innerHTML = '<div class="p-4 text-center text-rose-500 font-bold">Erro ao carregar dados do banco.</div>';
+                return;
+            }
+
+            todosAlunos = data || [];
+            document.getElementById('contadorAlunos').innerText = todosAlunos.length;
+            renderizarLista(todosAlunos);
+        }
+
+        function renderizarLista(lista) {
+            const container = document.getElementById('listaAlunos');
+            container.innerHTML = '';
+            
+            if(lista.length === 0) {
+                container.innerHTML = '<div class="p-4 text-center text-slate-400 font-semibold text-xs">Nenhum aluno encontrado.</div>';
+                return;
+            }
+
+            lista.forEach(aluno => {
+                const numFmt = "5" + aluno.numero.toString().padStart(2, '0');
+                const qraFmt = (aluno.qra || aluno.nome).replace(/AL SD PM |AL SD /gi, '').trim().toUpperCase();
+                
+                const item = document.createElement('div');
+                item.className = "p-3 hover:bg-pmmt-gold/10 cursor-pointer transition flex items-center gap-3 border-l-4 border-transparent hover:border-pmmt-gold group";
+                item.onclick = () => selecionarAluno(aluno, item);
+                
+                item.innerHTML = `
+                    <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-[10px] font-black text-slate-600 group-hover:bg-pmmt-blue group-hover:text-white transition-colors shrink-0">
+                        ${numFmt}
+                    </div>
+                    <div class="overflow-hidden">
+                        <h4 class="text-xs font-black text-slate-800 truncate">${qraFmt}</h4>
+                        <p class="text-[9px] font-semibold text-slate-400 truncate uppercase">${aluno.nome}</p>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function selecionarAluno(aluno, elementoClicado) {
+            alunoSelecionado = aluno;
+            cancelarEdicao(); // Reseta estados de edição ao trocar
+
+            // Controle visual da lista
+            document.querySelectorAll('#listaAlunos > div').forEach(el => {
+                el.classList.remove('bg-slate-100', 'border-pmmt-blue');
+                el.classList.add('border-transparent');
+            });
+            elementoClicado.classList.add('bg-slate-100', 'border-pmmt-blue');
+            elementoClicado.classList.remove('border-transparent');
+
+            // Preenche o cabeçalho
+            const numFmt = "5" + aluno.numero.toString().padStart(2, '0');
+            const qraFmt = (aluno.qra || aluno.nome).replace(/AL SD PM |AL SD /gi, '').trim().toUpperCase();
+            
+            document.getElementById('fichaNomeCompleto').innerText = aluno.nome;
+            document.getElementById('fichaQRA').innerText = qraFmt;
+            document.getElementById('fichaNum').innerText = numFmt;
+            document.getElementById('fichaEquipe').innerText = "Equipe: " + (aluno.equipe || "N/A");
+            
+            // Preenche os inputs
+            document.getElementById('inputId').value = aluno.id;
+            document.getElementById('inputCPF').value = aluno.cpf || '';
+            document.getElementById('inputNasc').value = aluno.data_nascimento || '';
+            document.getElementById('inputSangue').value = aluno.tipo_sanguineo || '';
+            document.getElementById('inputPeso').value = aluno.peso || '';
+            document.getElementById('inputAltura').value = aluno.altura || '';
+
+            // Troca a tela inicial pela ficha
+            document.getElementById('avisoNenhum').classList.add('hidden');
+            document.getElementById('fichaAluno').classList.remove('hidden');
+        }
+
+        function habilitarEdicao() {
+            const inputs = ['inputCPF', 'inputNasc', 'inputSangue', 'inputPeso', 'inputAltura'];
+            inputs.forEach(id => {
+                const el = document.getElementById(id);
+                el.disabled = false;
+                el.classList.remove('bg-slate-50');
+                el.classList.add('bg-white', 'shadow-sm', 'border-pmmt-gold');
+            });
+            document.getElementById('btnEditar').classList.add('hidden');
+            document.getElementById('boxBotoes').classList.remove('hidden');
+        }
+
+        function cancelarEdicao() {
+            const inputs = ['inputCPF', 'inputNasc', 'inputSangue', 'inputPeso', 'inputAltura'];
+            inputs.forEach(id => {
+                const el = document.getElementById(id);
+                el.disabled = true;
+                el.classList.add('bg-slate-50');
+                el.classList.remove('bg-white', 'shadow-sm', 'border-pmmt-gold');
+            });
+            
+            // Restaura valores originais se tiver aluno selecionado
+            if(alunoSelecionado) {
+                document.getElementById('inputCPF').value = alunoSelecionado.cpf || '';
+                document.getElementById('inputNasc').value = alunoSelecionado.data_nascimento || '';
+                document.getElementById('inputSangue').value = alunoSelecionado.tipo_sanguineo || '';
+                document.getElementById('inputPeso').value = alunoSelecionado.peso || '';
+                document.getElementById('inputAltura').value = alunoSelecionado.altura || '';
+            }
+
+            document.getElementById('btnEditar').classList.remove('hidden');
+            document.getElementById('boxBotoes').classList.add('hidden');
+        }
+
+        async function salvarDados(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSalvar');
+            const conteudoOriginal = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
+            btn.disabled = true;
+
+            const id = document.getElementById('inputId').value;
+            const payload = {
+                cpf: document.getElementById('inputCPF').value.trim() || null,
+                data_nascimento: document.getElementById('inputNasc').value || null,
+                tipo_sanguineo: document.getElementById('inputSangue').value || null,
+                peso: document.getElementById('inputPeso').value ? parseFloat(document.getElementById('inputPeso').value) : null,
+                altura: document.getElementById('inputAltura').value ? parseFloat(document.getElementById('inputAltura').value) : null
+            };
+
+            const { error } = await dbClient.from('alunos_pelotao').update(payload).eq('id', id);
+
+            if (error) {
+                alert("Erro ao salvar os dados: " + error.message);
+                btn.innerHTML = conteudoOriginal;
+                btn.disabled = false;
+            } else {
+                // Atualiza o objeto na memória e a interface
+                Object.assign(alunoSelecionado, payload);
+                cancelarEdicao();
+                btn.innerHTML = conteudoOriginal;
+                btn.disabled = false;
+                
+                // Exibe feedback visual rápido
+                const divNome = document.getElementById('fichaNomeCompleto');
+                divNome.classList.add('text-emerald-500');
+                setTimeout(() => divNome.classList.remove('text-emerald-500'), 1000);
+            }
+        }
+
+        function filtrarAlunos() {
+            const termo = document.getElementById('searchInput').value.toLowerCase();
+            const filtrados = todosAlunos.filter(a => 
+                (a.nome && a.nome.toLowerCase().includes(termo)) || 
+                (a.qra && a.qra.toLowerCase().includes(termo)) ||
+                (a.numero && a.numero.toString().includes(termo))
+            );
+            renderizarLista(filtrados);
+        }
+    </script>
+</body>
+</html>
