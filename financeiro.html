@@ -29,9 +29,19 @@
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
+
+        /* Estilos Exclusivos para Impressão do Relatório Financeiro */
+        @media print {
+            body > div:not(#printExtratoArea) { display: none !important; }
+            #printExtratoArea { display: block !important; position: absolute; top: 0; left: 0; width: 100%; padding: 10mm; background: white; color: black; }
+            @page { margin: 10mm; size: A4 portrait; }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid #000 !important; padding: 6px !important; font-size: 10px; color: black !important; }
+            th { background-color: #e5e7eb !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; font-weight: bold; }
+        }
     </style>
 </head>
-<body class="p-4 md:p-6 antialiased">
+<body class="p-4 md:p-6 antialiased relative">
     
     <div id="loaderAlert" class="hidden bg-amber-100 border border-amber-300 text-amber-800 px-4 py-3 rounded-lg mb-4 flex items-center gap-3 shadow-sm transition-opacity">
         <i class="fa-solid fa-circle-notch fa-spin text-lg"></i>
@@ -95,7 +105,7 @@
                                 <option value="LOTE">-- Lançar em LOTE --</option>
                             </select>
                         </div>
-                        <div><input type="text" id="inputDescricao" required placeholder="Descrição (Ex: Materiais)" class="w-full border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700 outline-none"></div>
+                        <div><input type="text" id="inputDescricao" required placeholder="Descrição detalhada" class="w-full border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700 outline-none"></div>
                         <div class="grid grid-cols-2 gap-2">
                             <input type="number" step="0.01" id="inputValor" required placeholder="R$ 0.00" class="w-full border border-slate-200 rounded p-2 text-xs font-bold text-slate-700 outline-none">
                             <input type="date" id="inputData" required class="w-full border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700 outline-none">
@@ -119,16 +129,92 @@
             </div>
         </div>
 
+        <!-- Extrato Detalhado (Prestação de Contas) -->
+        <div class="bg-white shadow-sm border border-slate-200 no-print rounded-xl overflow-hidden">
+            <div class="bg-slate-50 border-b border-slate-100 px-4 py-3 flex justify-between items-center cursor-pointer hover:bg-slate-100 transition" onclick="togglePainel('conteudoExtrato', 'iconeExtrato')">
+                <h3 class="text-xs font-bold text-sys-dark uppercase tracking-wide flex items-center"><i class="fa-solid fa-file-invoice-dollar text-pmmt-gold mr-2"></i>Extrato Detalhado (Prestação de Contas)</h3>
+                <div class="flex items-center gap-4">
+                    <div class="flex gap-2">
+                        <button onclick="event.stopPropagation(); exportarExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider shadow flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-file-excel"></i> Excel</button>
+                        <button onclick="event.stopPropagation(); imprimirExtrato()" class="bg-slate-700 hover:bg-slate-800 text-white px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider shadow flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                    </div>
+                    <i id="iconeExtrato" class="fa-solid fa-chevron-up text-slate-400 transition-transform duration-300"></i>
+                </div>
+            </div>
+            <div id="conteudoExtrato" class="painel-conteudo bg-white" style="max-height: 2000px; padding: 1rem;">
+                <div class="overflow-x-auto border border-slate-200 rounded-lg">
+                    <table class="w-full text-left border-collapse min-w-[800px] text-[11px]">
+                        <thead class="bg-sys-dark text-white">
+                            <tr>
+                                <th class="p-3 font-semibold uppercase tracking-wider w-24">Data</th>
+                                <th class="p-3 font-semibold uppercase tracking-wider text-center w-28">Operação</th>
+                                <th class="p-3 font-semibold uppercase tracking-wider w-56">Categoria e Descrição</th>
+                                <th class="p-3 font-semibold uppercase tracking-wider w-40">Aluno Vinculado</th>
+                                <th class="p-3 font-semibold uppercase tracking-wider text-right w-32">Valor (R$)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaExtrato" class="divide-y divide-slate-100 text-slate-700">
+                            <!-- JS PREENCHE AQUI -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
         <!-- Controle de Cotas -->
         <div class="bg-white shadow-sm border border-slate-200 no-print rounded-xl overflow-hidden">
             <div class="bg-slate-50 border-b border-slate-100 px-4 py-3 flex justify-between items-center cursor-pointer hover:bg-slate-100 transition" onclick="togglePainel('conteudoCotas', 'iconeCotas')">
-                <h3 class="text-xs font-bold text-sys-dark uppercase tracking-wide"><i class="fa-solid fa-users text-pmmt-gold mr-2"></i>Monitoramento de Cotas Mensais (R$ 150,00)</h3>
-                <i id="iconeCotas" class="fa-solid fa-chevron-up text-slate-400"></i>
+                <h3 class="text-xs font-bold text-sys-dark uppercase tracking-wide"><i class="fa-solid fa-users text-pmmt-gold mr-2"></i>Monitoramento de Cotas Mensais + Formatura (R$ 500,00)</h3>
+                <i id="iconeCotas" class="fa-solid fa-chevron-up text-slate-400 transition-transform duration-300"></i>
             </div>
             <div id="conteudoCotas" class="painel-conteudo bg-white" style="max-height: 2000px; padding: 1rem;">
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3" id="gridCotas"></div>
             </div>
         </div>
+    </div>
+
+    <!-- MÓDULO DE IMPRESSÃO DO EXTRATO -->
+    <div id="printExtratoArea" class="hidden font-sans bg-white text-black p-4">
+        <div class="flex flex-col items-center mb-6 text-center border-b-2 border-black pb-4">
+            <h1 class="font-bold text-lg uppercase mb-1">POLÍCIA MILITAR DO ESTADO DE MATO GROSSO</h1>
+            <h2 class="font-bold text-xs uppercase mb-1">ESCOLA SUPERIOR DE FORMAÇÃO E APERFEIÇOAMENTO DE PRAÇAS</h2>
+            <h2 class="font-bold text-xs uppercase">35° CFSD - 5º PELOTÃO - POLO CÁCERES</h2>
+        </div>
+        
+        <h2 class="text-lg font-black text-center mb-4 uppercase underline">Extrato Financeiro Detalhado (Prestação de Contas)</h2>
+        
+        <div class="flex justify-between mb-4 font-bold text-[11px] border border-black p-3 rounded bg-gray-100">
+            <p>TOTAL ARRECADADO: <span id="printArrecadado" class="text-emerald-700">R$ 0,00</span></p>
+            <p>TOTAL DE DESPESAS: <span id="printDespesas" class="text-rose-700">R$ 0,00</span></p>
+            <p>SALDO EM CAIXA: <span id="printSaldo" class="text-blue-800">R$ 0,00</span></p>
+        </div>
+
+        <table class="w-full text-left border-collapse text-[10px] mb-8">
+            <thead>
+                <tr class="bg-gray-200 uppercase">
+                    <th class="border border-black p-2 w-20 text-center">Data</th>
+                    <th class="border border-black p-2 w-20 text-center">Operação</th>
+                    <th class="border border-black p-2">Categoria e Descrição</th>
+                    <th class="border border-black p-2 w-48">Aluno Vinculado</th>
+                    <th class="border border-black p-2 w-28 text-right">Valor (R$)</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyPrintExtrato">
+                <!-- Preenchido via JS -->
+            </tbody>
+        </table>
+        
+        <div class="mt-16 pt-8 flex justify-between px-10 text-center text-[10px] font-bold">
+            <div>
+                <p>___________________________________</p>
+                <p class="mt-2">Tesouraria do 5º Pelotão</p>
+            </div>
+            <div>
+                <p>___________________________________</p>
+                <p class="mt-2">Comando do 5º Pelotão</p>
+            </div>
+        </div>
+        <p class="text-center text-[8px] text-gray-500 mt-8 font-semibold">Documento gerado pelo Portal Institucional do 5º Pelotão em <span id="printDataEmissao"></span>.</p>
     </div>
 
     <script>
@@ -138,9 +224,11 @@
         let transacoesGlobais = [];
         let isAdmin = false;
         
-        const VALOR_COTA = 150.00;
-        let catReceitas = ["Cota Inicial (R$ 150)", "Mensalidade CFSD", "Doação", "Arrecadação Rifa"];
-        let catDespesas = ["Alimentação", "Fardamento extra", "Manutenção Pelotão", "Material Limpeza/Água", "Solenidade"];
+        // Novo valor atualizado: 200 (Mensalidade) + 300 (Formatura) = 500
+        const VALOR_COTA = 500.00;
+        
+        let catReceitas = ["Cota Inicial / Mensalidade", "Fundo Formatura", "Doação", "Arrecadação Rifa"];
+        let catDespesas = ["Alimentação / Rancho", "Fardamento extra", "Manutenção Pelotão", "Material Limpeza/Água", "Solenidade / Formatura"];
 
         const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
@@ -277,18 +365,165 @@
                 const v = parseFloat(t.valor); 
                 if(t.tipo === 'receita') {
                     tr += v; 
-                    if(t.aluno_id && (t.categoria.includes("Cota") || t.categoria.includes("Mensalidade"))) pagA[t.aluno_id] += v;
+                    if(t.aluno_id && (t.categoria.includes("Cota") || t.categoria.includes("Mensalidade") || t.categoria.includes("Fundo") || t.categoria.includes("Formatura"))) pagA[t.aluno_id] += v;
                 } 
                 if(t.tipo === 'despesa') td += v; 
                 catG[t.categoria] = (catG[t.categoria] || 0) + v;
             });
             
+            // Atualiza indicadores da UI web
             document.getElementById('valorReceitas').innerText = tr.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); 
             document.getElementById('valorDespesas').innerText = td.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); 
             document.getElementById('valorSaldo').innerText = (tr-td).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+
+            // Atualiza totalizadores do Print PDF
+            document.getElementById('printArrecadado').innerText = tr.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); 
+            document.getElementById('printDespesas').innerText = td.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); 
+            document.getElementById('printSaldo').innerText = (tr-td).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
             
             renderizarGrafico(catG); 
             renderizarPainelCotas(pagA);
+            renderizarExtrato();
+        }
+
+        // --- FUNÇÃO DO EXTRATO DETALHADO (WEB E PRINT) ---
+        function renderizarExtrato() {
+            const tbodyWeb = document.getElementById('tabelaExtrato');
+            const tbodyPrint = document.getElementById('tbodyPrintExtrato');
+            if(!tbodyWeb || !tbodyPrint) return;
+            
+            tbodyWeb.innerHTML = '';
+            tbodyPrint.innerHTML = '';
+
+            if(transacoesGlobais.length === 0) {
+                tbodyWeb.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-500 font-bold uppercase tracking-widest text-xs">Nenhum lançamento no histórico.</td></tr>';
+                tbodyPrint.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-black font-bold uppercase">Nenhum lançamento no histórico.</td></tr>';
+                return;
+            }
+
+            // Ordena as transações da mais recente para a mais antiga
+            const transacoesOrdenadas = [...transacoesGlobais].sort((a, b) => new Date(b.data) - new Date(a.data));
+
+            transacoesOrdenadas.forEach(t => {
+                const isReceita = t.tipo === 'receita';
+                const iconWeb = isReceita ? '<i class="fa-solid fa-arrow-down mr-1"></i>' : '<i class="fa-solid fa-arrow-up mr-1"></i>';
+                const colorWeb = isReceita ? 'text-emerald-600' : 'text-rose-600';
+                const bgBadge = isReceita ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200';
+                const valFormatado = parseFloat(t.valor).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+                const dataFormatada = new Date(t.data + 'T12:00:00Z').toLocaleDateString('pt-BR');
+                const textTipo = isReceita ? 'RECEITA' : 'DESPESA';
+                
+                let alunoNome = "<span class='text-slate-400'>- Lançamento Geral -</span>";
+                let alunoNomePrint = "- Lançamento Geral Caixa -";
+                if(t.aluno_id) {
+                    const aluno = listaAlunosFull.find(a => a.id === t.aluno_id);
+                    if(aluno) {
+                        let qra = aluno.qra ? aluno.qra.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim() : aluno.nome.split(' ')[0];
+                        alunoNome = `<span class="font-bold">5${aluno.numero.toString().padStart(2, '0')}</span> - ${qra.toUpperCase()}`;
+                        alunoNomePrint = `5${aluno.numero.toString().padStart(2, '0')} - AL SD PM ${qra.toUpperCase()}`;
+                    }
+                }
+
+                // Renderiza HTML Web
+                tbodyWeb.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+                        <td class="p-3 font-semibold text-slate-600">${dataFormatada}</td>
+                        <td class="p-3 text-center">
+                            <span class="px-2 py-1 rounded text-[9px] font-bold border ${bgBadge} ${colorWeb} uppercase shadow-sm tracking-wider w-full inline-block">
+                                ${iconWeb} ${t.tipo}
+                            </span>
+                        </td>
+                        <td class="p-3">
+                            <p class="font-bold text-slate-800 leading-tight uppercase text-[10px] tracking-wider">${t.categoria}</p>
+                            <p class="text-[10px] text-slate-500 mt-0.5 truncate max-w-[200px]" title="${t.descricao}">${t.descricao}</p>
+                        </td>
+                        <td class="p-3 text-[10px] text-sys-dark">${alunoNome}</td>
+                        <td class="p-3 text-right font-black ${colorWeb} text-xs tracking-wider">${isReceita ? '+' : '-'} ${valFormatado}</td>
+                    </tr>
+                `;
+
+                // Renderiza HTML Print (Preto e branco limpo)
+                tbodyPrint.innerHTML += `
+                    <tr>
+                        <td class="border border-black p-2 text-center">${dataFormatada}</td>
+                        <td class="border border-black p-2 text-center font-bold">${textTipo}</td>
+                        <td class="border border-black p-2">
+                            <strong>${t.categoria.toUpperCase()}</strong><br>
+                            <span style="font-size: 9px">${t.descricao}</span>
+                        </td>
+                        <td class="border border-black p-2">${alunoNomePrint}</td>
+                        <td class="border border-black p-2 text-right font-bold">${isReceita ? '+' : '-'} ${valFormatado}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // --- FUNÇÕES DE EXPORTAÇÃO (PDF E EXCEL) ---
+        function imprimirExtrato() {
+            // Atualiza a data e hora da emissão no rodapé do PDF
+            const agora = new Date();
+            document.getElementById('printDataEmissao').innerText = agora.toLocaleDateString('pt-BR') + ' às ' + agora.toLocaleTimeString('pt-BR');
+
+            // Ativa o layout de impressão e chama a janela do navegador
+            document.body.classList.add('printing-extrato'); 
+            window.print();
+            
+            // Restaura
+            setTimeout(() => { 
+                document.body.classList.remove('printing-extrato'); 
+            }, 500);
+        }
+
+        function exportarExcel() {
+            if(transacoesGlobais.length === 0) {
+                alert("Não há dados para exportar.");
+                return;
+            }
+
+            // O BOM \uFEFF é necessário para o Excel reconhecer os acentos (UTF-8)
+            let csvContent = "\uFEFFData;Operação;Categoria;Descrição;Aluno_Vinculado;Valor\n";
+
+            // Ordena as transações da mais recente para a mais antiga
+            const transacoesOrdenadas = [...transacoesGlobais].sort((a, b) => new Date(b.data) - new Date(a.data));
+
+            transacoesOrdenadas.forEach(t => {
+                const dataFormatada = new Date(t.data + 'T12:00:00Z').toLocaleDateString('pt-BR');
+                const operacao = t.tipo.toUpperCase();
+                
+                // Substitui aspas e ponto e vírgula na descrição para não quebrar o CSV
+                let desc = t.descricao.replace(/;/g, ",").replace(/"/g, '""');
+                let cat = t.categoria.replace(/;/g, ",");
+                
+                let alunoNome = "Geral Caixa";
+                if(t.aluno_id) {
+                    const aluno = listaAlunosFull.find(a => a.id === t.aluno_id);
+                    if(aluno) {
+                        let qra = aluno.qra ? aluno.qra.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim() : aluno.nome.split(' ')[0];
+                        alunoNome = `5${aluno.numero.toString().padStart(2, '0')} - AL SD PM ${qra.toUpperCase()}`;
+                    }
+                }
+                
+                // O Excel brasileiro usa vírgula para decimais, então convertemos o valor:
+                // Se receita fica positivo, se despesa fica negativo
+                let valorNumero = parseFloat(t.valor);
+                if (t.tipo === 'despesa') valorNumero = -Math.abs(valorNumero);
+                let valorFormatadoCSV = valorNumero.toFixed(2).replace('.', ',');
+
+                csvContent += `"${dataFormatada}";"${operacao}";"${cat}";"${desc}";"${alunoNome}";"${valorFormatadoCSV}"\n`;
+            });
+
+            // Cria o link para download forçado
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            
+            const dataHoje = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
+            link.setAttribute("download", `Extrato_Financeiro_5Pel_${dataHoje}.csv`);
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         function renderizarPainelCotas(pagamentos) {
@@ -296,8 +531,8 @@
             if(!grid) return; 
             grid.innerHTML = '';
             
-            listaAlunosFull.forEach(a => {
-                const p = pagamentos[a.id] || 0; 
+            listaAlunosFull.forEach(aluno => {
+                const p = pagamentos[aluno.id] || 0; 
                 let s, cb, ct, bb;
                 if(p >= VALOR_COTA) {
                     s="EM DIA"; cb="border-emerald-200 bg-emerald-50"; ct="text-emerald-700"; bb="bg-emerald-500";
@@ -306,7 +541,20 @@
                 } else {
                     s="PENDENTE"; cb="border-slate-200 bg-white"; ct="text-rose-600"; bb="bg-rose-400";
                 }
-                grid.innerHTML += `<div class="border rounded-xl p-3 shadow-sm ${cb}"><div class="flex justify-between items-center mb-1.5"><span class="text-[11px] font-black text-slate-500">5${a.numero.toString().padStart(2,'0')}</span><span class="text-[10px] font-black tracking-wider ${ct}">${s}</span></div><p class="text-xs font-bold text-slate-800 break-words line-clamp-2 leading-tight uppercase mb-2" title="${a.nome}">${(a.qra||a.nome.split(' ')[0]).replace(/AL SD PM /gi,'').toUpperCase()}</p><div class="w-full bg-slate-200 h-1.5 mb-1.5 rounded-full overflow-hidden"><div class="${bb} h-1.5" style="width: ${Math.min((p/VALOR_COTA)*100,100)}%"></div></div><p class="text-[10px] font-semibold text-slate-500">R$ ${p.toFixed(2).replace('.',',')} / 150</p></div>`;
+                grid.innerHTML += `
+                    <div class="border rounded-xl p-3 shadow-sm ${cb}">
+                        <div class="flex justify-between items-center mb-1.5">
+                            <span class="text-[11px] font-black text-slate-500">5${aluno.numero.toString().padStart(2,'0')}</span>
+                            <span class="text-[10px] font-black tracking-wider ${ct}">${s}</span>
+                        </div>
+                        <p class="text-xs font-bold text-slate-800 break-words line-clamp-2 leading-tight uppercase mb-2" title="${aluno.nome}">
+                            ${(aluno.qra||aluno.nome.split(' ')[0]).replace(/AL SD PM /gi,'').toUpperCase()}
+                        </p>
+                        <div class="w-full bg-slate-200 h-1.5 mb-1.5 rounded-full overflow-hidden">
+                            <div class="${bb} h-1.5" style="width: ${Math.min((p/VALOR_COTA)*100,100)}%"></div>
+                        </div>
+                        <p class="text-[10px] font-semibold text-slate-500">R$ ${p.toFixed(2).replace('.',',')} / ${VALOR_COTA}</p>
+                    </div>`;
             });
         }
         
