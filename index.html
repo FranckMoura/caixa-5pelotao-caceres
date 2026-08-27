@@ -340,11 +340,48 @@
                                 <button onclick="abrirAbaAluno('aba-qts', this)" class="aba-btn flex-1 py-3 px-4 text-xs font-bold uppercase tracking-wider text-slate-500 border-b-2 border-transparent hover:bg-slate-100 transition whitespace-nowrap"><i class="fa-solid fa-table-cells mr-1.5"></i> QTS (Semanal)</button>
                             </div>
                             <div class="p-4 md:p-6 bg-white flex-1 overflow-y-auto relative">
-                                <div id="aba-material" class="aba-content block space-y-6">
-                                    <div class="bg-gradient-to-r from-sys-dark to-pmmt-blue rounded-xl p-6 text-white shadow border border-pmmt-gold/30 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-4"><i class="fa-solid fa-shield-halved absolute -right-4 -bottom-6 text-7xl text-white/5 pointer-events-none"></i><div class="relative z-10 text-center md:text-left"><h3 class="text-lg font-black uppercase tracking-widest text-pmmt-gold mb-1"><i class="fa-solid fa-book-open-reader mr-2"></i> Módulo Interativo POP PMMT</h3><p class="text-xs font-medium text-slate-300">Acesse o sistema dinâmico do Procedimento Operacional Padrão.</p></div><a href="estudo_pop.html" target="_blank" class="relative z-10 bg-pmmt-gold hover:bg-yellow-500 text-sys-dark font-black px-5 py-2.5 rounded shadow-lg transition uppercase tracking-widest text-[10px] whitespace-nowrap flex items-center gap-2 border border-yellow-400">Acessar POP <i class="fa-solid fa-arrow-up-right-from-square"></i></a></div>
-                                    <div id="containerMateriais" class="space-y-4"><p class="text-xs text-slate-500 text-center py-6"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Carregando acervo...</p></div>
-                                </div>
-                                
+<div id="aba-material" class="aba-content block space-y-6">
+    
+    <!-- MÓDULO INTERATIVO POP PMMT -->
+    <div class="bg-gradient-to-r from-sys-dark to-pmmt-blue rounded-xl p-6 text-white shadow border border-pmmt-gold/30 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-4"><i class="fa-solid fa-shield-halved absolute -right-4 -bottom-6 text-7xl text-white/5 pointer-events-none"></i><div class="relative z-10 text-center md:text-left"><h3 class="text-lg font-black uppercase tracking-widest text-pmmt-gold mb-1"><i class="fa-solid fa-book-open-reader mr-2"></i> Módulo Interativo POP PMMT</h3><p class="text-xs font-medium text-slate-300">Acesse o sistema dinâmico do Procedimento Operacional Padrão.</p></div><a href="estudo_pop.html" target="_blank" class="relative z-10 bg-pmmt-gold hover:bg-yellow-500 text-sys-dark font-black px-5 py-2.5 rounded shadow-lg transition uppercase tracking-widest text-[10px] whitespace-nowrap flex items-center gap-2 border border-yellow-400">Acessar POP <i class="fa-solid fa-arrow-up-right-from-square"></i></a></div>
+    
+    <!-- NOVO: MÓDULO DE MAPA TÁTICO: 6º BPM E 17º BPM -->
+    <div class="bg-white rounded-xl shadow-md border border-slate-300 overflow-hidden">
+        <!-- Cabeçalho do Card -->
+        <div class="bg-sys-dark px-5 py-4 border-b-4 border-pmmt-gold flex items-center justify-between relative overflow-hidden">
+            <i class="fa-solid fa-map-location-dot absolute -right-2 -bottom-4 text-5xl text-white/10 pointer-events-none"></i>
+            <div class="relative z-10">
+                <h3 class="text-sm md:text-base font-black uppercase tracking-widest text-white"><i class="fa-solid fa-location-crosshairs text-pmmt-gold mr-2"></i> Mapa Tático Regional</h3>
+                <p class="text-[9px] text-slate-300 uppercase tracking-widest mt-0.5">Fronteiras de Atuação: 6º BPM (Cáceres) e 17º BPM (Mirassol D'Oeste)</p>
+            </div>
+            <div class="relative z-10 hidden md:block">
+                <span class="bg-white/10 border border-white/20 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                    Geointeligência
+                </span>
+            </div>
+        </div>
+        
+        <!-- Área do Iframe do Mapa (URL já convertida para embed) -->
+        <div class="p-2 bg-slate-100">
+            <iframe 
+                src="https://www.google.com/maps/d/u/0/embed?mid=1B2yEMA2-Si3-B8CEABa2SAd5Pq9Zpzg" 
+                class="w-full h-80 md:h-[400px] rounded-lg border border-slate-300 shadow-inner grayscale-[20%] hover:grayscale-0 transition duration-500" 
+                allowfullscreen="" 
+                loading="lazy" 
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+        </div>
+        
+        <!-- Rodapé do Card -->
+        <div class="px-5 py-3 bg-slate-50 border-t border-slate-200 flex justify-between items-center text-[10px] font-bold text-slate-500 uppercase tracking-wide">
+            <span><i class="fa-solid fa-circle-info text-pmmt-blue mr-1"></i> Estudo de Setores de Policiamento</span>
+            <span>Atualizado</span>
+        </div>
+    </div>
+
+    <!-- ACERVO DE MATERIAIS DE APOIO -->
+    <div id="containerMateriais" class="space-y-4"><p class="text-xs text-slate-500 text-center py-6"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Carregando acervo...</p></div>
+</div>
                                 <!-- ======================= -->
                                 <!-- QTS TABELA E CONTROLES  -->
                                 <!-- ======================= -->
