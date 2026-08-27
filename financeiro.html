@@ -30,7 +30,6 @@
         ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
 
-        /* Estilos Exclusivos para Impressão do Relatório Financeiro */
         @media print {
             body > div:not(#printExtratoArea) { display: none !important; }
             #printExtratoArea { display: block !important; position: absolute; top: 0; left: 0; width: 100%; padding: 10mm; background: white; color: black; }
@@ -132,7 +131,7 @@
         <!-- Extrato Detalhado (Prestação de Contas) -->
         <div class="bg-white shadow-sm border border-slate-200 no-print rounded-xl overflow-hidden">
             <div class="bg-slate-50 border-b border-slate-100 px-4 py-3 flex justify-between items-center cursor-pointer hover:bg-slate-100 transition" onclick="togglePainel('conteudoExtrato', 'iconeExtrato')">
-                <h3 class="text-xs font-bold text-sys-dark uppercase tracking-wide flex items-center"><i class="fa-solid fa-file-invoice-dollar text-pmmt-gold mr-2"></i>Extrato Detalhado (Prestação de Contas)</h3>
+                <h3 class="text-xs font-bold text-sys-dark uppercase tracking-wide flex items-center"><i class="fa-solid fa-file-invoice-dollar text-pmmt-gold mr-2"></i>Extrato Detalhado</h3>
                 <div class="flex items-center gap-4">
                     <div class="flex gap-2">
                         <button onclick="event.stopPropagation(); exportarExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider shadow flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-file-excel"></i> Excel</button>
@@ -145,7 +144,7 @@
                 <div class="overflow-x-auto border border-slate-200 rounded-lg">
                     <table class="w-full text-left border-collapse min-w-[800px] text-[11px]">
                         <thead class="bg-sys-dark text-white">
-                            <tr>
+                            <tr id="trExtratoHead">
                                 <th class="p-3 font-semibold uppercase tracking-wider w-24">Data</th>
                                 <th class="p-3 font-semibold uppercase tracking-wider text-center w-28">Operação</th>
                                 <th class="p-3 font-semibold uppercase tracking-wider w-56">Categoria e Descrição</th>
@@ -164,7 +163,13 @@
         <!-- Controle de Cotas -->
         <div class="bg-white shadow-sm border border-slate-200 no-print rounded-xl overflow-hidden">
             <div class="bg-slate-50 border-b border-slate-100 px-4 py-3 flex justify-between items-center cursor-pointer hover:bg-slate-100 transition" onclick="togglePainel('conteudoCotas', 'iconeCotas')">
-                <h3 class="text-xs font-bold text-sys-dark uppercase tracking-wide"><i class="fa-solid fa-users text-pmmt-gold mr-2"></i>Monitoramento de Cotas Mensais + Formatura (R$ 500,00)</h3>
+                <div class="flex items-center gap-2">
+                    <h3 class="text-xs font-bold text-sys-dark uppercase tracking-wide flex items-center">
+                        <i class="fa-solid fa-users text-pmmt-gold mr-2"></i> Monitoramento de Cotas 
+                        <span id="txtMetaAtual" class="ml-1 text-pmmt-blue font-black">(Meta: R$ 500,00)</span>
+                    </h3>
+                    <button onclick="event.stopPropagation(); alterarMetaCota()" class="admin-only ml-2 text-[9px] bg-slate-200 hover:bg-slate-300 text-slate-600 px-2 py-1 rounded transition border border-slate-300 shadow-sm flex items-center gap-1"><i class="fa-solid fa-pen"></i> Editar Meta</button>
+                </div>
                 <i id="iconeCotas" class="fa-solid fa-chevron-up text-slate-400 transition-transform duration-300"></i>
             </div>
             <div id="conteudoCotas" class="painel-conteudo bg-white" style="max-height: 2000px; padding: 1rem;">
@@ -200,7 +205,6 @@
                 </tr>
             </thead>
             <tbody id="tbodyPrintExtrato">
-                <!-- Preenchido via JS -->
             </tbody>
         </table>
         
@@ -224,8 +228,8 @@
         let transacoesGlobais = [];
         let isAdmin = false;
         
-        // Novo valor atualizado: 200 (Mensalidade) + 300 (Formatura) = 500
-        const VALOR_COTA = 500.00;
+        // Recupera a meta salva no navegador ou define R$ 500,00 como padrão
+        let VALOR_COTA = parseFloat(localStorage.getItem('metaCotasPelotao')) || 500.00;
         
         let catReceitas = ["Cota Inicial / Mensalidade", "Fundo Formatura", "Doação", "Arrecadação Rifa"];
         let catDespesas = ["Alimentação / Rancho", "Fardamento extra", "Manutenção Pelotão", "Material Limpeza/Água", "Solenidade / Formatura"];
@@ -238,13 +242,14 @@
         }
 
         window.onload = async function() {
+            document.getElementById('txtMetaAtual').innerText = `(Meta: ${VALOR_COTA.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})})`;
             mudarTipoUi();
             await iniciarSupabase();
         };
 
         async function iniciarSupabase() {
             try {
-                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
                 const { data: { session } } = await supabaseClient.auth.getSession();
                 
                 if (session) {
@@ -253,6 +258,11 @@
                     
                     document.querySelectorAll('.admin-only').forEach(el => isAdmin ? el.classList.remove('hidden') : el.classList.add('hidden'));
                     document.querySelectorAll('.viewer-only').forEach(el => isAdmin ? el.classList.add('hidden') : el.classList.remove('hidden'));
+
+                    // Adiciona a coluna de ações no cabeçalho do Extrato se for Admin
+                    if(isAdmin && !document.getElementById('thAcoes')) {
+                        document.getElementById('trExtratoHead').innerHTML += `<th id="thAcoes" class="p-3 font-semibold uppercase tracking-wider text-center w-24">Ações</th>`;
+                    }
 
                     await sincronizarDados();
                 } else {
@@ -285,6 +295,22 @@
                 const numeroFormatado = "5" + aluno.numero.toString().padStart(2, '0');
                 if(select) select.add(new Option(`${numeroFormatado} - ${nomeExibicao}`, aluno.id)); 
             });
+        }
+
+        // --- FUNÇÕES DE META DINÂMICA ---
+        function alterarMetaCota() {
+            const novaMeta = prompt("Informe o novo valor da meta de cotas por aluno:\n(Apenas números. Use ponto para os centavos, ex: 500.00)", VALOR_COTA);
+            if (novaMeta !== null && novaMeta.trim() !== "") {
+                const valorConvertido = parseFloat(novaMeta.replace(',', '.'));
+                if(!isNaN(valorConvertido) && valorConvertido > 0) {
+                    VALOR_COTA = valorConvertido;
+                    localStorage.setItem('metaCotasPelotao', VALOR_COTA);
+                    document.getElementById('txtMetaAtual').innerText = `(Meta: ${VALOR_COTA.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})})`;
+                    atualizarPainel(); // Recalcula tudo com base na nova meta
+                } else {
+                    alert("Valor inválido! Digite apenas números.");
+                }
+            }
         }
 
         function mudarTipoUi() {
@@ -356,6 +382,44 @@
             }
             mostrarLoading(false);
         }
+
+        // --- FUNÇÕES DE EXCLUIR E EDITAR TRANSAÇÃO ---
+        async function deletarTransacao(id) {
+            if(confirm("Confirma a exclusão definitiva deste lançamento no extrato?")) {
+                mostrarLoading(true);
+                await supabaseClient.from('transacoes_caixa').delete().eq('id', id);
+                await carregarTransacoes();
+                mostrarLoading(false);
+            }
+        }
+
+        async function editarTransacao(id, descAtual, valorAtual) {
+            const novaDesc = prompt("Corrija a descrição do lançamento:", descAtual);
+            if (novaDesc === null) return; // Cancelou
+            
+            const novoValorStr = prompt("Corrija o valor do lançamento:\n(Use ponto para os centavos, ex: 150.00)", valorAtual);
+            if (novoValorStr === null) return; // Cancelou
+            
+            const novoValor = parseFloat(novoValorStr.replace(',', '.'));
+            if (isNaN(novoValor) || novoValor <= 0) {
+                alert("Valor inválido. A edição foi cancelada.");
+                return;
+            }
+
+            if (novaDesc.trim() !== "" || novoValor !== valorAtual) {
+                mostrarLoading(true);
+                const { error } = await supabaseClient.from('transacoes_caixa')
+                    .update({ descricao: novaDesc.trim(), valor: novoValor })
+                    .eq('id', id);
+
+                if (!error) {
+                    await carregarTransacoes();
+                } else {
+                    alert("Erro ao atualizar os dados.");
+                }
+                mostrarLoading(false);
+            }
+        }
         
         function atualizarPainel() {
             let tr=0, td=0, catG={}, pagA={}; 
@@ -371,12 +435,12 @@
                 catG[t.categoria] = (catG[t.categoria] || 0) + v;
             });
             
-            // Atualiza indicadores da UI web
+            // Atualiza UI
             document.getElementById('valorReceitas').innerText = tr.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); 
             document.getElementById('valorDespesas').innerText = td.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); 
             document.getElementById('valorSaldo').innerText = (tr-td).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 
-            // Atualiza totalizadores do Print PDF
+            // Atualiza PDF
             document.getElementById('printArrecadado').innerText = tr.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); 
             document.getElementById('printDespesas').innerText = td.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); 
             document.getElementById('printSaldo').innerText = (tr-td).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
@@ -386,7 +450,6 @@
             renderizarExtrato();
         }
 
-        // --- FUNÇÃO DO EXTRATO DETALHADO (WEB E PRINT) ---
         function renderizarExtrato() {
             const tbodyWeb = document.getElementById('tabelaExtrato');
             const tbodyPrint = document.getElementById('tbodyPrintExtrato');
@@ -396,12 +459,12 @@
             tbodyPrint.innerHTML = '';
 
             if(transacoesGlobais.length === 0) {
-                tbodyWeb.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-500 font-bold uppercase tracking-widest text-xs">Nenhum lançamento no histórico.</td></tr>';
+                const colSpanCount = isAdmin ? 6 : 5;
+                tbodyWeb.innerHTML = `<tr><td colspan="${colSpanCount}" class="p-6 text-center text-slate-500 font-bold uppercase tracking-widest text-xs">Nenhum lançamento no histórico.</td></tr>`;
                 tbodyPrint.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-black font-bold uppercase">Nenhum lançamento no histórico.</td></tr>';
                 return;
             }
 
-            // Ordena as transações da mais recente para a mais antiga
             const transacoesOrdenadas = [...transacoesGlobais].sort((a, b) => new Date(b.data) - new Date(a.data));
 
             transacoesOrdenadas.forEach(t => {
@@ -424,7 +487,19 @@
                     }
                 }
 
-                // Renderiza HTML Web
+                // Cria botões de ação se for administrador
+                let acoesHtml = '';
+                if(isAdmin) {
+                    const descSafe = t.descricao.replace(/'/g, "\\'"); // Escapa aspas para não quebrar a função
+                    acoesHtml = `
+                        <td class="p-3 text-center">
+                            <button onclick="editarTransacao(${t.id}, '${descSafe}', ${t.valor})" class="text-amber-500 hover:text-amber-700 mx-1 transition" title="Editar Lancamento"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="deletarTransacao(${t.id})" class="text-rose-500 hover:text-rose-700 mx-1 transition" title="Excluir Lancamento"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    `;
+                }
+
+                // Web Table
                 tbodyWeb.innerHTML += `
                     <tr class="hover:bg-slate-50 transition border-b border-slate-100">
                         <td class="p-3 font-semibold text-slate-600">${dataFormatada}</td>
@@ -439,10 +514,11 @@
                         </td>
                         <td class="p-3 text-[10px] text-sys-dark">${alunoNome}</td>
                         <td class="p-3 text-right font-black ${colorWeb} text-xs tracking-wider">${isReceita ? '+' : '-'} ${valFormatado}</td>
+                        ${acoesHtml}
                     </tr>
                 `;
 
-                // Renderiza HTML Print (Preto e branco limpo)
+                // Print Table
                 tbodyPrint.innerHTML += `
                     <tr>
                         <td class="border border-black p-2 text-center">${dataFormatada}</td>
@@ -458,43 +534,27 @@
             });
         }
 
-        // --- FUNÇÕES DE EXPORTAÇÃO (PDF E EXCEL) ---
+        // --- EXPORTAÇÕES ---
         function imprimirExtrato() {
-            // Atualiza a data e hora da emissão no rodapé do PDF
             const agora = new Date();
             document.getElementById('printDataEmissao').innerText = agora.toLocaleDateString('pt-BR') + ' às ' + agora.toLocaleTimeString('pt-BR');
-
-            // Ativa o layout de impressão e chama a janela do navegador
             document.body.classList.add('printing-extrato'); 
             window.print();
-            
-            // Restaura
-            setTimeout(() => { 
-                document.body.classList.remove('printing-extrato'); 
-            }, 500);
+            setTimeout(() => { document.body.classList.remove('printing-extrato'); }, 500);
         }
 
         function exportarExcel() {
-            if(transacoesGlobais.length === 0) {
-                alert("Não há dados para exportar.");
-                return;
-            }
-
-            // O BOM \uFEFF é necessário para o Excel reconhecer os acentos (UTF-8)
+            if(transacoesGlobais.length === 0) { alert("Não há dados para exportar."); return; }
             let csvContent = "\uFEFFData;Operação;Categoria;Descrição;Aluno_Vinculado;Valor\n";
-
-            // Ordena as transações da mais recente para a mais antiga
             const transacoesOrdenadas = [...transacoesGlobais].sort((a, b) => new Date(b.data) - new Date(a.data));
 
             transacoesOrdenadas.forEach(t => {
                 const dataFormatada = new Date(t.data + 'T12:00:00Z').toLocaleDateString('pt-BR');
                 const operacao = t.tipo.toUpperCase();
-                
-                // Substitui aspas e ponto e vírgula na descrição para não quebrar o CSV
                 let desc = t.descricao.replace(/;/g, ",").replace(/"/g, '""');
                 let cat = t.categoria.replace(/;/g, ",");
-                
                 let alunoNome = "Geral Caixa";
+                
                 if(t.aluno_id) {
                     const aluno = listaAlunosFull.find(a => a.id === t.aluno_id);
                     if(aluno) {
@@ -503,8 +563,6 @@
                     }
                 }
                 
-                // O Excel brasileiro usa vírgula para decimais, então convertemos o valor:
-                // Se receita fica positivo, se despesa fica negativo
                 let valorNumero = parseFloat(t.valor);
                 if (t.tipo === 'despesa') valorNumero = -Math.abs(valorNumero);
                 let valorFormatadoCSV = valorNumero.toFixed(2).replace('.', ',');
@@ -512,15 +570,12 @@
                 csvContent += `"${dataFormatada}";"${operacao}";"${cat}";"${desc}";"${alunoNome}";"${valorFormatadoCSV}"\n`;
             });
 
-            // Cria o link para download forçado
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.setAttribute("href", url);
-            
             const dataHoje = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
             link.setAttribute("download", `Extrato_Financeiro_5Pel_${dataHoje}.csv`);
-            
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -534,6 +589,7 @@
             listaAlunosFull.forEach(aluno => {
                 const p = pagamentos[aluno.id] || 0; 
                 let s, cb, ct, bb;
+                // Calculo da progressão usando a variável de VALOR_COTA Dinâmico
                 if(p >= VALOR_COTA) {
                     s="EM DIA"; cb="border-emerald-200 bg-emerald-50"; ct="text-emerald-700"; bb="bg-emerald-500";
                 } else if(p > 0 && p < VALOR_COTA) {
