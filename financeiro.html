@@ -264,11 +264,9 @@
         let transacoesGlobais = [];
         let isAdmin = false;
         
-        // Recupera a meta salva no navegador ou define R$ 500,00 como padrão
         let VALOR_COTA = parseFloat(localStorage.getItem('metaCotasPelotao')) || 500.00;
         
-        // Categorias Pré-definidas
-        let catReceitas = ["Cota Mensal / Caixa Geral", "Fundo Formatura", "Doação", "Arrecadação Rifa"];
+        let catReceitas = ["Cota Inicial / Mensalidade", "Fundo Formatura", "Doação", "Arrecadação Rifa"];
         let catDespesas = ["Solenidade / Formatura", "Alimentação / Rancho", "Fardamento extra", "Manutenção Pelotão", "Material Limpeza/Água", "Papelaria/Impressão"];
 
         const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
@@ -280,7 +278,7 @@
 
         window.onload = async function() {
             document.getElementById('txtMetaAtual').innerText = `(Meta: ${VALOR_COTA.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})})`;
-            addDivisaoRow(); // Inicializa com a primeira linha de divisão
+            addDivisaoRow(); 
             await iniciarSupabase();
         };
 
@@ -347,10 +345,6 @@
                 }
             }
         }
-
-        // ===============================================
-        // --- SISTEMA DE DIVISÃO DE VALORES NO FORM ---
-        // ===============================================
 
         function addDivisaoRow() {
             const container = document.getElementById('listaDivisoes');
@@ -449,7 +443,6 @@
             let payloads = [];
             let isValid = true;
 
-            // Varre todas as divisões criadas para salvar uma por uma (separação inteligente)
             document.querySelectorAll('.divisao-row').forEach(row => {
                 let c = row.querySelector('.sel-categoria').value;
                 if(c === 'NOVA') c = row.querySelector('.inp-nova-categoria').value.trim();
@@ -478,7 +471,7 @@
             if(!error) {
                 document.getElementById('inputDescricao').value = ''; 
                 document.getElementById('listaDivisoes').innerHTML = ''; 
-                addDivisaoRow(); // Reseta para uma única linha vazia
+                addDivisaoRow();
                 document.getElementById('inputAluno').value = 'GERAL'; 
                 await carregarTransacoes();
             } else {
@@ -487,9 +480,6 @@
             mostrarLoading(false);
         }
 
-        // ===============================================
-        // --- FUNÇÕES DE EXCLUIR E EDITAR TRANSAÇÃO ---
-        // ===============================================
         async function deletarTransacao(id) {
             if(confirm("Confirma a exclusão definitiva deste lançamento no extrato?")) {
                 mostrarLoading(true);
@@ -533,19 +523,21 @@
         
         function atualizarPainel() {
             let tr=0, td=0, catG={}, pagA={}; 
-            let s_form_in = 0, s_form_out = 0; // Para calcular saldo de Formatura
-            let s_caixa_in = 0, s_caixa_out = 0; // Para calcular saldo do Caixa
+            let s_form_in = 0, s_form_out = 0; 
+            let s_caixa_in = 0, s_caixa_out = 0; 
             
             listaAlunosFull.forEach(a => pagA[a.id]=0);
             
             transacoesGlobais.forEach(t => {
                 const v = parseFloat(t.valor); 
                 const isReceita = t.tipo === 'receita';
+                const catLower = t.categoria.toLowerCase();
                 
-                // --- Agrupadores Gerais ---
                 if(isReceita) {
                     tr += v; 
-                    if(t.aluno_id && (t.categoria.toLowerCase().includes("cota") || t.categoria.toLowerCase().includes("mensalidade"))) {
+                    
+                    // CORREÇÃO AQUI: Agora a barra de cotas do aluno puxa todas as categorias listadas, independente de letra maiúscula/minúscula
+                    if(t.aluno_id && (catLower.includes("cota") || catLower.includes("mensal") || catLower.includes("fundo") || catLower.includes("formatura"))) {
                         pagA[t.aluno_id] += v;
                     }
                 } else {
@@ -553,9 +545,6 @@
                 }
                 catG[t.categoria] = (catG[t.categoria] || 0) + v;
 
-                // --- Cálculo Inteligente de Fundos e Objetivos Específicos ---
-                // Verifica se a categoria é relacionada a Formatura/Rifa
-                const catLower = t.categoria.toLowerCase();
                 const isFormatura = catLower.includes("formatura") || catLower.includes("rifa") || catLower.includes("solenidade");
 
                 if (isFormatura) {
@@ -565,16 +554,13 @@
                 }
             });
             
-            // Atualiza UI Geral
             document.getElementById('valorReceitas').innerText = tr.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); 
             document.getElementById('valorDespesas').innerText = td.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); 
             document.getElementById('valorSaldo').innerText = (tr-td).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 
-            // Atualiza UI dos Objetivos Separados
             document.getElementById('saldoCaixaGeral').innerText = (s_caixa_in - s_caixa_out).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
             document.getElementById('saldoFormatura').innerText = (s_form_in - s_form_out).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 
-            // Atualiza PDF Print
             document.getElementById('printArrecadado').innerText = tr.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); 
             document.getElementById('printDespesas').innerText = td.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); 
             document.getElementById('printSaldo').innerText = (tr-td).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
@@ -621,10 +607,8 @@
                     }
                 }
 
-                // Cria botões de ação se for administrador
                 let acoesHtml = '';
                 if(isAdmin) {
-                    // Prevenção vital de escape de strings para garantir funcionamento dos cliques (Bug corrigido)
                     const descSafe = t.descricao.replace(/"/g, '&quot;').replace(/'/g, "\\'").replace(/\n/g, ' '); 
                     acoesHtml = `
                         <td class="p-3 text-center">
@@ -634,7 +618,6 @@
                     `;
                 }
 
-                // Web Table
                 tbodyWeb.innerHTML += `
                     <tr class="hover:bg-slate-50 transition border-b border-slate-100">
                         <td class="p-3 font-semibold text-slate-600">${dataFormatada}</td>
@@ -653,7 +636,6 @@
                     </tr>
                 `;
 
-                // Print Table
                 tbodyPrint.innerHTML += `
                     <tr>
                         <td class="border border-black p-2 text-center">${dataFormatada}</td>
@@ -669,7 +651,6 @@
             });
         }
 
-        // --- EXPORTAÇÕES ---
         function imprimirExtrato() {
             const agora = new Date();
             document.getElementById('printDataEmissao').innerText = agora.toLocaleDateString('pt-BR') + ' às ' + agora.toLocaleTimeString('pt-BR');
