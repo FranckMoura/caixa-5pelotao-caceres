@@ -177,15 +177,15 @@
                 </div>
             </div>
             <div id="conteudoExtrato" class="painel-conteudo bg-white" style="max-height: 2000px; padding: 1rem;">
-                <div class="overflow-x-auto border border-slate-200 rounded-lg">
-                    <table class="w-full text-left border-collapse min-w-[800px] text-[11px]">
-                        <thead class="bg-sys-dark text-white">
+                <div class="overflow-auto border border-slate-200 rounded-lg max-h-[500px]">
+                    <table class="w-full text-left border-collapse min-w-[800px] text-[11px] relative">
+                        <thead class="bg-sys-dark text-white sticky top-0 z-10 shadow-[0_1px_0_0_#e2e8f0]">
                             <tr id="trExtratoHead">
-                                <th class="p-3 font-semibold uppercase tracking-wider w-24">Data</th>
-                                <th class="p-3 font-semibold uppercase tracking-wider text-center w-28">Operação</th>
-                                <th class="p-3 font-semibold uppercase tracking-wider w-56">Categoria e Descrição</th>
-                                <th class="p-3 font-semibold uppercase tracking-wider w-40">Aluno Vinculado</th>
-                                <th class="p-3 font-semibold uppercase tracking-wider text-right w-32">Valor (R$)</th>
+                                <th class="p-3 font-semibold uppercase tracking-wider w-24 cursor-pointer hover:bg-sys-blue transition" onclick="ordenarExtrato('data')">Data <i id="sort-data" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
+                                <th class="p-3 font-semibold uppercase tracking-wider text-center w-28 cursor-pointer hover:bg-sys-blue transition" onclick="ordenarExtrato('operacao')">Operação <i id="sort-operacao" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
+                                <th class="p-3 font-semibold uppercase tracking-wider w-56 cursor-pointer hover:bg-sys-blue transition" onclick="ordenarExtrato('categoria')">Categoria e Descrição <i id="sort-categoria" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
+                                <th class="p-3 font-semibold uppercase tracking-wider w-40 cursor-pointer hover:bg-sys-blue transition" onclick="ordenarExtrato('aluno')">Aluno Vinculado <i id="sort-aluno" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
+                                <th class="p-3 font-semibold uppercase tracking-wider text-right w-32 cursor-pointer hover:bg-sys-blue transition" onclick="ordenarExtrato('valor')">Valor (R$) <i id="sort-valor" class="fa-solid fa-sort ml-1 opacity-50 no-print"></i></th>
                             </tr>
                         </thead>
                         <tbody id="tabelaExtrato" class="divide-y divide-slate-100 text-slate-700">
@@ -263,6 +263,10 @@
         let listaAlunosFull = []; 
         let transacoesGlobais = [];
         let isAdmin = false;
+
+        // Variáveis para Controle de Ordenação
+        let colunaOrdenacao = 'data';
+        let direcaoOrdenacao = 'desc';
         
         let VALOR_COTA = parseFloat(localStorage.getItem('metaCotasPelotao')) || 500.00;
         
@@ -295,7 +299,7 @@
                     document.querySelectorAll('.viewer-only').forEach(el => isAdmin ? el.classList.add('hidden') : el.classList.remove('hidden'));
 
                     if(isAdmin && !document.getElementById('thAcoes')) {
-                        document.getElementById('trExtratoHead').innerHTML += `<th id="thAcoes" class="p-3 font-semibold uppercase tracking-wider text-center w-24">Ações</th>`;
+                        document.getElementById('trExtratoHead').innerHTML += `<th id="thAcoes" class="p-3 font-semibold uppercase tracking-wider text-center w-24 sticky top-0 bg-sys-dark z-10 shadow-[0_1px_0_0_#e2e8f0]">Ações</th>`;
                     }
 
                     await sincronizarDados();
@@ -535,9 +539,6 @@
                 
                 if(isReceita) {
                     tr += v; 
-                    
-                    // CORREÇÃO FINAL: Qualquer receita ("entrada de dinheiro") vinculada a um aluno, 
-                    // conta e preenche a barra de cota geral dele, independente do nome da categoria
                     if(t.aluno_id) {
                         pagA[t.aluno_id] += v;
                     }
@@ -571,6 +572,17 @@
             renderizarExtrato();
         }
 
+        // --- SISTEMA DE ORDENAÇÃO DE COLUNAS ---
+        function ordenarExtrato(coluna) {
+            if (colunaOrdenacao === coluna) {
+                direcaoOrdenacao = direcaoOrdenacao === 'asc' ? 'desc' : 'asc';
+            } else {
+                colunaOrdenacao = coluna;
+                direcaoOrdenacao = 'asc';
+            }
+            renderizarExtrato();
+        }
+
         function renderizarExtrato() {
             const tbodyWeb = document.getElementById('tabelaExtrato');
             const tbodyPrint = document.getElementById('tbodyPrintExtrato');
@@ -579,6 +591,14 @@
             tbodyWeb.innerHTML = '';
             tbodyPrint.innerHTML = '';
 
+            // Reseta ícones de ordenação na UI web
+            ['data', 'operacao', 'categoria', 'aluno', 'valor'].forEach(c => {
+                const el = document.getElementById(`sort-${c}`);
+                if(el) el.className = 'fa-solid fa-sort ml-1 opacity-50 no-print';
+            });
+            const tSort = document.getElementById(`sort-${colunaOrdenacao}`);
+            if(tSort) tSort.className = `fa-solid ${direcaoOrdenacao === 'asc' ? 'fa-sort-up' : 'fa-sort-down'} ml-1 text-pmmt-gold opacity-100 no-print`;
+
             if(transacoesGlobais.length === 0) {
                 const colSpanCount = isAdmin ? 6 : 5;
                 tbodyWeb.innerHTML = `<tr><td colspan="${colSpanCount}" class="p-6 text-center text-slate-500 font-bold uppercase tracking-widest text-xs">Nenhum lançamento no histórico.</td></tr>`;
@@ -586,7 +606,38 @@
                 return;
             }
 
-            const transacoesOrdenadas = [...transacoesGlobais].sort((a, b) => new Date(b.data) - new Date(a.data));
+            // Mapeador auxiliar para agilizar ordenação por Aluno
+            const getNomeAluno = (id) => {
+                if(!id) return "GERAL CAIXA";
+                const aluno = listaAlunosFull.find(a => a.id === id);
+                return aluno ? `5${aluno.numero.toString().padStart(2, '0')} ${aluno.qra || aluno.nome}`.toUpperCase() : "Z";
+            };
+
+            // Aplica Lógica de Ordenação Inteligente
+            const transacoesOrdenadas = [...transacoesGlobais].sort((a, b) => {
+                let va, vb;
+                switch(colunaOrdenacao) {
+                    case 'data': 
+                        va = new Date(a.data).getTime(); 
+                        vb = new Date(b.data).getTime(); 
+                        if(va === vb) { va = a.id; vb = b.id; } // Desempate estabiliza a lista
+                        break;
+                    case 'operacao': 
+                        va = a.tipo.toLowerCase(); vb = b.tipo.toLowerCase(); break;
+                    case 'categoria': 
+                        va = a.categoria.toLowerCase(); vb = b.categoria.toLowerCase(); break;
+                    case 'aluno': 
+                        va = getNomeAluno(a.aluno_id); vb = getNomeAluno(b.aluno_id); break;
+                    case 'valor': 
+                        va = parseFloat(a.valor); vb = parseFloat(b.valor); break;
+                    default: 
+                        va = new Date(a.data).getTime(); vb = new Date(b.data).getTime();
+                }
+
+                if (va < vb) return direcaoOrdenacao === 'asc' ? -1 : 1;
+                if (va > vb) return direcaoOrdenacao === 'asc' ? 1 : -1;
+                return 0;
+            });
 
             transacoesOrdenadas.forEach(t => {
                 const isReceita = t.tipo === 'receita';
@@ -610,7 +661,6 @@
 
                 let acoesHtml = '';
                 if(isAdmin) {
-                    // Proteção de strings que poderiam quebrar o onclick do botão
                     const descSafe = t.descricao.replace(/"/g, '&quot;').replace(/'/g, "\\'").replace(/\n/g, ' '); 
                     acoesHtml = `
                         <td class="p-3 text-center">
