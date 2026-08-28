@@ -536,8 +536,9 @@
                 if(isReceita) {
                     tr += v; 
                     
-                    // CORREÇÃO AQUI: Agora a barra de cotas do aluno puxa todas as categorias listadas, independente de letra maiúscula/minúscula
-                    if(t.aluno_id && (catLower.includes("cota") || catLower.includes("mensal") || catLower.includes("fundo") || catLower.includes("formatura"))) {
+                    // CORREÇÃO FINAL: Qualquer receita ("entrada de dinheiro") vinculada a um aluno, 
+                    // conta e preenche a barra de cota geral dele, independente do nome da categoria
+                    if(t.aluno_id) {
                         pagA[t.aluno_id] += v;
                     }
                 } else {
@@ -609,11 +610,12 @@
 
                 let acoesHtml = '';
                 if(isAdmin) {
+                    // Proteção de strings que poderiam quebrar o onclick do botão
                     const descSafe = t.descricao.replace(/"/g, '&quot;').replace(/'/g, "\\'").replace(/\n/g, ' '); 
                     acoesHtml = `
                         <td class="p-3 text-center">
-                            <button onclick="editarTransacao(${t.id}, '${descSafe}', ${t.valor})" class="text-amber-500 hover:text-amber-700 mx-1 transition" title="Editar Lancamento"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button onclick="deletarTransacao(${t.id})" class="text-rose-500 hover:text-rose-700 mx-1 transition" title="Excluir Lancamento"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="editarTransacao('${t.id}', '${descSafe}', ${t.valor})" class="text-amber-500 hover:text-amber-700 mx-1 transition" title="Editar Lancamento"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="deletarTransacao('${t.id}')" class="text-rose-500 hover:text-rose-700 mx-1 transition" title="Excluir Lancamento"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     `;
                 }
