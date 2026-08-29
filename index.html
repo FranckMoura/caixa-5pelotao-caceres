@@ -203,9 +203,11 @@
                         <p class="text-sm text-slate-700 font-medium">Seja bem-vindo(a) ao <strong>Portal Institucional do 35º CFSD - 5º Pelotão</strong>.</p>
                     </div>
 
-                    <!-- MÓDULOS DO SISTEMA -->
-                    <section id="modulo-home" class="space-y-5">
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+<!-- MÓDULOS DO SISTEMA -->
+                    <section id="modulo-home" class="space-y-6">
+                        <!-- Removido o lg:grid-cols-2 para os cards assumirem o modo Paisagem (100% da largura) -->
+                        <div class="flex flex-col gap-6">
+                            
                             <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
                                 <div class="bg-sys-dark px-4 py-3 border-b-4 border-pmmt-gold">
                                     <h3 class="text-xs font-bold text-white uppercase tracking-wide"><i class="fa-solid fa-user-shield text-pmmt-gold mr-2"></i>Serviço Diário (Hoje)</h3>
@@ -214,6 +216,7 @@
                                     <div class="w-full text-center py-6 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><p class="text-[10px] uppercase tracking-widest font-bold">Carregando escala...</p></div>
                                 </div>
                             </div>
+                            
                             <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
                                 <div class="bg-sys-dark px-4 py-3 border-b-4 border-pmmt-gold">
                                     <h3 class="text-xs font-bold text-white uppercase tracking-wide"><i class="fa-solid fa-list-check text-pmmt-gold mr-2"></i>Missões / QTS (Atual)</h3>
@@ -222,6 +225,7 @@
                                     <div class="w-full text-center py-6 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><p class="text-[10px] uppercase tracking-widest font-bold">Carregando QTS...</p></div>
                                 </div>
                             </div>
+                            
                         </div>
                     </section>
 
@@ -922,21 +926,23 @@
 
             let nomeEx = alDia && alDia.numero ? `5${alDia.numero.toString().padStart(2, '0')} - ${(alDia.qra || alDia.nome).replace(/AL SD PM |AL SD /gi, '').trim().toUpperCase()}` : 'A DEFINIR';
 
-            document.getElementById('homeEscalaDia').innerHTML = `
-                <div class="w-full space-y-3">
-                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded border border-slate-200">
-                        <span class="text-[10px] font-bold text-slate-500 uppercase">Equipe de Serviço</span>
-                        <span class="text-[11px] font-black bg-sys-blue text-white px-2.5 py-1 rounded shadow-sm">${eq}</span>
+document.getElementById('homeEscalaDia').innerHTML = `
+                <div class="w-full flex flex-col gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="flex flex-col items-center justify-center bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Equipe de Serviço</span>
+                            <span class="text-sm font-black bg-sys-blue text-white px-4 py-1.5 rounded-lg shadow-sm">${eq}</span>
+                        </div>
+                        <div class="flex flex-col items-center justify-center bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Graduado (CMT)</span>
+                            <span class="text-sm font-bold text-slate-800 text-center">${sgtFinal}</span>
+                        </div>
+                        <div class="flex flex-col items-center justify-center bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Aluno de Dia</span>
+                            <span class="text-sm font-black text-slate-800 text-center">${nomeEx}</span>
+                        </div>
                     </div>
-                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded border border-slate-200">
-                        <span class="text-[10px] font-bold text-slate-500 uppercase">Graduado (CMT)</span>
-                        <span class="text-[11px] font-bold text-slate-800">${sgtFinal}</span>
-                    </div>
-                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded border border-slate-200">
-                        <span class="text-[10px] font-bold text-slate-500 uppercase">Aluno de Dia</span>
-                        <span class="text-[11px] font-black text-slate-800">${nomeEx}</span>
-                    </div>
-                    <button onclick="mudarModulo('efetivo'); abrirPreviaEscala('${dtIso}', '${eq}', '${sgtFinal}', '${alDia ? alDia.id : ''}')" class="w-full mt-2 bg-pmmt-gold hover:bg-yellow-500 text-sys-dark font-black text-[10px] py-3 rounded shadow uppercase tracking-widest transition flex items-center justify-center gap-2">
+                    <button onclick="mudarModulo('efetivo'); abrirPreviaEscala('${dtIso}', '${eq}', '${sgtFinal}', '${alDia ? alDia.id : ''}')" class="w-full mt-1 bg-pmmt-gold hover:bg-yellow-500 text-sys-dark font-black text-xs py-3 rounded-xl shadow uppercase tracking-widest transition flex items-center justify-center gap-2">
                         <i class="fa-solid fa-clipboard-user"></i> Ver Escala Completa
                     </button>
                 </div>
