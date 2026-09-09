@@ -229,21 +229,74 @@
                         </div>
                     </section>
 
-                    <section id="modulo-institucional" class="hidden space-y-6">
-                        <div class="bg-white shadow-sm border border-slate-300 overflow-hidden rounded-xl">
-                            <div class="bg-sys-dark text-white px-5 py-4 flex justify-between items-center">
-                                <div><h2 class="text-sm font-black tracking-widest uppercase"><i class="fa-solid fa-sitemap text-pmmt-gold mr-2"></i> Cadeia de Comando</h2><p class="text-[9px] text-slate-300 uppercase mt-0.5">Hierarquia do Estado e da Polícia Militar</p></div>
-                            </div>
-                            <div class="p-5 md:p-6">
-                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-pmmt-blue"><div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-user-tie"></i></div><h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Governador do Estado</h3><p class="text-xs font-black text-sys-dark uppercase">Otaviano Pivetta</p></div>
-                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-pmmt-blue"><div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-user-shield"></i></div><h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Sec. de Seg. Pública</h3><p class="text-xs font-black text-sys-dark uppercase">CEL PM SUSANE TAMANHO</p></div>
-                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-pmmt-gold"><div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-star"></i></div><h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Comandante-Geral</h3><p class="text-xs font-black text-sys-dark uppercase">Cel PM Alexandre Mendes</p></div>
-                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-slate-800"><div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-shield-halved"></i></div><h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Cmt 6º BPM</h3><p class="text-xs font-black text-sys-dark uppercase">Ten Cel PM Luiz Marcelo</p></div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
+<section id="modulo-institucional" class="hidden space-y-6">
+    <div class="bg-white shadow-sm border border-slate-300 overflow-hidden rounded-xl">
+        <div class="bg-sys-dark text-white px-5 py-4 flex justify-between items-center">
+            <div><h2 class="text-sm font-black tracking-widest uppercase"><i class="fa-solid fa-sitemap text-pmmt-gold mr-2"></i> Cadeia de Comando</h2><p class="text-[9px] text-slate-300 uppercase mt-0.5">Hierarquia do Estado e da Polícia Militar</p></div>
+        </div>
+        <div class="p-5 md:p-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                
+                <!-- 1. Governador -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-pmmt-blue">
+                    <div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-user-tie"></i></div>
+                    <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Governador do Estado</h3>
+                    <p class="text-xs font-black text-sys-dark uppercase">Otaviano Pivetta</p>
+                </div>
+                
+                <!-- 2. SESP -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-pmmt-blue">
+                    <div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-user-shield"></i></div>
+                    <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Sec. de Seg. Pública</h3>
+                    <p class="text-[11px] font-black text-sys-dark uppercase">Cel PM Susane Tamanho</p>
+                </div>
+                
+                <!-- 3. SESP Adjunto -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-pmmt-blue">
+                    <div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-user-shield"></i></div>
+                    <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Sec. Adj. de Segurança</h3>
+                    <p class="text-[11px] font-black text-sys-dark uppercase">Cel PM Paulo Cezar da Silva</p>
+                </div>
+                
+                <!-- 4. Comandante Geral -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-pmmt-gold">
+                    <div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-star"></i></div>
+                    <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Comandante-Geral</h3>
+                    <p class="text-[10px] font-black text-sys-dark uppercase">Cel PM Cláudio Fernando C. Tinoco</p>
+                </div>
+                
+                <!-- 5. Subchefe Estado Maior -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-pmmt-gold">
+                    <div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-star"></i></div>
+                    <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Subchefe Estado Maior</h3>
+                    <p class="text-[11px] font-black text-sys-dark uppercase">Cel PM Grasielle Paes</p>
+                </div>
+                
+                <!-- 6. Comandante 6º CR -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-slate-800">
+                    <div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-building-shield"></i></div>
+                    <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Comandante do 6º CR</h3>
+                    <p class="text-[10px] font-black text-sys-dark uppercase">Ten Cel PM Adão César R. Silva</p>
+                </div>
+                
+                <!-- 7. Comandante 6º BPM -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-slate-800">
+                    <div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-shield-halved"></i></div>
+                    <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Comandante 6º BPM</h3>
+                    <p class="text-[10px] font-black text-sys-dark uppercase">Ten Cel PM Luiz Marcelo da Silva</p>
+                </div>
+                
+                <!-- 8. Comandante Força Tática -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-slate-800">
+                    <div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-bolt"></i></div>
+                    <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Cmt Força Tática</h3>
+                    <p class="text-[10px] font-black text-sys-dark uppercase">Major PM Abner James L. Campos</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
 
                     <section id="modulo-efetivo" class="hidden space-y-5">
                         <div class="bg-sys-dark text-white rounded-xl shadow-md border-b-4 border-pmmt-gold p-4 md:p-5 flex justify-between items-center relative overflow-hidden">
@@ -866,8 +919,7 @@
 
         const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
-        const GEMINI_API_KEY = 'AQ.Ab8RN6LIMoN2R89MfFbzWA8WMzGknqIC7nebN__mtXoZyAJHUA';
-        window.onload = async function() {
+        const GEMINI_API_KEY = 'AQ.Ab8RN6IOzdHSTG5CUoojPZXssiiqxDUv_NXsupGR9tqhGdi2Rw';        window.onload = async function() {
             await iniciarSupabase();
         };
 
@@ -1713,7 +1765,7 @@
             - Termine com <h3 class="text-emerald-400 font-bold mt-4 mb-2 uppercase">✅ Sugestão de Redação</h3>: Reescreva o BO em linguagem técnica policial padrão, incorporando as justificativas legais (cite as súmulas e artigos no texto sugerido) mantendo os fatos narrados.`;
 
             try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`, {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
