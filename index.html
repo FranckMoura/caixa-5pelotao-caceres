@@ -793,7 +793,7 @@
                 <input type="hidden" id="prevDataIso"><input type="hidden" id="prevEquipeNome">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200"><label class="block text-xs font-black text-sys-dark uppercase tracking-widest mb-2 border-b border-slate-100 pb-1">Nº da Escala</label><input type="number" id="prevNumEscala" class="w-full bg-slate-50 border border-slate-300 p-2 rounded text-xs font-bold text-slate-800 outline-none shadow-sm"></div>
-                    <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200"><label class="block text-xs font-black text-sys-dark uppercase tracking-widest mb-2 border-b border-slate-100 pb-1">Graduado (CMT)</label><select id="prevGraduado" class="w-full bg-slate-50 border border-slate-300 p-2 rounded text-xs font-bold text-slate-800 outline-none shadow-sm"><option value="2º SGT PM MAURIZON">2º SGT PM MAURIZON</option><option value="2º SGT PM SOUZA">2º SGT PM SOUZA</option><option value="2º SGT PM ORTIZ">2º SGT PM ORTIZ</option><option value="A DEFINIR">A DEFINIR</option></select></div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200"><label class="block text-xs font-black text-sys-dark uppercase tracking-widest mb-2 border-b border-slate-100 pb-1">Graduado (CMT)</label><select id="prevGraduado" class="w-full bg-slate-50 border border-slate-300 p-2 rounded text-xs font-bold text-slate-800 outline-none shadow-sm"><option value="1º SGT PM MAURIZON">1º SGT PM MAURIZON</option><option value="2º SGT PM SOUZA">2º SGT PM SOUZA</option><option value="1º SGT PM ORTIZ">1º SGT PM ORTIZ</option><option value="A DEFINIR">A DEFINIR</option></select></div>
                     <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200"><label class="block text-xs font-black text-sys-dark uppercase tracking-widest mb-2 border-b border-slate-100 pb-1">Aluno de Dia</label><select id="prevAlunoDia" class="w-full bg-slate-50 border border-slate-300 p-2 rounded text-xs font-bold text-slate-800 outline-none shadow-sm"></select></div>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -869,8 +869,7 @@
 
         const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
-        const GEMINI_API_KEY = 'AQ.Ab8RN6I8NRWNvBFBHiu1QwRuP6fjPcc2VruVYpsFvC47TKlklQ'; // Insira sua chave da API do Google Gemini AI Studio
-
+        const GEMINI_API_KEY = 'AQ.Ab8RN6LIMoN2R89MfFbzWA8WMzGknqIC7nebN__mtXoZyAJHUA';
         window.onload = async function() {
             await iniciarSupabase();
         };
@@ -966,7 +965,7 @@
         async function renderizarDashboardHome() {
             const dataBase = new Date('2026-08-11T12:00:00Z'); 
             const seqEq = ['ALFA', 'BRAVO', 'CHARLIE', 'DELTA'];
-            const seqSgt = ['2º SGT PM MAURIZON', '2º SGT PM SOUZA'];
+            const seqSgt = ['1º SGT PM MAURIZON', '2º SGT PM SOUZA'];
 
             let hoje = new Date(); hoje.setHours(12, 0, 0, 0); 
             let dtIso = hoje.toISOString().split('T')[0];
@@ -1148,7 +1147,7 @@
             const grid = document.getElementById('gridEscala'); if(!grid) return; grid.innerHTML = '';
             const dataBase = new Date('2026-08-11T12:00:00Z'); 
             const seqEq = ['ALFA', 'BRAVO', 'CHARLIE', 'DELTA'];
-            const seqSgt = ['2º SGT PM MAURIZON', '2º SGT PM SOUZA'];
+            const seqSgt = ['1º SGT PM MAURIZON', '2º SGT PM SOUZA'];
 
             let hoje = new Date(); hoje.setHours(12, 0, 0, 0); 
             
@@ -1202,7 +1201,7 @@
             let hoje = new Date(); hoje.setHours(12, 0, 0, 0); let dataIso = hoje.toISOString().split('T')[0];
             const dataBase = new Date('2026-08-11T12:00:00Z'); 
             const seqEq = ['ALFA', 'BRAVO', 'CHARLIE', 'DELTA']; 
-            const seqSgt = ['2º SGT PM MAURIZON', '2º SGT PM SOUZA'];
+            const seqSgt = ['1º SGT PM MAURIZON', '2º SGT PM SOUZA'];
             
             let diffDias = Math.round((new Date(Date.UTC(hoje.getFullYear(), hoje.getMonth(), hoje.getDate(), 12, 0, 0)) - dataBase) / 86400000);
             let eq = seqEq[(diffDias % 4 + 4) % 4]; 
@@ -1246,9 +1245,9 @@
                 document.getElementById('modalFuncaoLabelData').innerText = `Data do Serviço`;
                 document.getElementById('modalFuncaoDataDisplay').value = dataRef.split('-').reverse().join('/');
                 label.innerText = 'Selecione o Comandante (Sargento)';
-                sel.add(new Option('2º SGT PM MAURIZON', '2º SGT PM MAURIZON'));
+                sel.add(new Option('1º SGT PM MAURIZON', '1º SGT PM MAURIZON'));
                 sel.add(new Option('2º SGT PM SOUZA', '2º SGT PM SOUZA'));
-                sel.add(new Option('2º SGT PM ORTIZ', '2º SGT PM ORTIZ'));
+                sel.add(new Option('1º SGT PM ORTIZ', '1º SGT PM ORTIZ'));
                 sel.add(new Option('A DEFINIR', 'A DEFINIR'));
             }
 
@@ -1717,7 +1716,7 @@
             - Termine com <h3 class="text-emerald-400 font-bold mt-4 mb-2 uppercase">✅ Sugestão de Redação</h3>: Reescreva o BO em linguagem técnica policial padrão, incorporando as justificativas legais (cite as súmulas e artigos no texto sugerido) mantendo os fatos narrados.`;
 
             try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
