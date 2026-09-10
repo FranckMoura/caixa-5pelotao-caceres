@@ -206,6 +206,25 @@
 
                     <!-- MÓDULOS DO SISTEMA -->
                     <section id="modulo-home" class="space-y-6">
+                        
+                        <!-- RELÓGIO QTS -->
+                        <div class="bg-sys-dark rounded-xl shadow-md border-l-4 border-pmmt-gold overflow-hidden mb-6 p-4 md:p-5 flex items-center justify-between text-white">
+                            <div class="flex items-center gap-3 md:gap-4">
+                                <div class="bg-white/10 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full shadow-inner border border-white/20">
+                                    <i class="fa-regular fa-clock text-xl md:text-2xl text-pmmt-gold"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-[9px] md:text-[10px] font-bold text-slate-300 uppercase tracking-widest mb-0.5">Tempo Real - QTS</h3>
+                                    <p id="relogioAtual" class="text-xl md:text-3xl font-black tracking-wider font-mono drop-shadow-md">00:00:00</p>
+                                </div>
+                            </div>
+                            <div class="text-right border-l border-white/20 pl-3 md:pl-6">
+                                <h3 class="text-[9px] md:text-[10px] font-bold text-slate-300 uppercase tracking-widest mb-1">Status Atual</h3>
+                                <p id="statusAulaAtual" class="text-xs md:text-sm font-black text-pmmt-gold uppercase tracking-wide truncate max-w-[130px] md:max-w-[250px]">Carregando...</p>
+                                <p id="progressoAula" class="text-[8px] md:text-[10px] text-slate-400 font-bold mt-1 uppercase tracking-wider">--</p>
+                            </div>
+                        </div>
+
                         <div class="flex flex-col gap-6">
                             
                             <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
@@ -229,74 +248,74 @@
                         </div>
                     </section>
 
-<section id="modulo-institucional" class="hidden space-y-6">
-    <div class="bg-white shadow-sm border border-slate-300 overflow-hidden rounded-xl">
-        <div class="bg-sys-dark text-white px-5 py-4 flex justify-between items-center">
-            <div><h2 class="text-sm font-black tracking-widest uppercase"><i class="fa-solid fa-sitemap text-pmmt-gold mr-2"></i> Cadeia de Comando</h2><p class="text-[9px] text-slate-300 uppercase mt-0.5">Hierarquia do Estado e da Polícia Militar</p></div>
-        </div>
-        <div class="p-5 md:p-6">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                
-                <!-- 1. Governador -->
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-pmmt-blue">
-                    <div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-user-tie"></i></div>
-                    <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Governador do Estado</h3>
-                    <p class="text-xs font-black text-sys-dark uppercase">Otaviano Pivetta</p>
-                </div>
-                
-                <!-- 2. SESP -->
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-pmmt-blue">
-                    <div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-user-shield"></i></div>
-                    <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Sec. de Seg. Pública</h3>
-                    <p class="text-[11px] font-black text-sys-dark uppercase">Cel PM Susane Tamanho</p>
-                </div>
-                
-                <!-- 3. SESP Adjunto -->
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-pmmt-blue">
-                    <div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-user-shield"></i></div>
-                    <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Sec. Adj. de Segurança</h3>
-                    <p class="text-[11px] font-black text-sys-dark uppercase">Cel PM Paulo Cezar da Silva</p>
-                </div>
-                
-                <!-- 4. Comandante Geral -->
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-pmmt-gold">
-                    <div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-star"></i></div>
-                    <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Comandante-Geral</h3>
-                    <p class="text-[10px] font-black text-sys-dark uppercase">Cel PM Cláudio Fernando C. Tinoco</p>
-                </div>
-                
-                <!-- 5. Subchefe Estado Maior -->
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-pmmt-gold">
-                    <div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-star"></i></div>
-                    <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Subchefe Estado Maior</h3>
-                    <p class="text-[11px] font-black text-sys-dark uppercase">Cel PM Grasielle Paes</p>
-                </div>
-                
-                <!-- 6. Comandante 6º CR -->
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-slate-800">
-                    <div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-building-shield"></i></div>
-                    <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Comandante do 6º CR</h3>
-                    <p class="text-[10px] font-black text-sys-dark uppercase">Ten Cel PM Adão César R. Silva</p>
-                </div>
-                
-                <!-- 7. Comandante 6º BPM -->
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-slate-800">
-                    <div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-shield-halved"></i></div>
-                    <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Comandante 6º BPM</h3>
-                    <p class="text-[10px] font-black text-sys-dark uppercase">Ten Cel PM Luiz Marcelo da Silva</p>
-                </div>
-                
-                <!-- 8. Comandante Força Tática -->
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-slate-800">
-                    <div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-bolt"></i></div>
-                    <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Cmt Força Tática</h3>
-                    <p class="text-[10px] font-black text-sys-dark uppercase">Major PM Abner James L. Campos</p>
-                </div>
+                    <section id="modulo-institucional" class="hidden space-y-6">
+                        <div class="bg-white shadow-sm border border-slate-300 overflow-hidden rounded-xl">
+                            <div class="bg-sys-dark text-white px-5 py-4 flex justify-between items-center">
+                                <div><h2 class="text-sm font-black tracking-widest uppercase"><i class="fa-solid fa-sitemap text-pmmt-gold mr-2"></i> Cadeia de Comando</h2><p class="text-[9px] text-slate-300 uppercase mt-0.5">Hierarquia do Estado e da Polícia Militar</p></div>
+                            </div>
+                            <div class="p-5 md:p-6">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                    
+                                    <!-- 1. Governador -->
+                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-pmmt-blue">
+                                        <div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-user-tie"></i></div>
+                                        <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Governador do Estado</h3>
+                                        <p class="text-xs font-black text-sys-dark uppercase">Otaviano Pivetta</p>
+                                    </div>
+                                    
+                                    <!-- 2. SESP -->
+                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-pmmt-blue">
+                                        <div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-user-shield"></i></div>
+                                        <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Sec. de Seg. Pública</h3>
+                                        <p class="text-[11px] font-black text-sys-dark uppercase">Cel PM Susane Tamanho</p>
+                                    </div>
+                                    
+                                    <!-- 3. SESP Adjunto -->
+                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-pmmt-blue">
+                                        <div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-user-shield"></i></div>
+                                        <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Sec. Adj. de Segurança</h3>
+                                        <p class="text-[11px] font-black text-sys-dark uppercase">Cel PM Paulo Cezar da Silva</p>
+                                    </div>
+                                    
+                                    <!-- 4. Comandante Geral -->
+                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-pmmt-gold">
+                                        <div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-star"></i></div>
+                                        <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Comandante-Geral</h3>
+                                        <p class="text-[10px] font-black text-sys-dark uppercase">Cel PM Cláudio Fernando C. Tinoco</p>
+                                    </div>
+                                    
+                                    <!-- 5. Subchefe Estado Maior -->
+                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-pmmt-gold">
+                                        <div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-star"></i></div>
+                                        <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Subchefe Estado Maior</h3>
+                                        <p class="text-[11px] font-black text-sys-dark uppercase">Cel PM Grasielle Paes</p>
+                                    </div>
+                                    
+                                    <!-- 6. Comandante 6º CR -->
+                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-slate-800">
+                                        <div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-building-shield"></i></div>
+                                        <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Comandante do 6º CR</h3>
+                                        <p class="text-[10px] font-black text-sys-dark uppercase">Ten Cel PM Adão César R. Silva</p>
+                                    </div>
+                                    
+                                    <!-- 7. Comandante 6º BPM -->
+                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-slate-800">
+                                        <div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-shield-halved"></i></div>
+                                        <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Comandante 6º BPM</h3>
+                                        <p class="text-[10px] font-black text-sys-dark uppercase">Ten Cel PM Luiz Marcelo da Silva</p>
+                                    </div>
+                                    
+                                    <!-- 8. Comandante Força Tática -->
+                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-slate-800">
+                                        <div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-bolt"></i></div>
+                                        <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Cmt Força Tática</h3>
+                                        <p class="text-[10px] font-black text-sys-dark uppercase">Major PM Abner James L. Campos</p>
+                                    </div>
 
-            </div>
-        </div>
-    </div>
-</section>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
 
                     <section id="modulo-efetivo" class="hidden space-y-5">
                         <div class="bg-sys-dark text-white rounded-xl shadow-md border-b-4 border-pmmt-gold p-4 md:p-5 flex justify-between items-center relative overflow-hidden">
@@ -527,23 +546,23 @@
                 <tr>
                     <td>1ª</td>
                     <td>07h00 às 08h00</td>
-                    <td class="cell-editable admin-edit">DPDPP 44/60</td>
+                    <td class="cell-editable admin-edit">A disposição do C.A</td>
+                    <td class="cell-editable admin-edit">POP 2 - 31/75</td>
                     <td class="cell-editable admin-edit">NTCS 4/60</td>
-                    <td class="cell-editable admin-edit">POP 2-31/75</td>
-                    <td class="cell-editable admin-edit">POP 2-32/75</td>
-                    <td class="cell-editable admin-edit">NTCS 5/60</td>
-                    <td class="cell-editable admin-edit">DPDPP 45/60</td>
+                    <td class="cell-editable admin-edit">DPDPP 44/60</td>
+                    <td class="cell-editable admin-edit">MP 07/45</td>
+                    <td class="cell-editable admin-edit">DPDPP 50/60</td>
                     <td class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
                 </tr>
                 <tr>
                     <td>2ª</td>
                     <td>08h00 às 09h00</td>
-                    <td class="cell-editable admin-edit">POP 2-33/75</td>
-                    <td class="cell-editable admin-edit">NTCS 6/60</td>
-                    <td class="cell-editable admin-edit">DPDPP 46/60</td>
-                    <td class="cell-editable admin-edit">MP 07/45</td>
+                    <td class="cell-editable admin-edit">A disposição do C.A</td>
+                    <td class="cell-editable admin-edit">POP 2 - 32/75</td>
+                    <td class="cell-editable admin-edit">NTCS 5/60</td>
+                    <td class="cell-editable admin-edit">DPDPP 45/60</td>
                     <td class="cell-editable admin-edit">MP 08/45</td>
-                    <td class="cell-editable admin-edit">MP 09/45</td>
+                    <td class="cell-editable admin-edit">DPDPP 51/60</td>
                     <td class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
                 </tr>
                 <tr>
@@ -554,23 +573,23 @@
                 <tr>
                     <td>3ª</td>
                     <td>09h30 às 10h30</td>
-                    <td class="cell-editable admin-edit">POP 2-34/75</td>
-                    <td class="cell-editable admin-edit">NTCS 7/60</td>
-                    <td class="cell-editable admin-edit">DPDPP 47/60</td>
-                    <td class="cell-editable admin-edit">MP 10/45</td>
-                    <td class="cell-editable admin-edit">DPDPP 53/60</td>
-                    <td class="cell-editable admin-edit">DPDPP 50/60</td>
+                    <td class="cell-editable admin-edit">A disposição do C.A</td>
+                    <td class="cell-editable admin-edit">POP 2 - 33/75</td>
+                    <td class="cell-editable admin-edit">NTCS 6/60</td>
+                    <td class="cell-editable admin-edit">DPDPP 46/60</td>
+                    <td class="cell-editable admin-edit">MP 09/45</td>
+                    <td class="cell-editable admin-edit">DPDPP 52/60</td>
                     <td class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
                 </tr>
                 <tr>
                     <td>4ª</td>
                     <td>10h30 às 11h30</td>
-                    <td class="cell-editable admin-edit">POP 2-35/75</td>
-                    <td class="cell-editable admin-edit">DPDPP 48/60</td>
-                    <td class="cell-editable admin-edit">DPDPP 36/60</td>
-                    <td class="cell-editable admin-edit">DPDPP 49/60</td>
-                    <td class="cell-editable admin-edit">POP 2-36/75</td>
-                    <td class="cell-editable admin-edit">DPDPP 51/60</td>
+                    <td class="cell-editable admin-edit">A disposição do C.A</td>
+                    <td class="cell-editable admin-edit">POP 2 - 34/75</td>
+                    <td class="cell-editable admin-edit">NTCS 7/60</td>
+                    <td class="cell-editable admin-edit">DPDPP 47/60</td>
+                    <td class="cell-editable admin-edit">MP 10/45</td>
+                    <td class="cell-editable admin-edit">DPDPP 53/60</td>
                     <td class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
                 </tr>
 
@@ -578,7 +597,7 @@
                 <tr>
                     <td class="row-intervalo"></td>
                     <td class="row-intervalo">-</td>
-                    <td class="row-intervalo">11h30 às 13h30</td>
+                    <td class="row-intervalo">11h30 às 13h00</td>
                     <td colspan="7" class="row-intervalo text-center">Intervalo - Almoço</td>
                 </tr>
 
@@ -587,23 +606,23 @@
                     <th rowspan="6" class="col-periodo tracking-widest">VESPERTINO</th>
                     <td>5ª</td>
                     <td>13h30 às 14h30</td>
-                    <td class="cell-editable admin-edit">DPDPP 37/60</td>
-                    <td class="cell-editable admin-edit">POP 2-37/75</td>
-                    <td class="cell-editable admin-edit">DPDPP 38/60</td>
-                    <td class="cell-editable admin-edit">MP 01/45</td>
-                    <td class="cell-editable admin-edit">POP 2-38/75</td>
-                    <td class="cell-editable admin-edit">DPDPP 52/60</td>
+                    <td class="cell-editable admin-edit">A disposição do C.A</td>
+                    <td class="cell-editable admin-edit">POP 2 - 35/75</td>
+                    <td class="cell-editable admin-edit">DPDPP 36/60</td>
+                    <td class="cell-editable admin-edit">DPDPP 48/60</td>
+                    <td class="cell-editable admin-edit">MP 11/45</td>
+                    <td class="cell-editable admin-edit">DPDPP 54/60</td>
                     <td class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
                 </tr>
                 <tr>
                     <td>6ª</td>
                     <td>14h30 às 15h30</td>
-                    <td class="cell-editable admin-edit">DPDPP 39/60</td>
-                    <td class="cell-editable admin-edit">MP 02/45</td>
-                    <td class="cell-editable admin-edit">MP 11/45</td>
+                    <td class="cell-editable admin-edit">A disposição do C.A</td>
+                    <td class="cell-editable admin-edit">POP 2 - 36/75</td>
+                    <td class="cell-editable admin-edit">DPDPP 37/60</td>
+                    <td class="cell-editable admin-edit">DPDPP 49/60</td>
                     <td class="cell-editable admin-edit">MP 12/45</td>
-                    <td class="cell-editable admin-edit">MP 13/45</td>
-                    <td class="cell-editable admin-edit">MP 14/45</td>
+                    <td class="cell-editable admin-edit">DPDPP 55/60</td>
                     <td class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
                 </tr>
                 <tr>
@@ -614,34 +633,34 @@
                 <tr>
                     <td>7ª</td>
                     <td>16h00 às 17h00</td>
-                    <td class="cell-editable admin-edit">DPDPP 54/60</td>
-                    <td class="cell-editable admin-edit">DPDPP 55/60</td>
-                    <td class="cell-editable admin-edit">DPDPP 56/60</td>
-                    <td class="cell-editable admin-edit">DPDPP 57/60</td>
-                    <td class="cell-editable admin-edit">DPDPP 58/60</td>
                     <td class="cell-editable admin-edit">A disposição do C.A</td>
+                    <td class="cell-editable admin-edit">POP 2 - 37/75</td>
+                    <td class="cell-editable admin-edit">DPDPP 38/60</td>
+                    <td class="cell-editable admin-edit">MP 01/45</td>
+                    <td class="cell-editable admin-edit">MP 13/45</td>
+                    <td class="cell-editable admin-edit">DPDPP 56/60</td>
                     <td class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
                 </tr>
                 <tr>
                     <td>8ª</td>
                     <td>17h00 às 18h00</td>
-                    <td class="cell-editable admin-edit">DPDPP 40/60</td>
-                    <td class="cell-editable admin-edit">MP 03/45</td>
-                    <td class="cell-editable admin-edit">POP 2-39/75</td>
-                    <td class="cell-editable admin-edit">MP 15/45</td>
-                    <td class="cell-editable admin-edit">TGP 26/45</td>
-                    <td class="cell-editable admin-edit">A disposição do C.A</td>
+                    <td class="cell-editable admin-edit"></td>
+                    <td class="cell-editable admin-edit">POP 2 - 38/75</td>
+                    <td class="cell-editable admin-edit">DPDPP 39/60</td>
+                    <td class="cell-editable admin-edit">MP 02/45</td>
+                    <td class="cell-editable admin-edit">MP 14/45</td>
+                    <td class="cell-editable admin-edit">DPDPP 57/60</td>
                     <td class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
                 </tr>
                 <tr>
                     <td>9ª</td>
                     <td>18h00 às 19h00</td>
-                    <td class="cell-editable admin-edit">MP 04/45</td>
-                    <td class="cell-editable admin-edit">DPDPP 41/60</td>
-                    <td class="cell-editable admin-edit">EF 25/32</td>
-                    <td class="cell-editable admin-edit">TGP 27/45</td>
-                    <td class="cell-editable admin-edit">DPDPP 59/60</td>
-                    <td class="cell-editable admin-edit">A disposição do C.A</td>
+                    <td class="cell-editable admin-edit"></td>
+                    <td class="cell-editable admin-edit">POP 2 - 39/75</td>
+                    <td class="cell-editable admin-edit">DPDPP 40/60</td>
+                    <td class="cell-editable admin-edit">MP 03/45</td>
+                    <td class="cell-editable admin-edit">MP 15/45</td>
+                    <td class="cell-editable admin-edit">DPDPP 58/60</td>
                     <td class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
                 </tr>
 
@@ -658,23 +677,23 @@
                     <th rowspan="3" class="col-periodo tracking-widest">NOTURNO</th>
                     <td>10ª</td>
                     <td>20h00 às 21h00</td>
-                    <td class="cell-editable admin-edit">MP 05/45</td>
-                    <td class="cell-editable admin-edit">DPDPP 42/60</td>
-                    <td class="cell-editable admin-edit">EF 26/32</td>
-                    <td class="cell-editable admin-edit">TGP 28/45</td>
-                    <td class="cell-editable admin-edit">DPDPP 60/60</td>
                     <td class="cell-editable admin-edit">A disposição do C.A</td>
+                    <td class="cell-editable admin-edit">EF 25/32</td>
+                    <td class="cell-editable admin-edit">DPDPP 41/60</td>
+                    <td class="cell-editable admin-edit">MP 04/45</td>
+                    <td class="cell-editable admin-edit">TGP 26/45</td>
+                    <td class="cell-editable admin-edit">DPDPP 59/60</td>
                     <td class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
                 </tr>
                 <tr>
                     <td>11ª</td>
                     <td>21h00 às 22h00</td>
-                    <td class="cell-editable admin-edit">DPDPP 43/60</td>
-                    <td class="cell-editable admin-edit">MP 06/45</td>
-                    <td class="cell-editable admin-edit">A disposição do C.A</td>
-                    <td class="cell-editable admin-edit">A disposição do C.A</td>
-                    <td class="cell-editable admin-edit">A disposição do C.A</td>
-                    <td class="cell-editable admin-edit">A disposição do C.A</td>
+                    <td class="cell-editable admin-edit"></td>
+                    <td class="cell-editable admin-edit">EF 26/32</td>
+                    <td class="cell-editable admin-edit">DPDPP 42/60</td>
+                    <td class="cell-editable admin-edit">MP 05/45</td>
+                    <td class="cell-editable admin-edit">TGP 27/45</td>
+                    <td class="cell-editable admin-edit">DPDPP 60/60</td>
                     <td class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
                 </tr>
                 <tr>
@@ -682,9 +701,9 @@
                     <td>22h00 às 23h00</td>
                     <td class="cell-editable admin-edit"></td>
                     <td class="cell-editable admin-edit"></td>
-                    <td class="cell-editable admin-edit"></td>
-                    <td class="cell-editable admin-edit"></td>
-                    <td class="cell-editable admin-edit"></td>
+                    <td class="cell-editable admin-edit">DPDPP 43/60</td>
+                    <td class="cell-editable admin-edit">MP 06/45</td>
+                    <td class="cell-editable admin-edit">TGP 28/45</td>
                     <td class="cell-editable admin-edit"></td>
                     <td class="cell-editable admin-edit font-bold bg-slate-50">A disposição do C.A</td>
                 </tr>
@@ -968,6 +987,7 @@
             
             mudarModulo('home');
             await sincronizarDadosManualmente();
+            iniciarRelogioQTS();
         }
 
         async function sincronizarDadosManualmente() {
@@ -1797,6 +1817,87 @@
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fa-solid fa-microchip"></i> Analisar Fundamentação';
             }
+        }
+        
+        let relogioInterval;
+
+        function iniciarRelogioQTS() {
+            const cronogramaQTS = [
+                { nome: "A disposição do C.A", start: "06:00:00", end: "07:00:00" },
+                { nome: "1ª Aula", start: "07:00:00", end: "08:00:00" },
+                { nome: "2ª Aula", start: "08:00:00", end: "09:00:00" },
+                { nome: "Intervalo", start: "09:00:00", end: "09:30:00" },
+                { nome: "3ª Aula", start: "09:30:00", end: "10:30:00" },
+                { nome: "4ª Aula", start: "10:30:00", end: "11:30:00" },
+                { nome: "Intervalo - Almoço", start: "11:30:00", end: "13:30:00" },
+                { nome: "5ª Aula", start: "13:30:00", end: "14:30:00" },
+                { nome: "6ª Aula", start: "14:30:00", end: "15:30:00" },
+                { nome: "Intervalo", start: "15:30:00", end: "16:00:00" },
+                { nome: "7ª Aula", start: "16:00:00", end: "17:00:00" },
+                { nome: "8ª Aula", start: "17:00:00", end: "18:00:00" },
+                { nome: "9ª Aula", start: "18:00:00", end: "19:00:00" },
+                { nome: "Intervalo Noite", start: "19:00:00", end: "20:00:00" },
+                { nome: "10ª Aula", start: "20:00:00", end: "21:00:00" },
+                { nome: "11ª Aula", start: "21:00:00", end: "22:00:00" },
+                { nome: "12ª Aula", start: "22:00:00", end: "23:00:00" }
+            ];
+
+            function toSeconds(timeStr) {
+                const [h, m, s] = timeStr.split(':').map(Number);
+                return h * 3600 + m * 60 + s;
+            }
+
+            if (relogioInterval) clearInterval(relogioInterval);
+
+            relogioInterval = setInterval(() => {
+                const relogioEl = document.getElementById('relogioAtual');
+                const statusEl = document.getElementById('statusAulaAtual');
+                const progressoEl = document.getElementById('progressoAula');
+                if (!relogioEl) return;
+
+                const agora = new Date();
+                const h = agora.getHours().toString().padStart(2, '0');
+                const m = agora.getMinutes().toString().padStart(2, '0');
+                const s = agora.getSeconds().toString().padStart(2, '0');
+                relogioEl.innerText = `${h}:${m}:${s}`;
+
+                const currentSeconds = agora.getHours() * 3600 + agora.getMinutes() * 60 + agora.getSeconds();
+                let currentPeriod = null;
+
+                for (let period of cronogramaQTS) {
+                    const startSec = toSeconds(period.start);
+                    const endSec = toSeconds(period.end);
+                    if (currentSeconds >= startSec && currentSeconds < endSec) {
+                        currentPeriod = period;
+                        break;
+                    }
+                }
+
+                if (currentPeriod) {
+                    statusEl.innerText = currentPeriod.nome;
+                    const endSec = toSeconds(currentPeriod.end);
+                    const timeLeft = endSec - currentSeconds;
+                    
+                    const leftH = Math.floor(timeLeft / 3600);
+                    const leftM = Math.floor((timeLeft % 3600) / 60).toString().padStart(2, '0');
+                    const leftS = (timeLeft % 60).toString().padStart(2, '0');
+                    
+                    let tempoFormatado = leftH > 0 ? `${leftH}h ${leftM}m ${leftS}s` : `${leftM}m ${leftS}s`;
+                    progressoEl.innerHTML = `<i class="fa-solid fa-hourglass-half mr-1"></i> Restam ${tempoFormatado}`;
+                    
+                    if (currentPeriod.nome.includes("Intervalo")) {
+                        statusEl.className = 'text-xs md:text-sm font-black text-emerald-400 uppercase tracking-wide truncate max-w-[130px] md:max-w-[250px]';
+                    } else if (currentPeriod.nome.includes("disposição")) {
+                        statusEl.className = 'text-xs md:text-sm font-black text-amber-400 uppercase tracking-wide truncate max-w-[130px] md:max-w-[250px]';
+                    } else {
+                        statusEl.className = 'text-xs md:text-sm font-black text-pmmt-gold uppercase tracking-wide truncate max-w-[130px] md:max-w-[250px]';
+                    }
+                } else {
+                    statusEl.innerText = "Fora de Expediente";
+                    statusEl.className = 'text-xs md:text-sm font-black text-slate-400 uppercase tracking-wide truncate max-w-[130px] md:max-w-[250px]';
+                    progressoEl.innerText = "Aguardando próxima jornada";
+                }
+            }, 1000);
         }
     </script>
 </body>
