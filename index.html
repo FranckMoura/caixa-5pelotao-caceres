@@ -1034,11 +1034,16 @@
             iniciarRelogioQTS();
         }
 
-        async function sincronizarDadosManualmente() {
+async function sincronizarDadosManualmente() {
             try {
                 mostrarLoading(true);
-                await carregarAlunos(); 
+                
+                // CORREÇÃO DE ORDEM: Carregamos as alterações manuais (Funções Comando) ANTES 
+                // dos alunos. Assim, quando a função carregarAlunos desenhar a tela no final, 
+                // ela já saberá exatamente quem foi alterado no banco de dados.
                 await carregarFuncoesComando(); 
+                await carregarAlunos(); 
+                
                 await carregarCautelasFixas(); 
                 await carregarQTSList(); 
                 await carregarMateriaisApoio();
