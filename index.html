@@ -225,47 +225,71 @@
                             </div>
                         </div>
 
+                        <!-- XERIFE & RANKING CARDS -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- XERIFE DA SEMANA (Cópia espelhada da seção de Efetivo) -->
+                            <div class="bg-sys-dark text-white rounded-xl shadow-sm border-b-4 border-pmmt-gold p-4 md:p-5 flex justify-between items-center relative overflow-hidden">
+                                <div class="z-10">
+                                    <h3 class="text-[10px] font-bold text-slate-300 uppercase tracking-widest mb-1"><i class="fa-solid fa-star text-pmmt-gold mr-1.5"></i> Comando / Xerifado da Semana</h3>
+                                    <h2 class="text-xl md:text-2xl font-black uppercase tracking-wider text-white drop-shadow-md" id="homeXerifeSemana">CARREGANDO...</h2>
+                                    <p class="text-[9px] text-pmmt-gold font-bold uppercase mt-1 tracking-wide">Ordem de Antiguidade</p>
+                                </div>
+                                <i class="fa-solid fa-user-shield absolute -right-4 -bottom-6 text-6xl md:text-7xl text-white/5 pointer-events-none"></i>
+                            </div>
+
+                            <!-- BOTÃO DE RANKING GERAL ACADÊMICO -->
+                            <div class="bg-gradient-to-r from-pmmt-gold to-yellow-600 hover:from-yellow-500 hover:to-amber-500 text-sys-dark rounded-xl shadow-sm border-b-4 border-yellow-700 p-4 md:p-5 flex justify-between items-center relative overflow-hidden cursor-pointer transition-all" onclick="abrirRankingGeral()">
+                                <div class="z-10">
+                                    <h3 class="text-[10px] font-bold text-sys-dark/70 uppercase tracking-widest mb-1"><i class="fa-solid fa-medal mr-1.5"></i> Módulo Acadêmico</h3>
+                                    <h2 class="text-xl md:text-2xl font-black uppercase tracking-wider text-sys-dark drop-shadow-sm"><i class="fa-solid fa-trophy text-yellow-100 mr-2"></i> Ranking Geral</h2>
+                                    <p class="text-[9px] text-yellow-900/80 font-bold uppercase mt-1 tracking-wide flex items-center gap-1">Clique para visualizar <i class="fa-solid fa-arrow-right"></i></p>
+                                </div>
+                                <i class="fa-solid fa-graduation-cap absolute -right-4 -bottom-4 text-7xl text-sys-dark/10 pointer-events-none transform -rotate-12"></i>
+                            </div>
+                        </div>
+
                         <div class="flex flex-col gap-6">
-                            <!-- NOVO: PROGRESSO DO CURSO -->
-<div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
-    <div class="bg-sys-dark px-4 py-3 border-b-4 border-pmmt-gold">
-        <h3 class="text-xs font-bold text-white uppercase tracking-wide"><i class="fa-solid fa-graduation-cap text-pmmt-gold mr-2"></i>Progresso do Curso (35º CFSD)</h3>
-    </div>
-    <div class="p-4 md:p-5 flex flex-col justify-center gap-3 bg-slate-50">
-        <div class="flex justify-between items-end mb-1">
-            <div class="text-left">
-                <p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Início</p>
-                <p class="text-xs font-black text-sys-dark">26/06/2026</p>
-            </div>
-            <div class="text-right">
-                <p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Formatura</p>
-                <p class="text-xs font-black text-pmmt-gold">21/04/2027</p>
-            </div>
-        </div>
-        
-        <!-- Barra de Progresso -->
-        <div class="w-full bg-slate-200 rounded-full h-5 shadow-inner overflow-hidden relative border border-slate-300">
-            <div id="barraProgressoCurso" class="bg-gradient-to-r from-sys-dark to-pmmt-blue h-5 rounded-full transition-all duration-1000 ease-out w-0"></div>
-            <span id="txtPorcentagemCurso" class="absolute inset-0 flex items-center justify-center text-[10px] font-black text-white mix-blend-difference drop-shadow-md tracking-widest">0% CONCLUÍDO</span>
-        </div>
-        
-        <div class="flex justify-between items-center mt-1 bg-white p-3 rounded-lg border border-slate-200 shadow-sm">
-            <div class="text-center flex-1 border-r border-slate-200">
-                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Dias Decorridos</p>
-                <p id="diasDecorridos" class="text-xl md:text-2xl font-black text-sys-dark drop-shadow-sm leading-none">0</p>
-            </div>
-            <div class="text-center flex-1 border-r border-slate-200">
-                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Dias Restantes</p>
-                <p id="diasRestantes" class="text-xl md:text-2xl font-black text-pmmt-gold drop-shadow-sm leading-none">0</p>
-            </div>
-            <div class="text-center flex-1">
-                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Total de Dias</p>
-                <p id="diasTotaisCurso" class="text-xl md:text-2xl font-black text-slate-600 drop-shadow-sm leading-none">0</p>
-            </div>
-        </div>
-    </div>
-</div>
-                            
+                            <!-- PROGRESSO DO CURSO -->
+                            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
+                                <div class="bg-sys-dark px-4 py-3 border-b-4 border-pmmt-gold">
+                                    <h3 class="text-xs font-bold text-white uppercase tracking-wide"><i class="fa-solid fa-graduation-cap text-pmmt-gold mr-2"></i>Progresso do Curso (35º CFSD)</h3>
+                                </div>
+                                <div class="p-4 md:p-5 flex flex-col justify-center gap-3 bg-slate-50">
+                                    <div class="flex justify-between items-end mb-1">
+                                        <div class="text-left">
+                                            <p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Início</p>
+                                            <p class="text-xs font-black text-sys-dark">26/06/2026</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Formatura</p>
+                                            <p class="text-xs font-black text-pmmt-gold">21/04/2027</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Barra de Progresso -->
+                                    <div class="w-full bg-slate-200 rounded-full h-5 shadow-inner overflow-hidden relative border border-slate-300">
+                                        <div id="barraProgressoCurso" class="bg-gradient-to-r from-sys-dark to-pmmt-blue h-5 rounded-full transition-all duration-1000 ease-out w-0"></div>
+                                        <span id="txtPorcentagemCurso" class="absolute inset-0 flex items-center justify-center text-[10px] font-black text-white mix-blend-difference drop-shadow-md tracking-widest">0% CONCLUÍDO</span>
+                                    </div>
+                                    
+                                    <div class="flex justify-between items-center mt-1 bg-white p-3 rounded-lg border border-slate-200 shadow-sm">
+                                        <div class="text-center flex-1 border-r border-slate-200">
+                                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Dias Decorridos</p>
+                                            <p id="diasDecorridos" class="text-xl md:text-2xl font-black text-sys-dark drop-shadow-sm leading-none">0</p>
+                                        </div>
+                                        <div class="text-center flex-1 border-r border-slate-200">
+                                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Dias Restantes</p>
+                                            <p id="diasRestantes" class="text-xl md:text-2xl font-black text-pmmt-gold drop-shadow-sm leading-none">0</p>
+                                        </div>
+                                        <div class="text-center flex-1">
+                                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Total de Dias</p>
+                                            <p id="diasTotaisCurso" class="text-xl md:text-2xl font-black text-slate-600 drop-shadow-sm leading-none">0</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                        
+                            <!-- SERVIÇO DIÁRIO HOJE -->
                             <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
                                 <div class="bg-sys-dark px-4 py-3 border-b-4 border-pmmt-gold">
                                     <h3 class="text-xs font-bold text-white uppercase tracking-wide"><i class="fa-solid fa-user-shield text-pmmt-gold mr-2"></i>Serviço Diário (Hoje)</h3>
@@ -275,6 +299,7 @@
                                 </div>
                             </div>
                             
+                            <!-- QTS MISSÕES -->
                             <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
                                 <div class="bg-sys-dark px-4 py-3 border-b-4 border-pmmt-gold">
                                     <h3 class="text-xs font-bold text-white uppercase tracking-wide"><i class="fa-solid fa-list-check text-pmmt-gold mr-2"></i>Missões / QTS (Atual)</h3>
@@ -496,7 +521,7 @@
                                             </div>
                                         </div>
                                         
-                                        <!-- Área do Iframe do Mapa (URL já convertida para embed) -->
+                                        <!-- Área do Iframe do Mapa -->
                                         <div class="p-2 bg-slate-100">
                                             <iframe 
                                                 src="https://www.google.com/maps/d/u/0/embed?mid=1B2yEMA2-Si3-B8CEABa2SAd5Pq9Zpzg" 
@@ -930,6 +955,36 @@
         </div>
     </div>
 
+    <!-- MODAL RANKING GERAL (NOVO NA HOME) -->
+    <div id="modalRankingGeral" class="fixed inset-0 bg-slate-900/80 z-[300] hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden border border-slate-300 flex flex-col max-h-[90vh]">
+            <div class="bg-pmmt-blue px-5 py-4 flex justify-between items-center border-b-4 border-pmmt-gold shrink-0">
+                <div>
+                    <h3 class="text-white font-black text-sm uppercase tracking-wider"><i class="fa-solid fa-trophy text-yellow-400 mr-2"></i>Classificação Geral Acadêmica</h3>
+                    <p class="text-slate-300 text-[10px] font-bold mt-0.5 uppercase tracking-widest">Ranking Oficial por Antiguidade (MGC)</p>
+                </div>
+                <button onclick="fecharRankingGeral()" class="text-white/70 hover:text-white transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="p-5 overflow-y-auto flex-1 bg-slate-50">
+                <div class="overflow-x-auto border border-slate-200 rounded-lg shadow-sm">
+                    <table class="w-full text-left border-collapse whitespace-nowrap text-xs bg-white">
+                        <thead class="bg-slate-100 text-slate-700">
+                            <tr>
+                                <th class="p-3 border-b border-slate-200 text-center w-20">Classificação</th>
+                                <th class="p-3 border-b border-slate-200">Nº / Aluno Soldado</th>
+                                <th class="p-3 text-center border-b border-slate-200 w-24">Disciplinas Lançadas</th>
+                                <th class="p-3 text-center border-b border-slate-200 w-32">Média Geral (MGC)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaRankingGeral" class="divide-y divide-slate-100">
+                            <tr><td colspan="4" class="p-6 text-center text-slate-500 font-bold"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Calculando ranking atual...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- MÓDULO INVISÍVEL PARA IMPRESSÃO DA ESCALA -->
     <div id="modulo-impressao-escala" class="hidden bg-white text-black p-4 max-w-4xl mx-auto font-sans text-[11px] leading-tight">
         <div class="flex flex-col items-center mb-3 text-center"><img src="logo_brasao_5.png" alt="Brasão" class="h-20 mb-2 object-contain" onerror="this.style.display='none'"><h1 class="font-bold text-sm uppercase">POLÍCIA MILITAR DO ESTADO DE MATO GROSSO</h1><h2 class="font-bold text-xs uppercase">DIRETORIA DE ENSINO INSTRUÇÃO E PESQUISA</h2><h2 class="font-bold text-xs uppercase">ESCOLA SUPERIOR DE FORMAÇÃO E APERFEIÇOAMENTO DE PRAÇAS</h2><h2 class="font-bold text-xs uppercase">COORDENAÇÃO ACADÊMICA DO 35° CFSD - 5º PELOTÃO - POLO CÁCERES</h2></div>
@@ -976,6 +1031,7 @@
         let listaAlunosFull = []; 
         let funcoesComandoGlobais = []; 
         let cautelasFixasGlobais = []; 
+        let todasNotasGlobais = []; // Adicionado para calcular o ranking geral na home
         let isAdmin = false;
 
         const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
@@ -1034,19 +1090,16 @@
             iniciarRelogioQTS();
         }
 
-async function sincronizarDadosManualmente() {
+        async function sincronizarDadosManualmente() {
             try {
                 mostrarLoading(true);
                 
-                // CORREÇÃO DE ORDEM: Carregamos as alterações manuais (Funções Comando) ANTES 
-                // dos alunos. Assim, quando a função carregarAlunos desenhar a tela no final, 
-                // ela já saberá exatamente quem foi alterado no banco de dados.
                 await carregarFuncoesComando(); 
                 await carregarAlunos(); 
-                
                 await carregarCautelasFixas(); 
                 await carregarQTSList(); 
                 await carregarMateriaisApoio();
+                await carregarTodasNotasGlobais(); // NOVO: Traz todas as notas para Ranking
                 
                 await renderizarDashboardHome();
 
@@ -1154,6 +1207,91 @@ async function sincronizarDadosManualmente() {
             if(show) loader.classList.remove('hidden'); else loader.classList.add('hidden');
         }
 
+        // ==========================================
+        // LÓGICA DE RANKING GLOBAL (NOVO NO INDEX)
+        // ==========================================
+        async function carregarTodasNotasGlobais() {
+            const { data, error } = await supabaseClient.from('academico_notas').select('*');
+            if (!error && data) {
+                todasNotasGlobais = data;
+            }
+        }
+
+        function calcularRankingGeral() {
+            let ranking = [];
+            
+            listaAlunosFull.forEach(aluno => {
+                const notasDoAluno = todasNotasGlobais.filter(n => n.aluno_id === aluno.id);
+                let mgc = 0;
+                let totalDisciplinas = notasDoAluno.length;
+                let aprovadoGeral = true;
+
+                if (totalDisciplinas > 0) {
+                    let soma = 0;
+                    notasDoAluno.forEach(n => {
+                        soma += parseFloat(n.mgm || 0);
+                        if(n.status_final && n.status_final.includes("REPROVADO")) aprovadoGeral = false;
+                    });
+                    mgc = soma / totalDisciplinas;
+                }
+
+                ranking.push({
+                    id: aluno.id,
+                    numero: aluno.numero,
+                    nome: aluno.nome,
+                    qra: aluno.qra,
+                    mgc: parseFloat(mgc.toFixed(2)),
+                    totalDisciplinas: totalDisciplinas,
+                    aprovadoGeral: aprovadoGeral
+                });
+            });
+
+            // Ordena decrescente pela MGC. Em caso de empate, usa a antiguidade (menor número)
+            ranking.sort((a, b) => {
+                if (b.mgc !== a.mgc) return b.mgc - a.mgc;
+                return (a.numero || 999) - (b.numero || 999);
+            });
+
+            // Atribui e formata os ranks
+            ranking.forEach((aluno, index) => {
+                aluno.rank = index + 1;
+                aluno.rankFormatado = (index + 1).toString().padStart(2, '0');
+            });
+
+            return ranking;
+        }
+
+        function abrirRankingGeral() {
+            const ranking = calcularRankingGeral();
+            const tbody = document.getElementById('tabelaRankingGeral');
+            tbody.innerHTML = '';
+
+            ranking.forEach(aluno => {
+                const qraAjustado = (aluno.qra || aluno.nome).replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase();
+                
+                let rankVisual = `<span class="font-bold text-slate-600 ml-2">${aluno.rankFormatado}</span>`;
+                if(aluno.rank === 1) rankVisual = `<span class="bg-yellow-400 text-yellow-900 px-2 py-1.5 rounded text-xs font-black shadow-sm border border-yellow-500">🏆 01</span>`;
+                if(aluno.rank === 2) rankVisual = `<span class="bg-slate-300 text-slate-800 px-2 py-1.5 rounded text-xs font-black shadow-sm border border-slate-400">🥈 02</span>`;
+                if(aluno.rank === 3) rankVisual = `<span class="bg-amber-600 text-amber-100 px-2 py-1.5 rounded text-xs font-black shadow-sm border border-amber-700">🥉 03</span>`;
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition border-b border-slate-100";
+                tr.innerHTML = `
+                    <td class="p-3 text-center">${rankVisual}</td>
+                    <td class="p-3 text-slate-700"><span class="font-bold text-pmmt-blue">${aluno.numero || '-'}</span> - ${qraAjustado}</td>
+                    <td class="p-3 text-center text-slate-500 text-xs">${aluno.totalDisciplinas}</td>
+                    <td class="p-3 text-center font-black text-sm ${aluno.mgc >= 5 ? 'text-emerald-600' : 'text-red-600'}">${aluno.mgc.toFixed(2)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('modalRankingGeral').classList.remove('hidden');
+        }
+
+        function fecharRankingGeral() {
+            document.getElementById('modalRankingGeral').classList.add('hidden');
+        }
+
         async function carregarAlunos() {
             const { data: dbData } = await supabaseClient.from('alunos_pelotao').select('*').order('numero', { ascending: true });
             listaAlunosFull = dbData || [];
@@ -1257,8 +1395,16 @@ async function sincronizarDadosManualmente() {
                 : alunos[idx];
             
             let domAtual = new Date(segAtual); domAtual.setDate(segAtual.getDate() + 6);
-            document.getElementById('txtXerifeSemana').innerText = `5${xerife.numero.toString().padStart(2, '0')} - ${(xerife.qra || xerife.nome.split(' ')[0]).replace(/AL SD PM |AL SD /gi, '').trim().toUpperCase()}`;
+            const textoXerifeExibicao = `5${xerife.numero.toString().padStart(2, '0')} - ${(xerife.qra || xerife.nome.split(' ')[0]).replace(/AL SD PM |AL SD /gi, '').trim().toUpperCase()}`;
+            
+            document.getElementById('txtXerifeSemana').innerText = textoXerifeExibicao;
             document.getElementById('txtXerifeData').innerText = `${segAtual.toLocaleDateString('pt-BR', {day:'2-digit',month:'2-digit'})} a ${domAtual.toLocaleDateString('pt-BR', {day:'2-digit',month:'2-digit'})}`;
+
+            // NOVO: Atualiza a exibição do Xerife na Home também
+            const homeXerife = document.getElementById('homeXerifeSemana');
+            if(homeXerife) {
+                homeXerife.innerText = textoXerifeExibicao;
+            }
         }
 
         function renderizarEscala() {
@@ -1800,7 +1946,7 @@ async function sincronizarDadosManualmente() {
             setTimeout(() => { document.body.classList.remove('printing-qts'); document.head.removeChild(s); }, 500);
         }
 
-        // --- NOVA FUNÇÃO: COPILOTO JURÍDICO (IA) ---
+        // --- COPILOTO JURÍDICO (IA) ---
         async function analisarBOComIA() {
             const rascunho = document.getElementById('boRascunho').value.trim();
             if (!rascunho) {
@@ -1959,32 +2105,31 @@ async function sincronizarDadosManualmente() {
             }, 1000);
 
             // --- LÓGICA DO PROGRESSO DO CURSO (CFSD) ---
-    const dataInicio = new Date('2026-06-26T00:00:00');
-    const dataFim = new Date('2027-04-21T23:59:59');
-    const dataAtual = new Date();
+            const dataInicio = new Date('2026-06-26T00:00:00');
+            const dataFim = new Date('2027-04-21T23:59:59');
+            const dataAtual = new Date();
 
-    const tempoTotal = dataFim - dataInicio;
-    const tempoDecorrido = Math.max(0, dataAtual - dataInicio);
-    const tempoLimitado = Math.min(tempoDecorrido, tempoTotal);
+            const tempoTotal = dataFim - dataInicio;
+            const tempoDecorrido = Math.max(0, dataAtual - dataInicio);
+            const tempoLimitado = Math.min(tempoDecorrido, tempoTotal);
 
-    const diasTotais = Math.ceil(tempoTotal / (1000 * 60 * 60 * 24));
-    const diasDecorridos = Math.floor(tempoLimitado / (1000 * 60 * 60 * 24));
-    const diasRestantes = Math.max(0, diasTotais - diasDecorridos);
+            const diasTotais = Math.ceil(tempoTotal / (1000 * 60 * 60 * 24));
+            const diasDecorridos = Math.floor(tempoLimitado / (1000 * 60 * 60 * 24));
+            const diasRestantes = Math.max(0, diasTotais - diasDecorridos);
 
-    const porcentagem = (diasDecorridos / diasTotais) * 100;
+            const porcentagem = (diasDecorridos / diasTotais) * 100;
 
-    const elDiasDecorridos = document.getElementById('diasDecorridos');
-    if(elDiasDecorridos) {
-        elDiasDecorridos.innerText = diasDecorridos;
-        document.getElementById('diasRestantes').innerText = diasRestantes;
-        document.getElementById('diasTotaisCurso').innerText = diasTotais;
-        
-        // Timeout para criar o efeito animado de preenchimento da barra ao carregar a tela
-        setTimeout(() => {
-            document.getElementById('barraProgressoCurso').style.width = `${porcentagem}%`;
-            document.getElementById('txtPorcentagemCurso').innerText = `${porcentagem.toFixed(1)}% CONCLUÍDO`;
-        }, 300);
-    }
+            const elDiasDecorridos = document.getElementById('diasDecorridos');
+            if(elDiasDecorridos) {
+                elDiasDecorridos.innerText = diasDecorridos;
+                document.getElementById('diasRestantes').innerText = diasRestantes;
+                document.getElementById('diasTotaisCurso').innerText = diasTotais;
+                
+                setTimeout(() => {
+                    document.getElementById('barraProgressoCurso').style.width = `${porcentagem}%`;
+                    document.getElementById('txtPorcentagemCurso').innerText = `${porcentagem.toFixed(1)}% CONCLUÍDO`;
+                }, 300);
+            }
         }
     </script>
 </body>
