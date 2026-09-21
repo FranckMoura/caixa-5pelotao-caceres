@@ -1462,7 +1462,7 @@
             }
         }
 
-        function imprimirEscalaDeHoje() {
+function imprimirEscalaDeHoje() {
             let hoje = new Date(); hoje.setHours(12, 0, 0, 0); let dataIso = hoje.toISOString().split('T')[0];
             const dataBase = new Date('2026-08-11T12:00:00Z'); 
             const seqEq = ['ALFA', 'BRAVO', 'CHARLIE', 'DELTA']; 
@@ -1733,12 +1733,39 @@
             printModule.classList.remove('hidden');
             document.body.classList.add('printing-escala');
 
+            // --- INÍCIO DAS ALTERAÇÕES PARA CORRIGIR MOBILE E PC ---
+            
+            // 1. Injeta CSS dinâmico para forçar a altura e evitar o corte de página no PC
+            const styleId = 'print-fix-escala';
+            if (!document.getElementById(styleId)) {
+                const s = document.createElement('style');
+                s.id = styleId;
+                s.innerHTML = `
+                    @media print {
+                        html, body { height: auto !important; overflow: visible !important; min-height: 100% !important; display: block !important; }
+                        #modulo-impressao-escala { position: relative !important; display: block !important; overflow: visible !important; height: auto !important; }
+                    }
+                `;
+                document.head.appendChild(s);
+            }
+
             mostrarLoading(false);
-            setTimeout(() => {
-                window.print();
-                printModule.classList.add('hidden');
-                document.body.classList.remove('printing-escala');
-            }, 300);
+
+            // 2. Substitui o setTimeout por requestAnimationFrame duplo para evitar o bloqueio no Celular
+            window.requestAnimationFrame(() => {
+                window.requestAnimationFrame(() => {
+                    window.print();
+                    
+                    // Restaura a tela após a janela de impressão ser fechada
+                    setTimeout(() => {
+                        printModule.classList.add('hidden');
+                        document.body.classList.remove('printing-escala');
+                        const s = document.getElementById('print-fix-escala');
+                        if (s) document.head.removeChild(s);
+                    }, 500);
+                });
+            });
+            // --- FIM DAS ALTERAÇÕES ---
         }
 
         async function carregarCautelasFixas() {
