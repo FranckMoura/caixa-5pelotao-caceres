@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área Livre - 5º Pelotão</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: { 
+                extend: { 
+                    colors: { 
+                        sys: { dark: '#1b4571', header: '#348fe2', menu: '#e2e7ec', bg: '#f4f6f9', blue: '#2b579a', breadcrumb: '#5b8cbe' },
+                        pmmt: { blue: '#0B1C3D', gold: '#C5A059', light: '#142A5C' }
+                    }, 
+                    fontFamily: { sans: ['"Open Sans"', 'sans-serif'] } 
+                } 
+            }
+        }
+    </script>
+    <style>
+        body { background-color: transparent; color: #333; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
+    </style>
+</head>
+<body class="h-screen flex flex-col antialiased bg-white p-4">
+
+    <!-- Cabeçalho e Área de Postagem -->
+    <div class="bg-white shadow-sm border border-slate-300 overflow-hidden rounded-xl shrink-0 flex flex-col mb-4">
+        <div class="bg-sys-dark text-white px-5 py-4 flex justify-between items-center border-b-4 border-pmmt-gold">
+            <div>
+                <h2 class="text-sm font-black tracking-widest uppercase"><i class="fa-solid fa-bullhorn text-pmmt-gold mr-2"></i> Área Livre / Mural</h2>
+                <p class="text-[9px] text-slate-300 uppercase mt-0.5">Quadro de Recados, Avisos e Links Úteis</p>
+            </div>
+        </div>
+        
+        <form onsubmit="postarMural(event)" class="p-4 bg-slate-50 flex flex-col gap-3 border-b border-slate-200">
+            <textarea id="textoMural" required placeholder="Digite seu recado ou aviso aqui..." class="w-full bg-white border border-slate-300 p-3 rounded-lg text-sm text-slate-700 outline-none focus:border-pmmt-blue focus:ring-1 focus:ring-pmmt-blue transition resize-none h-20 shadow-sm"></textarea>
+            
+            <div class="flex flex-col md:flex-row gap-3 items-end">
+                <div class="flex-1 w-full flex gap-3">
+                    <div class="flex-1">
+                        <label class="block text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1 ml-1">URL do Link (Opcional)</label>
+                        <input type="text" id="linkMuralUrl" placeholder="Ex: https://google.com" class="w-full bg-white border border-slate-300 p-2.5 rounded text-xs text-slate-700 outline-none focus:border-pmmt-blue shadow-sm">
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1 ml-1">Título do Link</label>
+                        <input type="text" id="linkMuralTitulo" placeholder="Ex: Material de Estudo" class="w-full bg-white border border-slate-300 p-2.5 rounded text-xs text-slate-700 outline-none focus:border-pmmt-blue shadow-sm">
+                    </div>
+                </div>
+                <button type="submit" id="btnPostarMural" class="bg-pmmt-blue hover:bg-sys-blue text-white font-black px-6 py-2.5 rounded shadow transition text-xs uppercase tracking-widest whitespace-nowrap flex items-center justify-center gap-2 h-[42px]">
+                    <i class="fa-solid fa-paper-plane"></i> Publicar
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Feed de Recados -->
+    <div id="feedMural" class="flex-1 overflow-y-auto space-y-4 pr-2">
+        <div class="text-center py-10 text-slate-400">
+            <i class="fa-solid fa-circle-notch fa-spin text-3xl mb-2 text-pmmt-blue"></i>
+            <p class="text-[10px] font-bold uppercase tracking-widest">Carregando mural...</p>
+        </div>
+    </div>
+
+    <script>
+        // Credenciais do Supabase
+        const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        let recadosMuralGlobais = [];
+        let isAdmin = false;
+        let autorAtual = "Usuário";
+
+        window.onload = async function() {
+            await verificarUsuario();
+            await carregarMural();
+        };
+
+        async function verificarUsuario() {
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            if (user) {
+                // Checa se é admin seguindo a mesma regra do index.html
+                if (user.email.includes('willys') || user.email.includes('comando') || user.email.includes('tesouraria')) {
+                    isAdmin = true;
+                }
+                autorAtual = user.email.split('@')[0].toUpperCase();
+            }
+        }
+
+        async function carregarMural() {
+            const feed = document.getElementById('feedMural');
+            const { data, error } = await supabaseClient
+                .from('mural_recados')
+                .select('*')
+                .order('data_criacao', { ascending: false });
+
+            if (!error && data) {
+                recadosMuralGlobais = data;
+                renderizarMural();
+            } else {
+                feed.innerHTML = '<div class="text-center py-10 text-rose-400"><i class="fa-solid fa-triangle-exclamation text-3xl mb-2"></i><p class="text-[10px] font-bold uppercase tracking-widest">Erro ao carregar recados.</p></div>';
+            }
+        }
+
+        function renderizarMural() {
+            const feed = document.getElementById('feedMural');
+            
+            if (recadosMuralGlobais.length === 0) {
+                feed.innerHTML = `
+                    <div class="bg-slate-50 border border-slate-200 text-center p-10 rounded-xl text-slate-400 shadow-sm">
+                        <i class="fa-regular fa-comments text-4xl mb-3 text-slate-300"></i>
+                        <p class="text-xs font-bold uppercase tracking-widest">O mural está vazio.</p>
+                        <p class="text-[10px] font-medium mt-1">Seja o primeiro a publicar um aviso ou link.</p>
+                    </div>`;
+                return;
+            }
+
+            let html = '';
+            recadosMuralGlobais.forEach(recado => {
+                const dataObj = new Date(recado.data_criacao);
+                const dataFormatada = dataObj.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' às ' + dataObj.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                
+                // Exibe botão de exclusão apenas se for admin ou for o próprio autor do recado
+                let btnDeletar = (isAdmin || recado.autor === autorAtual) ? `<button onclick="deletarRecadoMural(${recado.id})" class="text-rose-400 hover:text-rose-600 transition p-1" title="Excluir Recado"><i class="fa-solid fa-trash-can"></i></button>` : '';
+
+                let linkBlock = '';
+                if (recado.link_url) {
+                    let url = recado.link_url.startsWith('http') ? recado.link_url : 'https://' + recado.link_url;
+                    let tituloLink = recado.link_titulo || 'Acessar Link Anexado';
+                    linkBlock = `
+                        <div class="mt-4 bg-slate-50 border border-slate-200 rounded-lg p-3 flex items-center justify-between hover:border-pmmt-blue transition group">
+                            <div class="flex items-center gap-2 truncate pr-4">
+                                <div class="w-8 h-8 rounded bg-pmmt-blue/10 text-pmmt-blue flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-link"></i>
+                                </div>
+                                <span class="text-xs font-bold text-slate-700 truncate group-hover:text-pmmt-blue transition">${tituloLink}</span>
+                            </div>
+                            <a href="${url}" target="_blank" class="shrink-0 bg-white border border-slate-300 hover:border-pmmt-blue text-sys-dark hover:text-pmmt-blue px-3 py-1.5 rounded text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition shadow-sm flex items-center gap-1.5">
+                                Acessar <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </div>
+                    `;
+                }
+
+                html += `
+                    <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm relative hover:shadow-md transition">
+                        <div class="flex justify-between items-start mb-3 border-b border-slate-100 pb-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-pmmt-gold text-sys-dark flex items-center justify-center font-black text-sm uppercase shadow-inner border border-yellow-500">
+                                    ${recado.autor.substring(0, 2)}
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-black text-sys-dark uppercase tracking-wider">${recado.autor}</h4>
+                                    <span class="text-[9px] font-bold text-slate-400 tracking-widest"><i class="fa-regular fa-clock mr-1"></i>${dataFormatada}</span>
+                                </div>
+                            </div>
+                            ${btnDeletar}
+                        </div>
+                        <p class="text-sm text-slate-700 whitespace-pre-wrap leading-relaxed">${recado.mensagem}</p>
+                        ${linkBlock}
+                    </div>
+                `;
+            });
+            feed.innerHTML = html;
+        }
+
+        async function postarMural(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnPostarMural');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Postando...';
+
+            const payload = {
+                autor: autorAtual,
+                mensagem: document.getElementById('textoMural').value.trim(),
+                link_url: document.getElementById('linkMuralUrl').value.trim(),
+                link_titulo: document.getElementById('linkMuralTitulo').value.trim(),
+                data_criacao: new Date().toISOString()
+            };
+
+            const { error } = await supabaseClient.from('mural_recados').insert([payload]);
+
+            if (!error) {
+                document.getElementById('textoMural').value = '';
+                document.getElementById('linkMuralUrl').value = '';
+                document.getElementById('linkMuralTitulo').value = '';
+                await carregarMural();
+            } else {
+                alert("Erro ao postar recado: " + error.message);
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Publicar';
+        }
+
+        async function deletarRecadoMural(id) {
+            if (!confirm("Atenção: Excluir este recado definitivamente?")) return;
+            
+            const { error } = await supabaseClient.from('mural_recados').delete().eq('id', id);
+            
+            if (!error) {
+                await carregarMural();
+            } else {
+                alert("Erro ao excluir recado.");
+            }
+        }
+    </script>
+</body>
+</html>
