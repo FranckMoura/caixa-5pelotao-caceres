@@ -105,6 +105,10 @@
                                     <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-calendar-days text-pmmt-gold mr-1"></i> Data de Nascimento</label>
                                     <input type="date" id="inputNasc" disabled class="w-full border border-slate-300 rounded-lg p-2.5 text-sm font-semibold text-slate-700 outline-none focus:border-pmmt-blue bg-slate-50 transition-colors">
                                 </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-map-location-dot text-pmmt-gold mr-1"></i> Origem (Cidade)</label>
+                                    <input type="text" id="inputOrigem" disabled placeholder="Ex: Cáceres" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm font-semibold text-slate-700 outline-none focus:border-pmmt-blue bg-slate-50 transition-colors">
+                                </div>
                             </div>
                             
                             <!-- Bloco Físico/Médico -->
@@ -171,6 +175,7 @@
                 <p><strong>Equipe:</strong> <span id="printEquipe"></span></p>
                 <p><strong>CPF:</strong> <span id="printCPF"></span></p>
                 <p><strong>Data de Nascimento:</strong> <span id="printNasc"></span></p>
+                <p class="col-span-2"><strong>Origem (Cidade):</strong> <span id="printOrigem"></span></p>
             </div>
         </div>
 
@@ -280,6 +285,7 @@
             document.getElementById('inputId').value = aluno.id;
             document.getElementById('inputCPF').value = aluno.cpf || '';
             document.getElementById('inputNasc').value = aluno.data_nascimento || '';
+            document.getElementById('inputOrigem').value = aluno.origem || ''; // Novo campo adicionado
             document.getElementById('inputSangue').value = aluno.tipo_sanguineo || '';
             document.getElementById('inputPeso').value = aluno.peso || '';
             document.getElementById('inputAltura').value = aluno.altura || '';
@@ -291,7 +297,8 @@
         }
 
         function habilitarEdicao() {
-            const inputs = ['inputCPF', 'inputNasc', 'inputSangue', 'inputPeso', 'inputAltura', 'inputAnotacoes'];
+            // Lista de inputs atualizada com inputOrigem
+            const inputs = ['inputCPF', 'inputNasc', 'inputOrigem', 'inputSangue', 'inputPeso', 'inputAltura', 'inputAnotacoes'];
             inputs.forEach(id => {
                 const el = document.getElementById(id);
                 el.disabled = false;
@@ -304,7 +311,8 @@
         }
 
         function cancelarEdicao() {
-            const inputs = ['inputCPF', 'inputNasc', 'inputSangue', 'inputPeso', 'inputAltura', 'inputAnotacoes'];
+            // Lista de inputs atualizada com inputOrigem
+            const inputs = ['inputCPF', 'inputNasc', 'inputOrigem', 'inputSangue', 'inputPeso', 'inputAltura', 'inputAnotacoes'];
             inputs.forEach(id => {
                 const el = document.getElementById(id);
                 el.disabled = true;
@@ -316,6 +324,7 @@
             if(alunoSelecionado) {
                 document.getElementById('inputCPF').value = alunoSelecionado.cpf || '';
                 document.getElementById('inputNasc').value = alunoSelecionado.data_nascimento || '';
+                document.getElementById('inputOrigem').value = alunoSelecionado.origem || ''; // Novo campo adicionado
                 document.getElementById('inputSangue').value = alunoSelecionado.tipo_sanguineo || '';
                 document.getElementById('inputPeso').value = alunoSelecionado.peso || '';
                 document.getElementById('inputAltura').value = alunoSelecionado.altura || '';
@@ -335,9 +344,11 @@
             btn.disabled = true;
 
             const id = document.getElementById('inputId').value;
+            // Payload atualizado para enviar a origem para o banco
             const payload = {
                 cpf: document.getElementById('inputCPF').value.trim() || null,
                 data_nascimento: document.getElementById('inputNasc').value || null,
+                origem: document.getElementById('inputOrigem').value.trim() || null, 
                 tipo_sanguineo: document.getElementById('inputSangue').value || null,
                 peso: document.getElementById('inputPeso').value ? parseFloat(document.getElementById('inputPeso').value) : null,
                 altura: document.getElementById('inputAltura').value ? parseFloat(document.getElementById('inputAltura').value) : null,
@@ -393,6 +404,7 @@
             document.getElementById('printEquipe').innerText = alunoSelecionado.equipe || 'N/A';
             document.getElementById('printCPF').innerText = alunoSelecionado.cpf || 'Não informado';
             document.getElementById('printNasc').innerText = nascFormatada;
+            document.getElementById('printOrigem').innerText = alunoSelecionado.origem || 'Não informado'; // Novo campo na impressão
             
             document.getElementById('printSangue').innerText = alunoSelecionado.tipo_sanguineo || 'Não informado';
             document.getElementById('printAltura').innerText = alunoSelecionado.altura ? alunoSelecionado.altura.toFixed(2) : '---';
