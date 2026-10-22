@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Documentos - 5º Pelotão</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Adicionando a biblioteca para gerar PDF nativo -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: { 
+                extend: { 
+                    colors: { 
+                        sys: { dark: '#1b4571', header: '#348fe2', menu: '#e2e7ec', bg: '#f4f6f9', blue: '#2b579a', breadcrumb: '#5b8cbe' },
+                        pmmt: { blue: '#0B1C3D', gold: '#C5A059', light: '#142A5C' }
+                    }, 
+                    fontFamily: { sans: ['"Open Sans"', 'sans-serif'] } 
+                } 
+            }
+        }
+    </script>
+    <style>
+        body { background-color: transparent; color: #333; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
+    </style>
+</head>
+<body class="h-screen flex flex-col antialiased bg-white p-4 overflow-y-auto">
+
+    <div class="bg-white shadow-sm border border-slate-300 rounded-xl overflow-hidden mb-4">
+        <div class="bg-sys-dark text-white px-5 py-4 flex justify-between items-center border-b-4 border-pmmt-gold">
+            <div>
+                <h2 class="text-sm font-black tracking-widest uppercase"><i class="fa-solid fa-file-pdf text-pmmt-gold mr-2"></i> Gerador de Documento Padrão</h2>
+                <p class="text-[9px] text-slate-300 uppercase mt-0.5">Preencha os campos (ou selecione os cadastrados) para exportar em .PDF</p>
+            </div>
+        </div>
+        
+        <form onsubmit="gerarDocumentoPDF(event)" class="p-6 bg-slate-50 flex flex-col gap-5">
+            
+            <!-- Linha 1: Buscas Automáticas do Banco (Alunos e Comandantes) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 p-4 bg-white border border-slate-200 rounded-lg shadow-sm">
+                <div>
+                    <label class="block text-xs font-bold text-pmmt-blue uppercase tracking-wider mb-1.5 flex justify-between items-end">
+                        <span><i class="fa-solid fa-users mr-1"></i> Aluno(s) Envolvido(s)</span>
+                        <span class="text-[9px] text-slate-400 font-bold tracking-normal normal-case">(Segure CTRL para vários)</span>
+                    </label>
+                    <select id="docAluno" multiple size="4" class="w-full bg-slate-50 border border-slate-300 p-2 rounded-lg text-sm text-slate-700 outline-none focus:border-pmmt-gold transition">
+                        <option value="" selected>-- Geral / Nenhum Aluno Específico --</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-pmmt-blue uppercase tracking-wider mb-1.5"><i class="fa-solid fa-user-shield mr-1"></i> Aos Cuidados de (Comandante)</label>
+                    <select id="docComandante" class="w-full bg-slate-50 border border-slate-300 p-2.5 rounded-lg text-sm text-slate-700 outline-none focus:border-pmmt-gold transition">
+                        <option value="">-- Sem Destinatário Específico --</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Linha 2: Assunto e Tema com Sugestões do Banco -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Assunto</label>
+                    <input list="listaAssuntos" type="text" id="docAssunto" required placeholder="Ex: Solicitação de Material" class="w-full bg-white border border-slate-300 p-3 rounded-lg text-sm text-slate-700 outline-none focus:border-pmmt-blue focus:ring-1 focus:ring-pmmt-blue transition shadow-sm">
+                    <datalist id="listaAssuntos"></datalist>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Tema</label>
+                    <input list="listaTemas" type="text" id="docTema" required placeholder="Ex: Equipamentos Administrativos" class="w-full bg-white border border-slate-300 p-3 rounded-lg text-sm text-slate-700 outline-none focus:border-pmmt-blue focus:ring-1 focus:ring-pmmt-blue transition shadow-sm">
+                    <datalist id="listaTemas"></datalist>
+                </div>
+            </div>
+            
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Texto Abordado</label>
+                <textarea id="docTexto" required placeholder="Digite o conteúdo detalhado do documento..." class="w-full bg-white border border-slate-300 p-4 rounded-lg text-sm text-slate-700 outline-none focus:border-pmmt-blue focus:ring-1 focus:ring-pmmt-blue transition resize-none h-48 shadow-sm"></textarea>
+            </div>
+
+            <div class="flex justify-end pt-4 border-t border-slate-200 mt-2">
+                <button type="submit" id="btnGerarPdf" class="bg-pmmt-blue hover:bg-sys-blue text-white font-black px-8 py-3 rounded-lg shadow-md transition text-xs uppercase tracking-widest flex items-center gap-2">
+                    <i class="fa-solid fa-file-pdf"></i> Baixar Documento .PDF
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Credenciais do Supabase
+        const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        let autorAtual = "Usuário Logado";
+
+        window.onload = async function() {
+            // Verifica o usuário atual
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            if (user) {
+                autorAtual = user.email.split('@')[0].toUpperCase();
+            }
+
+            // Carrega os dados de Alunos e Temas para popular os formulários automaticamente
+            await carregarOpcoesDoBanco();
+        };
+
+        // Função que busca dados do Supabase e preenche os botões de seleção
+        async function carregarOpcoesDoBanco() {
+            // 1. Busca os alunos do pelotão
+            const { data: alunosData } = await supabaseClient
+                .from('alunos_pelotao')
+                .select('numero, qra, nome, comandante')
+                .order('numero', { ascending: true });
+
+            if(alunosData) {
+                const selAluno = document.getElementById('docAluno');
+                const selCmd = document.getElementById('docComandante');
+                const comandantesSet = new Set(); // Set evita repetição de nomes de comandantes
+
+                alunosData.forEach(aluno => {
+                    // Formata para '501 - QRA'
+                    const num = "5" + aluno.numero.toString().padStart(2, '0');
+                    const nomeExibicao = aluno.qra || aluno.nome;
+                    selAluno.innerHTML += `<option value="${num} - ${nomeExibicao}">AL SD PM ${num} - ${nomeExibicao}</option>`;
+
+                    // Pega o nome dos comandantes de forma dinâmica
+                    if(aluno.comandante) {
+                        comandantesSet.add(aluno.comandante);
+                    }
+                });
+
+                // Preenche a lista de comandantes
+                comandantesSet.forEach(cmd => {
+                    selCmd.innerHTML += `<option value="${cmd}">${cmd}</option>`;
+                });
+            }
+
+            // 2. Busca os assuntos e temas criados no banco de dados
+            const { data: temasData } = await supabaseClient.from('documentos_temas').select('*');
+            if(temasData) {
+                const dlAssuntos = document.getElementById('listaAssuntos');
+                const dlTemas = document.getElementById('listaTemas');
+                
+                temasData.forEach(item => {
+                    dlAssuntos.innerHTML += `<option value="${item.assunto}">`;
+                    dlTemas.innerHTML += `<option value="${item.tema}">`;
+                });
+            }
+        }
+
+        function gerarDocumentoPDF(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('btnGerarPdf');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Gerando PDF...';
+
+            // Captura todos os alunos selecionados (Múltipla Seleção)
+            const docAlunoEl = document.getElementById('docAluno');
+            const alunosSelecionados = Array.from(docAlunoEl.selectedOptions)
+                                            .map(opt => opt.value)
+                                            .filter(val => val !== ""); // Remove a opção "Geral" se estiver junto
+
+            const comandanteSelecionado = document.getElementById('docComandante').value;
+            const assunto = document.getElementById('docAssunto').value.trim();
+            const tema = document.getElementById('docTema').value.trim();
+            const texto = document.getElementById('docTexto').value.trim().replace(/\n/g, '<br>');
+            const dataAtual = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+
+            // Monta o bloco de Alunos dinamicamente (Singular ou Plural)
+            let blocoAluno = '';
+            if (alunosSelecionados.length === 1) {
+                blocoAluno = `<p><span style="font-weight: bold;">ALUNO REFERÊNCIA:</span> AL SD PM ${alunosSelecionados[0]}</p>`;
+            } else if (alunosSelecionados.length > 1) {
+                const listaFormatada = alunosSelecionados.map(a => `AL SD PM ${a}`).join('<br>');
+                blocoAluno = `<p><span style="font-weight: bold;">ALUNOS REFERÊNCIA:</span><br>${listaFormatada}</p>`;
+            }
+
+            let blocoCmd = comandanteSelecionado ? `<p><span style="font-weight: bold;">AOS CUIDADOS DE:</span> ${comandanteSelecionado}</p>` : '';
+
+            // Cria um elemento div temporário com os estilos aplicados inline
+            const conteudoDoc = document.createElement('div');
+            conteudoDoc.innerHTML = `
+                <div style="font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 1.5; text-align: justify; padding: 20px; color: black; background: white;">
+                    <div style="text-align: center; font-weight: bold; margin-bottom: 40px; text-transform: uppercase;">
+                        ESTADO DE MATO GROSSO<br>
+                        POLÍCIA MILITAR DO ESTADO DE MATO GROSSO<br>
+                        ESCOLA SUPERIOR DE FORMAÇÃO E APERFEIÇOAMENTO DE PRAÇAS<br>
+                        35º CFSD - 5º PELOTÃO
+                    </div>
+
+                    <p><span style="font-weight: bold;">DATA DE EMISSÃO:</span> ${dataAtual}</p>
+                    <p><span style="font-weight: bold;">AUTOR/RESPONSÁVEL:</span> ${autorAtual}</p>
+                    ${blocoAluno}
+                    ${blocoCmd}
+                    <br>
+                    <p><span style="font-weight: bold;">ASSUNTO:</span> ${assunto}</p>
+                    <p><span style="font-weight: bold;">TEMA:</span> ${tema}</p>
+                    <br>
+                    <p style="text-indent: 40px;">${texto}</p>
+                    
+                    <div style="text-align: center; margin-top: 80px;">
+                        <div style="width: 300px; border-top: 1px solid black; margin: 0 auto 5px auto;"></div>
+                        ${autorAtual}<br>
+                        Aluno(a) Soldado PM - 5º Pelotão
+                    </div>
+                </div>
+            `;
+
+            // Configurações do PDF (Folha A4, margem, nome do arquivo)
+            const opt = {
+                margin:       15,
+                filename:     `Documento_${assunto.replace(/\s+/g, '_')}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            // Gera o PDF e faz o download
+            html2pdf().set(opt).from(conteudoDoc).save().then(() => {
+                // Restaura o botão e limpa os campos de texto após concluir
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                document.getElementById('docAssunto').value = '';
+                document.getElementById('docTema').value = '';
+                document.getElementById('docTexto').value = '';
+                document.getElementById('docAluno').selectedIndex = 0; // Volta pra opção Geral
+                document.getElementById('docComandante').value = '';
+            }).catch(err => {
+                alert("Erro ao gerar o PDF.");
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            });
+        }
+    </script>
+</body>
+</html>
