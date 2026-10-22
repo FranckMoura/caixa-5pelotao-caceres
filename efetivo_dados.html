@@ -109,6 +109,10 @@
                                     <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-map-location-dot text-pmmt-gold mr-1"></i> Origem (Cidade)</label>
                                     <input type="text" id="inputOrigem" disabled placeholder="Ex: Cáceres" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm font-semibold text-slate-700 outline-none focus:border-pmmt-blue bg-slate-50 transition-colors">
                                 </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-map-pin text-pmmt-gold mr-1"></i> Endereço / Localização (Maps)</label>
+                                    <input type="text" id="inputEndereco" disabled placeholder="Ex: Rua X... ou Link Google Maps" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm font-semibold text-slate-700 outline-none focus:border-pmmt-blue bg-slate-50 transition-colors">
+                                </div>
                             </div>
                             
                             <!-- Bloco Físico/Médico -->
@@ -176,6 +180,7 @@
                 <p><strong>CPF:</strong> <span id="printCPF"></span></p>
                 <p><strong>Data de Nascimento:</strong> <span id="printNasc"></span></p>
                 <p class="col-span-2"><strong>Origem (Cidade):</strong> <span id="printOrigem"></span></p>
+                <p class="col-span-2"><strong>Endereço / Localização:</strong> <span id="printEndereco"></span></p>
             </div>
         </div>
 
@@ -285,7 +290,8 @@
             document.getElementById('inputId').value = aluno.id;
             document.getElementById('inputCPF').value = aluno.cpf || '';
             document.getElementById('inputNasc').value = aluno.data_nascimento || '';
-            document.getElementById('inputOrigem').value = aluno.origem || ''; // Novo campo adicionado
+            document.getElementById('inputOrigem').value = aluno.origem || ''; 
+            document.getElementById('inputEndereco').value = aluno.endereco || ''; // Novo campo
             document.getElementById('inputSangue').value = aluno.tipo_sanguineo || '';
             document.getElementById('inputPeso').value = aluno.peso || '';
             document.getElementById('inputAltura').value = aluno.altura || '';
@@ -297,8 +303,7 @@
         }
 
         function habilitarEdicao() {
-            // Lista de inputs atualizada com inputOrigem
-            const inputs = ['inputCPF', 'inputNasc', 'inputOrigem', 'inputSangue', 'inputPeso', 'inputAltura', 'inputAnotacoes'];
+            const inputs = ['inputCPF', 'inputNasc', 'inputOrigem', 'inputEndereco', 'inputSangue', 'inputPeso', 'inputAltura', 'inputAnotacoes'];
             inputs.forEach(id => {
                 const el = document.getElementById(id);
                 el.disabled = false;
@@ -311,8 +316,7 @@
         }
 
         function cancelarEdicao() {
-            // Lista de inputs atualizada com inputOrigem
-            const inputs = ['inputCPF', 'inputNasc', 'inputOrigem', 'inputSangue', 'inputPeso', 'inputAltura', 'inputAnotacoes'];
+            const inputs = ['inputCPF', 'inputNasc', 'inputOrigem', 'inputEndereco', 'inputSangue', 'inputPeso', 'inputAltura', 'inputAnotacoes'];
             inputs.forEach(id => {
                 const el = document.getElementById(id);
                 el.disabled = true;
@@ -324,7 +328,8 @@
             if(alunoSelecionado) {
                 document.getElementById('inputCPF').value = alunoSelecionado.cpf || '';
                 document.getElementById('inputNasc').value = alunoSelecionado.data_nascimento || '';
-                document.getElementById('inputOrigem').value = alunoSelecionado.origem || ''; // Novo campo adicionado
+                document.getElementById('inputOrigem').value = alunoSelecionado.origem || ''; 
+                document.getElementById('inputEndereco').value = alunoSelecionado.endereco || ''; // Novo campo
                 document.getElementById('inputSangue').value = alunoSelecionado.tipo_sanguineo || '';
                 document.getElementById('inputPeso').value = alunoSelecionado.peso || '';
                 document.getElementById('inputAltura').value = alunoSelecionado.altura || '';
@@ -344,11 +349,12 @@
             btn.disabled = true;
 
             const id = document.getElementById('inputId').value;
-            // Payload atualizado para enviar a origem para o banco
+            // Payload atualizado para enviar endereço
             const payload = {
                 cpf: document.getElementById('inputCPF').value.trim() || null,
                 data_nascimento: document.getElementById('inputNasc').value || null,
                 origem: document.getElementById('inputOrigem').value.trim() || null, 
+                endereco: document.getElementById('inputEndereco').value.trim() || null, // Novo campo
                 tipo_sanguineo: document.getElementById('inputSangue').value || null,
                 peso: document.getElementById('inputPeso').value ? parseFloat(document.getElementById('inputPeso').value) : null,
                 altura: document.getElementById('inputAltura').value ? parseFloat(document.getElementById('inputAltura').value) : null,
@@ -404,7 +410,8 @@
             document.getElementById('printEquipe').innerText = alunoSelecionado.equipe || 'N/A';
             document.getElementById('printCPF').innerText = alunoSelecionado.cpf || 'Não informado';
             document.getElementById('printNasc').innerText = nascFormatada;
-            document.getElementById('printOrigem').innerText = alunoSelecionado.origem || 'Não informado'; // Novo campo na impressão
+            document.getElementById('printOrigem').innerText = alunoSelecionado.origem || 'Não informado'; 
+            document.getElementById('printEndereco').innerText = alunoSelecionado.endereco || 'Não informado'; // Novo campo na impressão
             
             document.getElementById('printSangue').innerText = alunoSelecionado.tipo_sanguineo || 'Não informado';
             document.getElementById('printAltura').innerText = alunoSelecionado.altura ? alunoSelecionado.altura.toFixed(2) : '---';
