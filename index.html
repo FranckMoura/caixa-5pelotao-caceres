@@ -52,12 +52,6 @@
             body.printing-qts #box-qts-print, body.printing-qts #box-qts-print * { visibility: visible; }
             body.printing-qts #box-qts-print { position: absolute; left: 0; top: 0; width: 100%; display: block !important; margin: 0; padding: 0; }
             body.printing-qts .tabela-qts th, body.printing-qts .tabela-qts td { border: 1px solid #000 !important; color: #000 !important; }
-
-            /* PRINT OFICIAL: LISTA DE PRESENÇA */
-            body.printing-presenca * { visibility: hidden; }
-            body.printing-presenca #modulo-impressao-presenca, body.printing-presenca #modulo-impressao-presenca * { visibility: visible; }
-            body.printing-presenca #modulo-impressao-presenca { position: absolute; left: 0; top: 0; width: 100%; display: block !important; margin: 0; padding: 0; }
-            body.printing-presenca table, body.printing-presenca th, body.printing-presenca td { border: 1px solid #000 !important; color: #000 !important; }
         }
     </style>
 </head>
@@ -160,11 +154,7 @@
                         <span class="text-sm font-semibold">Sincronizando dados com o servidor...</span>
                     </div>
 
-                    <div class="bg-white border-l-4 border-pmmt-blue p-4 mb-6 shadow-sm no-print rounded-r-lg shrink-0 flex items-center gap-4">
-                        <i class="fa-solid fa-shield-check text-2xl text-pmmt-gold"></i>
-                        <p class="text-sm text-slate-700 font-medium">Seja bem-vindo(a) ao <strong>Portal Institucional do 35º CFSD - 5º Pelotão</strong>.</p>
-                    </div>
-
+                    <!-- MÓDULO HOME -->
                     <section id="modulo-home" class="space-y-6">
                         <div class="bg-sys-dark rounded-xl shadow-md border-l-4 border-pmmt-gold overflow-hidden mb-6 p-4 md:p-5 flex items-center justify-between text-white">
                             <div class="flex items-center gap-3 md:gap-4">
@@ -216,6 +206,7 @@
                         </div>
                     </section>
 
+                    <!-- DEMAIS MÓDULOS (IFRAMES E SEÇÕES) -->
                     <section id="modulo-institucional" class="hidden space-y-6">
                         <div class="bg-white shadow-sm border border-slate-300 overflow-hidden rounded-xl">
                             <div class="bg-sys-dark text-white px-5 py-4 flex justify-between items-center"><div><h2 class="text-sm font-black tracking-widest uppercase"><i class="fa-solid fa-sitemap text-pmmt-gold mr-2"></i> Cadeia de Comando</h2><p class="text-[9px] text-slate-300 uppercase mt-0.5">Hierarquia do Estado e da Polícia Militar</p></div></div>
@@ -232,7 +223,6 @@
                         </div>
                     </section>
 
-                    <!-- MÓDULO EFETIVO E ESCALA (EM IFRAME) -->
                     <section id="modulo-efetivo" class="hidden flex-1 flex flex-col h-full min-h-[85vh]">
                         <iframe id="iframeEfetivo" src="escala.html" class="w-full h-full border border-slate-200 bg-transparent shadow-sm rounded-xl"></iframe>
                     </section>
@@ -399,7 +389,6 @@
             await carregarCautelasFixas(); 
             await carregarQTSList(); 
             await carregarMateriaisApoio();
-            await carregarTodasNotasGlobais(); 
             await renderizarDashboardHome();
             const iframesToReload = ['iframeEfetivo', 'iframeEfetivoDados', 'iframeAcademico', 'iframeFinanceiro', 'iframeToques', 'iframeGerador'];
             iframesToReload.forEach(id => { const iframe = document.getElementById(id); if (iframe && iframe.contentWindow) iframe.contentWindow.location.reload(); });
@@ -481,75 +470,83 @@
 
         async function carregarAlunos() { const { data } = await supabaseClient.from('alunos_pelotao').select('*').order('numero', { ascending: true }); listaAlunosFull = data || []; }
         async function carregarFuncoesComando() { const { data } = await supabaseClient.from('funcoes_comando').select('*'); if (data) funcoesComandoGlobais = data; }
-        async function carregarTodasNotasGlobais() { const { data } = await supabaseClient.from('academico_notas').select('*'); if (data) todasNotasGlobais = data; }
 
-        function calcularRankingGeral() {
-            let ranking = [];
-            listaAlunosFull.forEach(aluno => {
-                const notasDoAluno = todasNotasGlobais.filter(n => n.aluno_id === aluno.id);
-                let mgc = 0;
-                let totalDisciplinas = notasDoAluno.length;
-                
-                if (totalDisciplinas > 0) {
-                    let soma = 0;
-                    notasDoAluno.forEach(n => { soma += parseFloat(n.mgm || 0); });
-                    mgc = soma / totalDisciplinas;
-                }
-                
-                ranking.push({
-                    id: aluno.id,
-                    numero: aluno.numero,
-                    nome: aluno.nome,
-                    qra: aluno.qra,
-                    mgc: parseFloat(mgc.toFixed(2)),
-                    totalDisciplinas: totalDisciplinas
-                });
-            });
-
-            ranking.sort((a, b) => {
-                if (b.mgc !== a.mgc) return b.mgc - a.mgc;
-                return (a.numero || 999) - (b.numero || 999);
-            });
-
-            ranking.forEach((aluno, index) => {
-                aluno.rank = index + 1;
-                aluno.rankFormatado = (index + 1).toString().padStart(2, '0');
-            });
-
-            return ranking;
-        }
-
-        function abrirRankingGeral() {
-            const ranking = calcularRankingGeral();
+        // --- FUNÇÃO DO RANKING REFEITA PARA BUSCAR NO BD ---
+        async function abrirRankingGeral() {
+            const modal = document.getElementById('modalRankingGeral');
             const tbody = document.getElementById('tabelaRankingGeral');
-            tbody.innerHTML = '';
+            
+            modal.classList.remove('hidden');
+            tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-500 font-bold"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Calculando ranking atual...</td></tr>';
+            
+            try {
+                // Garante a lista de alunos atualizada
+                if (!listaAlunosFull || listaAlunosFull.length === 0) {
+                    const { data: alunos } = await supabaseClient.from('alunos_pelotao').select('*').order('numero', { ascending: true });
+                    listaAlunosFull = alunos || [];
+                }
 
-            if(ranking.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-500 font-bold">Nenhum dado encontrado.</td></tr>';
-                document.getElementById('modalRankingGeral').classList.remove('hidden');
-                return;
-            }
-
-            ranking.forEach(aluno => {
-                const qraAjustado = (aluno.qra || aluno.nome).replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase();
+                // Busca as notas diretamente
+                const { data: notas, error } = await supabaseClient.from('academico_notas').select('*');
+                if (error) throw error;
                 
-                let rankVisual = `<span class="font-bold text-slate-600 ml-2">${aluno.rankFormatado}</span>`;
-                if(aluno.rank === 1) rankVisual = `<span class="bg-yellow-400 text-yellow-900 px-2 py-1.5 rounded text-xs font-black shadow-sm border border-yellow-500">🏆 01</span>`;
-                if(aluno.rank === 2) rankVisual = `<span class="bg-slate-300 text-slate-800 px-2 py-1.5 rounded text-xs font-black shadow-sm border border-slate-400">🥈 02</span>`;
-                if(aluno.rank === 3) rankVisual = `<span class="bg-amber-600 text-amber-100 px-2 py-1.5 rounded text-xs font-black shadow-sm border border-amber-700">🥉 03</span>`;
+                let ranking = [];
+                listaAlunosFull.forEach(aluno => {
+                    const notasDoAluno = (notas || []).filter(n => n.aluno_id === aluno.id && n.mgm != null);
+                    let mgc = 0;
+                    let totalDisciplinas = notasDoAluno.length;
+                    
+                    if (totalDisciplinas > 0) {
+                        let soma = 0;
+                        notasDoAluno.forEach(n => { soma += parseFloat(n.mgm || 0); });
+                        mgc = soma / totalDisciplinas;
+                    }
+                    
+                    ranking.push({
+                        id: aluno.id,
+                        numero: aluno.numero,
+                        nome: aluno.nome,
+                        qra: aluno.qra,
+                        mgc: parseFloat(mgc.toFixed(2)),
+                        totalDisciplinas: totalDisciplinas
+                    });
+                });
 
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 transition border-b border-slate-100";
-                tr.innerHTML = `
-                    <td class="p-3 text-center">${rankVisual}</td>
-                    <td class="p-3 text-slate-700"><span class="font-bold text-pmmt-blue">${aluno.numero || '-'}</span> - ${qraAjustado}</td>
-                    <td class="p-3 text-center text-slate-500 text-xs">${aluno.totalDisciplinas}</td>
-                    <td class="p-3 text-center font-black text-sm ${aluno.mgc >= 5 ? 'text-emerald-600' : 'text-red-600'}">${aluno.mgc.toFixed(2)}</td>
-                `;
-                tbody.appendChild(tr);
-            });
+                ranking.sort((a, b) => {
+                    if (b.mgc !== a.mgc) return b.mgc - a.mgc;
+                    return (a.numero || 999) - (b.numero || 999);
+                });
 
-            document.getElementById('modalRankingGeral').classList.remove('hidden');
+                tbody.innerHTML = '';
+                
+                if(ranking.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-500 font-bold">Nenhuma nota lançada no sistema ainda.</td></tr>';
+                    return;
+                }
+
+                ranking.forEach((aluno, index) => {
+                    const rankFormatado = (index + 1).toString().padStart(2, '0');
+                    const qraAjustado = (aluno.qra || aluno.nome).replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase();
+                    
+                    let rankVisual = `<span class="font-bold text-slate-600 ml-2">${rankFormatado}</span>`;
+                    if(index === 0) rankVisual = `<span class="bg-yellow-400 text-yellow-900 px-2 py-1.5 rounded text-xs font-black shadow-sm border border-yellow-500">🏆 01</span>`;
+                    if(index === 1) rankVisual = `<span class="bg-slate-300 text-slate-800 px-2 py-1.5 rounded text-xs font-black shadow-sm border border-slate-400">🥈 02</span>`;
+                    if(index === 2) rankVisual = `<span class="bg-amber-600 text-amber-100 px-2 py-1.5 rounded text-xs font-black shadow-sm border border-amber-700">🥉 03</span>`;
+
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-slate-50 transition border-b border-slate-100";
+                    tr.innerHTML = `
+                        <td class="p-3 text-center">${rankVisual}</td>
+                        <td class="p-3 text-slate-700"><span class="font-bold text-pmmt-blue">${aluno.numero || '-'}</span> - ${qraAjustado}</td>
+                        <td class="p-3 text-center text-slate-500 text-xs">${aluno.totalDisciplinas}</td>
+                        <td class="p-3 text-center font-black text-sm ${aluno.mgc >= 5 ? 'text-emerald-600' : 'text-red-600'}">${aluno.mgc.toFixed(2)}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error("Erro ao gerar ranking:", error);
+                tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-rose-500 font-bold">Erro ao buscar dados do ranking.</td></tr>';
+            }
         }
 
         function fecharRankingGeral() {
@@ -685,9 +682,6 @@
                 }
             }, 1000);
         }
-
-        function abrirRankingGeral() { document.getElementById('modalRankingGeral').classList.remove('hidden'); }
-        function fecharRankingGeral() { document.getElementById('modalRankingGeral').classList.add('hidden'); }
     </script>
 </body>
 </html>
