@@ -46,7 +46,7 @@
 
         <div class="bg-white shadow-sm border border-slate-200 p-4 rounded-xl">
             <h3 class="text-xs font-bold text-sys-dark mb-4 border-b border-slate-100 pb-2 uppercase tracking-wider"><i class="fas fa-calendar-alt text-pmmt-gold mr-2"></i>Próximos Serviços</h3>
-            <div id="gridEscala" class="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-3"></div>
+            <div id="gridEscala" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-7 gap-4"></div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -57,7 +57,7 @@
         </div>
     </div>
 
-    <!-- MODAL FUNÇÃO (EDITAR CMT / ALUNO DIA) -->
+    <!-- MODAL FUNÇÃO (EDITAR EQUIPE / CMT / ALUNO DIA) -->
     <div id="modalFuncao" class="modal fixed inset-0 bg-slate-900/80 z-[200] hidden flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm overflow-hidden border border-slate-300">
             <div class="bg-sys-dark px-4 py-3 flex justify-between items-center"><h3 class="text-white font-black text-xs uppercase tracking-wider" id="modalFuncaoTitle">Alterar</h3><button onclick="fecharModalFuncao()" class="text-white/70 hover:text-white"><i class="fa-solid fa-xmark"></i></button></div>
@@ -173,12 +173,17 @@
         let supabaseClient;
         let listaAlunosFull = [];
         let funcoesComandoGlobais = [];
+        let isAdmin = false;
         
         const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
 
         window.onload = async function() {
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            if(user) isAdmin = user.email.includes('willys') || user.email.includes('comando') || user.email.includes('tesouraria');
+            document.querySelectorAll('.admin-only').forEach(el => isAdmin ? el.classList.remove('hidden') : el.classList.add('hidden'));
+
             await carregarAlunos();
             await carregarFuncoesComando();
             renderizarEscala();
@@ -209,7 +214,7 @@
             });
         }
 
-        function renderizarEscala() {
+function renderizarEscala() {
             const grid = document.getElementById('gridEscala'); if(!grid) return; grid.innerHTML = '';
             const dataBase = new Date('2026-08-11T12:00:00Z'); 
             const seqEq = ['ALFA', 'BRAVO', 'CHARLIE', 'DELTA'];
@@ -221,7 +226,12 @@
                 let dtIso = dt.toISOString().split('T')[0];
                 let diffDias = Math.round((new Date(Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate(), 12, 0, 0)) - dataBase) / 86400000);
                 
-                let eq = seqEq[(diffDias % 4 + 4) % 4];
+                // Prioriza Equipe Substituída Manualmente
+                let equipeCalculada = seqEq[(diffDias % 4 + 4) % 4];
+                let overrideEquipe = funcoesComandoGlobais.find(f => f.tipo === 'EQUIPE' && f.data_referencia === dtIso);
+                let eq = (overrideEquipe && overrideEquipe.valor_texto) ? overrideEquipe.valor_texto : equipeCalculada;
+
+                // Prioriza Sgt Substituído Manualmente
                 let sgtCalculado = seqSgt[(diffDias % seqSgt.length + seqSgt.length) % seqSgt.length];
                 let overrideSgt = funcoesComandoGlobais.find(f => f.tipo === 'CMT' && f.data_referencia === dtIso);
                 let sgtFinal = (overrideSgt && overrideSgt.valor_texto) ? overrideSgt.valor_texto : sgtCalculado;
@@ -241,17 +251,23 @@
                         ${i===0?'<span class="absolute -top-2.5 bg-sys-dark text-white text-[9px] font-black px-2 py-0.5 rounded-full uppercase">Hoje</span>':''}
                         <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">${dt.toLocaleDateString('pt-BR', {weekday: 'short'})}</p>
                         <p class="text-lg font-black text-slate-800 leading-tight mt-0.5">${dt.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'})}</p>
-                        <span class="text-[9px] font-black px-2 py-0.5 rounded bg-sys-blue text-white mt-2 w-full text-center tracking-widest">${eq}</span>
+                        
+                        <!-- CORRIGIDO: bg-pmmt-blue em vez de bg-sys-blue -->
+                        <div class="text-[9px] font-black px-2 py-0.5 rounded bg-pmmt-blue text-white mt-2 w-full text-center tracking-widest flex items-center justify-center gap-1 shadow-sm">
+                            ${eq}
+                            ${isAdmin ? `<button onclick="abrirModalFuncao('EQUIPE', '${dtIso}', '')" class="text-white/70 hover:text-white admin-only shrink-0"><i class="fa-solid fa-pen text-[9px]"></i></button>` : ''}
+                        </div>
                         
                         <div class="text-[9px] font-bold px-1 py-0.5 rounded border border-slate-300 bg-white text-black mt-1 w-full text-center break-words leading-tight shadow-sm flex items-center justify-center gap-1">
                             CMT: ${sgtFinal.replace('1º SGT PM ','').replace('2º SGT PM ','')}
-                            <button onclick="abrirModalFuncao('CMT', '${dtIso}', '')" class="text-slate-400 hover:text-pmmt-gold shrink-0"><i class="fa-solid fa-pen text-[9px]"></i></button>
+                            ${isAdmin ? `<button onclick="abrirModalFuncao('CMT', '${dtIso}', '')" class="text-slate-400 hover:text-pmmt-gold admin-only shrink-0"><i class="fa-solid fa-pen text-[9px]"></i></button>` : ''}
                         </div>
+                        
                         <div class="mt-2 pt-1 border-t border-slate-300 border-dashed w-full flex flex-col items-center">
                             <span class="text-[8px] text-slate-500 uppercase font-bold tracking-widest mb-0.5">Aluno de Dia</span>
                             <div class="flex items-center gap-1 w-full justify-center">
                                 <span class="text-[9px] font-black text-black uppercase text-center w-full truncate">${nomeEx}</span>
-                                <button onclick="abrirModalFuncao('ALUNO_DIA', '${dtIso}', '${eq}')" class="text-slate-400 hover:text-pmmt-gold shrink-0"><i class="fa-solid fa-pen text-[9px]"></i></button>
+                                ${isAdmin ? `<button onclick="abrirModalFuncao('ALUNO_DIA', '${dtIso}', '${eq}')" class="text-slate-400 hover:text-pmmt-gold admin-only shrink-0"><i class="fa-solid fa-pen text-[9px]"></i></button>` : ''}
                             </div>
                         </div>
                         <button onclick="abrirPreviaEscala('${dtIso}', '${eq}', '${sgtFinal}', '${alDia.id||''}')" class="absolute top-1.5 right-1.5 text-slate-400 hover:text-sys-dark"><i class="fa-solid fa-magnifying-glass text-[10px]"></i></button>
@@ -266,7 +282,10 @@
             const seqSgt = ['1º SGT PM ORTIZ', '1º SGT PM MAURIZON', '2º SGT PM SOUZA'];
             
             let diffDias = Math.round((new Date(Date.UTC(hoje.getFullYear(), hoje.getMonth(), hoje.getDate(), 12, 0, 0)) - dataBase) / 86400000);
-            let eq = seqEq[(diffDias % 4 + 4) % 4]; 
+            
+            let equipeCalculada = seqEq[(diffDias % 4 + 4) % 4];
+            let overrideEquipe = funcoesComandoGlobais.find(f => f.tipo === 'EQUIPE' && f.data_referencia === dataIso);
+            let eq = (overrideEquipe && overrideEquipe.valor_texto) ? overrideEquipe.valor_texto : equipeCalculada;
             
             let sgtCalculado = seqSgt[(diffDias % seqSgt.length + seqSgt.length) % seqSgt.length];
             let overrideSgt = funcoesComandoGlobais.find(f => f.tipo === 'CMT' && f.data_referencia === dataIso);
@@ -302,11 +321,23 @@
                 sel.add(new Option('1º SGT PM MAURIZON', '1º SGT PM MAURIZON'));
                 sel.add(new Option('2º SGT PM SOUZA', '2º SGT PM SOUZA'));
                 sel.add(new Option('A DEFINIR', 'A DEFINIR'));
+            } else if(tipo === 'EQUIPE') {
+                document.getElementById('modalFuncaoTitle').innerText = 'Definir Equipe de Serviço';
+                document.getElementById('modalFuncaoDataDisplay').value = dataRef.split('-').reverse().join('/');
+                label.innerText = 'Selecione a Equipe';
+                sel.add(new Option('ALFA', 'ALFA'));
+                sel.add(new Option('BRAVO', 'BRAVO'));
+                sel.add(new Option('CHARLIE', 'CHARLIE'));
+                sel.add(new Option('DELTA', 'DELTA'));
             }
 
             const ext = funcoesComandoGlobais.find(f => f.tipo === tipo && f.data_referencia === dataRef);
-            if(ext) { document.getElementById('btnRestaurarPadrao').classList.remove('hidden'); sel.value = (tipo === 'CMT') ? ext.valor_texto : ext.aluno_id; } 
-            else { document.getElementById('btnRestaurarPadrao').classList.add('hidden'); }
+            if(ext) { 
+                document.getElementById('btnRestaurarPadrao').classList.remove('hidden'); 
+                sel.value = (tipo === 'CMT' || tipo === 'EQUIPE') ? ext.valor_texto : ext.aluno_id; 
+            } else { 
+                document.getElementById('btnRestaurarPadrao').classList.add('hidden'); 
+            }
         }
 
         function fecharModalFuncao() { document.getElementById('modalFuncao').classList.add('hidden'); }
@@ -321,11 +352,21 @@
 
         async function salvarFuncaoComando(e) {
             e.preventDefault(); mostrarLoading(true);
-            const t = document.getElementById('modalFuncaoTipo').value; const d = document.getElementById('modalFuncaoData').value; const a = document.getElementById('modalFuncaoAluno').value;
+            const t = document.getElementById('modalFuncaoTipo').value; 
+            const d = document.getElementById('modalFuncaoData').value; 
+            const a = document.getElementById('modalFuncaoAluno').value;
             const ext = funcoesComandoGlobais.find(f => f.tipo === t && f.data_referencia === d);
             
+            // SE ALTERAR A EQUIPE, LIMPA OS ALUNOS ESCALADOS MANUALMENTE (PARA NÃO MISTURAR ALUNOS NO PDF)
+            if (t === 'EQUIPE') {
+                await supabaseClient.from('funcoes_comando').delete().eq('data_referencia', d).in('tipo', [
+                    'ALUNO_DIA', 'P1_23', 'P1_03', 'P1_01', 'P2_23', 'P2_03', 'P2_01', 
+                    'P1_23_EXTRA', 'P1_03_EXTRA', 'P1_01_EXTRA', 'P2_23_EXTRA', 'P2_03_EXTRA', 'P2_01_EXTRA'
+                ]);
+            }
+
             let payload = { tipo: t, data_referencia: d };
-            if (t === 'CMT') { payload.valor_texto = a; payload.aluno_id = null; } else { payload.aluno_id = a; payload.valor_texto = null; }
+            if (t === 'CMT' || t === 'EQUIPE') { payload.valor_texto = a; payload.aluno_id = null; } else { payload.aluno_id = a; payload.valor_texto = null; }
 
             if(ext) { await supabaseClient.from('funcoes_comando').update(payload).eq('id', ext.id); } 
             else { await supabaseClient.from('funcoes_comando').insert([payload]); }
@@ -345,9 +386,10 @@
             document.getElementById('prevDataIso').value = dataIso;
             document.getElementById('prevEquipeNome').value = equipe;
 
+            // PREENCHE OS SELECTS SÓ COM A EQUIPE DO DIA (EVITA MISTURAR DADOS NA TELA)
             let optionsHtml = '<option value="">-- VAZIO (Ninguém escalado) --</option>';
-            [...listaAlunosFull].sort((a,b) => a.numero - b.numero).forEach(a => {
-                optionsHtml += `<option value="${a.id}">5${a.numero.toString().padStart(2, '0')} - ${(a.qra?a.qra:a.nome.split(' ')[0]).replace(/AL SD PM /gi, '').trim().toUpperCase()} (${a.equipe})</option>`;
+            [...listaAlunosFull].filter(a => a.equipe === equipe).sort((a,b) => a.numero - b.numero).forEach(a => {
+                optionsHtml += `<option value="${a.id}">5${a.numero.toString().padStart(2, '0')} - ${(a.qra?a.qra:a.nome.split(' ')[0]).replace(/AL SD PM /gi, '').trim().toUpperCase()}</option>`;
             });
 
             const selects = ['prevAlunoDia', 'prevP1_23', 'prevP1_03', 'prevP1_01', 'prevP2_23', 'prevP2_03', 'prevP2_01', 'prevP1_23_extra', 'prevP1_03_extra', 'prevP1_01_extra', 'prevP2_23_extra', 'prevP2_03_extra', 'prevP2_01_extra'];
@@ -385,7 +427,6 @@
             const dataIso = document.getElementById('prevDataIso').value;
             const equipe = document.getElementById('prevEquipeNome').value;
 
-            // Salva as escolhas na nuvem antes de imprimir
             const typesToSave = [
                 {tipo: 'CMT', valTxt: document.getElementById('prevGraduado').value, alId: null},
                 {tipo: 'ALUNO_DIA', valTxt: null, alId: document.getElementById('prevAlunoDia').value},
@@ -401,7 +442,7 @@
             if (payloads.length > 0) await supabaseClient.from('funcoes_comando').insert(payloads);
             await carregarFuncoesComando(); renderizarEscala();
 
-            // Montagem do Layout do PDF Oficial
+            // Montagem do PDF
             const dataAlvo = new Date(dataIso + 'T12:00:00Z');
             const optionsDate = { day: 'numeric', month: 'long', year: 'numeric', weekday: 'long' };
             document.getElementById('printDataCompleta').innerText = dataAlvo.toLocaleDateString('pt-BR', optionsDate);
