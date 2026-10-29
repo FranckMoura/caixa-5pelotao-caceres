@@ -741,7 +741,7 @@
             if(chkTodos) chkTodos.checked = (qtd > 0 && qtd === totalChks);
         }
 
-        async function editarDataLote() {
+async function editarDataLote() {
             const ids = Array.from(document.querySelectorAll('.chk-extrato:checked')).map(chk => chk.value);
             if(ids.length === 0) return;
             const novaData = prompt("ALTERAÇÃO EM LOTE\nInforme a nova data para os lançamentos (Formato: DD/MM/AAAA):");
@@ -753,7 +753,20 @@
 
             mostrarLoading(true);
             const { error } = await supabaseClient.from('transacoes_caixa').update({ data: dataIso }).in('id', ids);
-            if(!error) { alert(`${ids.length} lançamentos atualizados para ${novaData}!`); await carregarTransacoes(); }
+            if(!error) { 
+                alert(`${ids.length} lançamentos atualizados para ${novaData}!`); 
+                
+                // --- CORREÇÃO AQUI ---
+                // Força o sistema a baixar as transações de novo para a memória
+                await carregarTransacoes(); 
+                
+                // Desmarca todas as caixinhas após salvar
+                const chkTodos = document.getElementById('chkTodos');
+                if (chkTodos) chkTodos.checked = false;
+                
+                // Recolhe a barra azul de ações
+                verificarSelecaoExtrato();
+            }
             else { alert("Erro ao atualizar lote: " + error.message); }
             mostrarLoading(false);
         }
