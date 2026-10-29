@@ -43,7 +43,7 @@
     </style>
 </head>
 <body class="p-4 md:p-6 antialiased relative">
-    
+
     <div id="loaderAlert" class="hidden bg-amber-100 border border-amber-300 text-amber-800 px-4 py-3 rounded-lg mb-4 flex items-center gap-3 shadow-sm transition-opacity">
         <i class="fa-solid fa-circle-notch fa-spin text-lg"></i>
         <span class="text-sm font-semibold">Sincronizando dados financeiros...</span>
@@ -111,7 +111,7 @@
                                 <span class="text-[10px] font-bold text-slate-700 uppercase"><i class="fa-solid fa-arrow-up text-rose-500 mr-1"></i> Despesa</span>
                             </label>
                         </div>
-                        
+
                         <div class="grid grid-cols-1 gap-3">
                             <div>
                                 <label class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1 block">Aluno Origem / Destino</label>
@@ -134,7 +134,7 @@
                             <p class="text-[9px] font-black text-sys-dark uppercase mb-2 pb-1 border-b border-slate-200 flex justify-between">
                                 <span><i class="fa-solid fa-list-check text-pmmt-gold mr-1"></i> Categorias e Valores</span>
                             </p>
-                            
+
                             <div id="listaDivisoes" class="space-y-2">
                                 <!-- JS Preenche Aqui -->
                             </div>
@@ -155,7 +155,7 @@
                     <p class="text-[9px] font-bold uppercase text-center tracking-wider">Acesso Restrito à Tesouraria</p>
                 </div>
             </div>
-            
+
             <div class="bg-white shadow-sm border border-slate-200 xl:col-span-2 flex flex-col rounded-xl overflow-hidden min-h-[300px]">
                 <div class="bg-slate-50 border-b border-slate-100 px-4 py-3 shrink-0">
                     <h3 class="text-xs font-bold text-sys-dark uppercase tracking-wide"><i class="fa-solid fa-chart-pie text-pmmt-gold mr-2"></i>Distribuição de Receitas e Despesas</h3>
@@ -179,7 +179,7 @@
                 </div>
             </div>
             <div id="conteudoExtrato" class="painel-conteudo bg-white" style="max-height: 2000px; padding: 0;">
-                
+
                 <!-- BARRA DE FILTROS E AÇÕES EM LOTE -->
                 <div class="bg-slate-100 border-b border-slate-200 p-3 flex flex-col md:flex-row gap-3 justify-between items-center">
                     <div class="flex flex-wrap gap-2 w-full md:w-auto">
@@ -190,7 +190,7 @@
                         </select>
                         <input type="month" id="filtroMesEx" onchange="renderizarExtrato()" class="border border-slate-300 rounded p-1.5 text-[11px] font-semibold outline-none focus:border-pmmt-blue shadow-sm cursor-pointer w-full md:w-auto">
                     </div>
-                    
+
                     <div id="barraAcoesLote" class="hidden flex items-center gap-2 bg-pmmt-blue/10 border border-pmmt-blue/30 px-3 py-1.5 rounded w-full md:w-auto justify-center">
                         <span class="text-[10px] font-black uppercase text-pmmt-blue mr-2"><span id="qtdLote">0</span> Selec.</span>
                         <button onclick="editarDataLote()" class="bg-pmmt-blue hover:bg-sys-dark text-white px-2 py-1 rounded text-[9px] font-bold shadow transition"><i class="fa-solid fa-calendar-day mr-1"></i> Mudar Data</button>
@@ -220,10 +220,10 @@
                     <h3 class="text-xs font-bold text-sys-dark uppercase tracking-wide flex items-center">
                         <i class="fa-solid fa-users text-pmmt-gold mr-2"></i> Monitoramento de Cotas 
                     </h3>
-                    
+
                     <div class="flex items-center gap-2 ml-2 border-l border-slate-300 pl-3">
                         <input type="month" id="filtroMesCotas" onchange="mudarMesCotas(this.value)" class="text-[10px] font-bold border border-slate-300 rounded px-2 py-1 text-slate-700 outline-none focus:border-pmmt-blue cursor-pointer" onclick="event.stopPropagation();">
-                        
+
                         <button onclick="event.stopPropagation(); alterarMetas()" class="admin-only text-[9px] bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-2 py-1.5 rounded transition border border-slate-300 shadow-sm flex items-center gap-1">
                             <i class="fa-solid fa-sliders"></i> Ajustar Metas
                         </button>
@@ -231,7 +231,7 @@
                 </div>
                 <i id="iconeCotas" class="fa-solid fa-chevron-up text-slate-400 transition-transform duration-300"></i>
             </div>
-            
+
             <div id="conteudoCotas" class="painel-conteudo bg-slate-50" style="max-height: 4000px; padding: 1rem;">
                 <div class="flex gap-4 mb-4 pb-3 border-b border-slate-200">
                     <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500">
@@ -241,7 +241,7 @@
                         Meta Formatura: <span id="txtMetaFormatura" class="text-pmmt-gold font-black">R$ 400,00</span>
                     </div>
                 </div>
-                
+
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3" id="gridCotas"></div>
             </div>
         </div>
@@ -302,9 +302,9 @@
             <h2 class="font-bold text-xs uppercase mb-1">ESCOLA SUPERIOR DE FORMAÇÃO E APERFEIÇOAMENTO DE PRAÇAS</h2>
             <h2 class="font-bold text-xs uppercase">35° CFSD - 5º PELOTÃO - POLO CÁCERES</h2>
         </div>
-        
+
         <h2 class="text-lg font-black text-center mb-4 uppercase underline">Extrato Financeiro Detalhado (Prestação de Contas)</h2>
-        
+
         <div class="flex justify-between mb-4 font-bold text-[11px] border border-black p-3 rounded bg-gray-100">
             <p>TOTAL ARRECADADO: <span id="printArrecadado" class="text-emerald-700">R$ 0,00</span></p>
             <p>TOTAL DE DESPESAS: <span id="printDespesas" class="text-rose-700">R$ 0,00</span></p>
@@ -324,7 +324,7 @@
             <tbody id="tbodyPrintExtrato">
             </tbody>
         </table>
-        
+
         <div class="mt-16 pt-8 flex justify-between px-10 text-center text-[10px] font-bold">
             <div>
                 <p>___________________________________</p>
@@ -349,11 +349,11 @@
         let colunaOrdenacao = 'data';
         let direcaoOrdenacao = 'desc';
         let txEditandoId = null;
-        
+
         let metaCaixa = parseFloat(localStorage.getItem('metaCotaCaixa')) || 100.00;
         let metaFormatura = parseFloat(localStorage.getItem('metaCotaFormatura')) || 400.00;
         let mesSelecionadoCotas = new Date().toISOString().slice(0, 7); // YYYY-MM
-        
+
         let catReceitas = ["Cota Inicial / Mensalidade", "Fundo Formatura", "Doação", "Arrecadação Rifa"];
         let catDespesas = ["Solenidade / Formatura", "Alimentação / Rancho", "Fardamento extra", "Manutenção Pelotão", "Material Limpeza/Água", "Papelaria/Impressão"];
 
@@ -372,14 +372,14 @@
             try {
                 supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
                 const { data: { session } } = await supabaseClient.auth.getSession();
-                
+
                 if (session) {
                     const { data: { user } } = await supabaseClient.auth.getUser();
                     if(user) isAdmin = user.email.includes('willys') || user.email.includes('comando') || user.email.includes('tesouraria');
-                    
+
                     document.querySelectorAll('.admin-only').forEach(el => isAdmin ? el.classList.remove('hidden') : el.classList.add('hidden'));
                     document.querySelectorAll('.viewer-only').forEach(el => isAdmin ? el.classList.add('hidden') : el.classList.remove('hidden'));
-                    
+
                     montarCabecalhoExtrato();
                     await sincronizarDados();
                 } else {
@@ -405,12 +405,12 @@
         async function carregarAlunos() {
             const selects = [document.getElementById('inputAluno'), document.getElementById('filtroAlunoEx'), document.getElementById('editAluno')];
             const { data } = await supabaseClient.from('alunos_pelotao').select('*').order('numero', { ascending: true });
-            
+
             listaAlunosFull = data || [];
             listaAlunosFull.forEach(aluno => { 
                 let nomeExibicao = (aluno.qra ? aluno.qra : aluno.nome).replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase();
                 const numeroFormatado = "5" + aluno.numero.toString().padStart(2, '0');
-                
+
                 if(selects[0]) selects[0].add(new Option(`${numeroFormatado} - ${nomeExibicao}`, aluno.id)); 
                 if(selects[1]) selects[1].add(new Option(`${numeroFormatado} - ${nomeExibicao}`, aluno.id));
                 if(selects[2]) selects[2].add(new Option(`${numeroFormatado} - ${nomeExibicao}`, aluno.id));
@@ -554,9 +554,9 @@
         function atualizarPainel() {
             let tr=0, td=0, catG={}, pagMesCaixa={}, pagMesFormatura={}; 
             let s_form_in = 0, s_form_out = 0, s_caixa_in = 0, s_caixa_out = 0; 
-            
+
             listaAlunosFull.forEach(a => { pagMesCaixa[a.id] = 0; pagMesFormatura[a.id] = 0; });
-            
+
             transacoesGlobais.forEach(t => {
                 const v = parseFloat(t.valor), isReceita = t.tipo === 'receita', catLower = t.categoria.toLowerCase();
                 const isFormatura = catLower.includes("formatura") || catLower.includes("rifa") || catLower.includes("solenidade");
@@ -572,7 +572,7 @@
                     else if (catLower.includes("cota") || catLower.includes("mensal") || catLower.includes("caixa") || catLower.includes("fundo")) pagMesCaixa[t.aluno_id] += v;
                 }
             });
-            
+
             document.getElementById('valorReceitas').innerText = tr.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); 
             document.getElementById('valorDespesas').innerText = td.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); 
             document.getElementById('valorSaldo').innerText = (tr-td).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
@@ -582,7 +582,7 @@
             document.getElementById('printArrecadado').innerText = tr.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); 
             document.getElementById('printDespesas').innerText = td.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); 
             document.getElementById('printSaldo').innerText = (tr-td).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-            
+
             if(document.getElementById('txtMetaCaixa')) document.getElementById('txtMetaCaixa').innerText = metaCaixa.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
             if(document.getElementById('txtMetaFormatura')) document.getElementById('txtMetaFormatura').innerText = metaFormatura.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 
@@ -620,7 +620,7 @@
             const tbodyWeb = document.getElementById('tabelaExtrato'), tbodyPrint = document.getElementById('tbodyPrintExtrato');
             if(!tbodyWeb || !tbodyPrint) return;
             tbodyWeb.innerHTML = ''; tbodyPrint.innerHTML = '';
-            
+
             // Reseta ícones
             ['data', 'operacao', 'categoria', 'aluno', 'valor'].forEach(c => { const el = document.getElementById(`sort-${c}`); if(el) el.className = 'fa-solid fa-sort ml-1 opacity-50 no-print'; });
             const tSort = document.getElementById(`sort-${colunaOrdenacao}`);
@@ -667,7 +667,7 @@
                 const bgBadge = isReceita ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200';
                 const valFormatado = parseFloat(t.valor).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
                 const dataFormatada = new Date(t.data + 'T12:00:00Z').toLocaleDateString('pt-BR');
-                
+
                 let alunoNome = "<span class='text-slate-400'>- Lançamento Geral Caixa -</span>";
                 let alunoNomePrint = "- Lançamento Geral Caixa -";
                 if(t.aluno_id) {
@@ -735,39 +735,44 @@
                 document.getElementById('qtdLote').innerText = qtd;
                 barra.classList.remove('hidden');
             } else { barra.classList.add('hidden'); }
-            
+
             const chkTodos = document.getElementById('chkTodos');
             const totalChks = document.querySelectorAll('.chk-extrato').length;
             if(chkTodos) chkTodos.checked = (qtd > 0 && qtd === totalChks);
         }
 
-async function editarDataLote() {
+        async function editarDataLote() {
             const ids = Array.from(document.querySelectorAll('.chk-extrato:checked')).map(chk => chk.value);
             if(ids.length === 0) return;
             const novaData = prompt("ALTERAÇÃO EM LOTE\nInforme a nova data para os lançamentos (Formato: DD/MM/AAAA):");
             if(!novaData) return;
-            
+
             const partes = novaData.split('/');
             if(partes.length !== 3) { alert('Formato inválido. Use DD/MM/AAAA'); return; }
             const dataIso = `${partes[2]}-${partes[1]}-${partes[0]}`; // YYYY-MM-DD
 
             mostrarLoading(true);
             const { error } = await supabaseClient.from('transacoes_caixa').update({ data: dataIso }).in('id', ids);
+            
             if(!error) { 
                 alert(`${ids.length} lançamentos atualizados para ${novaData}!`); 
-                
-                // --- CORREÇÃO AQUI ---
-                // Força o sistema a baixar as transações de novo para a memória
+
+                // 1. Recarrega as transações do banco
                 await carregarTransacoes(); 
-                
-                // Desmarca todas as caixinhas após salvar
+
+                // 2. FORÇA a re-renderização do painel financeiro (saldos, cotas e extrato)
+                atualizarPainel(); 
+
+                // 3. Limpa a seleção e a barra de ações
                 const chkTodos = document.getElementById('chkTodos');
                 if (chkTodos) chkTodos.checked = false;
-                
-                // Recolhe a barra azul de ações
+                document.querySelectorAll('.chk-extrato').forEach(chk => chk.checked = false);
                 verificarSelecaoExtrato();
             }
-            else { alert("Erro ao atualizar lote: " + error.message); }
+            else { 
+                alert("Erro ao atualizar lote: " + error.message); 
+            }
+            
             mostrarLoading(false);
         }
 
@@ -788,21 +793,21 @@ async function editarDataLote() {
             const t = transacoesGlobais.find(x => x.id == id);
             if(!t) return;
             txEditandoId = id;
-            
+
             document.getElementById('editTipo').value = t.tipo;
             mudarTipoUiEdicao(); // Preenche categorias
-            
+
             // Verifica se a categoria do lançamento existe na lista, se não, adiciona
             const selCat = document.getElementById('editCategoria');
             let catExiste = Array.from(selCat.options).some(opt => opt.value === t.categoria);
             if(!catExiste) selCat.add(new Option(t.categoria, t.categoria));
-            
+
             selCat.value = t.categoria;
             document.getElementById('editAluno').value = t.aluno_id || "GERAL";
             document.getElementById('editDescricao').value = t.descricao;
             document.getElementById('editData').value = t.data;
             document.getElementById('editValor').value = t.valor;
-            
+
             document.getElementById('modalEdicaoTx').classList.remove('hidden');
         }
 
@@ -842,7 +847,7 @@ async function editarDataLote() {
         function renderizarPainelCotas(pagCaixa, pagFormatura) {
             const grid = document.getElementById('gridCotas'); 
             if(!grid) return; grid.innerHTML = '';
-            
+
             listaAlunosFull.forEach(aluno => {
                 const c = pagCaixa[aluno.id] || 0, f = pagFormatura[aluno.id] || 0; 
                 let s_text, bg_card, text_status, c_ok = c >= metaCaixa, f_ok = f >= metaFormatura;
@@ -878,14 +883,14 @@ async function editarDataLote() {
                     </div>`;
             });
         }
-        
+
         function renderizarGrafico(dados) {
             const ctx = document.getElementById('graficoTransacoes')?.getContext('2d'); 
             if(!ctx) return; if(grafico) grafico.destroy();
             const lbl = Object.keys(dados), tonsV = ['#10b981','#059669','#34d399','#047857','#6ee7b7'], tonsR = ['#f43f5e','#e11d48','#fb7185','#be123c','#fca5a5']; 
             let iV = 0, iR = 0;
             const bg = lbl.map(c => { const tx = transacoesGlobais.find(t => t.categoria === c); return tx && tx.tipo === 'receita' ? tonsV[iV++ % tonsV.length] : tonsR[iR++ % tonsR.length]; });
-            
+
             grafico = new Chart(ctx, {
                 type: 'doughnut', data: { labels: lbl, datasets: [{data: Object.values(dados), backgroundColor: bg, borderWidth: 1, borderColor: '#fff'}] }, 
                 options: { responsive: true, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { font: { family: '"Open Sans"', size: 10 }, usePointStyle: true, boxWidth: 6 } } } }
