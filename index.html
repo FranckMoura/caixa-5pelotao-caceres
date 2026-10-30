@@ -130,7 +130,7 @@
                         <button onclick="mudarModulo('efetivo')" id="btn-efetivo" class="menu-item"><i class="fa-solid fa-users-gear"></i> Efetivo e Escala</button>
                         <button onclick="mudarModulo('cautela')" id="btn-cautela" class="menu-item"><i class="fa-solid fa-gun"></i> Cautela Fixa</button>
                         <button onclick="mudarModulo('financeiro')" id="btn-financeiro" class="menu-item"><i class="fa-solid fa-vault"></i> Gestão Financeira</button>
-                        <button onclick="mudarModulo('efetivodados')" id="btn-efetivodados" class="menu-item"><i class="fa-solid fa-id-card"></i> TAF e Dados</button>
+                        <button onclick="mudarModulo('efetivodados')" id="btn-efetivodados" class="menu-item"><i class="fa-solid fa-brain"></i> Inteligência</button>
                         <button onclick="mudarModulo('academico')" id="btn-academico" class="menu-item"><i class="fa-solid fa-graduation-cap"></i> Módulo Acadêmico</button>
                         <button onclick="mudarModulo('aluno')" id="btn-aluno" class="menu-item"><i class="fa-solid fa-folder-open"></i> Área do Aluno</button>
                         <button onclick="mudarModulo('redator')" id="btn-redator" class="menu-item"><i class="fa-solid fa-robot text-pmmt-gold"></i> Copiloto de B.O.</button>
@@ -154,7 +154,6 @@
                         <span class="text-sm font-semibold">Sincronizando dados com o servidor...</span>
                     </div>
 
-                    <!-- MÓDULO HOME -->
                     <section id="modulo-home" class="space-y-6">
                         <div class="bg-sys-dark rounded-xl shadow-md border-l-4 border-pmmt-gold overflow-hidden mb-6 p-4 md:p-5 flex items-center justify-between text-white">
                             <div class="flex items-center gap-3 md:gap-4">
@@ -206,7 +205,6 @@
                         </div>
                     </section>
 
-                    <!-- DEMAIS MÓDULOS (IFRAMES E SEÇÕES) -->
                     <section id="modulo-institucional" class="hidden space-y-6">
                         <div class="bg-white shadow-sm border border-slate-300 overflow-hidden rounded-xl">
                             <div class="bg-sys-dark text-white px-5 py-4 flex justify-between items-center"><div><h2 class="text-sm font-black tracking-widest uppercase"><i class="fa-solid fa-sitemap text-pmmt-gold mr-2"></i> Cadeia de Comando</h2><p class="text-[9px] text-slate-300 uppercase mt-0.5">Hierarquia do Estado e da Polícia Militar</p></div></div>
@@ -246,8 +244,9 @@
                         <iframe id="iframeFinanceiro" src="financeiro.html" class="w-full h-full border border-slate-200 bg-transparent shadow-sm rounded-xl"></iframe>
                     </section>
 
+                    <!-- MODIFICADO: AQUI O IFRAME E MENU APONTAM PARA INTELIGENCIA.HTML -->
                     <section id="modulo-efetivodados" class="hidden flex-1 flex flex-col h-full min-h-[85vh]">
-                        <iframe id="iframeEfetivoDados" src="efetivo_dados.html" class="w-full h-full border border-slate-200 bg-transparent shadow-sm rounded-xl"></iframe>
+                        <iframe id="iframeEfetivoDados" src="inteligencia.html" class="w-full h-full border border-slate-200 bg-transparent shadow-sm rounded-xl"></iframe>
                     </section>
 
                     <section id="modulo-academico" class="hidden flex-1 flex flex-col h-full min-h-[85vh]">
@@ -399,7 +398,7 @@
 
         function mudarModulo(moduloDestino) {
             const modulos = ['home', 'institucional', 'efetivo', 'cautela', 'financeiro', 'efetivodados', 'academico', 'aluno', 'debate', 'toques', 'redator', 'gerador'];
-            const nomes = { 'home': 'Painel Diário', 'institucional': 'Cadeia de Comando', 'efetivo': 'Efetivo e Escala', 'cautela': 'Cautela Fixa (Armas)', 'financeiro': 'Gestão Financeira', 'efetivodados': 'TAF e Dados', 'academico': 'Módulo Acadêmico', 'aluno': 'Área do Aluno', 'debate': 'Área Livre', 'toques': 'Toques de Corneta', 'redator': 'Copiloto Jurídico de B.O.', 'gerador': 'Gerador de Documentos' };
+            const nomes = { 'home': 'Painel Diário', 'institucional': 'Cadeia de Comando', 'efetivo': 'Efetivo e Escala', 'cautela': 'Cautela Fixa (Armas)', 'financeiro': 'Gestão Financeira', 'efetivodados': 'Módulo de Inteligência', 'academico': 'Módulo Acadêmico', 'aluno': 'Área do Aluno', 'debate': 'Área Livre', 'toques': 'Toques de Corneta', 'redator': 'Copiloto Jurídico de B.O.', 'gerador': 'Gerador de Documentos' };
             modulos.forEach(m => { const el = document.getElementById('modulo-' + m); if(el) el.classList.add('hidden'); const btn = document.getElementById('btn-' + m); if(btn) btn.className = "menu-item rounded-lg"; });
             const modAtivo = document.getElementById('modulo-' + moduloDestino); if(modAtivo) modAtivo.classList.remove('hidden');
             const btnAtivo = document.getElementById('btn-' + moduloDestino); if(btnAtivo) btnAtivo.className = "menu-item ativo rounded-lg";
