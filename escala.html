@@ -49,7 +49,6 @@
             <div id="gridEscala" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-7 gap-4"></div>
         </div>
 
-        <!-- DIVISÃO POR EQUIPES (AGORA COM 5 COLUNAS) -->
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
             <div class="bg-white shadow-sm border border-slate-200 rounded-xl overflow-hidden"><div class="bg-slate-50 py-2 px-4 border-b border-slate-200 flex justify-between items-center"><h3 class="text-xs font-black text-sys-dark tracking-wide">ALFA</h3><span class="text-[8px] bg-slate-200 px-1.5 py-0.5 rounded font-bold">24/96</span></div><ul id="tabelaAlfa" class="p-2 text-slate-700 divide-y divide-slate-100 h-48 overflow-y-auto text-xs custom-scrollbar"></ul></div>
             <div class="bg-white shadow-sm border border-slate-200 rounded-xl overflow-hidden"><div class="bg-slate-50 py-2 px-4 border-b border-slate-200 flex justify-between items-center"><h3 class="text-xs font-black text-sys-dark tracking-wide">BRAVO</h3><span class="text-[8px] bg-slate-200 px-1.5 py-0.5 rounded font-bold">24/96</span></div><ul id="tabelaBravo" class="p-2 text-slate-700 divide-y divide-slate-100 h-48 overflow-y-auto text-xs custom-scrollbar"></ul></div>
@@ -133,7 +132,12 @@
             <div class="bg-gray-200 text-center font-bold uppercase py-1 border border-black border-b-0 text-[10px]">SERVIÇO 24 HORAS - TURNO DAS 06H00MIN AS 06H00MIN</div>
             <table class="w-full text-center border-collapse print-table text-[9px]">
                 <tbody>
-                    <tr class="font-bold"><td class="p-1 w-1/3 text-left">COMANDANTE DE PELOTÃO</td><td class="p-1 w-1/4" id="printCmtGrad">1° SGT PM</td><td class="p-1 w-1/4" id="printCmtNome">ORTIZ</td><td class="p-1">--</td></tr>
+                    <tr class="font-bold">
+                        <td class="p-1 w-1/3 text-left">COMANDANTE DE PELOTÃO</td>
+                        <td class="p-1 w-1/4" id="printCmtGrad">1° SGT PM</td>
+                        <td class="p-1 w-1/4" id="printCmtNome">ORTIZ</td>
+                        <td class="p-1 w-1/4" id="printCmtRg">883.202</td>
+                    </tr>
                     <tr><td colspan="4" class="text-left font-bold p-1">OBS: <span id="printNumEscalaTxt">ESCALA Nº 001</span> - UNIFORME: 4º F3</td></tr>
                 </tbody>
             </table>
@@ -223,13 +227,11 @@
         }
 
         function calcularEscalaDoDia(dt) {
-            // Lógica de cálculo centralizada
             let dtMid = new Date(Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate(), 12, 0, 0));
             const dataBaseOld = new Date('2026-08-11T12:00:00Z');
-            const dataBaseNew = new Date('2026-10-31T12:00:00Z'); // Início da 5ª Equipe (Alfa)
+            const dataBaseNew = new Date('2026-10-31T12:00:00Z');
             const seqSgt = ['1º SGT PM ORTIZ', '1º SGT PM MAURIZON', '2º SGT PM SOUZA'];
             
-            // O CMT continua girando sem quebrar a ordem, independente da equipe
             let diffDiasOld = Math.round((dtMid - dataBaseOld) / 86400000);
             let sgtCalculado = seqSgt[(diffDiasOld % seqSgt.length + seqSgt.length) % seqSgt.length];
             
@@ -237,13 +239,11 @@
             let idxBaseAluno = 0;
 
             if (dtMid >= dataBaseNew) {
-                // A partir de 31/10: Rotação de 5 Equipes
                 const seqEq5 = ['ALFA', 'BRAVO', 'CHARLIE', 'DELTA', 'ECO'];
                 let diffDiasNew = Math.round((dtMid - dataBaseNew) / 86400000);
                 eqCalculada = seqEq5[(diffDiasNew % 5 + 5) % 5];
                 idxBaseAluno = Math.floor(diffDiasNew / 5);
             } else {
-                // Antes de 31/10: Mantém o histórico (4 equipes)
                 const seqEq4 = ['ALFA', 'BRAVO', 'CHARLIE', 'DELTA'];
                 eqCalculada = seqEq4[(diffDiasOld % 4 + 4) % 4];
                 idxBaseAluno = Math.floor(diffDiasOld / 4);
@@ -262,7 +262,6 @@
                 
                 let escala = calcularEscalaDoDia(dt);
 
-                // Sobrescrita Manual (se houver)
                 let overrideEquipe = funcoesComandoGlobais.find(f => f.tipo === 'EQUIPE' && f.data_referencia === dtIso);
                 let eq = (overrideEquipe && overrideEquipe.valor_texto) ? overrideEquipe.valor_texto : escala.eqCalculada;
 
@@ -357,7 +356,7 @@
                 sel.add(new Option('BRAVO', 'BRAVO'));
                 sel.add(new Option('CHARLIE', 'CHARLIE'));
                 sel.add(new Option('DELTA', 'DELTA'));
-                sel.add(new Option('ECO', 'ECO')); // ADICIONADA EQUIPE ECO AQUI
+                sel.add(new Option('ECO', 'ECO'));
             }
 
             const ext = funcoesComandoGlobais.find(f => f.tipo === tipo && f.data_referencia === dataRef);
@@ -479,8 +478,16 @@
             let gradPatente = sgtVal.includes('ORTIZ') || sgtVal.includes('MAURIZON') ? '1° SGT PM' : (sgtVal.includes('SOUZA') ? '2º SGT PM' : '');
             let gradNome = sgtVal.replace('1º SGT PM ', '').replace('2º SGT PM ', '');
             
+            // Definição do RG de acordo com o Sargento escalado
+            let gradRg = '--';
+            if (gradNome === 'ORTIZ') gradRg = '883.202';
+            else if (gradNome === 'MAURIZON') gradRg = '883.501';
+            else if (gradNome === 'SOUZA') gradRg = '884.177';
+            
             document.getElementById('printCmtGrad').innerText = gradPatente;
             document.getElementById('printCmtNome').innerText = gradNome;
+            document.getElementById('printCmtRg').innerText = gradRg;
+            
             document.getElementById('printEquipeNome').innerText = equipe;
             document.getElementById('printNumEscalaTxt').innerText = `ESCALA Nº ${document.getElementById('prevNumEscala').value || '001'}`;
 
