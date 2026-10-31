@@ -133,10 +133,11 @@
                         </div>
                     </div>
                 </div>
+                <!-- NOVO: EXIBIÇÃO DO USUÁRIO LOGADO -->
                 <div class="flex flex-col items-end justify-center min-w-max border-l border-white/20 pl-4 h-full pr-2 hidden sm:flex">
                     <p class="text-sm font-bold uppercase text-pmmt-gold tracking-wider">5º PELOTÃO</p>
                     <p class="text-[10px] text-slate-300 uppercase tracking-widest mt-0.5">Força Tática - Cáceres</p>
-                    <p id="statusConexao" class="text-[9px] text-emerald-400 font-bold uppercase mt-1"></p>
+                    <p id="usuarioLogadoInfo" class="text-[9px] text-emerald-400 font-bold uppercase mt-1 tracking-wider"></p>
                 </div>
             </header>
 
@@ -217,7 +218,7 @@
                                 <div class="bg-sys-dark px-5 py-4 border-b-4 border-pmmt-gold flex justify-between items-center">
                                     <h3 class="text-xs font-bold text-white uppercase tracking-wide"><i class="fa-solid fa-graduation-cap text-pmmt-gold mr-2"></i>Progresso do 35º CFSD</h3>
                                 </div>
-                                <div class="p-5 flex flex-col justify-center bg-slate-50 flex-1">
+                                <div class="p-5 flex flex-col justify-center gap-3 bg-slate-50 flex-1">
                                     
                                     <div class="flex justify-between items-end mb-2">
                                         <div class="text-left">
@@ -230,53 +231,63 @@
                                         </div>
                                     </div>
                                     
-                                    <div class="w-full bg-slate-200 rounded-full h-5 shadow-inner overflow-hidden relative border border-slate-300 mb-4">
+                                    <div class="w-full bg-slate-200 rounded-full h-5 shadow-inner overflow-hidden relative border border-slate-300 mb-2">
                                         <div id="barraProgressoCurso" class="bg-gradient-to-r from-sys-dark to-pmmt-blue h-5 rounded-full transition-all duration-1000 ease-out w-0"></div>
                                         <span id="txtPorcentagemCurso" class="absolute inset-0 flex items-center justify-center text-[9px] font-black text-white mix-blend-difference drop-shadow-md tracking-widest">0% CONCLUÍDO</span>
                                     </div>
                                     
-                                    <!-- MATRIZ 3X3 SUPER COMPACTA E SIMÉTRICA -->
-                                    <div class="grid grid-cols-3 gap-2">
+                                    <!-- MATRIZ NOVA (DIAS 3 col, MATÉRIAS 4 col, HORAS 3 col) -->
+                                    <div class="flex flex-col gap-2">
                                         <!-- LINHA 1: DIAS -->
-                                        <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center">
-                                            <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Dias Decorridos</p>
-                                            <p id="diasDecorridos" class="text-base font-black text-sys-dark leading-none">0</p>
-                                        </div>
-                                        <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center">
-                                            <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Dias Restantes</p>
-                                            <p id="diasRestantes" class="text-base font-black text-pmmt-gold leading-none">0</p>
-                                        </div>
-                                        <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center bg-slate-100">
-                                            <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Total de Dias</p>
-                                            <p id="diasTotaisCurso" class="text-base font-black text-slate-600 leading-none">0</p>
+                                        <div class="grid grid-cols-3 gap-2">
+                                            <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center">
+                                                <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Dias Decorridos</p>
+                                                <p id="diasDecorridos" class="text-base font-black text-sys-dark leading-none">0</p>
+                                            </div>
+                                            <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center">
+                                                <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Dias Restantes</p>
+                                                <p id="diasRestantes" class="text-base font-black text-pmmt-gold leading-none">0</p>
+                                            </div>
+                                            <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center bg-slate-100">
+                                                <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Total de Dias</p>
+                                                <p id="diasTotaisCurso" class="text-base font-black text-slate-600 leading-none">0</p>
+                                            </div>
                                         </div>
                                         
-                                        <!-- LINHA 2: MATÉRIAS -->
-                                        <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center">
-                                            <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Matérias Concluídas</p>
-                                            <p id="materiasConcluidas" class="text-base font-black text-emerald-600 leading-none">0</p>
-                                        </div>
-                                        <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center">
-                                            <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Matérias Restantes</p>
-                                            <p id="materiasRestantes" class="text-base font-black text-rose-500 leading-none">0</p>
-                                        </div>
-                                        <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center bg-slate-100">
-                                            <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Total Matérias</p>
-                                            <p id="materiasTotais" class="text-base font-black text-slate-600 leading-none">0</p>
+                                        <!-- LINHA 2: MATÉRIAS (4 BLOCOS) COM INTERATIVIDADE -->
+                                        <div class="grid grid-cols-4 gap-2">
+                                            <div onclick="abrirModalDisciplinas('concluidas')" class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center cursor-pointer hover:bg-slate-50 hover:border-emerald-300 transition-colors" title="Ver Concluídas">
+                                                <p class="text-[7.5px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Concluídas</p>
+                                                <p id="materiasConcluidas" class="text-base font-black text-emerald-600 leading-none">0</p>
+                                            </div>
+                                            <div onclick="abrirModalDisciplinas('andamento')" class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center cursor-pointer hover:bg-slate-50 hover:border-pmmt-blue transition-colors" title="Ver Em Curso">
+                                                <p class="text-[7.5px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Em Curso</p>
+                                                <p id="materiasAndamento" class="text-base font-black text-pmmt-blue leading-none">0</p>
+                                            </div>
+                                            <div onclick="abrirModalDisciplinas('restantes')" class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center cursor-pointer hover:bg-slate-50 hover:border-rose-300 transition-colors" title="Ver Pendentes">
+                                                <p class="text-[7.5px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Pendentes</p>
+                                                <p id="materiasRestantes" class="text-base font-black text-rose-500 leading-none">0</p>
+                                            </div>
+                                            <div onclick="abrirModalDisciplinas('totais')" class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center bg-slate-100 cursor-pointer hover:bg-slate-200 hover:border-slate-400 transition-colors" title="Ver Grade Total">
+                                                <p class="text-[7.5px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Total Mat.</p>
+                                                <p id="materiasTotais" class="text-base font-black text-slate-600 leading-none">0</p>
+                                            </div>
                                         </div>
 
                                         <!-- LINHA 3: HORAS AULA -->
-                                        <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center">
-                                            <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Horas Concluídas</p>
-                                            <p id="horasConcluidas" class="text-base font-black text-pmmt-blue leading-none">0</p>
-                                        </div>
-                                        <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center">
-                                            <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Horas Restantes</p>
-                                            <p id="horasRestantes" class="text-base font-black text-amber-500 leading-none">0</p>
-                                        </div>
-                                        <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center bg-slate-100">
-                                            <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Carga (h/a)</p>
-                                            <p id="horasTotais" class="text-base font-black text-slate-600 leading-none">0</p>
+                                        <div class="grid grid-cols-3 gap-2">
+                                            <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center">
+                                                <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Horas Concluídas</p>
+                                                <p id="horasConcluidas" class="text-base font-black text-pmmt-blue leading-none">0</p>
+                                            </div>
+                                            <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center">
+                                                <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Horas Restantes</p>
+                                                <p id="horasRestantes" class="text-base font-black text-amber-500 leading-none">0</p>
+                                            </div>
+                                            <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center bg-slate-100">
+                                                <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Carga (h/a)</p>
+                                                <p id="horasTotais" class="text-base font-black text-slate-600 leading-none">0</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -294,7 +305,7 @@
                             </div>
                         </div>
 
-                        <!-- CARDS INFERIORES: QTS E RANKING (AGORA COM ALTURA MÁXIMA PARA NÃO ESTOURAR A TELA) -->
+                        <!-- CARDS INFERIORES: QTS E RANKING (COM ALTURA MÁXIMA CONTROLADA) -->
                         <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 items-start">
                             
                             <!-- QTS (ESQUERDA INFERIOR) -->
@@ -303,7 +314,6 @@
                                     <h3 class="text-[10px] font-bold text-white uppercase tracking-wide"><i class="fa-solid fa-list-check text-pmmt-gold mr-2"></i>QTS Atual</h3>
                                     <button onclick="mudarModulo('aluno'); abrirAbaAluno('aba-qts', document.querySelectorAll('.aba-btn')[1]);" class="text-[9px] font-bold uppercase tracking-widest text-pmmt-gold hover:text-white transition flex items-center gap-1">Expandir <i class="fa-solid fa-maximize"></i></button>
                                 </div>
-                                <!-- SCROLL INTERNO NO QTS -->
                                 <div id="homeQtsDia" class="p-3 bg-slate-50 overflow-y-auto custom-scrollbar flex-1"><div class="w-full text-center py-6 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><p class="text-[10px] uppercase tracking-widest font-bold">Carregando grade de instruções...</p></div></div>
                             </div>
 
@@ -324,7 +334,7 @@
 
                     </section>
 
-                    <!-- DEMAIS MÓDULOS (INTELIGÊNCIA, ESCALA, CAUTELA, ETC) -->
+                    <!-- DEMAIS MÓDULOS -->
                     <section id="modulo-institucional" class="hidden space-y-6">
                         <div class="bg-white shadow-sm border border-slate-300 overflow-hidden rounded-xl">
                             <div class="bg-sys-dark text-white px-5 py-4 flex justify-between items-center"><div><h2 class="text-sm font-black tracking-widest uppercase"><i class="fa-solid fa-sitemap text-pmmt-gold mr-2"></i> Cadeia de Comando</h2><p class="text-[9px] text-slate-300 uppercase mt-0.5">Hierarquia do Estado e da Polícia Militar</p></div></div>
@@ -427,7 +437,7 @@
                 </div>
                 <button onclick="fecharRankingGeral()" class="text-white/70 hover:text-white transition"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
-            <div class="p-5 overflow-y-auto flex-1 bg-slate-50">
+            <div class="p-5 overflow-y-auto flex-1 bg-slate-50 custom-scrollbar">
                 <div class="overflow-x-auto border border-slate-200 rounded-lg shadow-sm">
                     <table class="w-full text-left border-collapse whitespace-nowrap text-xs bg-white">
                         <thead class="bg-slate-100 text-slate-700">
@@ -447,6 +457,34 @@
         </div>
     </div>
 
+    <!-- MODAL LISTAGEM DE DISCIPLINAS (NOVO) -->
+    <div id="modalDisciplinas" class="fixed inset-0 bg-slate-900/80 z-[300] hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden border border-slate-300 flex flex-col max-h-[80vh]">
+            <div class="bg-sys-dark px-5 py-4 flex justify-between items-center border-b-4 border-pmmt-gold shrink-0">
+                <div>
+                    <h3 class="text-white font-black text-sm uppercase tracking-wider" id="modalDisciplinasTitle"><i class="fa-solid fa-book-open text-pmmt-gold mr-2"></i>Relação de Matérias</h3>
+                    <p class="text-slate-400 text-[10px] font-bold mt-0.5 uppercase tracking-widest" id="modalDisciplinasSub">Grade Curricular</p>
+                </div>
+                <button onclick="fecharModalDisciplinas()" class="text-white/70 hover:text-white transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="p-0 overflow-y-auto flex-1 bg-slate-50 custom-scrollbar">
+                <table class="w-full text-left border-collapse text-xs bg-white">
+                    <thead class="bg-slate-100 text-slate-700 sticky top-0 shadow-sm z-10">
+                        <tr>
+                            <th class="p-3 border-b border-slate-200 text-center w-12 font-black">#</th>
+                            <th class="p-3 border-b border-slate-200 font-black">Disciplina / Matéria</th>
+                            <th class="p-3 text-center border-b border-slate-200 w-24 font-black">Carga Horária</th>
+                            <th class="p-3 text-center border-b border-slate-200 w-28 font-black">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaModalDisciplinas" class="divide-y divide-slate-100">
+                        <!-- Preenchido via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <!-- MÓDULO INVISÍVEL PARA IMPRESSÃO DE CAUTELAS -->
     <div id="modulo-cautela" class="hidden bg-white text-black p-4 max-w-4xl mx-auto font-sans text-[11px] leading-tight"><div class="flex flex-col items-center mb-3 text-center"><h1 class="font-bold text-sm uppercase">LIVRO DE CAUTELAS</h1></div></div>
 
@@ -454,12 +492,14 @@
         let supabaseClient;
         let alunosMap = {};
         let listaAlunosFull = []; 
+        let listaTecnicoCache = []; // Necessário carregar para cruzar nome do usuario logado (admin)
         let funcoesComandoGlobais = []; 
         let cautelasFixasGlobais = []; 
         let qtsGlobais = [];
         let disciplinasGlobais = [];
         let todasNotasGlobais = [];
         let isAdmin = false;
+        let emailUsuarioLogado = null;
 
         const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
@@ -472,7 +512,6 @@
             menu.classList.toggle('retraido');
             const estaRetraido = menu.classList.contains('retraido');
             
-            // Muda a logo do brasão para caber se estiver retraído
             const imgBrasao = document.getElementById('imgBrasaoSidebar');
             if (estaRetraido) {
                 imgBrasao.classList.remove('w-28', 'h-28');
@@ -487,8 +526,13 @@
             try {
                 supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
                 const { data: { session } } = await supabaseClient.auth.getSession();
-                if (session) await logarSucesso();
-                else { document.getElementById('telaLogin').classList.remove('hidden'); document.getElementById('painelPrincipal').classList.add('hidden'); }
+                if (session) {
+                    emailUsuarioLogado = session.user.email;
+                    await logarSucesso();
+                } else { 
+                    document.getElementById('telaLogin').classList.remove('hidden'); 
+                    document.getElementById('painelPrincipal').classList.add('hidden'); 
+                }
             } catch (error) { console.error("Erro DB"); }
         }
 
@@ -499,16 +543,25 @@
             const btn = document.getElementById('btnEntrar');
             btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Validando...';
             const emailFinal = usuarioInput.includes('@') ? usuarioInput : `${usuarioInput}@5pelotao.internal`;
-            const { error } = await supabaseClient.auth.signInWithPassword({ email: emailFinal, password: senha });
-            if (error) { document.getElementById('erroLogin').innerText = "Acesso Negado."; document.getElementById('erroLogin').classList.remove('hidden'); btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Acessar Sistema'; } 
-            else await logarSucesso();
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email: emailFinal, password: senha });
+            if (error) { 
+                document.getElementById('erroLogin').innerText = "Acesso Negado."; 
+                document.getElementById('erroLogin').classList.remove('hidden'); 
+                btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Acessar Sistema'; 
+            } else {
+                emailUsuarioLogado = data.user.email;
+                await logarSucesso();
+            }
         }
 
         async function logarSucesso() {
             document.getElementById('telaLogin').classList.add('hidden');
             document.getElementById('painelPrincipal').classList.remove('hidden');
-            const { data: { user } } = await supabaseClient.auth.getUser();
-            if(user) isAdmin = user.email.includes('willys') || user.email.includes('comando') || user.email.includes('tesouraria');
+            
+            if(emailUsuarioLogado) {
+                isAdmin = emailUsuarioLogado.includes('willys') || emailUsuarioLogado.includes('comando') || emailUsuarioLogado.includes('tesouraria');
+            }
+            
             document.querySelectorAll('.admin-only').forEach(el => isAdmin ? el.classList.remove('hidden') : el.classList.add('hidden'));
             document.querySelectorAll('.admin-edit').forEach(el => el.setAttribute('contenteditable', isAdmin ? 'true' : 'false'));
             mudarModulo('home');
@@ -519,15 +572,52 @@
         async function sincronizarDadosManualmente() {
             mostrarLoading(true);
             await carregarAlunos(); 
+            const { data: dadosT } = await supabaseClient.from('corpo_tecnico').select('*'); listaTecnicoCache = dadosT || [];
+            
+            atualizarUsuarioLogado(); // Atualiza a Tag no Topo
+            
             await carregarDisciplinas();
             await carregarFuncoesComando();
             await carregarCautelasFixas(); 
             await carregarQTSList(); 
             await carregarMateriaisApoio();
             await renderizarDashboardHome();
+            
             const iframesToReload = ['iframeEfetivo', 'iframeEfetivoDados', 'iframeAcademico', 'iframeFinanceiro', 'iframeToques', 'iframeGerador'];
             iframesToReload.forEach(id => { const iframe = document.getElementById(id); if (iframe && iframe.contentWindow) iframe.contentWindow.location.reload(); });
             mostrarLoading(false);
+        }
+        
+        function atualizarUsuarioLogado() {
+            if (!emailUsuarioLogado) return;
+            const emailPrefix = emailUsuarioLogado.split('@')[0].toLowerCase();
+            let cargoUsuario = "SISTEMA";
+            let nomeUsuario = emailPrefix.toUpperCase();
+
+            const aluno = listaAlunosFull.find(a => 
+                (a.qra && a.qra.toLowerCase() === emailPrefix) || 
+                (a.nome && a.nome.toLowerCase().includes(emailPrefix))
+            );
+            
+            if (aluno) {
+                cargoUsuario = "AL SD PM";
+                nomeUsuario = (aluno.qra || aluno.nome.split(' ')[0]).replace(/AL SD PM |AL SD /gi, '').trim().toUpperCase();
+            } else {
+                const tecnico = listaTecnicoCache.find(t => 
+                    (t.nome_guerra && t.nome_guerra.toLowerCase() === emailPrefix) ||
+                    (t.nome && t.nome.toLowerCase().includes(emailPrefix))
+                );
+                if (tecnico) {
+                    cargoUsuario = (tecnico.posto_graduacao || "PM").toUpperCase();
+                    nomeUsuario = (tecnico.nome_guerra || tecnico.nome.split(' ')[0]).toUpperCase();
+                } else {
+                    if (emailPrefix === 'comando') { cargoUsuario = "CMT"; nomeUsuario = "5º PELOTÃO"; }
+                    else if (emailPrefix === 'tesouraria' || emailPrefix === 'financeiro') { cargoUsuario = "FINANÇAS"; nomeUsuario = "5º PELOTÃO"; }
+                }
+            }
+            
+            const el = document.getElementById('usuarioLogadoInfo');
+            if (el) el.innerHTML = `<i class="fa-solid fa-user-check text-pmmt-gold mr-1"></i> LOGADO: <span class="text-white">${cargoUsuario} ${nomeUsuario}</span>`;
         }
 
         async function deslogarUsuario() { if (confirm("Encerrar sessão?")) { await supabaseClient.auth.signOut(); window.location.reload(); } }
@@ -607,28 +697,33 @@
                 </div>
             `;
 
-            // LÓGICA MANUAL (FIDEDIGNA) DE CÁLCULO DE MATÉRIAS
-            // Agora o JS lê diretamente a coluna "concluida" (boolean) do banco de dados academico_disciplinas
+            // LÓGICA DE CÁLCULO DE MATÉRIAS (VIA COLUNA STATUS DO BANCO)
             let totalMat = disciplinasGlobais.length > 0 ? disciplinasGlobais.length : 41;
             let concluidasMat = 0;
+            let andamentoMat = 0;
             
             let totalHoras = 0;
             let concluidasHoras = 0;
 
             disciplinasGlobais.forEach(d => {
                 totalHoras += d.carga_horaria;
-                if (d.concluida === true) {
+                const statusReal = d.status || (d.concluida ? 'CONCLUIDA' : 'PENDENTE');
+                
+                if (statusReal === 'CONCLUIDA') {
                     concluidasMat++;
                     concluidasHoras += d.carga_horaria;
+                } else if (statusReal === 'EM ANDAMENTO') {
+                    andamentoMat++;
                 }
             });
             if (totalHoras === 0) totalHoras = 1895;
 
-            let restantesMat = totalMat - concluidasMat;
-            let restantesHoras = totalHoras - concluidasHoras;
+            let restantesMat = totalMat - concluidasMat - andamentoMat;
+            let restantesHoras = totalHoras - concluidasHoras; // Horas em andamento ainda não estão concluídas
 
             document.getElementById('materiasTotais').innerText = totalMat;
             document.getElementById('materiasConcluidas').innerText = concluidasMat;
+            document.getElementById('materiasAndamento').innerText = andamentoMat;
             document.getElementById('materiasRestantes').innerText = restantesMat;
             
             document.getElementById('horasTotais').innerText = totalHoras;
@@ -644,6 +739,68 @@
             }
 
             renderizarXerife();
+        }
+
+        // --- FUNÇÃO: ABRIR MODAL DE DISCIPLINAS COM FILTROS ---
+        function abrirModalDisciplinas(tipo) {
+            const modal = document.getElementById('modalDisciplinas');
+            const tbody = document.getElementById('tabelaModalDisciplinas');
+            const titulo = document.getElementById('modalDisciplinasTitle');
+            const sub = document.getElementById('modalDisciplinasSub');
+            
+            modal.classList.remove('hidden');
+            tbody.innerHTML = '';
+            
+            let filtradas = [];
+            if (tipo === 'concluidas') {
+                filtradas = disciplinasGlobais.filter(d => d.status === 'CONCLUIDA' || d.concluida === true);
+                titulo.innerHTML = '<i class="fa-solid fa-check-double text-emerald-400 mr-2"></i>Matérias Concluídas';
+                sub.innerText = `Total: ${filtradas.length} disciplinas concluídas`;
+            } else if (tipo === 'restantes') {
+                filtradas = disciplinasGlobais.filter(d => (!d.status && !d.concluida) || d.status === 'PENDENTE');
+                titulo.innerHTML = '<i class="fa-solid fa-hourglass-half text-rose-400 mr-2"></i>Matérias Restantes / Pendentes';
+                sub.innerText = `Faltam: ${filtradas.length} disciplinas para iniciar`;
+            } else if (tipo === 'andamento') {
+                filtradas = disciplinasGlobais.filter(d => d.status === 'EM ANDAMENTO');
+                titulo.innerHTML = '<i class="fa-solid fa-spinner text-pmmt-blue mr-2"></i>Matérias em Curso';
+                sub.innerText = `Atualmente: ${filtradas.length} disciplinas ativas`;
+            } else {
+                filtradas = [...disciplinasGlobais];
+                titulo.innerHTML = '<i class="fa-solid fa-book-open text-pmmt-gold mr-2"></i>Total de Matérias';
+                sub.innerText = `Grade Curricular Completa: ${filtradas.length} disciplinas`;
+            }
+
+            if (filtradas.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-500 font-bold">Nenhuma disciplina encontrada nesta categoria.</td></tr>';
+                return;
+            }
+
+            filtradas.forEach((d, index) => {
+                const statusReal = d.status || (d.concluida ? 'CONCLUIDA' : 'PENDENTE');
+                let statusHtml = '';
+                
+                if (statusReal === 'CONCLUIDA') {
+                    statusHtml = `<span class="bg-emerald-100 text-emerald-700 font-bold px-2 py-1 rounded text-[9px] uppercase tracking-widest border border-emerald-200"><i class="fa-solid fa-check mr-1"></i> Concluída</span>`;
+                } else if (statusReal === 'EM ANDAMENTO') {
+                    statusHtml = `<span class="bg-blue-100 text-pmmt-blue font-bold px-2 py-1 rounded text-[9px] uppercase tracking-widest border border-blue-200"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Em Curso</span>`;
+                } else {
+                    statusHtml = `<span class="bg-rose-100 text-rose-700 font-bold px-2 py-1 rounded text-[9px] uppercase tracking-widest border border-rose-200"><i class="fa-regular fa-clock mr-1"></i> Pendente</span>`;
+                }
+                
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="p-3 text-center font-bold text-slate-400">${index + 1}</td>
+                    <td class="p-3 font-bold text-slate-700 uppercase">${d.nome}</td>
+                    <td class="p-3 text-center text-sys-dark font-black">${d.carga_horaria} h/a</td>
+                    <td class="p-3 text-center">${statusHtml}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function fecharModalDisciplinas() {
+            document.getElementById('modalDisciplinas').classList.add('hidden');
         }
 
         function mostrarLoading(show) { document.getElementById('loaderAlert').style.display = show ? 'flex' : 'none'; }
@@ -704,7 +861,6 @@
                     return;
                 }
 
-                // Injeta no modal
                 ranking.forEach((aluno, index) => {
                     const rankFormatado = (index + 1).toString().padStart(2, '0');
                     const qraAjustado = (aluno.qra || aluno.nome).replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase();
@@ -730,7 +886,6 @@
                     tbody.appendChild(tr);
                 });
 
-                // Injeta também no Top 3 do Dashboard Home
                 const dashTop3 = document.getElementById('homeRankingTop3');
                 if (dashTop3) {
                     dashTop3.innerHTML = '';
