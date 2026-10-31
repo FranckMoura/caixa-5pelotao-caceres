@@ -19,11 +19,19 @@
         ::-webkit-scrollbar-track { background: #cbd5e1; }
         ::-webkit-scrollbar-thumb { background: #64748b; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #475569; }
-        .menu-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 1rem; font-size: 12px; font-weight: 600; color: #cbd5e1; border-left: 4px solid transparent; transition: all 0.2s ease; width: 100%; text-align: left; }
+        .menu-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 1rem; font-size: 12px; font-weight: 600; color: #cbd5e1; border-left: 4px solid transparent; transition: all 0.2s ease; width: 100%; text-align: left; white-space: nowrap; }
         .menu-item i { width: 1.25rem; text-align: center; font-size: 16px; }
         .menu-item:hover { background-color: rgba(255, 255, 255, 0.05); color: white; }
         .menu-item.ativo { background-color: rgba(197, 160, 89, 0.15); border-left-color: #C5A059; color: #C5A059; font-weight: 800; }
         
+        /* Controle do Sidebar Expandido/Retraído */
+        #wrapperLateral { transition: width 0.3s ease; }
+        #wrapperLateral.retraido { width: 4.5rem; }
+        #wrapperLateral.retraido .menu-item span, 
+        #wrapperLateral.retraido .header-menu-txt { display: none; }
+        #wrapperLateral.retraido .menu-item { justify-content: center; padding: 0.8rem 0; }
+        #wrapperLateral.retraido .menu-item i { margin: 0; }
+
         .tabela-qts th, .tabela-qts td { border: 1px solid #94a3b8; padding: 0.35rem; text-align: center; font-size: 10px; text-transform: uppercase; }
         .tabela-qts th { background-color: #334155; font-weight: 800; color: #ffffff; }
         .tabela-qts .col-periodo { background-color: #1e293b; color: white; font-weight: 800; writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); }
@@ -141,34 +149,40 @@
             </div>
             
             <div class="flex-1 flex overflow-hidden">
-                <aside id="wrapperLateral" class="w-64 lg:w-72 bg-sys-dark text-white flex flex-col shadow-2xl z-50 hidden md:flex shrink-0">
+                <!-- MENU LATERAL (SIDEBAR) TÁTICA -->
+                <aside id="wrapperLateral" class="w-64 bg-sys-dark text-white flex flex-col shadow-2xl z-50 hidden md:flex shrink-0">
                     <div class="py-6 px-4 text-center flex flex-col items-center justify-center relative shrink-0 border-b border-white/5 bg-gradient-to-b from-black/20 to-transparent">
-                        <img src="logo_brasao_5.png" alt="Brasão 5º Pelotão" class="w-28 h-28 object-contain mb-3 relative z-10 drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] hover:scale-105 transition-transform" onerror="this.onerror=null; this.src='https://via.placeholder.com/150?text=Brasao';">
-                        <h2 class="text-sm font-black text-pmmt-gold tracking-widest uppercase relative z-10">5º PELOTÃO</h2>
-                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5 relative z-10">Força Tática - Cáceres</p>
+                        <img id="imgBrasaoSidebar" src="logo_brasao_5.png" alt="Brasão 5º Pelotão" class="w-28 h-28 object-contain mb-3 relative z-10 drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] hover:scale-105 transition-transform" onerror="this.onerror=null; this.src='https://via.placeholder.com/150?text=Brasao';">
+                        <h2 class="header-menu-txt text-sm font-black text-pmmt-gold tracking-widest uppercase relative z-10">5º PELOTÃO</h2>
+                        <p class="header-menu-txt text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5 relative z-10">Força Tática - Cáceres</p>
                     </div>
-                    <div class="flex-1 overflow-y-auto py-3 px-0 space-y-0.5">
-                        <p class="px-5 text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2 mt-2">Módulos do Sistema</p>
-                        <button onclick="mudarModulo('home')" id="btn-home" class="menu-item ativo"><i class="fa-solid fa-house"></i> Início / Painel</button>
-                        <button onclick="mudarModulo('institucional')" id="btn-institucional" class="menu-item"><i class="fa-solid fa-sitemap"></i> Cadeia Comando</button>
-                        <button onclick="mudarModulo('efetivo')" id="btn-efetivo" class="menu-item"><i class="fa-solid fa-users-gear"></i> Efetivo e Escala</button>
-                        <button onclick="mudarModulo('cautela')" id="btn-cautela" class="menu-item"><i class="fa-solid fa-gun"></i> Cautela Fixa</button>
-                        <button onclick="mudarModulo('financeiro')" id="btn-financeiro" class="menu-item"><i class="fa-solid fa-vault"></i> Gestão Financeira</button>
-                        <button onclick="mudarModulo('efetivodados')" id="btn-efetivodados" class="menu-item"><i class="fa-solid fa-brain"></i> Inteligência</button>
-                        <button onclick="mudarModulo('academico')" id="btn-academico" class="menu-item"><i class="fa-solid fa-graduation-cap"></i> Módulo Acadêmico</button>
-                        <button onclick="mudarModulo('aluno')" id="btn-aluno" class="menu-item"><i class="fa-solid fa-folder-open"></i> Área do Aluno</button>
-                        <button onclick="mudarModulo('redator')" id="btn-redator" class="menu-item"><i class="fa-solid fa-robot text-pmmt-gold"></i> Copiloto de B.O.</button>
-                        <button onclick="mudarModulo('debate')" id="btn-debate" class="menu-item"><i class="fa-solid fa-comments"></i> Área Livre</button>
-                        <button onclick="mudarModulo('toques')" id="btn-toques" class="menu-item"><i class="fa-solid fa-bullhorn"></i> Toques de Corneta</button>
-                        <button onclick="mudarModulo('gerador')" id="btn-gerador" class="menu-item"><i class="fa-solid fa-file-pdf"></i> Gerador Documentos</button>
+                    <div class="flex-1 overflow-y-auto py-3 px-0 space-y-0.5 custom-scrollbar">
+                        <p class="header-menu-txt px-5 text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2 mt-2">Módulos do Sistema</p>
+                        <button onclick="mudarModulo('home')" id="btn-home" class="menu-item ativo"><i class="fa-solid fa-house"></i> <span>Início / Painel</span></button>
+                        <button onclick="mudarModulo('institucional')" id="btn-institucional" class="menu-item"><i class="fa-solid fa-sitemap"></i> <span>Cadeia Comando</span></button>
+                        <button onclick="mudarModulo('efetivo')" id="btn-efetivo" class="menu-item"><i class="fa-solid fa-users-gear"></i> <span>Efetivo e Escala</span></button>
+                        <button onclick="mudarModulo('cautela')" id="btn-cautela" class="menu-item"><i class="fa-solid fa-gun"></i> <span>Cautela Fixa</span></button>
+                        <button onclick="mudarModulo('financeiro')" id="btn-financeiro" class="menu-item"><i class="fa-solid fa-vault"></i> <span>Gestão Financeira</span></button>
+                        <button onclick="mudarModulo('efetivodados')" id="btn-efetivodados" class="menu-item"><i class="fa-solid fa-brain"></i> <span>Inteligência</span></button>
+                        <button onclick="mudarModulo('academico')" id="btn-academico" class="menu-item"><i class="fa-solid fa-graduation-cap"></i> <span>Módulo Acadêmico</span></button>
+                        <button onclick="mudarModulo('aluno')" id="btn-aluno" class="menu-item"><i class="fa-solid fa-folder-open"></i> <span>Área do Aluno</span></button>
+                        <button onclick="mudarModulo('redator')" id="btn-redator" class="menu-item"><i class="fa-solid fa-robot text-pmmt-gold"></i> <span>Copiloto de B.O.</span></button>
+                        <button onclick="mudarModulo('debate')" id="btn-debate" class="menu-item"><i class="fa-solid fa-comments"></i> <span>Área Livre</span></button>
+                        <button onclick="mudarModulo('toques')" id="btn-toques" class="menu-item"><i class="fa-solid fa-bullhorn"></i> <span>Toques de Corneta</span></button>
+                        <button onclick="mudarModulo('gerador')" id="btn-gerador" class="menu-item"><i class="fa-solid fa-file-pdf"></i> <span>Gerador Documentos</span></button>
                     </div>
-                    <div class="p-3 border-t border-white/5 flex justify-between items-center bg-black/20 shrink-0">
-                        <button onclick="sincronizarDadosManualmente()" class="text-[10px] font-bold text-slate-400 hover:text-white transition px-3 py-1.5 rounded border border-white/10 hover:bg-white/10 flex items-center" title="Sincronizar Dados">
-                            <i class="fa-solid fa-arrows-rotate mr-1.5"></i> Sincronizar
+                    <div class="p-3 border-t border-white/5 flex flex-col gap-3 items-center bg-black/20 shrink-0">
+                        <button onclick="toggleMenuLateral()" class="text-slate-400 hover:text-white transition w-full flex items-center justify-center p-2 rounded hover:bg-white/10" title="Expandir/Recolher Menu">
+                            <i class="fa-solid fa-arrows-left-right"></i>
                         </button>
-                        <button onclick="deslogarUsuario()" class="text-rose-500 hover:text-rose-400 text-base no-print p-2 transition" title="Sair do Portal">
-                            <i class="fa-solid fa-power-off"></i>
-                        </button>
+                        <div class="flex justify-between items-center w-full gap-2">
+                            <button onclick="sincronizarDadosManualmente()" class="text-[10px] font-bold text-slate-400 hover:text-white transition px-3 py-1.5 rounded border border-white/10 hover:bg-white/10 flex-1 flex items-center justify-center" title="Sincronizar Dados">
+                                <i class="fa-solid fa-arrows-rotate"></i> <span class="header-menu-txt ml-1.5">Sincronizar</span>
+                            </button>
+                            <button onclick="deslogarUsuario()" class="text-rose-500 hover:text-rose-400 text-base no-print p-2 transition" title="Sair do Portal">
+                                <i class="fa-solid fa-power-off"></i>
+                            </button>
+                        </div>
                     </div>
                 </aside>
 
@@ -261,7 +275,7 @@
                                             <p id="horasRestantes" class="text-base font-black text-amber-500 leading-none">0</p>
                                         </div>
                                         <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center bg-slate-100">
-                                            <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Carga Horária (h/a)</p>
+                                            <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Carga (h/a)</p>
                                             <p id="horasTotais" class="text-base font-black text-slate-600 leading-none">0</p>
                                         </div>
                                     </div>
@@ -280,27 +294,37 @@
                             </div>
                         </div>
 
-                        <!-- CARDS INFERIORES: QTS E RANKING -->
-                        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 items-stretch">
+                        <!-- CARDS INFERIORES: QTS E RANKING (AGORA COM ALTURA MÁXIMA PARA NÃO ESTOURAR A TELA) -->
+                        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 items-start">
+                            
                             <!-- QTS (ESQUERDA INFERIOR) -->
-                            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-full">
-                                <div class="bg-sys-dark px-5 py-4 border-b-4 border-pmmt-gold flex justify-between items-center">
-                                    <h3 class="text-xs font-bold text-white uppercase tracking-wide"><i class="fa-solid fa-list-check text-pmmt-gold mr-2"></i>Quadro de Trabalho Semanal (QTS)</h3>
-                                    <button onclick="mudarModulo('aluno'); abrirAbaAluno('aba-qts', document.querySelectorAll('.aba-btn')[1]);" class="text-[10px] font-bold uppercase tracking-widest text-pmmt-gold hover:text-white transition flex items-center gap-1">Expandir <i class="fa-solid fa-maximize"></i></button>
+                            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col w-full max-h-[350px]">
+                                <div class="bg-sys-dark px-5 py-3 border-b-4 border-pmmt-gold flex justify-between items-center shrink-0">
+                                    <h3 class="text-[10px] font-bold text-white uppercase tracking-wide"><i class="fa-solid fa-list-check text-pmmt-gold mr-2"></i>QTS Atual</h3>
+                                    <button onclick="mudarModulo('aluno'); abrirAbaAluno('aba-qts', document.querySelectorAll('.aba-btn')[1]);" class="text-[9px] font-bold uppercase tracking-widest text-pmmt-gold hover:text-white transition flex items-center gap-1">Expandir <i class="fa-solid fa-maximize"></i></button>
                                 </div>
-                                <div id="homeQtsDia" class="p-4 flex-1 flex items-center justify-center bg-slate-50"><div class="w-full text-center py-6 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><p class="text-[10px] uppercase tracking-widest font-bold">Carregando grade de instruções...</p></div></div>
+                                <!-- SCROLL INTERNO NO QTS -->
+                                <div id="homeQtsDia" class="p-3 bg-slate-50 overflow-y-auto custom-scrollbar flex-1"><div class="w-full text-center py-6 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><p class="text-[10px] uppercase tracking-widest font-bold">Carregando grade de instruções...</p></div></div>
                             </div>
 
                             <!-- RANKING (DIREITA INFERIOR) -->
-                            <div class="bg-gradient-to-r from-pmmt-gold to-yellow-600 hover:from-yellow-500 hover:to-amber-500 text-sys-dark rounded-xl shadow-md border-b-4 border-yellow-700 p-8 flex justify-between items-center relative overflow-hidden cursor-pointer transition-all h-full min-h-[160px]" onclick="abrirRankingGeral()">
-                                <div class="z-10"><h3 class="text-[10px] font-bold text-sys-dark/70 uppercase tracking-widest mb-1"><i class="fa-solid fa-medal mr-1.5"></i> Excelência Acadêmica</h3><h2 class="text-2xl font-black uppercase tracking-wider text-sys-dark drop-shadow-sm"><i class="fa-solid fa-trophy text-yellow-100 mr-2"></i> Ranking Geral</h2><p class="text-[10px] text-yellow-900/80 font-bold uppercase mt-1 tracking-wide flex items-center gap-1">Clique para visualizar classificação <i class="fa-solid fa-arrow-right ml-1"></i></p></div>
-                                <i class="fa-solid fa-ranking-star absolute -right-4 -bottom-4 text-7xl text-sys-dark/10 pointer-events-none transform -rotate-12"></i>
+                            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col w-full max-h-[350px]">
+                                <div class="bg-sys-dark px-5 py-3 border-b-4 border-yellow-500 flex justify-between items-center shrink-0">
+                                    <h3 class="text-[10px] font-bold text-white uppercase tracking-wide"><i class="fa-solid fa-trophy text-yellow-400 mr-2"></i>Top 3 Acadêmico</h3>
+                                    <button onclick="abrirRankingGeral()" class="text-[9px] font-bold uppercase tracking-widest text-yellow-400 hover:text-white transition flex items-center gap-1">Ver Todos <i class="fa-solid fa-arrow-right"></i></button>
+                                </div>
+                                <div class="p-4 bg-slate-50 flex-1 flex flex-col justify-center items-center overflow-y-auto custom-scrollbar relative">
+                                    <i class="fa-solid fa-ranking-star absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-9xl text-slate-200/50 pointer-events-none z-0"></i>
+                                    <div id="homeRankingTop3" class="w-full relative z-10 flex flex-col gap-3">
+                                        <div class="w-full text-center py-6 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><p class="text-[10px] uppercase tracking-widest font-bold">Processando Notas...</p></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                     </section>
 
-                    <!-- DEMAIS MÓDULOS -->
+                    <!-- DEMAIS MÓDULOS (INTELIGÊNCIA, ESCALA, CAUTELA, ETC) -->
                     <section id="modulo-institucional" class="hidden space-y-6">
                         <div class="bg-white shadow-sm border border-slate-300 overflow-hidden rounded-xl">
                             <div class="bg-sys-dark text-white px-5 py-4 flex justify-between items-center"><div><h2 class="text-sm font-black tracking-widest uppercase"><i class="fa-solid fa-sitemap text-pmmt-gold mr-2"></i> Cadeia de Comando</h2><p class="text-[9px] text-slate-300 uppercase mt-0.5">Hierarquia do Estado e da Polícia Militar</p></div></div>
@@ -434,6 +458,7 @@
         let cautelasFixasGlobais = []; 
         let qtsGlobais = [];
         let disciplinasGlobais = [];
+        let todasNotasGlobais = [];
         let isAdmin = false;
 
         const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
@@ -441,6 +466,22 @@
         const GEMINI_API_KEY = 'AQ.Ab8RN6IOzdHSTG5CUoojPZXssiiqxDUv_NXsupGR9tqhGdi2Rw';        
         
         window.onload = async function() { await iniciarSupabase(); };
+
+        function toggleMenuLateral() {
+            const menu = document.getElementById('wrapperLateral');
+            menu.classList.toggle('retraido');
+            const estaRetraido = menu.classList.contains('retraido');
+            
+            // Muda a logo do brasão para caber se estiver retraído
+            const imgBrasao = document.getElementById('imgBrasaoSidebar');
+            if (estaRetraido) {
+                imgBrasao.classList.remove('w-28', 'h-28');
+                imgBrasao.classList.add('w-10', 'h-10');
+            } else {
+                imgBrasao.classList.remove('w-10', 'h-10');
+                imgBrasao.classList.add('w-28', 'h-28');
+            }
+        }
 
         async function iniciarSupabase() {
             try {
@@ -566,83 +607,22 @@
                 </div>
             `;
 
-            // LÓGICA INTELIGENTE DE CÁLCULO DE MATÉRIAS (BASEADO NO QTS E CALENDÁRIO)
-            let concluidasSet = new Set();
-            let hojeReal = new Date(); 
-            hojeReal.setHours(0,0,0,0);
+            // LÓGICA MANUAL (FIDEDIGNA) DE CÁLCULO DE MATÉRIAS
+            // Agora o JS lê diretamente a coluna "concluida" (boolean) do banco de dados academico_disciplinas
+            let totalMat = disciplinasGlobais.length > 0 ? disciplinasGlobais.length : 41;
+            let concluidasMat = 0;
+            
+            let totalHoras = 0;
+            let concluidasHoras = 0;
 
-            // Varre todos os QTS salvos
-            qtsGlobais.forEach(qts => {
-                if(qts.dados_html) {
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = qts.dados_html;
-                    const tds = tempDiv.querySelectorAll('td.cell-editable');
-                    
-                    // Extrai as datas da primeira linha (Cabeçalho do QTS)
-                    const datasNoQts = Array.from(tempDiv.querySelectorAll('tr.bg-slate-100 td')).map(td => {
-                        const m = td.innerText.match(/(\d{2})\/(\d{2})\/(\d{4})/);
-                        if(m) return new Date(`${m[3]}-${m[2]}-${m[1]}T00:00:00`);
-                        return null;
-                    });
-
-                    tds.forEach((td, index) => {
-                        const colIndex = td.cellIndex; 
-                        let dataDessaAula = null;
-                        
-                        // Mapeamento básico: a coluna do TD geralmente bate com a coluna da Data na tabela do QTS (Seg a Dom)
-                        if (colIndex >= 3 && colIndex <= 9) {
-                            dataDessaAula = datasNoQts[colIndex - 3];
-                        }
-                        
-                        // Se a data daquela aula for hoje ou no passado, considera a matéria ministrada
-                        if (dataDessaAula && dataDessaAula <= hojeReal) {
-                            const textoAula = td.innerText.toUpperCase();
-                            disciplinasGlobais.forEach(d => {
-                                // Tenta achar o nome ou sigla da matéria dentro do texto do QTS
-                                const nomeUpper = d.nome.toUpperCase();
-                                // Pega a palavra principal (ex: Direito Penal) ou Sigla se existir no QTS
-                                if(textoAula.includes(nomeUpper) || textoAula.includes(d.nome.split(' ')[0].toUpperCase())) {
-                                    concluidasSet.add(d.id);
-                                }
-                                // Para matérias identificadas por siglas no rodapé (POP, NTCS, DPDPP)
-                                if (textoAula.includes('POP') && nomeUpper.includes('POP')) concluidasSet.add(d.id);
-                                if (textoAula.includes('NTCS') && nomeUpper.includes('NTCS')) concluidasSet.add(d.id);
-                                if (textoAula.includes('DPDPP') && nomeUpper.includes('DIREITO PENAL')) concluidasSet.add(d.id);
-                                if (textoAula.includes('MP ') && nomeUpper.includes('METODOLOGIA')) concluidasSet.add(d.id);
-                                if (textoAula.includes('TGP') && nomeUpper.includes('TGP')) concluidasSet.add(d.id);
-                                if (textoAula.includes('EF ') && nomeUpper.includes('FÍSICA')) concluidasSet.add(d.id);
-                            });
-                        }
-                    });
+            disciplinasGlobais.forEach(d => {
+                totalHoras += d.carga_horaria;
+                if (d.concluida === true) {
+                    concluidasMat++;
+                    concluidasHoras += d.carga_horaria;
                 }
             });
-
-            // Para garantir que o painel não fique vazio caso o QTS não cruze 100% perfeitamente, 
-            // setamos valores manuais baseados na data atual
-            const dataInicio = new Date('2026-06-26T00:00:00');
-            const dataFim = new Date('2027-04-21T23:59:59');
-            const tempoDecorrido = Math.max(0, hojeReal - dataInicio);
-            const diasTotais = Math.ceil((dataFim - dataInicio) / (1000 * 60 * 60 * 24));
-            const diasDecorridos = Math.floor(Math.min(tempoDecorrido, (dataFim - dataInicio)) / (1000 * 60 * 60 * 24));
-            const progressoPercent = (diasDecorridos / diasTotais);
-
-            let totalMat = disciplinasGlobais.length > 0 ? disciplinasGlobais.length : 41;
-            let totalHoras = 0;
-            disciplinasGlobais.forEach(d => totalHoras += d.carga_horaria);
             if (totalHoras === 0) totalHoras = 1895;
-
-            // Se o set inteligente encontrou matérias, usa ele. Senão, faz um cálculo proporcional estimado
-            let concluidasMat = concluidasSet.size > 0 ? concluidasSet.size : Math.floor(totalMat * progressoPercent);
-            let concluidasHoras = 0;
-            
-            if (concluidasSet.size > 0) {
-                concluidasSet.forEach(id => {
-                    const d = disciplinasGlobais.find(x => x.id === id);
-                    if(d) concluidasHoras += d.carga_horaria;
-                });
-            } else {
-                concluidasHoras = Math.floor(totalHoras * progressoPercent);
-            }
 
             let restantesMat = totalMat - concluidasMat;
             let restantesHoras = totalHoras - concluidasHoras;
@@ -684,8 +664,11 @@
                     listaAlunosFull = alunos || [];
                 }
 
-                const { data: notas, error } = await supabaseClient.from('academico_notas').select('*');
-                if (error) throw error;
+                if (!todasNotasGlobais || todasNotasGlobais.length === 0) {
+                    const { data: notas } = await supabaseClient.from('academico_notas').select('*');
+                    todasNotasGlobais = notas || [];
+                }
+                const notas = todasNotasGlobais;
                 
                 let ranking = [];
                 listaAlunosFull.forEach(aluno => {
@@ -721,6 +704,7 @@
                     return;
                 }
 
+                // Injeta no modal
                 ranking.forEach((aluno, index) => {
                     const rankFormatado = (index + 1).toString().padStart(2, '0');
                     const qraAjustado = (aluno.qra || aluno.nome).replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase();
@@ -745,6 +729,42 @@
                     `;
                     tbody.appendChild(tr);
                 });
+
+                // Injeta também no Top 3 do Dashboard Home
+                const dashTop3 = document.getElementById('homeRankingTop3');
+                if (dashTop3) {
+                    dashTop3.innerHTML = '';
+                    const top3Array = ranking.slice(0, 3);
+                    
+                    if (top3Array.length === 0) {
+                        dashTop3.innerHTML = `<div class="w-full text-center py-6 text-slate-400"><p class="text-[10px] uppercase tracking-widest font-bold">Sem notas computadas.</p></div>`;
+                        return;
+                    }
+
+                    top3Array.forEach((aluno, index) => {
+                        const qraTop = (aluno.qra || aluno.nome).replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase();
+                        let medCor = ['bg-yellow-400 text-yellow-900 border-yellow-500', 'bg-slate-300 text-slate-800 border-slate-400', 'bg-amber-600 text-amber-100 border-amber-700'][index];
+                        let icon = ['fa-crown', 'fa-medal', 'fa-medal'][index];
+                        
+                        dashTop3.innerHTML += `
+                            <div class="flex items-center justify-between bg-white p-3 rounded-xl border border-slate-200 shadow-sm w-full">
+                                <div class="flex items-center gap-3">
+                                    <div class="${medCor} w-10 h-10 rounded-full flex items-center justify-center border font-black shadow-sm shrink-0">
+                                        <i class="fa-solid ${icon}"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-0.5">${index+1}º Colocado</p>
+                                        <p class="text-sm font-black text-sys-dark truncate">5${aluno.numero.toString().padStart(2, '0')} - ${qraTop}</p>
+                                    </div>
+                                </div>
+                                <div class="text-right pl-2 border-l border-slate-100">
+                                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-0.5">MGC</p>
+                                    <p class="text-base font-black text-emerald-600">${aluno.mgc.toFixed(2)}</p>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
             } catch (error) {
                 console.error("Erro ao gerar ranking:", error);
                 tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-rose-500 font-bold">Erro ao buscar dados do ranking.</td></tr>';
@@ -789,7 +809,6 @@
             alunosComCautela.forEach(item => {
                 let num = "5" + item.aluno.numero.toString().padStart(2, '0');
                 let qra = item.aluno.qra ? item.aluno.qra.replace(/AL SD PM /gi, '').trim().toUpperCase() : item.aluno.nome.split(' ')[0].toUpperCase();
-                let cautelaJson = encodeURIComponent(JSON.stringify(item.cautela));
                 html += `<tr class="border-b border-slate-200"><td class="p-2 border-r border-slate-300 text-center text-slate-400">___/___<br>__:__</td><td class="p-2 border-r border-slate-300 text-center font-bold text-pmmt-blue">${num}</td><td class="p-2 border-r border-slate-300 font-bold uppercase text-[11px]">AL SD PM ${qra}</td><td class="p-2 border-r border-slate-300 text-center">${item.cautela.material}</td><td class="p-2 border-r border-slate-300 text-center">${item.cautela.serie}</td><td class="p-2 border-r border-slate-300 text-center">____________</td><td class="p-2 text-center admin-only no-print"><button onclick="deletarCautelaFixa(${item.cautela.id})" class="text-rose-500"><i class="fa-solid fa-trash"></i></button></td></tr>`;
             });
             tbody.innerHTML = html;
