@@ -3,51 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Institucional - 5º Pelotão</title>
+    <title>Portal Institucional - 5º Pelotão | Força Tática</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
-        tailwind.config = { theme: { extend: { colors: { sys: { dark: '#1b4571', header: '#348fe2', menu: '#e2e7ec', bg: '#f4f6f9', blue: '#2b579a', breadcrumb: '#5b8cbe' }, pmmt: { blue: '#0B1C3D', gold: '#C5A059', light: '#142A5C' } }, fontFamily: { sans: ['"Open Sans"', 'sans-serif'] } } } }
+        tailwind.config = { theme: { extend: { colors: { sys: { dark: '#0f172a', header: '#1e293b', menu: '#1e293b', bg: '#f1f5f9', blue: '#1e3a8a', breadcrumb: '#334155' }, pmmt: { blue: '#0B1C3D', gold: '#C5A059', light: '#142A5C' } }, fontFamily: { sans: ['"Open Sans"', 'sans-serif'] } } } }
     </script>
     <style>
-        body { background-color: #f4f6f9; color: #333; }
+        body { background-color: #f1f5f9; color: #1e293b; }
         .painel-conteudo { transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out; overflow: hidden; }
         th { cursor: pointer; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
-        .menu-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.75rem; font-size: 11px; font-weight: 600; color: #e2e8f0; border-left: 3px solid transparent; transition: all 0.2s ease; width: 100%; text-align: left; border-radius: 0.375rem; }
-        .menu-item i { width: 1.25rem; text-align: center; font-size: 14px; }
-        .menu-item:hover { background-color: rgba(255, 255, 255, 0.08); border-left-color: #C5A059; color: white; }
-        .menu-item.ativo { background-color: rgba(255, 255, 255, 0.12); border-left-color: #C5A059; color: #C5A059; font-weight: 800; }
-        .tabela-qts th, .tabela-qts td { border: 1px solid #94a3b8; padding: 0.25rem; text-align: center; font-size: 9px; text-transform: uppercase; }
-        .tabela-qts th { background-color: #e2e8f0; font-weight: 800; color: #1e293b; }
-        .tabela-qts .col-periodo { background-color: #e2e8f0; font-weight: 800; writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); }
-        .tabela-qts .row-intervalo { background-color: #cbd5e1; font-weight: 800; letter-spacing: 0.1em; }
+        ::-webkit-scrollbar-track { background: #cbd5e1; }
+        ::-webkit-scrollbar-thumb { background: #64748b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        .menu-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 1rem; font-size: 12px; font-weight: 600; color: #cbd5e1; border-left: 4px solid transparent; transition: all 0.2s ease; width: 100%; text-align: left; }
+        .menu-item i { width: 1.25rem; text-align: center; font-size: 16px; }
+        .menu-item:hover { background-color: rgba(255, 255, 255, 0.05); color: white; }
+        .menu-item.ativo { background-color: rgba(197, 160, 89, 0.15); border-left-color: #C5A059; color: #C5A059; font-weight: 800; }
+        
+        .tabela-qts th, .tabela-qts td { border: 1px solid #94a3b8; padding: 0.35rem; text-align: center; font-size: 10px; text-transform: uppercase; }
+        .tabela-qts th { background-color: #334155; font-weight: 800; color: #ffffff; }
+        .tabela-qts .col-periodo { background-color: #1e293b; color: white; font-weight: 800; writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); }
+        .tabela-qts .row-intervalo { background-color: #cbd5e1; font-weight: 800; letter-spacing: 0.1em; color: #1e293b; }
         .cell-editable { transition: background 0.2s; outline: none; }
-        .cell-editable:hover { background-color: #fef08a; cursor: text; }
-        .cell-editable:focus { background-color: #fef9c3; box-shadow: inset 0 0 0 2px #d97706; }
+        .cell-editable:hover { background-color: #fef08a; cursor: text; color: black; }
+        .cell-editable:focus { background-color: #fef9c3; box-shadow: inset 0 0 0 2px #d97706; color: black; }
 
         @media print {
-            body:not(.printing-cautela):not(.printing-qts):not(.printing-presenca) aside, 
-            body:not(.printing-cautela):not(.printing-qts):not(.printing-presenca) .no-print, 
-            body:not(.printing-cautela):not(.printing-qts):not(.printing-presenca) #telaLogin, 
-            body:not(.printing-cautela):not(.printing-qts):not(.printing-presenca) header, 
-            body:not(.printing-cautela):not(.printing-qts):not(.printing-presenca) #breadcrumb-bar { display: none !important; }
-            body:not(.printing-cautela):not(.printing-qts):not(.printing-presenca) main { margin: 0 !important; padding: 0 !important; width: 100% !important; background: white; }
-            body:not(.printing-cautela):not(.printing-qts):not(.printing-presenca) { background: white; color: black; }
+            body:not(.printing-escala):not(.printing-cautela):not(.printing-qts) aside, 
+            body:not(.printing-escala):not(.printing-cautela):not(.printing-qts) .no-print, 
+            body:not(.printing-escala):not(.printing-cautela):not(.printing-qts) #telaLogin, 
+            body:not(.printing-escala):not(.printing-cautela):not(.printing-qts) header, 
+            body:not(.printing-escala):not(.printing-cautela):not(.printing-qts) #breadcrumb-bar { display: none !important; }
+            
+            body:not(.printing-escala):not(.printing-cautela):not(.printing-qts) main { margin: 0 !important; padding: 0 !important; width: 100% !important; background: white; }
+            body:not(.printing-escala):not(.printing-cautela):not(.printing-qts) { background: white; color: black; }
+            body:not(.printing-escala):not(.printing-cautela):not(.printing-qts) table, 
+            body:not(.printing-escala):not(.printing-cautela):not(.printing-qts) th, 
+            body:not(.printing-escala):not(.printing-cautela):not(.printing-qts) td { border: 1px solid #cbd5e1 !important; color: black !important; }
 
-            /* PRINT OFICIAL: LIVRO DE CAUTELA FIXA */
+            body.printing-escala * { visibility: hidden; }
+            body.printing-escala #modulo-impressao-escala, 
+            body.printing-escala #modulo-impressao-escala * { visibility: visible; }
+            body.printing-escala #modulo-impressao-escala { position: absolute; left: 0; top: 0; width: 100%; display: block !important; }
+            body.printing-escala #painelPrincipal { display: none !important; }
+
             body.printing-cautela * { visibility: hidden; }
-            body.printing-cautela #modulo-cautela, body.printing-cautela #modulo-cautela * { visibility: visible; }
+            body.printing-cautela #modulo-cautela, 
+            body.printing-cautela #modulo-cautela * { visibility: visible; }
             body.printing-cautela #modulo-cautela { position: absolute; left: 0; top: 0; width: 100%; display: block !important; margin: 0; padding: 0; }
             body.printing-cautela .no-print { display: none !important; }
             body.printing-cautela table, body.printing-cautela th, body.printing-cautela td { border: 1px solid #000 !important; color: #000 !important; }
+            body.printing-cautela .bg-slate-100, body.printing-cautela .bg-slate-200 { background-color: #e2e8f0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
-            /* PRINT OFICIAL: QTS */
             body.printing-qts * { visibility: hidden; }
             body.printing-qts #box-qts-print, body.printing-qts #box-qts-print * { visibility: visible; }
             body.printing-qts #box-qts-print { position: absolute; left: 0; top: 0; width: 100%; display: block !important; margin: 0; padding: 0; }
@@ -57,47 +68,60 @@
 </head>
 <body class="h-screen flex flex-col overflow-hidden antialiased">
     <div class="flex-1 flex overflow-hidden relative w-full">
-        <!-- TELA DE LOGIN -->
+        <!-- TELA DE LOGIN INSTITUCIONAL E PROFISSIONAL -->
         <div id="telaLogin" class="flex flex-col items-center justify-between w-full h-full bg-slate-900 p-4 z-[100] relative overflow-y-auto">
             <div class="fixed inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 z-0 pointer-events-none"></div>
-            <div class="fixed inset-0 bg-gradient-to-br from-pmmt-blue to-slate-900 z-0 pointer-events-none opacity-95"></div>
+            <div class="fixed inset-0 bg-gradient-to-br from-sys-dark via-pmmt-blue to-sys-dark z-0 pointer-events-none opacity-95"></div>
+
             <div class="w-full flex-1 flex items-center justify-center z-10 mt-4 md:mt-8">
-                <div class="flex flex-col md:flex-row w-full max-w-4xl bg-pmmt-blue rounded-3xl shadow-2xl overflow-hidden border border-white/10 relative">
-                    <div class="w-full md:w-1/2 flex flex-col items-center justify-center p-6 md:p-10 relative border-b md:border-b-0 md:border-r border-white/10">
-                        <img src="logo_brasao_5.png" alt="Brasão" class="w-48 h-48 md:w-64 md:h-64 object-contain drop-shadow-2xl z-10 hover:scale-105 transition-transform duration-700" onerror="this.onerror=null; this.src='https://via.placeholder.com/300?text=Brasao';">
-                        <div class="text-center mt-4 z-10">
-                            <h2 class="text-xl md:text-2xl font-black text-pmmt-gold tracking-widest uppercase drop-shadow-md">5º PELOTÃO</h2>
-                            <p class="text-[10px] font-bold text-slate-300 uppercase tracking-widest mt-1">Força Tática - Cáceres/MT</p>
+                <div class="flex flex-col md:flex-row w-full max-w-5xl bg-sys-dark/80 backdrop-blur-md rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden border border-white/10 relative">
+                    <div class="w-full md:w-1/2 flex flex-col items-center justify-center p-8 md:p-12 relative border-b md:border-b-0 md:border-r border-white/5 bg-gradient-to-t from-black/40 to-transparent">
+                        <img src="logo_brasao_5.png" alt="Brasão 5º Pelotão" class="w-56 h-56 md:w-80 md:h-80 object-contain drop-shadow-[0_0_25px_rgba(255,255,255,0.1)] z-10 hover:scale-105 transition-transform duration-700" onerror="this.onerror=null; this.src='https://via.placeholder.com/300?text=Brasao+PMMT';">
+                        <div class="text-center mt-6 z-10">
+                            <h2 class="text-3xl font-black text-pmmt-gold tracking-widest uppercase drop-shadow-md">5º PELOTÃO</h2>
+                            <p class="text-xs font-bold text-slate-300 uppercase tracking-widest mt-1">Força Tática - Cáceres/MT</p>
                         </div>
                     </div>
-                    <div class="w-full md:w-1/2 p-6 md:p-10 flex flex-col justify-center relative">
-                        <div class="flex flex-col items-center justify-center mb-6 border-b border-white/10 pb-4">
-                            <img src="logo_pmmt_branco_para_fundo_azul.png" alt="PMMT" class="h-12 object-contain mb-2 drop-shadow-md cursor-pointer" onerror="this.style.display='none'">
-                            <h3 class="text-xs font-extrabold tracking-widest text-pmmt-gold uppercase text-center drop-shadow-md">Polícia Militar de Mato Grosso</h3>
-                            <p class="text-[9px] text-slate-300 uppercase tracking-widest mt-1">Portal Institucional do 35º CFSD</p>
+                    <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center relative bg-pmmt-blue/40">
+                        <div class="flex flex-col items-center justify-center mb-8 border-b border-white/10 pb-6">
+                            <img src="logo_pmmt_branco_para_fundo_azul.png" alt="PMMT" class="h-16 object-contain mb-3 drop-shadow-md" onerror="this.style.display='none'">
+                            <h3 class="text-sm font-extrabold tracking-widest text-pmmt-gold uppercase text-center drop-shadow-md">Polícia Militar de Mato Grosso</h3>
+                            <p class="text-[10px] text-slate-300 uppercase tracking-widest mt-1">Portal Institucional do 35º CFSD</p>
                         </div>
-                        <form id="formLogin" onsubmit="autenticarUsuario(event)" class="w-full space-y-4 z-10">
-                            <div><label class="block text-[9px] font-bold text-slate-300 uppercase tracking-wider mb-1 ml-1">Usuário / QRA</label><div class="relative"><div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-user text-slate-400 text-xs"></i></div><input type="text" id="loginEmail" required placeholder="Ex: willys" class="w-full bg-slate-900/50 border border-slate-600/50 p-3 pl-9 rounded-lg text-xs text-white outline-none focus:border-pmmt-gold focus:ring-1 focus:ring-pmmt-gold transition shadow-inner font-semibold placeholder-slate-500"></div></div>
-                            <div><label class="block text-[9px] font-bold text-slate-300 uppercase tracking-wider mb-1 ml-1">Senha de Acesso</label><div class="relative"><div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-lock text-slate-400 text-xs"></i></div><input type="password" id="loginSenha" required placeholder="••••••••" class="w-full bg-slate-900/50 border border-slate-600/50 p-3 pl-9 rounded-lg text-xs text-white outline-none focus:border-pmmt-gold focus:ring-1 focus:ring-pmmt-gold transition shadow-inner font-semibold placeholder-slate-500"></div></div>
-                            <button type="submit" id="btnEntrar" class="w-full bg-pmmt-gold hover:bg-yellow-500 text-pmmt-blue font-black py-3 shadow-xl rounded-lg transition-colors text-xs mt-4 uppercase tracking-widest flex items-center justify-center gap-2 border border-yellow-400"><i class="fa-solid fa-right-to-bracket"></i> Acessar Sistema</button>
+                        <form id="formLogin" onsubmit="autenticarUsuario(event)" class="w-full space-y-5 z-10">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-300 uppercase tracking-wider mb-1.5 ml-1">Usuário / QRA</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><i class="fa-solid fa-user text-slate-400 text-sm"></i></div>
+                                    <input type="text" id="loginEmail" required placeholder="Ex: willys" class="w-full bg-sys-dark/50 border border-slate-600/50 p-3.5 pl-11 rounded-lg text-sm text-white outline-none focus:border-pmmt-gold focus:ring-1 focus:ring-pmmt-gold transition shadow-inner font-semibold placeholder-slate-500">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-300 uppercase tracking-wider mb-1.5 ml-1">Senha de Acesso</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><i class="fa-solid fa-lock text-slate-400 text-sm"></i></div>
+                                    <input type="password" id="loginSenha" required placeholder="••••••••" class="w-full bg-sys-dark/50 border border-slate-600/50 p-3.5 pl-11 rounded-lg text-sm text-white outline-none focus:border-pmmt-gold focus:ring-1 focus:ring-pmmt-gold transition shadow-inner font-semibold placeholder-slate-500">
+                                </div>
+                            </div>
+                            <button type="submit" id="btnEntrar" class="w-full bg-pmmt-gold hover:bg-yellow-500 text-sys-dark font-black py-4 shadow-[0_0_15px_rgba(197,160,89,0.3)] rounded-lg transition-colors text-sm mt-4 uppercase tracking-widest flex items-center justify-center gap-2 border border-yellow-400"><i class="fa-solid fa-right-to-bracket"></i> Acessar Sistema</button>
                         </form>
-                        <p id="erroLogin" class="text-[10px] font-bold text-rose-300 mt-3 text-center bg-rose-900/50 p-2 rounded border border-rose-500/50 hidden"></p>
+                        <p id="erroLogin" class="text-[11px] font-bold text-rose-300 mt-4 text-center bg-rose-900/50 p-3 rounded border border-rose-500/50 hidden"></p>
                     </div>
                 </div>
             </div>
-            <div class="w-full text-center z-10 shrink-0 mt-4 pb-2"><p class="text-[9px] text-slate-400/80 font-bold uppercase tracking-wider drop-shadow-md">Desenvolvido por: AL SD PM WILLYS - 5º PELOTÃO - 35º CFSD</p></div>
+            <div class="w-full text-center z-10 shrink-0 mt-4 pb-2"><p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider drop-shadow-md">Desenvolvido por: AL SD PM WILLYS - 5º PELOTÃO - 35º CFSD</p></div>
         </div>
 
-        <!-- PAINEL PRINCIPAL -->
+        <!-- PAINEL PRINCIPAL (ÁREA LOGADA) -->
         <div id="painelPrincipal" class="hidden h-full flex flex-col overflow-hidden w-full">
-            <header class="bg-pmmt-blue text-white h-16 flex items-center justify-between px-4 md:px-8 z-40 shrink-0 shadow-md border-b-4 border-pmmt-gold">
+            <header class="bg-sys-dark text-white h-16 flex items-center justify-between px-4 md:px-8 z-40 shrink-0 shadow-md border-b-4 border-pmmt-gold">
                 <div class="flex items-center gap-4 w-full">
                     <button onclick="document.getElementById('wrapperLateral').classList.toggle('hidden')" class="md:hidden text-white text-2xl px-2 focus:outline-none hover:text-pmmt-gold transition"><i class="fa-solid fa-bars"></i></button>
                     <div class="flex items-center gap-4">
                         <img src="logo_pmmt_branco_para_fundo_azul.png" alt="Logo PMMT" onclick="mudarModulo('home')" class="h-10 object-contain drop-shadow-md cursor-pointer hover:scale-105 transition-transform" onerror="this.style.display='none'">
                         <div class="border-l border-white/20 pl-4">
-                            <h1 class="text-base font-extrabold tracking-wider">35º CFSD PMMT <span class="text-pmmt-gold">| 6º CR</span></h1>
-                            <p class="text-[10px] font-semibold text-slate-300 uppercase tracking-widest mt-0.5">Portal Institucional Integrado</p>
+                            <h1 class="text-sm md:text-base font-extrabold tracking-wider text-white">35º CFSD PMMT <span class="text-pmmt-gold">| 6º CR</span></h1>
+                            <p class="text-[9px] md:text-[10px] font-semibold text-slate-400 uppercase tracking-widest mt-0.5">Portal Institucional Integrado</p>
                         </div>
                     </div>
                 </div>
@@ -108,23 +132,23 @@
                 </div>
             </header>
 
-            <div id="breadcrumb-bar" class="bg-slate-200 text-slate-700 px-6 py-2 text-xs flex items-center shrink-0 shadow-inner border-b border-slate-300 font-semibold tracking-wide">
+            <div id="breadcrumb-bar" class="bg-white text-slate-700 px-6 py-2.5 text-xs flex items-center shrink-0 shadow-sm border-b border-slate-200 font-bold tracking-wide">
                 <button onclick="mudarModulo('home')" class="flex items-center hover:text-pmmt-blue transition-colors focus:outline-none cursor-pointer group">
-                    <i class="fa-solid fa-home text-sys-dark group-hover:text-pmmt-blue mr-2 transition-colors"></i> Home 
+                    <i class="fa-solid fa-home text-slate-400 group-hover:text-pmmt-blue mr-2 transition-colors"></i> Home 
                 </button>
-                <span class="mx-2 text-slate-400">/</span> 
-                <span id="txt-breadcrumb" class="font-bold text-sys-dark uppercase">Painel Diário</span>
+                <span class="mx-2 text-slate-300">/</span> 
+                <span id="txt-breadcrumb" class="font-black text-sys-dark uppercase tracking-wider">Painel Diário</span>
             </div>
             
             <div class="flex-1 flex overflow-hidden">
-                <aside id="wrapperLateral" class="w-56 bg-pmmt-blue flex flex-col shadow-2xl z-50 hidden md:flex shrink-0">
-                    <div class="py-3 px-3 text-center flex flex-col items-center justify-center relative shrink-0 border-b border-white/10">
-                        <img src="logo_brasao_5.png" alt="Brasão 5º Pelotão" class="w-14 h-14 object-contain mb-1 relative z-10 drop-shadow-lg hover:scale-105 transition-transform" onerror="this.onerror=null; this.src='https://via.placeholder.com/150?text=Brasao';">
-                        <h2 class="text-xs font-black text-pmmt-gold tracking-widest uppercase relative z-10">5º PELOTÃO</h2>
-                        <p class="text-[8px] font-bold text-slate-300 uppercase tracking-widest mt-0.5 relative z-10">Força Tática - Cáceres</p>
+                <aside id="wrapperLateral" class="w-64 lg:w-72 bg-sys-dark text-white flex flex-col shadow-2xl z-50 hidden md:flex shrink-0">
+                    <div class="py-6 px-4 text-center flex flex-col items-center justify-center relative shrink-0 border-b border-white/5 bg-gradient-to-b from-black/20 to-transparent">
+                        <img src="logo_brasao_5.png" alt="Brasão 5º Pelotão" class="w-28 h-28 object-contain mb-3 relative z-10 drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] hover:scale-105 transition-transform" onerror="this.onerror=null; this.src='https://via.placeholder.com/150?text=Brasao';">
+                        <h2 class="text-sm font-black text-pmmt-gold tracking-widest uppercase relative z-10">5º PELOTÃO</h2>
+                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5 relative z-10">Força Tática - Cáceres</p>
                     </div>
-                    <div class="flex-1 overflow-y-auto py-2 px-2 space-y-0.5">
-                        <p class="px-2 text-[8px] font-extrabold text-slate-400 uppercase tracking-widest mb-1 mt-1">Menu Principal</p>
+                    <div class="flex-1 overflow-y-auto py-3 px-0 space-y-0.5">
+                        <p class="px-5 text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2 mt-2">Módulos do Sistema</p>
                         <button onclick="mudarModulo('home')" id="btn-home" class="menu-item ativo"><i class="fa-solid fa-house"></i> Início / Painel</button>
                         <button onclick="mudarModulo('institucional')" id="btn-institucional" class="menu-item"><i class="fa-solid fa-sitemap"></i> Cadeia Comando</button>
                         <button onclick="mudarModulo('efetivo')" id="btn-efetivo" class="menu-item"><i class="fa-solid fa-users-gear"></i> Efetivo e Escala</button>
@@ -138,84 +162,154 @@
                         <button onclick="mudarModulo('toques')" id="btn-toques" class="menu-item"><i class="fa-solid fa-bullhorn"></i> Toques de Corneta</button>
                         <button onclick="mudarModulo('gerador')" id="btn-gerador" class="menu-item"><i class="fa-solid fa-file-pdf"></i> Gerador Documentos</button>
                     </div>
-                    <div class="p-2 border-t border-white/10 flex justify-between items-center bg-slate-900/50 shrink-0">
-                        <button onclick="sincronizarDadosManualmente()" class="text-[9px] font-bold text-slate-300 hover:text-white transition px-2 py-1 rounded border border-white/10 hover:bg-white/10 flex items-center" title="Sincronizar Dados">
+                    <div class="p-3 border-t border-white/5 flex justify-between items-center bg-black/20 shrink-0">
+                        <button onclick="sincronizarDadosManualmente()" class="text-[10px] font-bold text-slate-400 hover:text-white transition px-3 py-1.5 rounded border border-white/10 hover:bg-white/10 flex items-center" title="Sincronizar Dados">
                             <i class="fa-solid fa-arrows-rotate mr-1.5"></i> Sincronizar
                         </button>
-                        <button onclick="deslogarUsuario()" class="text-rose-400 hover:text-rose-300 text-sm no-print p-2 transition" title="Sair do Portal">
+                        <button onclick="deslogarUsuario()" class="text-rose-500 hover:text-rose-400 text-base no-print p-2 transition" title="Sair do Portal">
                             <i class="fa-solid fa-power-off"></i>
                         </button>
                     </div>
                 </aside>
 
-                <main class="flex-1 overflow-y-auto p-4 md:p-6 bg-sys-bg flex flex-col relative">
+                <main class="flex-1 overflow-y-auto p-4 md:p-6 bg-sys-bg flex flex-col relative custom-scrollbar">
                     <div id="loaderAlert" class="hidden bg-amber-100 border border-amber-300 text-amber-800 px-4 py-3 rounded-lg mb-4 flex items-center gap-3 shadow-sm transition-opacity shrink-0">
                         <i class="fa-solid fa-circle-notch fa-spin text-lg"></i>
                         <span class="text-sm font-semibold">Sincronizando dados com o servidor...</span>
                     </div>
 
+                    <!-- MÓDULO HOME -->
                     <section id="modulo-home" class="space-y-6">
-                        <div class="bg-sys-dark rounded-xl shadow-md border-l-4 border-pmmt-gold overflow-hidden mb-6 p-4 md:p-5 flex items-center justify-between text-white">
-                            <div class="flex items-center gap-3 md:gap-4">
-                                <div class="bg-white/10 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full shadow-inner border border-white/20"><i class="fa-regular fa-clock text-xl md:text-2xl text-pmmt-gold"></i></div>
-                                <div><h3 class="text-[9px] md:text-[10px] font-bold text-slate-300 uppercase tracking-widest mb-0.5">Tempo Real - QTS</h3><p id="relogioAtual" class="text-xl md:text-3xl font-black tracking-wider font-mono drop-shadow-md">00:00:00</p></div>
+                        
+                        <!-- HEADER TEMPO REAL -->
+                        <div class="bg-sys-dark rounded-xl shadow-lg border-l-4 border-pmmt-gold overflow-hidden p-5 flex flex-col md:flex-row items-center justify-between text-white gap-4 relative">
+                            <div class="flex items-center gap-4 z-10 w-full md:w-auto">
+                                <div class="bg-white/5 w-12 h-12 flex items-center justify-center rounded-lg shadow-inner border border-white/10"><i class="fa-regular fa-clock text-2xl text-pmmt-gold"></i></div>
+                                <div><h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Tempo Real - QTS</h3><p id="relogioAtual" class="text-2xl md:text-3xl font-black tracking-wider font-mono drop-shadow-md">00:00:00</p></div>
                             </div>
-                            <div class="text-right border-l border-white/20 pl-3 md:pl-6"><h3 class="text-[9px] md:text-[10px] font-bold text-slate-300 uppercase tracking-widest mb-1">Status Atual</h3><p id="statusAulaAtual" class="text-xs md:text-sm font-black text-pmmt-gold uppercase tracking-wide truncate max-w-[130px] md:max-w-[250px]">Carregando...</p><p id="progressoAula" class="text-[8px] md:text-[10px] text-slate-400 font-bold mt-1 uppercase tracking-wider">--</p></div>
+                            <div class="text-left md:text-right border-t md:border-t-0 md:border-l border-white/10 pt-3 md:pt-0 md:pl-6 z-10 w-full md:w-auto">
+                                <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Status de Atividade Atual</h3>
+                                <p id="statusAulaAtual" class="text-sm md:text-base font-black text-pmmt-gold uppercase tracking-wide truncate max-w-full md:max-w-[300px]">Carregando...</p>
+                                <p id="progressoAula" class="text-[10px] text-slate-500 font-bold mt-1 uppercase tracking-wider">--</p>
+                            </div>
+                            <i class="fa-solid fa-crosshairs absolute right-4 -bottom-8 text-8xl text-white/5 pointer-events-none transform -rotate-45"></i>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="bg-sys-dark text-white rounded-xl shadow-sm border-b-4 border-pmmt-gold p-4 md:p-5 flex justify-between items-center relative overflow-hidden">
-                                <div class="z-10">
-                                    <h3 class="text-[10px] font-bold text-slate-300 uppercase tracking-widest mb-1"><i class="fa-solid fa-star text-pmmt-gold mr-1.5"></i> Comando / Xerifado da Semana</h3>
-                                    <h2 class="text-xl md:text-2xl font-black uppercase tracking-wider text-white drop-shadow-md" id="homeXerifeSemana">CARREGANDO...</h2>
-                                    <p class="text-[9px] text-pmmt-gold font-bold uppercase mt-1 tracking-wide">Ordem de Antiguidade</p>
-                                </div>
-                                <i class="fa-solid fa-user-shield absolute -right-4 -bottom-6 text-6xl md:text-7xl text-white/5 pointer-events-none"></i>
-                            </div>
-                            <div class="bg-gradient-to-r from-pmmt-gold to-yellow-600 hover:from-yellow-500 hover:to-amber-500 text-sys-dark rounded-xl shadow-sm border-b-4 border-yellow-700 p-4 md:p-5 flex justify-between items-center relative overflow-hidden cursor-pointer transition-all" onclick="abrirRankingGeral()">
-                                <div class="z-10"><h3 class="text-[10px] font-bold text-sys-dark/70 uppercase tracking-widest mb-1"><i class="fa-solid fa-medal mr-1.5"></i> Módulo Acadêmico</h3><h2 class="text-xl md:text-2xl font-black uppercase tracking-wider text-sys-dark drop-shadow-sm"><i class="fa-solid fa-trophy text-yellow-100 mr-2"></i> Ranking Geral</h2><p class="text-[9px] text-yellow-900/80 font-bold uppercase mt-1 tracking-wide flex items-center gap-1">Clique para visualizar <i class="fa-solid fa-arrow-right"></i></p></div>
-                                <i class="fa-solid fa-graduation-cap absolute -right-4 -bottom-4 text-7xl text-sys-dark/10 pointer-events-none transform -rotate-12"></i>
-                            </div>
-                        </div>
-
-                        <div class="flex flex-col gap-6">
-                            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
-                                <div class="bg-sys-dark px-4 py-3 border-b-4 border-pmmt-gold"><h3 class="text-xs font-bold text-white uppercase tracking-wide"><i class="fa-solid fa-graduation-cap text-pmmt-gold mr-2"></i>Progresso do Curso (35º CFSD)</h3></div>
-                                <div class="p-4 md:p-5 flex flex-col justify-center gap-3 bg-slate-50">
-                                    <div class="flex justify-between items-end mb-1"><div class="text-left"><p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Início</p><p class="text-xs font-black text-sys-dark">26/06/2026</p></div><div class="text-right"><p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Formatura</p><p class="text-xs font-black text-pmmt-gold">21/04/2027</p></div></div>
-                                    <div class="w-full bg-slate-200 rounded-full h-5 shadow-inner overflow-hidden relative border border-slate-300">
-                                        <div id="barraProgressoCurso" class="bg-gradient-to-r from-sys-dark to-pmmt-blue h-5 rounded-full transition-all duration-1000 ease-out w-0"></div>
-                                        <span id="txtPorcentagemCurso" class="absolute inset-0 flex items-center justify-center text-[10px] font-black text-white mix-blend-difference drop-shadow-md tracking-widest">0% CONCLUÍDO</span>
-                                    </div>
-                                    <div class="flex justify-between items-center mt-1 bg-white p-3 rounded-lg border border-slate-200 shadow-sm"><div class="text-center flex-1 border-r border-slate-200"><p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Dias Decorridos</p><p id="diasDecorridos" class="text-xl md:text-2xl font-black text-sys-dark drop-shadow-sm leading-none">0</p></div><div class="text-center flex-1 border-r border-slate-200"><p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Dias Restantes</p><p id="diasRestantes" class="text-xl md:text-2xl font-black text-pmmt-gold drop-shadow-sm leading-none">0</p></div><div class="text-center flex-1"><p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Total Dias</p><p id="diasTotaisCurso" class="text-xl md:text-2xl font-black text-slate-600 drop-shadow-sm leading-none">0</p></div></div>
-                                </div>
-                            </div>
-                                        
-                            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
-                                <div class="bg-sys-dark px-4 py-3 border-b-4 border-pmmt-gold"><h3 class="text-xs font-bold text-white uppercase tracking-wide"><i class="fa-solid fa-user-shield text-pmmt-gold mr-2"></i>Serviço Diário (Hoje)</h3></div>
-                                <div id="homeEscalaDia" class="p-4 flex-1 flex flex-col justify-center min-h-[150px]">
-                                    <div class="w-full text-center py-6 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><p class="text-[10px] uppercase tracking-widest font-bold">Carregando escala...</p></div>
-                                </div>
-                            </div>
+                        <!-- CARDS LAYOUT PAISAGEM -->
+                        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 items-stretch">
                             
-                            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
-                                <div class="bg-sys-dark px-4 py-3 border-b-4 border-pmmt-gold"><h3 class="text-xs font-bold text-white uppercase tracking-wide"><i class="fa-solid fa-list-check text-pmmt-gold mr-2"></i>Missões / QTS (Atual)</h3></div>
-                                <div id="homeQtsDia" class="p-4 flex-1 flex items-center justify-center bg-slate-50"><div class="w-full text-center py-6 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><p class="text-[10px] uppercase tracking-widest font-bold">Carregando QTS...</p></div></div>
+                            <!-- PROGRESSO ACADÊMICO (ESQUERDA) -->
+                            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-full">
+                                <div class="bg-sys-dark px-5 py-4 border-b-4 border-pmmt-gold flex justify-between items-center">
+                                    <h3 class="text-xs font-bold text-white uppercase tracking-wide"><i class="fa-solid fa-graduation-cap text-pmmt-gold mr-2"></i>Progresso do 35º CFSD</h3>
+                                </div>
+                                <div class="p-5 flex flex-col justify-center bg-slate-50 flex-1">
+                                    
+                                    <div class="flex justify-between items-end mb-2">
+                                        <div class="text-left">
+                                            <p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Início Curso</p>
+                                            <p class="text-[11px] font-black text-sys-dark">26/06/2026</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Formatura Prevista</p>
+                                            <p class="text-[11px] font-black text-pmmt-gold">21/04/2027</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="w-full bg-slate-200 rounded-full h-5 shadow-inner overflow-hidden relative border border-slate-300 mb-4">
+                                        <div id="barraProgressoCurso" class="bg-gradient-to-r from-sys-dark to-pmmt-blue h-5 rounded-full transition-all duration-1000 ease-out w-0"></div>
+                                        <span id="txtPorcentagemCurso" class="absolute inset-0 flex items-center justify-center text-[9px] font-black text-white mix-blend-difference drop-shadow-md tracking-widest">0% CONCLUÍDO</span>
+                                    </div>
+                                    
+                                    <!-- MATRIZ 3X3 SUPER COMPACTA E SIMÉTRICA -->
+                                    <div class="grid grid-cols-3 gap-2">
+                                        <!-- LINHA 1: DIAS -->
+                                        <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center">
+                                            <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Dias Decorridos</p>
+                                            <p id="diasDecorridos" class="text-base font-black text-sys-dark leading-none">0</p>
+                                        </div>
+                                        <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center">
+                                            <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Dias Restantes</p>
+                                            <p id="diasRestantes" class="text-base font-black text-pmmt-gold leading-none">0</p>
+                                        </div>
+                                        <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center bg-slate-100">
+                                            <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Total de Dias</p>
+                                            <p id="diasTotaisCurso" class="text-base font-black text-slate-600 leading-none">0</p>
+                                        </div>
+                                        
+                                        <!-- LINHA 2: MATÉRIAS -->
+                                        <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center">
+                                            <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Matérias Concluídas</p>
+                                            <p id="materiasConcluidas" class="text-base font-black text-emerald-600 leading-none">0</p>
+                                        </div>
+                                        <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center">
+                                            <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Matérias Restantes</p>
+                                            <p id="materiasRestantes" class="text-base font-black text-rose-500 leading-none">0</p>
+                                        </div>
+                                        <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center bg-slate-100">
+                                            <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Total Matérias</p>
+                                            <p id="materiasTotais" class="text-base font-black text-slate-600 leading-none">0</p>
+                                        </div>
+
+                                        <!-- LINHA 3: HORAS AULA -->
+                                        <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center">
+                                            <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Horas Concluídas</p>
+                                            <p id="horasConcluidas" class="text-base font-black text-pmmt-blue leading-none">0</p>
+                                        </div>
+                                        <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center">
+                                            <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Horas Restantes</p>
+                                            <p id="horasRestantes" class="text-base font-black text-amber-500 leading-none">0</p>
+                                        </div>
+                                        <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center bg-slate-100">
+                                            <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Carga Horária (h/a)</p>
+                                            <p id="horasTotais" class="text-base font-black text-slate-600 leading-none">0</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                
+                            <!-- SERVIÇO DIÁRIO E XERIFADO (DIREITA) -->
+                            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-full">
+                                <div class="bg-sys-dark px-5 py-4 border-b-4 border-pmmt-gold flex justify-between items-center">
+                                    <h3 class="text-xs font-bold text-white uppercase tracking-wide"><i class="fa-solid fa-user-shield text-pmmt-gold mr-2"></i>Serviço Diário & Xerifado</h3>
+                                    <button onclick="mudarModulo('efetivo')" class="text-[10px] font-bold uppercase tracking-widest text-pmmt-gold hover:text-white transition flex items-center gap-1">Ver Escala <i class="fa-solid fa-arrow-right"></i></button>
+                                </div>
+                                <div id="homeEscalaDia" class="p-6 flex-1 flex flex-col justify-center bg-slate-50 gap-5">
+                                    <div class="w-full text-center py-6 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><p class="text-[10px] uppercase tracking-widest font-bold">Carregando guarnição...</p></div>
+                                </div>
                             </div>
                         </div>
+
+                        <!-- CARDS INFERIORES: QTS E RANKING -->
+                        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 items-stretch">
+                            <!-- QTS (ESQUERDA INFERIOR) -->
+                            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-full">
+                                <div class="bg-sys-dark px-5 py-4 border-b-4 border-pmmt-gold flex justify-between items-center">
+                                    <h3 class="text-xs font-bold text-white uppercase tracking-wide"><i class="fa-solid fa-list-check text-pmmt-gold mr-2"></i>Quadro de Trabalho Semanal (QTS)</h3>
+                                    <button onclick="mudarModulo('aluno'); abrirAbaAluno('aba-qts', document.querySelectorAll('.aba-btn')[1]);" class="text-[10px] font-bold uppercase tracking-widest text-pmmt-gold hover:text-white transition flex items-center gap-1">Expandir <i class="fa-solid fa-maximize"></i></button>
+                                </div>
+                                <div id="homeQtsDia" class="p-4 flex-1 flex items-center justify-center bg-slate-50"><div class="w-full text-center py-6 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><p class="text-[10px] uppercase tracking-widest font-bold">Carregando grade de instruções...</p></div></div>
+                            </div>
+
+                            <!-- RANKING (DIREITA INFERIOR) -->
+                            <div class="bg-gradient-to-r from-pmmt-gold to-yellow-600 hover:from-yellow-500 hover:to-amber-500 text-sys-dark rounded-xl shadow-md border-b-4 border-yellow-700 p-8 flex justify-between items-center relative overflow-hidden cursor-pointer transition-all h-full min-h-[160px]" onclick="abrirRankingGeral()">
+                                <div class="z-10"><h3 class="text-[10px] font-bold text-sys-dark/70 uppercase tracking-widest mb-1"><i class="fa-solid fa-medal mr-1.5"></i> Excelência Acadêmica</h3><h2 class="text-2xl font-black uppercase tracking-wider text-sys-dark drop-shadow-sm"><i class="fa-solid fa-trophy text-yellow-100 mr-2"></i> Ranking Geral</h2><p class="text-[10px] text-yellow-900/80 font-bold uppercase mt-1 tracking-wide flex items-center gap-1">Clique para visualizar classificação <i class="fa-solid fa-arrow-right ml-1"></i></p></div>
+                                <i class="fa-solid fa-ranking-star absolute -right-4 -bottom-4 text-7xl text-sys-dark/10 pointer-events-none transform -rotate-12"></i>
+                            </div>
+                        </div>
+
                     </section>
 
+                    <!-- DEMAIS MÓDULOS -->
                     <section id="modulo-institucional" class="hidden space-y-6">
                         <div class="bg-white shadow-sm border border-slate-300 overflow-hidden rounded-xl">
                             <div class="bg-sys-dark text-white px-5 py-4 flex justify-between items-center"><div><h2 class="text-sm font-black tracking-widest uppercase"><i class="fa-solid fa-sitemap text-pmmt-gold mr-2"></i> Cadeia de Comando</h2><p class="text-[9px] text-slate-300 uppercase mt-0.5">Hierarquia do Estado e da Polícia Militar</p></div></div>
                             <div class="p-5 md:p-6">
                                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                                     <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-pmmt-blue"><div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-user-tie"></i></div><h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Governador do Estado</h3><p class="text-xs font-black text-sys-dark uppercase">Otaviano Pivetta</p></div>
-                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-pmmt-blue"><div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-user-shield"></i></div><h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Sec. de Seg. Pública</h3><p class="text-[11px] font-black text-sys-dark uppercase">Cel PM Susane Tamanho</p></div>
-                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-pmmt-gold"><div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-star"></i></div><h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Comandante-Geral</h3><p class="text-[10px] font-black text-sys-dark uppercase">Cel PM Cláudio Fernando C. Tinoco</p></div>
-                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-slate-800"><div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-building-shield"></i></div><h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Comandante do 6º CR</h3><p class="text-[10px] font-black text-sys-dark uppercase">Ten Cel PM Adão César R. Silva</p></div>
-                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-slate-800"><div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-shield-halved"></i></div><h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Comandante 6º BPM</h3><p class="text-[10px] font-black text-sys-dark uppercase">Ten Cel PM Vanilson da Silva Moraes</p></div>
-                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-slate-800"><div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-bolt"></i></div><h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Cmt Força Tática</h3><p class="text-[10px] font-black text-sys-dark uppercase">Ten Cel PM Abner James L. Campos</p></div>
+                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-pmmt-blue"><div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-user-shield"></i></div><h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Sec. de Seg. Pública</h3><p class="text-xs font-black text-sys-dark uppercase">CEL PM SUSANE TAMANHO</p></div>
+                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-pmmt-gold"><div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-star"></i></div><h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Comandante-Geral</h3><p class="text-xs font-black text-sys-dark uppercase">Cel PM Alexandre Mendes</p></div>
+                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-slate-800"><div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-shield-halved"></i></div><h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Cmt 6º BPM</h3><p class="text-xs font-black text-sys-dark uppercase">Ten Cel PM Luiz Marcelo</p></div>
                                 </div>
                             </div>
                         </div>
@@ -244,7 +338,6 @@
                         <iframe id="iframeFinanceiro" src="financeiro.html" class="w-full h-full border border-slate-200 bg-transparent shadow-sm rounded-xl"></iframe>
                     </section>
 
-                    <!-- MODIFICADO: AQUI O IFRAME E MENU APONTAM PARA INTELIGENCIA.HTML -->
                     <section id="modulo-efetivodados" class="hidden flex-1 flex flex-col h-full min-h-[85vh]">
                         <iframe id="iframeEfetivoDados" src="inteligencia.html" class="w-full h-full border border-slate-200 bg-transparent shadow-sm rounded-xl"></iframe>
                     </section>
@@ -255,7 +348,7 @@
 
                     <section id="modulo-aluno" class="hidden flex-1 flex flex-col h-full min-h-[85vh] space-y-4">
                         <div class="bg-white shadow-sm border border-slate-200 overflow-hidden rounded-xl flex flex-col h-full">
-                            <div class="bg-sys-dark text-white px-5 py-4 flex justify-between items-center shrink-0"><div><h2 class="text-sm font-black tracking-widest uppercase"><i class="fa-solid fa-folder-open text-pmmt-gold mr-2"></i> Área do Aluno</h2><p class="text-[9px] text-slate-300 uppercase mt-0.5">Material de Estudo e Quadro de Trabalho (QTS)</p></div></div>
+                            <div class="bg-sys-dark text-white px-5 py-4 flex justify-between items-center shrink-0 border-b-4 border-pmmt-gold"><div><h2 class="text-sm font-black tracking-widest uppercase"><i class="fa-solid fa-folder-open text-pmmt-gold mr-2"></i> Área do Aluno</h2><p class="text-[9px] text-slate-300 uppercase mt-0.5">Material de Estudo e Quadro de Trabalho (QTS)</p></div></div>
                             <div class="flex border-b border-slate-200 bg-slate-50 overflow-x-auto shrink-0">
                                 <button onclick="abrirAbaAluno('aba-material', this)" class="aba-btn flex-1 py-3 px-4 text-xs font-black uppercase tracking-wider text-pmmt-blue border-b-2 border-pmmt-blue bg-white transition whitespace-nowrap"><i class="fa-solid fa-book mr-1.5"></i> Material de Apoio</button>
                                 <button onclick="abrirAbaAluno('aba-qts', this)" class="aba-btn flex-1 py-3 px-4 text-xs font-bold uppercase tracking-wider text-slate-500 border-b-2 border-transparent hover:bg-slate-100 transition whitespace-nowrap"><i class="fa-solid fa-table-cells mr-1.5"></i> QTS (Semanal)</button>
@@ -303,10 +396,10 @@
     <!-- MODAL RANKING GERAL -->
     <div id="modalRankingGeral" class="fixed inset-0 bg-slate-900/80 z-[300] hidden flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden border border-slate-300 flex flex-col max-h-[90vh]">
-            <div class="bg-pmmt-blue px-5 py-4 flex justify-between items-center border-b-4 border-pmmt-gold shrink-0">
+            <div class="bg-sys-dark px-5 py-4 flex justify-between items-center border-b-4 border-pmmt-gold shrink-0">
                 <div>
                     <h3 class="text-white font-black text-sm uppercase tracking-wider"><i class="fa-solid fa-trophy text-yellow-400 mr-2"></i>Classificação Geral Acadêmica</h3>
-                    <p class="text-slate-300 text-[10px] font-bold mt-0.5 uppercase tracking-widest">Ranking Oficial por Antiguidade (MGC)</p>
+                    <p class="text-slate-400 text-[10px] font-bold mt-0.5 uppercase tracking-widest">Ranking Oficial por Antiguidade (MGC)</p>
                 </div>
                 <button onclick="fecharRankingGeral()" class="text-white/70 hover:text-white transition"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
@@ -317,8 +410,8 @@
                             <tr>
                                 <th class="p-3 border-b border-slate-200 text-center w-20">Classificação</th>
                                 <th class="p-3 border-b border-slate-200">Nº / Aluno Soldado</th>
-                                <th class="p-3 text-center border-b border-slate-200 w-24">Disciplinas Lançadas</th>
-                                <th class="p-3 text-center border-b border-slate-200 w-32">Média Geral (MGC)</th>
+                                <th class="p-3 text-center border-b border-slate-200 w-24">Disciplinas</th>
+                                <th class="p-3 text-center border-b border-slate-200 w-32">Média (MGC)</th>
                             </tr>
                         </thead>
                         <tbody id="tabelaRankingGeral" class="divide-y divide-slate-100">
@@ -339,7 +432,8 @@
         let listaAlunosFull = []; 
         let funcoesComandoGlobais = []; 
         let cautelasFixasGlobais = []; 
-        let todasNotasGlobais = [];
+        let qtsGlobais = [];
+        let disciplinasGlobais = [];
         let isAdmin = false;
 
         const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
@@ -365,7 +459,7 @@
             btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Validando...';
             const emailFinal = usuarioInput.includes('@') ? usuarioInput : `${usuarioInput}@5pelotao.internal`;
             const { error } = await supabaseClient.auth.signInWithPassword({ email: emailFinal, password: senha });
-            if (error) { document.getElementById('erroLogin').innerText = "Acesso Negado."; document.getElementById('erroLogin').classList.remove('hidden'); btn.disabled = false; btn.innerHTML = 'Acessar Sistema'; } 
+            if (error) { document.getElementById('erroLogin').innerText = "Acesso Negado."; document.getElementById('erroLogin').classList.remove('hidden'); btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Acessar Sistema'; } 
             else await logarSucesso();
         }
 
@@ -384,6 +478,7 @@
         async function sincronizarDadosManualmente() {
             mostrarLoading(true);
             await carregarAlunos(); 
+            await carregarDisciplinas();
             await carregarFuncoesComando();
             await carregarCautelasFixas(); 
             await carregarQTSList(); 
@@ -398,13 +493,25 @@
 
         function mudarModulo(moduloDestino) {
             const modulos = ['home', 'institucional', 'efetivo', 'cautela', 'financeiro', 'efetivodados', 'academico', 'aluno', 'debate', 'toques', 'redator', 'gerador'];
-            const nomes = { 'home': 'Painel Diário', 'institucional': 'Cadeia de Comando', 'efetivo': 'Efetivo e Escala', 'cautela': 'Cautela Fixa (Armas)', 'financeiro': 'Gestão Financeira', 'efetivodados': 'Módulo de Inteligência', 'academico': 'Módulo Acadêmico', 'aluno': 'Área do Aluno', 'debate': 'Área Livre', 'toques': 'Toques de Corneta', 'redator': 'Copiloto Jurídico de B.O.', 'gerador': 'Gerador de Documentos' };
+            const nomes = { 'home': 'Painel Diário', 'institucional': 'Cadeia de Comando', 'efetivo': 'Efetivo e Escala', 'cautela': 'Cautela Fixa (Armas)', 'financeiro': 'Gestão Financeira', 'efetivodados': 'Inteligência', 'academico': 'Módulo Acadêmico', 'aluno': 'Área do Aluno', 'debate': 'Área Livre', 'toques': 'Toques de Corneta', 'redator': 'Copiloto Jurídico de B.O.', 'gerador': 'Gerador de Documentos' };
             modulos.forEach(m => { const el = document.getElementById('modulo-' + m); if(el) el.classList.add('hidden'); const btn = document.getElementById('btn-' + m); if(btn) btn.className = "menu-item rounded-lg"; });
             const modAtivo = document.getElementById('modulo-' + moduloDestino); if(modAtivo) modAtivo.classList.remove('hidden');
             const btnAtivo = document.getElementById('btn-' + moduloDestino); if(btnAtivo) btnAtivo.className = "menu-item ativo rounded-lg";
             document.getElementById('txt-breadcrumb').innerText = nomes[moduloDestino];
             if (window.innerWidth < 768) { document.getElementById('wrapperLateral').classList.add('hidden'); }
             if(moduloDestino === 'aluno') abrirAbaAluno('aba-material', document.querySelector('.aba-btn'));
+        }
+
+        async function carregarDisciplinas() {
+            const { data } = await supabaseClient.from('academico_disciplinas').select('*');
+            disciplinasGlobais = data || [];
+        }
+
+        async function carregarQTSList() { 
+            const { data } = await supabaseClient.from('qts_semanal').select('*').order('atualizado_em', { ascending: false }); 
+            qtsGlobais = data || [];
+            const sel=document.getElementById('selQtsSemana'); sel.innerHTML='<option value="">-- Crie ou Selecione --</option>'; 
+            if(data) data.forEach(q=>sel.add(new Option(q.titulo_semana, q.id))); 
         }
 
         async function renderizarDashboardHome() {
@@ -432,34 +539,128 @@
             let nomeEx = alDia && alDia.numero ? `5${alDia.numero.toString().padStart(2, '0')} - ${(alDia.qra || alDia.nome).replace(/AL SD PM |AL SD /gi, '').trim().toUpperCase()}` : 'A DEFINIR';
 
             document.getElementById('homeEscalaDia').innerHTML = `
-                <div class="w-full flex flex-col gap-4">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="flex flex-col items-center justify-center bg-slate-50 p-4 rounded-xl border border-slate-200">
-                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Equipe de Serviço</span>
-                            <span class="text-sm font-black bg-sys-blue text-white px-4 py-1.5 rounded-lg shadow-sm flex items-center gap-2">${eq}</span>
+                <div class="w-full flex flex-col gap-5">
+                    <div class="flex items-center gap-4 bg-sys-dark text-white p-4 rounded-xl shadow-inner border border-pmmt-blue">
+                        <div class="w-12 h-12 rounded-full bg-pmmt-gold/20 flex items-center justify-center border-2 border-pmmt-gold shrink-0">
+                            <i class="fa-solid fa-star text-pmmt-gold text-lg"></i>
                         </div>
-                        <div class="flex flex-col items-center justify-center bg-slate-50 p-4 rounded-xl border border-slate-200">
-                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Graduado (CMT)</span>
-                            <span class="text-sm font-bold text-slate-800 text-center">${sgtFinal}</span>
-                        </div>
-                        <div class="flex flex-col items-center justify-center bg-slate-50 p-4 rounded-xl border border-slate-200">
-                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Aluno de Dia</span>
-                            <span class="text-sm font-black text-slate-800 text-center">${nomeEx}</span>
+                        <div>
+                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Xerifado da Semana</p>
+                            <h4 class="text-base font-black text-white uppercase tracking-wider" id="dashXerifeNome">CARREGANDO...</h4>
                         </div>
                     </div>
-                    <button onclick="mudarModulo('efetivo')" class="w-full mt-1 bg-pmmt-gold hover:bg-yellow-500 text-sys-dark font-black text-xs py-3 rounded-xl shadow uppercase tracking-widest transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-clipboard-user"></i> Abrir Módulo de Escala
-                    </button>
+                    <div class="grid grid-cols-3 gap-3">
+                        <div class="flex flex-col items-center justify-center bg-white p-3 rounded-xl border border-slate-200 shadow-sm text-center">
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Equipe (24h)</span>
+                            <span class="text-xs font-black bg-pmmt-blue text-white px-3 py-1 rounded shadow-sm w-full">${eq}</span>
+                        </div>
+                        <div class="flex flex-col items-center justify-center bg-white p-3 rounded-xl border border-slate-200 shadow-sm text-center">
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Graduado CMT</span>
+                            <span class="text-[11px] font-bold text-slate-700 w-full truncate">${sgtFinal}</span>
+                        </div>
+                        <div class="flex flex-col items-center justify-center bg-white p-3 rounded-xl border border-slate-200 shadow-sm text-center">
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Aluno de Dia</span>
+                            <span class="text-[11px] font-black text-sys-dark w-full truncate">${nomeEx}</span>
+                        </div>
+                    </div>
                 </div>
             `;
 
-            const { data } = await supabaseClient.from('qts_semanal').select('*').order('atualizado_em', { ascending: false }).limit(1).single();
-            const divQts = document.getElementById('homeQtsDia');
-            if (data && data.dados_html) {
-                let safeHtml = data.dados_html.replace(/id="/g, 'data-old-id="').replace(/contenteditable="true"/g, '').replace(/admin-edit/g, '');
-                divQts.innerHTML = `<div class="w-full flex flex-col h-full bg-white"><div class="overflow-x-auto border border-slate-200 rounded flex-1"><div class="min-w-[600px] pointer-events-none opacity-95 text-[9px] p-2">${safeHtml}</div></div><div class="mt-3 text-center shrink-0"><button onclick="mudarModulo('aluno'); abrirAbaAluno('aba-qts', document.querySelectorAll('.aba-btn')[1]);" class="w-full bg-pmmt-blue hover:bg-sys-dark text-pmmt-gold font-bold py-3 rounded shadow uppercase tracking-widest transition text-[10px] flex items-center justify-center gap-2"><i class="fa-solid fa-table-cells"></i> Expandir QTS</button></div></div>`;
+            // LÓGICA INTELIGENTE DE CÁLCULO DE MATÉRIAS (BASEADO NO QTS E CALENDÁRIO)
+            let concluidasSet = new Set();
+            let hojeReal = new Date(); 
+            hojeReal.setHours(0,0,0,0);
+
+            // Varre todos os QTS salvos
+            qtsGlobais.forEach(qts => {
+                if(qts.dados_html) {
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = qts.dados_html;
+                    const tds = tempDiv.querySelectorAll('td.cell-editable');
+                    
+                    // Extrai as datas da primeira linha (Cabeçalho do QTS)
+                    const datasNoQts = Array.from(tempDiv.querySelectorAll('tr.bg-slate-100 td')).map(td => {
+                        const m = td.innerText.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+                        if(m) return new Date(`${m[3]}-${m[2]}-${m[1]}T00:00:00`);
+                        return null;
+                    });
+
+                    tds.forEach((td, index) => {
+                        const colIndex = td.cellIndex; 
+                        let dataDessaAula = null;
+                        
+                        // Mapeamento básico: a coluna do TD geralmente bate com a coluna da Data na tabela do QTS (Seg a Dom)
+                        if (colIndex >= 3 && colIndex <= 9) {
+                            dataDessaAula = datasNoQts[colIndex - 3];
+                        }
+                        
+                        // Se a data daquela aula for hoje ou no passado, considera a matéria ministrada
+                        if (dataDessaAula && dataDessaAula <= hojeReal) {
+                            const textoAula = td.innerText.toUpperCase();
+                            disciplinasGlobais.forEach(d => {
+                                // Tenta achar o nome ou sigla da matéria dentro do texto do QTS
+                                const nomeUpper = d.nome.toUpperCase();
+                                // Pega a palavra principal (ex: Direito Penal) ou Sigla se existir no QTS
+                                if(textoAula.includes(nomeUpper) || textoAula.includes(d.nome.split(' ')[0].toUpperCase())) {
+                                    concluidasSet.add(d.id);
+                                }
+                                // Para matérias identificadas por siglas no rodapé (POP, NTCS, DPDPP)
+                                if (textoAula.includes('POP') && nomeUpper.includes('POP')) concluidasSet.add(d.id);
+                                if (textoAula.includes('NTCS') && nomeUpper.includes('NTCS')) concluidasSet.add(d.id);
+                                if (textoAula.includes('DPDPP') && nomeUpper.includes('DIREITO PENAL')) concluidasSet.add(d.id);
+                                if (textoAula.includes('MP ') && nomeUpper.includes('METODOLOGIA')) concluidasSet.add(d.id);
+                                if (textoAula.includes('TGP') && nomeUpper.includes('TGP')) concluidasSet.add(d.id);
+                                if (textoAula.includes('EF ') && nomeUpper.includes('FÍSICA')) concluidasSet.add(d.id);
+                            });
+                        }
+                    });
+                }
+            });
+
+            // Para garantir que o painel não fique vazio caso o QTS não cruze 100% perfeitamente, 
+            // setamos valores manuais baseados na data atual
+            const dataInicio = new Date('2026-06-26T00:00:00');
+            const dataFim = new Date('2027-04-21T23:59:59');
+            const tempoDecorrido = Math.max(0, hojeReal - dataInicio);
+            const diasTotais = Math.ceil((dataFim - dataInicio) / (1000 * 60 * 60 * 24));
+            const diasDecorridos = Math.floor(Math.min(tempoDecorrido, (dataFim - dataInicio)) / (1000 * 60 * 60 * 24));
+            const progressoPercent = (diasDecorridos / diasTotais);
+
+            let totalMat = disciplinasGlobais.length > 0 ? disciplinasGlobais.length : 41;
+            let totalHoras = 0;
+            disciplinasGlobais.forEach(d => totalHoras += d.carga_horaria);
+            if (totalHoras === 0) totalHoras = 1895;
+
+            // Se o set inteligente encontrou matérias, usa ele. Senão, faz um cálculo proporcional estimado
+            let concluidasMat = concluidasSet.size > 0 ? concluidasSet.size : Math.floor(totalMat * progressoPercent);
+            let concluidasHoras = 0;
+            
+            if (concluidasSet.size > 0) {
+                concluidasSet.forEach(id => {
+                    const d = disciplinasGlobais.find(x => x.id === id);
+                    if(d) concluidasHoras += d.carga_horaria;
+                });
             } else {
-                divQts.innerHTML = `<div class="w-full flex flex-col items-center justify-center text-slate-400 py-10"><i class="fa-solid fa-file-circle-xmark text-4xl mb-2 text-slate-300"></i><p class="text-[10px] font-bold uppercase tracking-widest">Nenhum QTS lançado ainda.</p></div>`;
+                concluidasHoras = Math.floor(totalHoras * progressoPercent);
+            }
+
+            let restantesMat = totalMat - concluidasMat;
+            let restantesHoras = totalHoras - concluidasHoras;
+
+            document.getElementById('materiasTotais').innerText = totalMat;
+            document.getElementById('materiasConcluidas').innerText = concluidasMat;
+            document.getElementById('materiasRestantes').innerText = restantesMat;
+            
+            document.getElementById('horasTotais').innerText = totalHoras;
+            document.getElementById('horasConcluidas').innerText = concluidasHoras;
+            document.getElementById('horasRestantes').innerText = restantesHoras;
+
+            // QTS Box
+            if (qtsGlobais.length > 0 && qtsGlobais[0].dados_html) {
+                let safeHtml = qtsGlobais[0].dados_html.replace(/id="/g, 'data-old-id="').replace(/contenteditable="true"/g, '').replace(/admin-edit/g, '');
+                document.getElementById('homeQtsDia').innerHTML = `<div class="w-full flex flex-col h-full bg-white rounded-lg overflow-hidden border border-slate-200 shadow-sm"><div class="overflow-x-auto flex-1"><div class="min-w-[600px] pointer-events-none opacity-95 text-[9px] p-2">${safeHtml}</div></div></div>`;
+            } else {
+                document.getElementById('homeQtsDia').innerHTML = `<div class="w-full flex flex-col items-center justify-center text-slate-400 py-10"><i class="fa-solid fa-file-circle-xmark text-4xl mb-2 text-slate-300"></i><p class="text-[10px] font-bold uppercase tracking-widest">Nenhum QTS lançado ainda.</p></div>`;
             }
 
             renderizarXerife();
@@ -470,7 +671,6 @@
         async function carregarAlunos() { const { data } = await supabaseClient.from('alunos_pelotao').select('*').order('numero', { ascending: true }); listaAlunosFull = data || []; }
         async function carregarFuncoesComando() { const { data } = await supabaseClient.from('funcoes_comando').select('*'); if (data) funcoesComandoGlobais = data; }
 
-        // --- FUNÇÃO DO RANKING REFEITA PARA BUSCAR NO BD ---
         async function abrirRankingGeral() {
             const modal = document.getElementById('modalRankingGeral');
             const tbody = document.getElementById('tabelaRankingGeral');
@@ -479,13 +679,11 @@
             tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-500 font-bold"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Calculando ranking atual...</td></tr>';
             
             try {
-                // Garante a lista de alunos atualizada
                 if (!listaAlunosFull || listaAlunosFull.length === 0) {
                     const { data: alunos } = await supabaseClient.from('alunos_pelotao').select('*').order('numero', { ascending: true });
                     listaAlunosFull = alunos || [];
                 }
 
-                // Busca as notas diretamente
                 const { data: notas, error } = await supabaseClient.from('academico_notas').select('*');
                 if (error) throw error;
                 
@@ -528,17 +726,22 @@
                     const qraAjustado = (aluno.qra || aluno.nome).replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase();
                     
                     let rankVisual = `<span class="font-bold text-slate-600 ml-2">${rankFormatado}</span>`;
-                    if(index === 0) rankVisual = `<span class="bg-yellow-400 text-yellow-900 px-2 py-1.5 rounded text-xs font-black shadow-sm border border-yellow-500">🏆 01</span>`;
-                    if(index === 1) rankVisual = `<span class="bg-slate-300 text-slate-800 px-2 py-1.5 rounded text-xs font-black shadow-sm border border-slate-400">🥈 02</span>`;
-                    if(index === 2) rankVisual = `<span class="bg-amber-600 text-amber-100 px-2 py-1.5 rounded text-xs font-black shadow-sm border border-amber-700">🥉 03</span>`;
+                    
+                    if(index === 0) rankVisual = `<span class="bg-yellow-400 text-yellow-900 px-3 py-1.5 rounded-lg text-xs font-black shadow border border-yellow-500 flex items-center justify-center gap-1 w-16 mx-auto"><i class="fa-solid fa-crown"></i> 01</span>`;
+                    else if(index === 1) rankVisual = `<span class="bg-slate-300 text-slate-800 px-3 py-1.5 rounded-lg text-xs font-black shadow border border-slate-400 flex items-center justify-center gap-1 w-16 mx-auto"><i class="fa-solid fa-medal"></i> 02</span>`;
+                    else if(index === 2) rankVisual = `<span class="bg-amber-600 text-amber-100 px-3 py-1.5 rounded-lg text-xs font-black shadow border border-amber-700 flex items-center justify-center gap-1 w-16 mx-auto"><i class="fa-solid fa-medal"></i> 03</span>`;
+
+                    let corNota = 'text-slate-700';
+                    if (index < 3) corNota = 'text-emerald-600 font-black'; 
+                    else if (aluno.mgc < 5) corNota = 'text-red-600 font-black'; 
 
                     const tr = document.createElement('tr');
-                    tr.className = "hover:bg-slate-50 transition border-b border-slate-100";
+                    tr.className = `hover:bg-slate-50 transition border-b ${index < 3 ? 'border-slate-200 bg-slate-50/50' : 'border-slate-100'}`;
                     tr.innerHTML = `
                         <td class="p-3 text-center">${rankVisual}</td>
                         <td class="p-3 text-slate-700"><span class="font-bold text-pmmt-blue">${aluno.numero || '-'}</span> - ${qraAjustado}</td>
                         <td class="p-3 text-center text-slate-500 text-xs">${aluno.totalDisciplinas}</td>
-                        <td class="p-3 text-center font-black text-sm ${aluno.mgc >= 5 ? 'text-emerald-600' : 'text-red-600'}">${aluno.mgc.toFixed(2)}</td>
+                        <td class="p-3 text-center font-bold text-sm ${corNota}">${aluno.mgc.toFixed(2)}</td>
                     `;
                     tbody.appendChild(tr);
                 });
@@ -569,7 +772,9 @@
                 : alunos[idx];
 
             const textoXerifeExibicao = `5${xerife.numero.toString().padStart(2, '0')} - ${(xerife.qra || xerife.nome.split(' ')[0]).replace(/AL SD PM |AL SD /gi, '').trim().toUpperCase()}`;
-            document.getElementById('homeXerifeSemana').innerText = textoXerifeExibicao;
+            
+            const dashXerifeEl = document.getElementById('dashXerifeNome');
+            if(dashXerifeEl) dashXerifeEl.innerText = textoXerifeExibicao;
         }
 
         async function carregarCautelasFixas() { const { data } = await supabaseClient.from('cautela_fixa').select('*'); if (data) { cautelasFixasGlobais = data || []; renderizarTabelaCautelaFixa(); } }
@@ -625,7 +830,6 @@
             });
         }
 
-        async function carregarQTSList() { const { data } = await supabaseClient.from('qts_semanal').select('id, titulo_semana').order('atualizado_em', { ascending: false }); const sel=document.getElementById('selQtsSemana'); sel.innerHTML='<option value="">-- Crie ou Selecione --</option>'; if(data)data.forEach(q=>sel.add(new Option(q.titulo_semana, q.id))); }
         async function carregarQTS() {
             const id = document.getElementById('selQtsSemana').value; if(!id)return; mostrarLoading(true);
             const {data} = await supabaseClient.from('qts_semanal').select('*').eq('id',id).single();
