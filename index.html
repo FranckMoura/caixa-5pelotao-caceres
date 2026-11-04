@@ -24,7 +24,6 @@
         .menu-item:hover { background-color: rgba(255, 255, 255, 0.05); color: white; }
         .menu-item.ativo { background-color: rgba(197, 160, 89, 0.15); border-left-color: #C5A059; color: #C5A059; font-weight: 800; }
         
-        /* Controle do Sidebar Expandido/Retraído */
         #wrapperLateral { transition: width 0.3s ease; }
         #wrapperLateral.retraido { width: 4.5rem; }
         #wrapperLateral.retraido .menu-item span, 
@@ -144,14 +143,12 @@
                     <div class="flex-1 overflow-y-auto py-3 px-0 space-y-0.5 custom-scrollbar">
                         <p class="header-menu-txt px-5 text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2 mt-2">Módulos do Sistema</p>
                         <button onclick="mudarModulo('home')" id="btn-home" class="menu-item ativo"><i class="fa-solid fa-house"></i> <span>Início / Painel</span></button>
-                        <button onclick="mudarModulo('institucional')" id="btn-institucional" class="menu-item"><i class="fa-solid fa-sitemap"></i> <span>Cadeia Comando</span></button>
                         <button onclick="mudarModulo('efetivo')" id="btn-efetivo" class="menu-item"><i class="fa-solid fa-users-gear"></i> <span>Efetivo e Escala</span></button>
                         <button onclick="mudarModulo('cautela')" id="btn-cautela" class="menu-item"><i class="fa-solid fa-gun"></i> <span>Cautela Fixa</span></button>
                         <button onclick="mudarModulo('financeiro')" id="btn-financeiro" class="menu-item"><i class="fa-solid fa-vault"></i> <span>Gestão Financeira</span></button>
-                        <button onclick="mudarModulo('efetivodados')" id="btn-efetivodados" class="menu-item"><i class="fa-solid fa-brain"></i> <span>Inteligência</span></button>
+                        <button onclick="mudarModulo('efetivodados')" id="btn-efetivodados" class="menu-item"><i class="fa-solid fa-brain"></i> <span>TAF e Disciplina</span></button>
                         <button onclick="mudarModulo('academico')" id="btn-academico" class="menu-item"><i class="fa-solid fa-graduation-cap"></i> <span>Módulo Acadêmico</span></button>
                         <button onclick="mudarModulo('aluno')" id="btn-aluno" class="menu-item"><i class="fa-solid fa-folder-open"></i> <span>Área do Aluno (QTS)</span></button>
-                        <button onclick="mudarModulo('redator')" id="btn-redator" class="menu-item"><i class="fa-solid fa-robot text-pmmt-gold"></i> <span>Copiloto de B.O.</span></button>
                         <button onclick="mudarModulo('debate')" id="btn-debate" class="menu-item"><i class="fa-solid fa-comments"></i> <span>Área Livre</span></button>
                         <button onclick="mudarModulo('toques')" id="btn-toques" class="menu-item"><i class="fa-solid fa-bullhorn"></i> <span>Toques de Corneta</span></button>
                         <button onclick="mudarModulo('gerador')" id="btn-gerador" class="menu-item"><i class="fa-solid fa-file-pdf"></i> <span>Gerador Documentos</span></button>
@@ -320,21 +317,7 @@
 
                     </section>
 
-                    <!-- DEMAIS MÓDULOS -->
-                    <section id="modulo-institucional" class="hidden space-y-6">
-                        <div class="bg-white shadow-sm border border-slate-300 overflow-hidden rounded-xl">
-                            <div class="bg-sys-dark text-white px-5 py-4 flex justify-between items-center"><div><h2 class="text-sm font-black tracking-widest uppercase"><i class="fa-solid fa-sitemap text-pmmt-gold mr-2"></i> Cadeia de Comando</h2><p class="text-[9px] text-slate-300 uppercase mt-0.5">Hierarquia do Estado e da Polícia Militar</p></div></div>
-                            <div class="p-5 md:p-6">
-                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-pmmt-blue"><div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-user-tie"></i></div><h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Governador do Estado</h3><p class="text-xs font-black text-sys-dark uppercase">Otaviano Pivetta</p></div>
-                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-pmmt-blue"><div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-user-shield"></i></div><h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Sec. de Seg. Pública</h3><p class="text-xs font-black text-sys-dark uppercase">CEL PM SUSANE TAMANHO</p></div>
-                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-pmmt-gold"><div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-star"></i></div><h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Comandante-Geral</h3><p class="text-xs font-black text-sys-dark uppercase">Cel PM Alexandre Mendes</p></div>
-                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-slate-800"><div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-shield-halved"></i></div><h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Cmt 6º BPM</h3><p class="text-xs font-black text-sys-dark uppercase">Ten Cel PM Luiz Marcelo</p></div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
+                    <!-- DEMAIS MÓDULOS NATIVOS E IFRAMES -->
                     <section id="modulo-efetivo" class="hidden flex-1 flex flex-col h-full min-h-[85vh]">
                         <iframe id="iframeEfetivo" src="escala.html" class="w-full h-full border border-slate-200 bg-transparent shadow-sm rounded-xl"></iframe>
                     </section>
@@ -359,14 +342,13 @@
                     </section>
 
                     <section id="modulo-efetivodados" class="hidden flex-1 flex flex-col h-full min-h-[85vh]">
-                        <iframe id="iframeEfetivoDados" src="inteligencia.html" class="w-full h-full border border-slate-200 bg-transparent shadow-sm rounded-xl"></iframe>
+                        <iframe id="iframeEfetivoDados" src="taf.html" class="w-full h-full border border-slate-200 bg-transparent shadow-sm rounded-xl"></iframe>
                     </section>
 
                     <section id="modulo-academico" class="hidden flex-1 flex flex-col h-full min-h-[85vh]">
                         <iframe id="iframeAcademico" src="academico.html" class="w-full h-full border border-slate-200 bg-white shadow-sm rounded-xl"></iframe>
                     </section>
 
-                    <!-- MODIFICADO: A ABA DO ALUNO AGORA CONTÉM O UPLOAD/VISUALIZADOR DO QTS EM PDF -->
                     <section id="modulo-aluno" class="hidden flex-1 flex flex-col h-full min-h-[85vh] space-y-4">
                         <div class="bg-white shadow-sm border border-slate-200 overflow-hidden rounded-xl flex flex-col h-full">
                             <div class="bg-sys-dark text-white px-5 py-4 flex justify-between items-center shrink-0 border-b-4 border-pmmt-gold"><div><h2 class="text-sm font-black tracking-widest uppercase"><i class="fa-solid fa-folder-open text-pmmt-gold mr-2"></i> Área do Aluno</h2><p class="text-[9px] text-slate-300 uppercase mt-0.5">Material de Estudo e Quadro de Trabalho Oficial</p></div></div>
@@ -375,17 +357,13 @@
                                 <button onclick="abrirAbaAluno('aba-qts', this)" class="aba-btn flex-1 py-3 px-4 text-xs font-bold uppercase tracking-wider text-slate-500 border-b-2 border-transparent hover:bg-slate-100 transition whitespace-nowrap"><i class="fa-solid fa-file-pdf mr-1.5"></i> QTS Oficial (PDF)</button>
                             </div>
                             <div class="p-4 md:p-6 bg-white flex-1 overflow-y-auto relative">
-                                <!-- ABA MATERIAIS DE APOIO -->
                                 <div id="aba-material" class="aba-content block space-y-6">
                                     <div class="bg-gradient-to-r from-sys-dark to-pmmt-blue rounded-xl p-6 text-white shadow border border-pmmt-gold/30 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-4"><i class="fa-solid fa-shield-halved absolute -right-4 -bottom-6 text-7xl text-white/5 pointer-events-none"></i><div class="relative z-10 text-center md:text-left"><h3 class="text-lg font-black uppercase tracking-widest text-pmmt-gold mb-1"><i class="fa-solid fa-book-open-reader mr-2"></i> Módulo Interativo POP PMMT</h3><p class="text-xs font-medium text-slate-300">Acesse o sistema dinâmico do Procedimento Operacional Padrão.</p></div><a href="estudo_pop.html" target="_blank" class="relative z-10 bg-pmmt-gold hover:bg-yellow-500 text-sys-dark font-black px-5 py-2.5 rounded shadow-lg transition uppercase tracking-widest text-[10px] whitespace-nowrap flex items-center gap-2 border border-yellow-400">Acessar POP <i class="fa-solid fa-arrow-up-right-from-square"></i></a></div>
                                     <div class="bg-white rounded-xl shadow-md border border-slate-300 overflow-hidden"><div class="bg-sys-dark px-5 py-4 border-b-4 border-pmmt-gold flex items-center justify-between relative overflow-hidden"><div class="relative z-10"><h3 class="text-sm md:text-base font-black uppercase tracking-widest text-white"><i class="fa-solid fa-location-crosshairs text-pmmt-gold mr-2"></i> Mapa Tático Regional</h3><p class="text-[9px] text-slate-300 uppercase tracking-widest mt-0.5">Fronteiras de Atuação: 6º BPM (Cáceres) e 17º BPM (Mirassol D'Oeste)</p></div></div><div class="p-2 bg-slate-100"><iframe src="https://www.google.com/maps/d/u/0/embed?mid=1B2yEMA2-Si3-B8CEABa2SAd5Pq9Zpzg" class="w-full h-80 md:h-[400px] rounded-lg border border-slate-300 shadow-inner grayscale-[20%] hover:grayscale-0 transition duration-500" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div></div>
                                     <div id="containerMateriais" class="space-y-4"><p class="text-xs text-slate-500 text-center py-6"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Carregando acervo...</p></div>
                                 </div>
                                 
-                                <!-- ABA DO NOVO QTS PDF OFICIAL -->
                                 <div id="aba-qts" class="aba-content hidden h-full flex flex-col gap-4">
-                                    
-                                    <!-- Controles (Apenas para Admins inserirem o Link do QTS) -->
                                     <div class="admin-only bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col gap-3 shadow-sm shrink-0">
                                         <div class="flex justify-between items-center border-b border-slate-200 pb-2">
                                             <h3 class="text-xs font-black text-sys-dark uppercase tracking-widest"><i class="fa-solid fa-upload text-pmmt-blue mr-2"></i> Lançamento do QTS (Coordenação)</h3>
@@ -405,8 +383,6 @@
                                         </div>
                                         <p class="text-[9px] text-slate-500 italic mt-1">* Dica: Suba o PDF do QTS Assinado no seu Google Drive, clique em "Compartilhar", libere para "Qualquer pessoa com o link" e cole o link acima.</p>
                                     </div>
-
-                                    <!-- Visualizador Nativo do QTS -->
                                     <div class="bg-sys-dark text-white rounded-t-xl px-5 py-3 flex justify-between items-center border-b-4 border-pmmt-gold shrink-0">
                                         <div>
                                             <h3 class="text-xs font-bold uppercase tracking-wider" id="viewerQtsTitulo"><i class="fa-solid fa-file-pdf text-rose-400 mr-2"></i>QTS Oficial Vigente</h3>
@@ -415,25 +391,12 @@
                                             <i class="fa-solid fa-download"></i> Baixar PDF
                                         </a>
                                     </div>
-                                    <!-- Container onde o Iframe vai abrir -->
                                     <div id="containerIframeQTS" class="flex-1 w-full border border-slate-300 bg-slate-100 rounded-b-xl min-h-[500px] flex items-center justify-center relative overflow-hidden">
                                         <div class="text-center text-slate-400">
                                             <i class="fa-solid fa-circle-notch fa-spin text-3xl mb-3"></i>
                                             <p class="text-[10px] font-bold uppercase tracking-widest">Localizando Documento Oficial...</p>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                    
-                    <section id="modulo-redator" class="hidden flex-1 flex flex-col h-full min-h-[85vh] space-y-4">
-                        <div class="bg-white shadow-sm border border-slate-200 overflow-hidden rounded-xl flex flex-col h-full">
-                            <div class="bg-sys-dark text-white px-5 py-4 flex justify-between items-center shrink-0 border-b-4 border-pmmt-gold"><div><h2 class="text-sm font-black tracking-widest uppercase"><i class="fa-solid fa-robot text-pmmt-gold mr-2"></i> Copiloto Jurídico de BO</h2><p class="text-[9px] text-slate-300 uppercase mt-0.5">Análise de Fundamentação Legal</p></div></div>
-                            <div class="p-4 md:p-6 bg-slate-50 flex-1 overflow-y-auto">
-                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
-                                    <div class="bg-white p-5 rounded-xl border border-slate-300 shadow-sm flex flex-col h-full min-h-[300px]"><label class="block text-xs font-black text-sys-dark uppercase tracking-widest mb-3 border-b border-slate-100 pb-2"><i class="fa-solid fa-pen-clip text-pmmt-blue mr-1.5"></i> Rascunho do Histórico (BO)</label><textarea id="boRascunho" class="w-full bg-slate-50 border border-slate-300 p-3 rounded-lg text-sm text-slate-700 outline-none flex-1 mb-4"></textarea><button id="btnAnalisarBO" onclick="analisarBOComIA()" class="w-full bg-pmmt-gold text-sys-dark font-black px-5 py-3 rounded-lg shadow-md uppercase tracking-widest text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-microchip"></i> Analisar Fundamentação</button></div>
-                                    <div class="bg-sys-dark p-5 rounded-xl border border-pmmt-blue shadow-inner flex flex-col relative overflow-hidden h-full min-h-[300px]"><label class="block text-xs font-black text-pmmt-gold uppercase tracking-widest mb-3 border-b border-white/10 pb-2 relative z-10 shrink-0"><i class="fa-solid fa-check-double mr-1.5"></i> Parecer do Copiloto</label><div id="aiLoading" class="hidden flex-col items-center justify-center flex-1 space-y-3 relative z-10 py-10"><i class="fa-solid fa-circle-notch fa-spin text-4xl text-pmmt-gold"></i></div><div id="aiResultado" class="flex-1 overflow-y-auto text-slate-200 text-sm leading-relaxed space-y-4 relative z-10 hidden pr-2 custom-scrollbar"></div><div id="aiPlaceholder" class="flex flex-col items-center justify-center flex-1 text-center opacity-50 relative z-10 py-10"><i class="fa-solid fa-clipboard-check text-5xl mb-3 text-slate-400"></i></div></div>
                                 </div>
                             </div>
                         </div>
@@ -501,10 +464,39 @@
                         </tr>
                     </thead>
                     <tbody id="tabelaModalDisciplinas" class="divide-y divide-slate-100">
-                        <!-- Preenchido via JS -->
                     </tbody>
                 </table>
             </div>
+        </div>
+    </div>
+
+    <!-- MODAL CAUTELA FIXA -->
+    <div id="modalCautelaFixa" class="fixed inset-0 bg-slate-900/80 z-[300] hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-slate-300">
+            <div class="bg-sys-dark px-5 py-4 flex justify-between items-center border-b-4 border-pmmt-gold">
+                <h3 class="text-white font-black text-sm uppercase tracking-wider"><i class="fa-solid fa-gun text-pmmt-gold mr-2"></i> Gerenciar Cautela Fixa</h3>
+                <button type="button" onclick="fecharModalCautelaFixa()" class="text-white/70 hover:text-white transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <form id="formCautelaFixa" onsubmit="salvarCautelaFixa(event)" class="p-5 space-y-4">
+                <input type="hidden" id="cautelaFixaId">
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Policial/Aluno (QRA)</label>
+                    <select id="cautelaFixaAluno" required class="w-full bg-slate-50 border border-slate-300 p-2 rounded text-xs font-bold text-slate-800 outline-none shadow-sm focus:border-pmmt-blue"></select>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Material (Arma/Carreg.)</label>
+                        <input type="text" id="cautelaFixaMaterial" required placeholder="Ex: PT 100 Plus + 3 Car." class="w-full bg-white border border-slate-300 p-2 rounded text-xs font-bold text-slate-800 outline-none shadow-sm">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Nº de Série</label>
+                        <input type="text" id="cautelaFixaSerie" required placeholder="Ex: SDY 81206" class="w-full bg-white border border-slate-300 p-2 rounded text-xs font-bold text-slate-800 outline-none shadow-sm">
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-pmmt-blue hover:bg-sys-blue text-white font-black py-2.5 rounded shadow transition text-xs uppercase tracking-widest mt-3 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-save"></i> Gravar Cautela
+                </button>
+            </form>
         </div>
     </div>
 
@@ -523,7 +515,6 @@
 
         const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
-        const GEMINI_API_KEY = 'AQ.Ab8RN6IOzdHSTG5CUoojPZXssiiqxDUv_NXsupGR9tqhGdi2Rw';        
         
         window.onload = async function() { await iniciarSupabase(); };
 
@@ -601,6 +592,7 @@
             await carregarCautelasFixas(); 
             await carregarQtsPDF(); 
             await carregarMateriaisApoio();
+            await carregarTodasNotasGlobais();
             await renderizarDashboardHome();
             
             const iframesToReload = ['iframeEfetivo', 'iframeEfetivoDados', 'iframeAcademico', 'iframeFinanceiro', 'iframeToques', 'iframeGerador'];
@@ -643,8 +635,8 @@
         async function deslogarUsuario() { if (confirm("Encerrar sessão?")) { await supabaseClient.auth.signOut(); window.location.reload(); } }
 
         function mudarModulo(moduloDestino) {
-            const modulos = ['home', 'institucional', 'efetivo', 'cautela', 'financeiro', 'efetivodados', 'academico', 'aluno', 'debate', 'toques', 'redator', 'gerador'];
-            const nomes = { 'home': 'Painel Diário', 'institucional': 'Cadeia de Comando', 'efetivo': 'Efetivo e Escala', 'cautela': 'Cautela Fixa (Armas)', 'financeiro': 'Gestão Financeira', 'efetivodados': 'Inteligência', 'academico': 'Módulo Acadêmico', 'aluno': 'Área do Aluno', 'debate': 'Área Livre', 'toques': 'Toques de Corneta', 'redator': 'Copiloto Jurídico de B.O.', 'gerador': 'Gerador de Documentos' };
+            const modulos = ['home', 'efetivo', 'cautela', 'financeiro', 'efetivodados', 'academico', 'aluno', 'debate', 'toques', 'gerador'];
+            const nomes = { 'home': 'Painel Diário', 'efetivo': 'Efetivo e Escala', 'cautela': 'Cautela Fixa (Armas)', 'financeiro': 'Gestão Financeira', 'efetivodados': 'TAF e Disciplina', 'academico': 'Módulo Acadêmico', 'aluno': 'Área do Aluno', 'debate': 'Área Livre', 'toques': 'Toques de Corneta', 'gerador': 'Gerador de Documentos' };
             modulos.forEach(m => { const el = document.getElementById('modulo-' + m); if(el) el.classList.add('hidden'); const btn = document.getElementById('btn-' + m); if(btn) btn.className = "menu-item rounded-lg"; });
             const modAtivo = document.getElementById('modulo-' + moduloDestino); if(modAtivo) modAtivo.classList.remove('hidden');
             const btnAtivo = document.getElementById('btn-' + moduloDestino); if(btnAtivo) btnAtivo.className = "menu-item ativo rounded-lg";
@@ -658,7 +650,6 @@
             disciplinasGlobais = data || [];
         }
 
-        // LÓGICA NOVA DO QTS: AGORA É PDF
         async function carregarQtsPDF() {
             const { data } = await supabaseClient.from('qts_pdf').select('*').order('criado_em', { ascending: false }).limit(1).single();
             qtsPdfGlobal = data || null;
@@ -672,14 +663,10 @@
             const linkBaixar = document.getElementById('linkBaixarQTS');
             
             if (qtsPdfGlobal && qtsPdfGlobal.url_drive) {
-                // Converte o link de "view" do Drive para "preview" para rodar bem no Iframe
                 let urlPreview = qtsPdfGlobal.url_drive;
                 if (urlPreview.includes('/view')) urlPreview = urlPreview.replace('/view', '/preview');
                 
-                // HOME
                 if (containerHome) containerHome.innerHTML = `<iframe src="${urlPreview}" class="w-full h-full border-none" loading="lazy"></iframe>`;
-                
-                // ÁREA DO ALUNO
                 if (containerInterno) containerInterno.innerHTML = `<iframe src="${urlPreview}" class="w-full h-full border-none" allow="autoplay"></iframe>`;
                 if (tituloInterno) tituloInterno.innerHTML = `<i class="fa-solid fa-file-pdf text-rose-400 mr-2"></i>${qtsPdfGlobal.titulo || 'QTS OFICIAL VIGENTE'}`;
                 
@@ -795,7 +782,6 @@
             document.getElementById('horasConcluidas').innerText = concluidasHoras;
             document.getElementById('horasRestantes').innerText = restantesHoras;
 
-            // Renderiza o PDF Oficial na Home
             renderizarQtsPDF();
             renderizarXerife();
         }
@@ -866,121 +852,117 @@
         async function carregarAlunos() { const { data } = await supabaseClient.from('alunos_pelotao').select('*').order('numero', { ascending: true }); listaAlunosFull = data || []; }
         async function carregarFuncoesComando() { const { data } = await supabaseClient.from('funcoes_comando').select('*'); if (data) funcoesComandoGlobais = data; }
 
-        async function abrirRankingGeral() {
+        async function carregarTodasNotasGlobais() {
+            const { data, error } = await supabaseClient.from('academico_notas').select('*');
+            if (!error && data) { todasNotasGlobais = data; }
+        }
+
+        function calcularRankingGeral() {
+            let ranking = [];
+            
+            listaAlunosFull.forEach(aluno => {
+                const notasDoAluno = todasNotasGlobais.filter(n => n.aluno_id === aluno.id && n.mgm != null);
+                let mgc = 0;
+                let totalDisciplinas = notasDoAluno.length;
+                
+                if (totalDisciplinas > 0) {
+                    let soma = 0;
+                    notasDoAluno.forEach(n => { soma += parseFloat(n.mgm || 0); });
+                    mgc = soma / totalDisciplinas;
+                }
+                
+                ranking.push({
+                    id: aluno.id,
+                    numero: aluno.numero,
+                    nome: aluno.nome,
+                    qra: aluno.qra,
+                    mgc: parseFloat(mgc.toFixed(2)),
+                    totalDisciplinas: totalDisciplinas
+                });
+            });
+
+            ranking.sort((a, b) => {
+                if (b.mgc !== a.mgc) return b.mgc - a.mgc;
+                return (a.numero || 999) - (b.numero || 999);
+            });
+
+            ranking.forEach((aluno, index) => {
+                aluno.rankFormatado = (index + 1).toString().padStart(2, '0');
+            });
+
+            return ranking;
+        }
+
+        function abrirRankingGeral() {
+            const ranking = calcularRankingGeral();
             const modal = document.getElementById('modalRankingGeral');
             const tbody = document.getElementById('tabelaRankingGeral');
             
             modal.classList.remove('hidden');
-            tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-500 font-bold"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Calculando ranking atual...</td></tr>';
+            tbody.innerHTML = '';
             
-            try {
-                if (!listaAlunosFull || listaAlunosFull.length === 0) {
-                    const { data: alunos } = await supabaseClient.from('alunos_pelotao').select('*').order('numero', { ascending: true });
-                    listaAlunosFull = alunos || [];
-                }
+            if(ranking.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-500 font-bold">Nenhuma nota lançada no sistema ainda.</td></tr>';
+                return;
+            }
 
-                if (!todasNotasGlobais || todasNotasGlobais.length === 0) {
-                    const { data: notas } = await supabaseClient.from('academico_notas').select('*');
-                    todasNotasGlobais = notas || [];
-                }
-                const notas = todasNotasGlobais;
+            ranking.forEach((aluno, index) => {
+                const qraAjustado = (aluno.qra || aluno.nome).replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase();
                 
-                let ranking = [];
-                listaAlunosFull.forEach(aluno => {
-                    const notasDoAluno = (notas || []).filter(n => n.aluno_id === aluno.id && n.mgm != null);
-                    let mgc = 0;
-                    let totalDisciplinas = notasDoAluno.length;
-                    
-                    if (totalDisciplinas > 0) {
-                        let soma = 0;
-                        notasDoAluno.forEach(n => { soma += parseFloat(n.mgm || 0); });
-                        mgc = soma / totalDisciplinas;
-                    }
-                    
-                    ranking.push({
-                        id: aluno.id,
-                        numero: aluno.numero,
-                        nome: aluno.nome,
-                        qra: aluno.qra,
-                        mgc: parseFloat(mgc.toFixed(2)),
-                        totalDisciplinas: totalDisciplinas
-                    });
-                });
-
-                ranking.sort((a, b) => {
-                    if (b.mgc !== a.mgc) return b.mgc - a.mgc;
-                    return (a.numero || 999) - (b.numero || 999);
-                });
-
-                tbody.innerHTML = '';
+                let rankVisual = `<span class="font-bold text-slate-600 ml-2">${aluno.rankFormatado}</span>`;
                 
-                if(ranking.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-500 font-bold">Nenhuma nota lançada no sistema ainda.</td></tr>';
+                if(index === 0) rankVisual = `<span class="bg-yellow-400 text-yellow-900 px-3 py-1.5 rounded-lg text-xs font-black shadow border border-yellow-500 flex items-center justify-center gap-1 w-16 mx-auto"><i class="fa-solid fa-crown"></i> 01</span>`;
+                else if(index === 1) rankVisual = `<span class="bg-slate-300 text-slate-800 px-3 py-1.5 rounded-lg text-xs font-black shadow border border-slate-400 flex items-center justify-center gap-1 w-16 mx-auto"><i class="fa-solid fa-medal"></i> 02</span>`;
+                else if(index === 2) rankVisual = `<span class="bg-amber-600 text-amber-100 px-3 py-1.5 rounded-lg text-xs font-black shadow border border-amber-700 flex items-center justify-center gap-1 w-16 mx-auto"><i class="fa-solid fa-medal"></i> 03</span>`;
+
+                let corNota = 'text-slate-700';
+                if (index < 3) corNota = 'text-emerald-600 font-black'; 
+                else if (aluno.mgc < 5) corNota = 'text-red-600 font-black'; 
+
+                const tr = document.createElement('tr');
+                tr.className = `hover:bg-slate-50 transition border-b ${index < 3 ? 'border-slate-200 bg-slate-50/50' : 'border-slate-100'}`;
+                tr.innerHTML = `
+                    <td class="p-3 text-center">${rankVisual}</td>
+                    <td class="p-3 text-slate-700"><span class="font-bold text-pmmt-blue">${aluno.numero || '-'}</span> - ${qraAjustado}</td>
+                    <td class="p-3 text-center text-slate-500 text-xs">${aluno.totalDisciplinas}</td>
+                    <td class="p-3 text-center font-bold text-sm ${corNota}">${aluno.mgc.toFixed(2)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            const dashTop3 = document.getElementById('homeRankingTop3');
+            if (dashTop3) {
+                dashTop3.innerHTML = '';
+                const top3Array = ranking.slice(0, 3);
+                
+                if (top3Array.length === 0) {
+                    dashTop3.innerHTML = `<div class="w-full text-center py-6 text-slate-400"><p class="text-[10px] uppercase tracking-widest font-bold">Sem notas computadas.</p></div>`;
                     return;
                 }
 
-                ranking.forEach((aluno, index) => {
-                    const rankFormatado = (index + 1).toString().padStart(2, '0');
-                    const qraAjustado = (aluno.qra || aluno.nome).replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase();
+                top3Array.forEach((aluno, index) => {
+                    const qraTop = (aluno.qra || aluno.nome).replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase();
+                    let medCor = ['bg-yellow-400 text-yellow-900 border-yellow-500', 'bg-slate-300 text-slate-800 border-slate-400', 'bg-amber-600 text-amber-100 border-amber-700'][index];
+                    let icon = ['fa-crown', 'fa-medal', 'fa-medal'][index];
                     
-                    let rankVisual = `<span class="font-bold text-slate-600 ml-2">${rankFormatado}</span>`;
-                    
-                    if(index === 0) rankVisual = `<span class="bg-yellow-400 text-yellow-900 px-3 py-1.5 rounded-lg text-xs font-black shadow border border-yellow-500 flex items-center justify-center gap-1 w-16 mx-auto"><i class="fa-solid fa-crown"></i> 01</span>`;
-                    else if(index === 1) rankVisual = `<span class="bg-slate-300 text-slate-800 px-3 py-1.5 rounded-lg text-xs font-black shadow border border-slate-400 flex items-center justify-center gap-1 w-16 mx-auto"><i class="fa-solid fa-medal"></i> 02</span>`;
-                    else if(index === 2) rankVisual = `<span class="bg-amber-600 text-amber-100 px-3 py-1.5 rounded-lg text-xs font-black shadow border border-amber-700 flex items-center justify-center gap-1 w-16 mx-auto"><i class="fa-solid fa-medal"></i> 03</span>`;
-
-                    let corNota = 'text-slate-700';
-                    if (index < 3) corNota = 'text-emerald-600 font-black'; 
-                    else if (aluno.mgc < 5) corNota = 'text-red-600 font-black'; 
-
-                    const tr = document.createElement('tr');
-                    tr.className = `hover:bg-slate-50 transition border-b ${index < 3 ? 'border-slate-200 bg-slate-50/50' : 'border-slate-100'}`;
-                    tr.innerHTML = `
-                        <td class="p-3 text-center">${rankVisual}</td>
-                        <td class="p-3 text-slate-700"><span class="font-bold text-pmmt-blue">${aluno.numero || '-'}</span> - ${qraAjustado}</td>
-                        <td class="p-3 text-center text-slate-500 text-xs">${aluno.totalDisciplinas}</td>
-                        <td class="p-3 text-center font-bold text-sm ${corNota}">${aluno.mgc.toFixed(2)}</td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-
-                const dashTop3 = document.getElementById('homeRankingTop3');
-                if (dashTop3) {
-                    dashTop3.innerHTML = '';
-                    const top3Array = ranking.slice(0, 3);
-                    
-                    if (top3Array.length === 0) {
-                        dashTop3.innerHTML = `<div class="w-full text-center py-6 text-slate-400"><p class="text-[10px] uppercase tracking-widest font-bold">Sem notas computadas.</p></div>`;
-                        return;
-                    }
-
-                    top3Array.forEach((aluno, index) => {
-                        const qraTop = (aluno.qra || aluno.nome).replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase();
-                        let medCor = ['bg-yellow-400 text-yellow-900 border-yellow-500', 'bg-slate-300 text-slate-800 border-slate-400', 'bg-amber-600 text-amber-100 border-amber-700'][index];
-                        let icon = ['fa-crown', 'fa-medal', 'fa-medal'][index];
-                        
-                        dashTop3.innerHTML += `
-                            <div class="flex items-center justify-between bg-white p-3 rounded-xl border border-slate-200 shadow-sm w-full">
-                                <div class="flex items-center gap-3">
-                                    <div class="${medCor} w-10 h-10 rounded-full flex items-center justify-center border font-black shadow-sm shrink-0">
-                                        <i class="fa-solid ${icon}"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-0.5">${index+1}º Colocado</p>
-                                        <p class="text-sm font-black text-sys-dark truncate">5${aluno.numero.toString().padStart(2, '0')} - ${qraTop}</p>
-                                    </div>
+                    dashTop3.innerHTML += `
+                        <div class="flex items-center justify-between bg-white p-3 rounded-xl border border-slate-200 shadow-sm w-full">
+                            <div class="flex items-center gap-3">
+                                <div class="${medCor} w-10 h-10 rounded-full flex items-center justify-center border font-black shadow-sm shrink-0">
+                                    <i class="fa-solid ${icon}"></i>
                                 </div>
-                                <div class="text-right pl-2 border-l border-slate-100">
-                                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-0.5">MGC</p>
-                                    <p class="text-base font-black text-emerald-600">${aluno.mgc.toFixed(2)}</p>
+                                <div>
+                                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-0.5">${index+1}º Colocado</p>
+                                    <p class="text-sm font-black text-sys-dark truncate">5${aluno.numero.toString().padStart(2, '0')} - ${qraTop}</p>
                                 </div>
                             </div>
-                        `;
-                    });
-                }
-            } catch (error) {
-                console.error("Erro ao gerar ranking:", error);
-                tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-rose-500 font-bold">Erro ao buscar dados do ranking.</td></tr>';
+                            <div class="text-right pl-2 border-l border-slate-100">
+                                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-0.5">MGC</p>
+                                <p class="text-base font-black text-emerald-600">${aluno.mgc.toFixed(2)}</p>
+                            </div>
+                        </div>
+                    `;
+                });
             }
         }
 
@@ -992,10 +974,11 @@
             if(listaAlunosFull.length === 0) return;
             const dataBaseXerife = new Date('2026-07-27T12:00:00Z'); 
             let hoje = new Date(); hoje.setHours(12, 0, 0, 0); 
+            
             let diff = hoje.getDate() - hoje.getDay() + (hoje.getDay() === 0 ? -6 : 1);
             let segAtual = new Date(hoje); segAtual.setDate(diff);
             window.currentMondayIso = segAtual.toISOString().split('T')[0];
-
+            
             let diffWeeks = Math.floor(Math.floor((segAtual - dataBaseXerife) / 86400000) / 7);
             const alunos = [...listaAlunosFull].sort((a, b) => a.numero - b.numero);
             let idx = (Math.max(0, alunos.findIndex(a => a.numero === 5)) + diffWeeks) % alunos.length; if(idx < 0) idx += alunos.length;
@@ -1003,7 +986,7 @@
             let xerife = funcoesComandoGlobais.find(f => f.tipo === 'XERIFE' && f.data_referencia === window.currentMondayIso) 
                 ? listaAlunosFull.find(a => a.id == funcoesComandoGlobais.find(f => f.tipo === 'XERIFE' && f.data_referencia === window.currentMondayIso).aluno_id) || alunos[idx] 
                 : alunos[idx];
-
+            
             const textoXerifeExibicao = `5${xerife.numero.toString().padStart(2, '0')} - ${(xerife.qra || xerife.nome.split(' ')[0]).replace(/AL SD PM |AL SD /gi, '').trim().toUpperCase()}`;
             
             const dashXerifeEl = document.getElementById('dashXerifeNome');
@@ -1036,11 +1019,6 @@
         function fecharModalCautelaFixa() { document.getElementById('modalCautelaFixa').classList.add('hidden'); }
         async function deletarCautelaFixa(id) { if (confirm("Excluir arma?")) { await supabaseClient.from('cautela_fixa').delete().eq('id', id); await carregarCautelasFixas(); } }
 
-        function imprimirCautelaFixa() {
-            document.body.classList.add('printing-cautela'); window.print();
-            setTimeout(() => { document.body.classList.remove('printing-cautela'); }, 500);
-        }
-
         function abrirAbaAluno(abaId, btnElement) {
             document.querySelectorAll('.aba-content').forEach(el => el.classList.add('hidden'));
             document.getElementById(abaId).classList.remove('hidden');
@@ -1062,59 +1040,115 @@
             });
         }
 
-        async function analisarBOComIA() {
-            const rascunho = document.getElementById('boRascunho').value.trim();
-            if (!rascunho) return alert("Digite o rascunho.");
-            document.getElementById('aiLoading').classList.replace('hidden', 'flex');
-            try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: `Analise o texto como Instrutor da PMMT buscando justificar Fundada Suspeita e Uso Algemas: "${rascunho}"` }] }] }) });
-                const data = await response.json();
-                document.getElementById('aiResultado').innerHTML = data.candidates[0].content.parts[0].text.replace(/\n/g, '<br>');
-                document.getElementById('aiResultado').classList.remove('hidden');
-            } catch (e) { alert("Erro IA"); }
-            document.getElementById('aiLoading').classList.replace('flex', 'hidden');
-        }
-
         let relogioInterval;
         function iniciarRelogioQTS() {
+            const cronogramaQTS = [
+                { nome: "A disposição do C.A", start: "06:00:00", end: "07:00:00" },
+                { nome: "1ª Aula", start: "07:00:00", end: "07:50:00" },
+                { nome: "Intervalo", start: "07:50:00", end: "08:00:00" },
+                { nome: "2ª Aula", start: "08:00:00", end: "08:50:00" },
+                { nome: "Intervalo", start: "08:50:00", end: "09:00:00" },
+                { nome: "Intervalo", start: "09:00:00", end: "09:30:00" }, 
+                { nome: "3ª Aula", start: "09:30:00", end: "10:20:00" },
+                { nome: "Intervalo", start: "10:20:00", end: "10:30:00" },
+                { nome: "4ª Aula", start: "10:30:00", end: "11:20:00" },
+                { nome: "Intervalo", start: "11:20:00", end: "11:30:00" },
+                { nome: "Intervalo - Almoço", start: "11:30:00", end: "13:30:00" },
+                { nome: "5ª Aula", start: "13:30:00", end: "14:20:00" },
+                { nome: "Intervalo", start: "14:20:00", end: "14:30:00" },
+                { nome: "6ª Aula", start: "14:30:00", end: "15:20:00" },
+                { nome: "Intervalo", start: "15:20:00", end: "16:00:00" }, 
+                { nome: "7ª Aula", start: "16:00:00", end: "16:50:00" },
+                { nome: "Intervalo", start: "16:50:00", end: "17:00:00" },
+                { nome: "8ª Aula", start: "17:00:00", end: "17:50:00" },
+                { nome: "Intervalo", start: "17:50:00", end: "18:00:00" },
+                { nome: "9ª Aula", start: "18:00:00", end: "18:50:00" },
+                { nome: "Intervalo Noite", start: "18:50:00", end: "20:00:00" }, 
+                { nome: "10ª Aula", start: "20:00:00", end: "20:50:00" },
+                { nome: "Intervalo", start: "20:50:00", end: "21:00:00" },
+                { nome: "11ª Aula", start: "21:00:00", end: "21:50:00" },
+                { nome: "Intervalo", start: "21:50:00", end: "22:00:00" },
+                { nome: "12ª Aula", start: "22:00:00", end: "22:50:00" },
+                { nome: "Intervalo", start: "22:50:00", end: "23:00:00" }
+            ];
+
+            function toSeconds(timeStr) {
+                const [h, m, s] = timeStr.split(':').map(Number);
+                return h * 3600 + m * 60 + s;
+            }
+
+            if (relogioInterval) clearInterval(relogioInterval);
+
             relogioInterval = setInterval(() => {
+                const relogioEl = document.getElementById('relogioAtual');
+                const statusEl = document.getElementById('statusAulaAtual');
+                const progressoEl = document.getElementById('progressoAula');
+                if (!relogioEl) return;
+
                 const agora = new Date();
-                const hh = agora.getHours();
-                const mm = agora.getMinutes();
-                const ss = agora.getSeconds();
-                
-                document.getElementById('relogioAtual').innerText = `${hh.toString().padStart(2,'0')}:${mm.toString().padStart(2,'0')}:${ss.toString().padStart(2,'0')}`;
-                
-                // NOVO: Verifica se está no horário de intervalo e escreve na tela
-                const minutosAtual = (hh * 60) + mm;
-                const i1_inicio = (9 * 60); const i1_fim = (9 * 60) + 30; // 09:00 as 09:30
-                const i2_inicio = (11 * 60) + 30; const i2_fim = (13 * 60) + 30; // 11:30 as 13:30 (Almoço)
-                const i3_inicio = (15 * 60) + 30; const i3_fim = (16 * 60); // 15:30 as 16:00
-                const i4_inicio = (19 * 60); const i4_fim = (20 * 60); // 19:00 as 20:00
+                const h = agora.getHours().toString().padStart(2, '0');
+                const m = agora.getMinutes().toString().padStart(2, '0');
+                const s = agora.getSeconds().toString().padStart(2, '0');
+                relogioEl.innerText = `${h}:${m}:${s}`;
 
-                let statusText = "EM INSTRUÇÃO / A DISPOSIÇÃO";
-                if (minutosAtual >= i1_inicio && minutosAtual < i1_fim) statusText = "INTERVALO MATUTINO";
-                else if (minutosAtual >= i2_inicio && minutosAtual < i2_fim) statusText = "INTERVALO - ALMOÇO";
-                else if (minutosAtual >= i3_inicio && minutosAtual < i3_fim) statusText = "INTERVALO VESPERTINO";
-                else if (minutosAtual >= i4_inicio && minutosAtual < i4_fim) statusText = "INTERVALO NOTURNO";
-                else if (minutosAtual > (23 * 60)) statusText = "FORA DE EXPEDIENTE";
+                const currentSeconds = agora.getHours() * 3600 + agora.getMinutes() * 60 + agora.getSeconds();
+                let currentPeriod = null;
 
-                document.getElementById('statusAulaAtual').innerText = statusText;
+                for (let period of cronogramaQTS) {
+                    const startSec = toSeconds(period.start);
+                    const endSec = toSeconds(period.end);
+                    if (currentSeconds >= startSec && currentSeconds < endSec) {
+                        currentPeriod = period;
+                        break;
+                    }
+                }
 
-                const dataInicio = new Date('2026-06-26T00:00:00'); const dataFim = new Date('2027-04-21T23:59:59');
-                const tempoTotal = dataFim - dataInicio; const tempoDecorrido = Math.max(0, agora - dataInicio);
-                const diasTotais = Math.ceil(tempoTotal / (1000 * 60 * 60 * 24));
-                const diasDecorridos = Math.floor(Math.min(tempoDecorrido, tempoTotal) / (1000 * 60 * 60 * 24));
-                
-                const el = document.getElementById('diasDecorridos');
-                if(el) {
-                    el.innerText = diasDecorridos;
-                    document.getElementById('diasRestantes').innerText = Math.max(0, diasTotais - diasDecorridos);
-                    document.getElementById('diasTotaisCurso').innerText = diasTotais;
-                    document.getElementById('barraProgressoCurso').style.width = `${((diasDecorridos / diasTotais) * 100)}%`;
-                    document.getElementById('txtPorcentagemCurso').innerText = `${((diasDecorridos / diasTotais) * 100).toFixed(1)}% CONCLUÍDO`;
+                if (currentPeriod) {
+                    statusEl.innerText = currentPeriod.nome;
+                    const endSec = toSeconds(currentPeriod.end);
+                    const timeLeft = endSec - currentSeconds;
+                    
+                    const leftH = Math.floor(timeLeft / 3600);
+                    const leftM = Math.floor((timeLeft % 3600) / 60).toString().padStart(2, '0');
+                    const leftS = (timeLeft % 60).toString().padStart(2, '0');
+                    
+                    let tempoFormatado = leftH > 0 ? `${leftH}h ${leftM}m ${leftS}s` : `${leftM}m ${leftS}s`;
+                    progressoEl.innerHTML = `<i class="fa-solid fa-hourglass-half mr-1"></i> Restam ${tempoFormatado}`;
+                    
+                    if (currentPeriod.nome.includes("Intervalo")) {
+                        statusEl.className = 'text-xs md:text-sm font-black text-emerald-400 uppercase tracking-wide truncate max-w-[130px] md:max-w-[250px]';
+                    } else if (currentPeriod.nome.includes("disposição")) {
+                        statusEl.className = 'text-xs md:text-sm font-black text-amber-400 uppercase tracking-wide truncate max-w-[130px] md:max-w-[250px]';
+                    } else {
+                        statusEl.className = 'text-xs md:text-sm font-black text-pmmt-gold uppercase tracking-wide truncate max-w-[130px] md:max-w-[250px]';
+                    }
+                } else {
+                    statusEl.innerText = "Fora de Expediente";
+                    statusEl.className = 'text-xs md:text-sm font-black text-slate-400 uppercase tracking-wide truncate max-w-[130px] md:max-w-[250px]';
+                    progressoEl.innerText = "Aguardando próxima jornada";
                 }
             }, 1000);
+
+            const dataInicio = new Date('2026-06-26T00:00:00'); const dataFim = new Date('2027-04-21T23:59:59');
+            const dataAtual = new Date();
+            const tempoTotal = dataFim - dataInicio; const tempoDecorrido = Math.max(0, dataAtual - dataInicio);
+            const tempoLimitado = Math.min(tempoDecorrido, tempoTotal);
+            const diasTotais = Math.ceil(tempoTotal / (1000 * 60 * 60 * 24));
+            const diasDecorridos = Math.floor(tempoLimitado / (1000 * 60 * 60 * 24));
+            const diasRestantes = Math.max(0, diasTotais - diasDecorridos);
+            const porcentagem = (diasDecorridos / diasTotais) * 100;
+
+            const elDiasDecorridos = document.getElementById('diasDecorridos');
+            if(elDiasDecorridos) {
+                elDiasDecorridos.innerText = diasDecorridos;
+                document.getElementById('diasRestantes').innerText = diasRestantes;
+                document.getElementById('diasTotaisCurso').innerText = diasTotais;
+                
+                setTimeout(() => {
+                    document.getElementById('barraProgressoCurso').style.width = `${porcentagem}%`;
+                    document.getElementById('txtPorcentagemCurso').innerText = `${porcentagem.toFixed(1)}% CONCLUÍDO`;
+                }, 300);
+            }
         }
     </script>
 </body>
