@@ -144,15 +144,13 @@
                     <div class="flex-1 overflow-y-auto py-3 px-0 space-y-0.5 custom-scrollbar">
                         <p class="header-menu-txt px-5 text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2 mt-2">Módulos do Sistema</p>
                         <button onclick="mudarModulo('home')" id="btn-home" class="menu-item ativo"><i class="fa-solid fa-house"></i> <span>Início / Painel</span></button>
-                        <button onclick="mudarModulo('institucional')" id="btn-institucional" class="menu-item"><i class="fa-solid fa-sitemap"></i> <span>Cadeia Comando</span></button>
                         <button onclick="mudarModulo('efetivo')" id="btn-efetivo" class="menu-item"><i class="fa-solid fa-users-gear"></i> <span>Efetivo e Escala</span></button>
                         <button onclick="mudarModulo('cautela')" id="btn-cautela" class="menu-item"><i class="fa-solid fa-gun"></i> <span>Cautela Fixa</span></button>
                         <button onclick="mudarModulo('financeiro')" id="btn-financeiro" class="menu-item"><i class="fa-solid fa-vault"></i> <span>Gestão Financeira</span></button>
                         <button onclick="mudarModulo('efetivodados')" id="btn-efetivodados" class="menu-item"><i class="fa-solid fa-brain"></i> <span>Inteligência</span></button>
                         <button onclick="mudarModulo('academico')" id="btn-academico" class="menu-item"><i class="fa-solid fa-graduation-cap"></i> <span>Módulo Acadêmico</span></button>
                         <button onclick="mudarModulo('aluno')" id="btn-aluno" class="menu-item"><i class="fa-solid fa-folder-open"></i> <span>Área do Aluno (QTS)</span></button>
-                        <button onclick="mudarModulo('redator')" id="btn-redator" class="menu-item"><i class="fa-solid fa-robot text-pmmt-gold"></i> <span>Copiloto de B.O.</span></button>
-                        <button onclick="mudarModulo('debate')" id="btn-debate" class="menu-item"><i class="fa-solid fa-comments"></i> <span>Área Livre</span></button>
+                        <button onclick="mudarModulo('taf')" id="btn-taf" class="menu-item"><i class="fa-solid fa-person-running"></i> <span>TAF</span></button>
                         <button onclick="mudarModulo('toques')" id="btn-toques" class="menu-item"><i class="fa-solid fa-bullhorn"></i> <span>Toques de Corneta</span></button>
                         <button onclick="mudarModulo('gerador')" id="btn-gerador" class="menu-item"><i class="fa-solid fa-file-pdf"></i> <span>Gerador Documentos</span></button>
                     </div>
@@ -321,20 +319,6 @@
                     </section>
 
                     <!-- DEMAIS MÓDULOS -->
-                    <section id="modulo-institucional" class="hidden space-y-6">
-                        <div class="bg-white shadow-sm border border-slate-300 overflow-hidden rounded-xl">
-                            <div class="bg-sys-dark text-white px-5 py-4 flex justify-between items-center"><div><h2 class="text-sm font-black tracking-widest uppercase"><i class="fa-solid fa-sitemap text-pmmt-gold mr-2"></i> Cadeia de Comando</h2><p class="text-[9px] text-slate-300 uppercase mt-0.5">Hierarquia do Estado e da Polícia Militar</p></div></div>
-                            <div class="p-5 md:p-6">
-                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-pmmt-blue"><div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-user-tie"></i></div><h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Governador do Estado</h3><p class="text-xs font-black text-sys-dark uppercase">Otaviano Pivetta</p></div>
-                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-pmmt-blue"><div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-user-shield"></i></div><h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Sec. de Seg. Pública</h3><p class="text-xs font-black text-sys-dark uppercase">CEL PM SUSANE TAMANHO</p></div>
-                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-pmmt-gold"><div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-star"></i></div><h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Comandante-Geral</h3><p class="text-xs font-black text-sys-dark uppercase">Cel PM Alexandre Mendes</p></div>
-                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-all border-b-4 border-b-slate-800"><div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center border-2 border-pmmt-gold mb-3 overflow-hidden shadow-inner text-slate-400 text-3xl"><i class="fa-solid fa-shield-halved"></i></div><h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Cmt 6º BPM</h3><p class="text-xs font-black text-sys-dark uppercase">Ten Cel PM Luiz Marcelo</p></div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
                     <section id="modulo-efetivo" class="hidden flex-1 flex flex-col h-full min-h-[85vh]">
                         <iframe id="iframeEfetivo" src="escala.html" class="w-full h-full border border-slate-200 bg-transparent shadow-sm rounded-xl"></iframe>
                     </section>
@@ -366,7 +350,6 @@
                         <iframe id="iframeAcademico" src="academico.html" class="w-full h-full border border-slate-200 bg-white shadow-sm rounded-xl"></iframe>
                     </section>
 
-                    <!-- MODIFICADO: A ABA DO ALUNO AGORA CONTÉM O UPLOAD/VISUALIZADOR DO QTS EM PDF -->
                     <section id="modulo-aluno" class="hidden flex-1 flex flex-col h-full min-h-[85vh] space-y-4">
                         <div class="bg-white shadow-sm border border-slate-200 overflow-hidden rounded-xl flex flex-col h-full">
                             <div class="bg-sys-dark text-white px-5 py-4 flex justify-between items-center shrink-0 border-b-4 border-pmmt-gold"><div><h2 class="text-sm font-black tracking-widest uppercase"><i class="fa-solid fa-folder-open text-pmmt-gold mr-2"></i> Área do Aluno</h2><p class="text-[9px] text-slate-300 uppercase mt-0.5">Material de Estudo e Quadro de Trabalho Oficial</p></div></div>
@@ -427,21 +410,11 @@
                         </div>
                     </section>
                     
-                    <section id="modulo-redator" class="hidden flex-1 flex flex-col h-full min-h-[85vh] space-y-4">
-                        <div class="bg-white shadow-sm border border-slate-200 overflow-hidden rounded-xl flex flex-col h-full">
-                            <div class="bg-sys-dark text-white px-5 py-4 flex justify-between items-center shrink-0 border-b-4 border-pmmt-gold"><div><h2 class="text-sm font-black tracking-widest uppercase"><i class="fa-solid fa-robot text-pmmt-gold mr-2"></i> Copiloto Jurídico de BO</h2><p class="text-[9px] text-slate-300 uppercase mt-0.5">Análise de Fundamentação Legal</p></div></div>
-                            <div class="p-4 md:p-6 bg-slate-50 flex-1 overflow-y-auto">
-                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
-                                    <div class="bg-white p-5 rounded-xl border border-slate-300 shadow-sm flex flex-col h-full min-h-[300px]"><label class="block text-xs font-black text-sys-dark uppercase tracking-widest mb-3 border-b border-slate-100 pb-2"><i class="fa-solid fa-pen-clip text-pmmt-blue mr-1.5"></i> Rascunho do Histórico (BO)</label><textarea id="boRascunho" class="w-full bg-slate-50 border border-slate-300 p-3 rounded-lg text-sm text-slate-700 outline-none flex-1 mb-4"></textarea><button id="btnAnalisarBO" onclick="analisarBOComIA()" class="w-full bg-pmmt-gold text-sys-dark font-black px-5 py-3 rounded-lg shadow-md uppercase tracking-widest text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-microchip"></i> Analisar Fundamentação</button></div>
-                                    <div class="bg-sys-dark p-5 rounded-xl border border-pmmt-blue shadow-inner flex flex-col relative overflow-hidden h-full min-h-[300px]"><label class="block text-xs font-black text-pmmt-gold uppercase tracking-widest mb-3 border-b border-white/10 pb-2 relative z-10 shrink-0"><i class="fa-solid fa-check-double mr-1.5"></i> Parecer do Copiloto</label><div id="aiLoading" class="hidden flex-col items-center justify-center flex-1 space-y-3 relative z-10 py-10"><i class="fa-solid fa-circle-notch fa-spin text-4xl text-pmmt-gold"></i></div><div id="aiResultado" class="flex-1 overflow-y-auto text-slate-200 text-sm leading-relaxed space-y-4 relative z-10 hidden pr-2 custom-scrollbar"></div><div id="aiPlaceholder" class="flex flex-col items-center justify-center flex-1 text-center opacity-50 relative z-10 py-10"><i class="fa-solid fa-clipboard-check text-5xl mb-3 text-slate-400"></i></div></div>
-                                </div>
-                            </div>
-                        </div>
+                    <!-- NOVO MÓDULO TAF -->
+                    <section id="modulo-taf" class="hidden flex-1 flex flex-col h-full min-h-[85vh]">
+                        <iframe id="iframeTaf" src="taf.html" class="w-full h-full border border-slate-200 bg-transparent shadow-sm rounded-xl"></iframe>
                     </section>
 
-                    <section id="modulo-debate" class="hidden space-y-6">
-                        <div class="bg-white shadow-sm border border-slate-300 p-8 text-center rounded-xl"><i class="fa-solid fa-bullhorn text-5xl text-slate-300 mb-3"></i><h2 class="text-xl font-black text-sys-dark uppercase tracking-widest">Área Livre / Mural</h2></div>
-                    </section>
                     <section id="modulo-toques" class="hidden flex-1 flex flex-col h-full min-h-[85vh]"><iframe id="iframeToques" src="toques_corneta.html" class="w-full h-full border border-slate-200 bg-transparent shadow-sm rounded-xl"></iframe></section>
                     <section id="modulo-gerador" class="hidden flex-1 flex flex-col h-full min-h-[85vh]"><iframe id="iframeGerador" src="gerador_documentos.html" class="w-full h-full border border-slate-200 bg-transparent shadow-sm rounded-xl"></iframe></section>
 
@@ -603,7 +576,7 @@
             await carregarMateriaisApoio();
             await renderizarDashboardHome();
             
-            const iframesToReload = ['iframeEfetivo', 'iframeEfetivoDados', 'iframeAcademico', 'iframeFinanceiro', 'iframeToques', 'iframeGerador'];
+            const iframesToReload = ['iframeEfetivo', 'iframeEfetivoDados', 'iframeAcademico', 'iframeFinanceiro', 'iframeToques', 'iframeGerador', 'iframeTaf'];
             iframesToReload.forEach(id => { const iframe = document.getElementById(id); if (iframe && iframe.contentWindow) iframe.contentWindow.location.reload(); });
             mostrarLoading(false);
         }
@@ -643,8 +616,8 @@
         async function deslogarUsuario() { if (confirm("Encerrar sessão?")) { await supabaseClient.auth.signOut(); window.location.reload(); } }
 
         function mudarModulo(moduloDestino) {
-            const modulos = ['home', 'institucional', 'efetivo', 'cautela', 'financeiro', 'efetivodados', 'academico', 'aluno', 'debate', 'toques', 'redator', 'gerador'];
-            const nomes = { 'home': 'Painel Diário', 'institucional': 'Cadeia de Comando', 'efetivo': 'Efetivo e Escala', 'cautela': 'Cautela Fixa (Armas)', 'financeiro': 'Gestão Financeira', 'efetivodados': 'Inteligência', 'academico': 'Módulo Acadêmico', 'aluno': 'Área do Aluno', 'debate': 'Área Livre', 'toques': 'Toques de Corneta', 'redator': 'Copiloto Jurídico de B.O.', 'gerador': 'Gerador de Documentos' };
+            const modulos = ['home', 'efetivo', 'cautela', 'financeiro', 'efetivodados', 'academico', 'aluno', 'taf', 'toques', 'gerador'];
+            const nomes = { 'home': 'Painel Diário', 'efetivo': 'Efetivo e Escala', 'cautela': 'Cautela Fixa (Armas)', 'financeiro': 'Gestão Financeira', 'efetivodados': 'Inteligência', 'academico': 'Módulo Acadêmico', 'aluno': 'Área do Aluno', 'taf': 'TAF (Teste de Aptidão Física)', 'toques': 'Toques de Corneta', 'gerador': 'Gerador de Documentos' };
             modulos.forEach(m => { const el = document.getElementById('modulo-' + m); if(el) el.classList.add('hidden'); const btn = document.getElementById('btn-' + m); if(btn) btn.className = "menu-item rounded-lg"; });
             const modAtivo = document.getElementById('modulo-' + moduloDestino); if(modAtivo) modAtivo.classList.remove('hidden');
             const btnAtivo = document.getElementById('btn-' + moduloDestino); if(btnAtivo) btnAtivo.className = "menu-item ativo rounded-lg";
@@ -658,7 +631,6 @@
             disciplinasGlobais = data || [];
         }
 
-        // LÓGICA NOVA DO QTS: AGORA É PDF
         async function carregarQtsPDF() {
             const { data } = await supabaseClient.from('qts_pdf').select('*').order('criado_em', { ascending: false }).limit(1).single();
             qtsPdfGlobal = data || null;
@@ -672,14 +644,10 @@
             const linkBaixar = document.getElementById('linkBaixarQTS');
             
             if (qtsPdfGlobal && qtsPdfGlobal.url_drive) {
-                // Converte o link de "view" do Drive para "preview" para rodar bem no Iframe
                 let urlPreview = qtsPdfGlobal.url_drive;
                 if (urlPreview.includes('/view')) urlPreview = urlPreview.replace('/view', '/preview');
                 
-                // HOME
                 if (containerHome) containerHome.innerHTML = `<iframe src="${urlPreview}" class="w-full h-full border-none" loading="lazy"></iframe>`;
-                
-                // ÁREA DO ALUNO
                 if (containerInterno) containerInterno.innerHTML = `<iframe src="${urlPreview}" class="w-full h-full border-none" allow="autoplay"></iframe>`;
                 if (tituloInterno) tituloInterno.innerHTML = `<i class="fa-solid fa-file-pdf text-rose-400 mr-2"></i>${qtsPdfGlobal.titulo || 'QTS OFICIAL VIGENTE'}`;
                 
@@ -795,7 +763,6 @@
             document.getElementById('horasConcluidas').innerText = concluidasHoras;
             document.getElementById('horasRestantes').innerText = restantesHoras;
 
-            // Renderiza o PDF Oficial na Home
             renderizarQtsPDF();
             renderizarXerife();
         }
@@ -1062,19 +1029,6 @@
             });
         }
 
-        async function analisarBOComIA() {
-            const rascunho = document.getElementById('boRascunho').value.trim();
-            if (!rascunho) return alert("Digite o rascunho.");
-            document.getElementById('aiLoading').classList.replace('hidden', 'flex');
-            try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: `Analise o texto como Instrutor da PMMT buscando justificar Fundada Suspeita e Uso Algemas: "${rascunho}"` }] }] }) });
-                const data = await response.json();
-                document.getElementById('aiResultado').innerHTML = data.candidates[0].content.parts[0].text.replace(/\n/g, '<br>');
-                document.getElementById('aiResultado').classList.remove('hidden');
-            } catch (e) { alert("Erro IA"); }
-            document.getElementById('aiLoading').classList.replace('flex', 'hidden');
-        }
-
         let relogioInterval;
         function iniciarRelogioQTS() {
             relogioInterval = setInterval(() => {
@@ -1085,7 +1039,6 @@
                 
                 document.getElementById('relogioAtual').innerText = `${hh.toString().padStart(2,'0')}:${mm.toString().padStart(2,'0')}:${ss.toString().padStart(2,'0')}`;
                 
-                // NOVO: Verifica se está no horário de intervalo e escreve na tela
                 const minutosAtual = (hh * 60) + mm;
                 const i1_inicio = (9 * 60); const i1_fim = (9 * 60) + 30; // 09:00 as 09:30
                 const i2_inicio = (11 * 60) + 30; const i2_fim = (13 * 60) + 30; // 11:30 as 13:30 (Almoço)
