@@ -201,7 +201,8 @@
     </div>
 
     <script>
-        let supabaseClient;
+        // Correção do conflito de variável global "supabase"
+        let dbClient; 
         let alunoSelecionadoId = null;
         let listaAlunosFull = [];
         let historicoTAF = [];
@@ -264,7 +265,7 @@
         }
 
         window.onload = async function() {
-            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             document.getElementById('tafData').value = new Date().toISOString().split('T')[0];
             checkAdmin();
             await carregarAlunosGeral();
@@ -282,7 +283,7 @@
 
         async function carregarAlunosGeral() {
             mostrarLoading(true);
-            const { data, error } = await supabaseClient.from('alunos_pelotao').select('*').order('numero', { ascending: true });
+            const { data, error } = await dbClient.from('alunos_pelotao').select('*').order('numero', { ascending: true });
             if (!error && data) {
                 listaAlunosFull = data;
                 const select = document.getElementById('alunoSelecionado');
@@ -334,7 +335,7 @@
 
         async function prepararDadosTodos() {
             mostrarLoading(true);
-            const { data: todosTAFs } = await supabaseClient.from('taf_resultados').select('*').order('data_taf', { ascending: false });
+            const { data: todosTAFs } = await dbClient.from('taf_resultados').select('*').order('data_taf', { ascending: false });
 
             cacheTodosTAFs = todosTAFs || [];
 
@@ -400,7 +401,7 @@
         // TAF
         // ==========================================
         async function carregarTAF() {
-            const { data, error } = await supabaseClient.from('taf_resultados').select('*').eq('aluno_id', alunoSelecionadoId).order('data_taf', { ascending: false });
+            const { data, error } = await dbClient.from('taf_resultados').select('*').eq('aluno_id', alunoSelecionadoId).order('data_taf', { ascending: false });
             if(!error && data) {
                 historicoTAF = data;
                 renderizarTabelaTAF();
@@ -455,12 +456,12 @@
 
             let error;
             if(id) {
-                const res = await supabaseClient.from('taf_resultados').update(obj).eq('id', id);
+                const res = await dbClient.from('taf_resultados').update(obj).eq('id', id);
                 error = res.error;
                 document.getElementById('tafId').value = '';
                 btn.innerHTML = '<i class="fa-solid fa-check"></i> Calcular e Salvar';
             } else {
-                const res = await supabaseClient.from('taf_resultados').insert([obj]);
+                const res = await dbClient.from('taf_resultados').insert([obj]);
                 error = res.error;
                 btn.innerHTML = '<i class="fa-solid fa-check"></i> Calcular e Salvar';
             }
@@ -498,7 +499,7 @@
         async function deletarTAF(id) {
             if(confirm("Deseja apagar este resultado do TAF?")) {
                 mostrarLoading(true);
-                await supabaseClient.from('taf_resultados').delete().eq('id', id);
+                await dbClient.from('taf_resultados').delete().eq('id', id);
                 await carregarTAF();
                 mostrarLoading(false);
             }
