@@ -317,9 +317,9 @@
 
             const aluno = listaAlunosFull.find(a => a.id == alunoSelecionadoId);
             if (aluno) {
-                // Atualiza cards de visualização biométrica
+                // Atualiza cards de visualização biométrica (Puxando a coluna 'tipo_sanguineo')
                 const idadeCalc = calcularIdade(aluno.data_nascimento);
-                document.getElementById('bioTipagem').innerText = aluno.tipagem_sanguinea || 'N/I';
+                document.getElementById('bioTipagem').innerText = aluno.tipo_sanguineo || 'N/I';
                 document.getElementById('bioAltura').innerText = aluno.altura ? aluno.altura + ' m' : 'N/I';
                 document.getElementById('bioPeso').innerText = aluno.peso ? aluno.peso + ' kg' : 'N/I';
                 document.getElementById('bioIdade').innerText = aluno.data_nascimento ? idadeCalc + ' anos' : 'N/I';
