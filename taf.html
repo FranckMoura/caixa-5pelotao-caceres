@@ -317,14 +317,12 @@
 
             const aluno = listaAlunosFull.find(a => a.id == alunoSelecionadoId);
             if (aluno) {
-                // Atualiza cards de visualização biométrica (Puxando a coluna 'tipo_sanguineo')
                 const idadeCalc = calcularIdade(aluno.data_nascimento);
                 document.getElementById('bioTipagem').innerText = aluno.tipo_sanguineo || 'N/I';
                 document.getElementById('bioAltura').innerText = aluno.altura ? aluno.altura + ' m' : 'N/I';
                 document.getElementById('bioPeso').innerText = aluno.peso ? aluno.peso + ' kg' : 'N/I';
                 document.getElementById('bioIdade').innerText = aluno.data_nascimento ? idadeCalc + ' anos' : 'N/I';
                 
-                // Preenche formulário TAF automaticamente com a idade e limpa o ID do TAF
                 document.getElementById('tafId').value = '';
                 document.getElementById('tafIdade').value = idadeCalc;
                 document.getElementById('btnSalvarTAF').innerHTML = '<i class="fa-solid fa-check"></i> Calcular e Salvar';
@@ -441,26 +439,29 @@
             });
             const mediaFinal = (soma / 5).toFixed(2);
 
+            // Objeto blindado contra erros de tipos (strings vs numbers)
             const obj = {
-                aluno_id: alunoSelecionadoId,
+                aluno_id: parseInt(alunoSelecionadoId),
                 data_taf: document.getElementById('tafData').value,
                 sexo: sexo,
-                idade: idade,
-                barra: valBarra || null, pts_barra: pB,
-                corrida: valCorrida || null, pts_corrida: pC,
-                flexao: valFlexao || null, pts_flexao: pF,
-                abdominal: valAbd || null, pts_abdominal: pA,
-                natacao: valNatacao || null, pts_natacao: pN,
-                media_final: mediaFinal
+                idade: parseInt(idade),
+                barra: valBarra || null, pts_barra: parseFloat(pB),
+                corrida: valCorrida || null, pts_corrida: parseFloat(pC),
+                flexao: valFlexao || null, pts_flexao: parseFloat(pF),
+                abdominal: valAbd || null, pts_abdominal: parseFloat(pA),
+                natacao: valNatacao || null, pts_natacao: parseFloat(pN),
+                media_final: parseFloat(mediaFinal)
             };
 
             let error;
             if(id) {
-                error = (await supabaseClient.from('taf_resultados').update(obj).eq('id', id)).error;
+                const res = await supabaseClient.from('taf_resultados').update(obj).eq('id', id);
+                error = res.error;
                 document.getElementById('tafId').value = '';
                 btn.innerHTML = '<i class="fa-solid fa-check"></i> Calcular e Salvar';
             } else {
-                error = (await supabaseClient.from('taf_resultados').insert([obj])).error;
+                const res = await supabaseClient.from('taf_resultados').insert([obj]);
+                error = res.error;
                 btn.innerHTML = '<i class="fa-solid fa-check"></i> Calcular e Salvar';
             }
 
@@ -468,11 +469,13 @@
                 document.getElementById('formTAF').reset();
                 document.getElementById('tafData').value = new Date().toISOString().split('T')[0];
                 
-                // Recalcula idade para o próximo preenchimento
                 const aluno = listaAlunosFull.find(a => a.id == alunoSelecionadoId);
                 if (aluno) document.getElementById('tafIdade').value = calcularIdade(aluno.data_nascimento);
 
                 await carregarTAF();
+            } else {
+                alert("Erro ao salvar! Execute o comando SQL no Supabase para garantir que a tabela existe.");
+                console.error(error);
             }
             mostrarLoading(false);
         }
