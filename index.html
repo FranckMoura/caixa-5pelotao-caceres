@@ -482,7 +482,7 @@
     </div>
 
     <script>
-let supabaseClient;
+        let dbClient; 
         let alunosMap = {};
         let listaAlunosFull = []; 
         let listaTecnicoCache = [];
@@ -496,23 +496,15 @@ let supabaseClient;
 
         const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
-        const GEMINI_API_KEY = 'AQ.Ab8RN6IOzdHSTG5CUoojPZXssiiqxDUv_NXsupGR9tqhGdi2Rw';        
         
         window.onload = async function() { 
-            // Garante que a biblioteca carregou antes de invocar
-            if (window.supabase) {
-                await iniciarSupabase(); 
-            } else {
-                console.error("Supabase CDN não carregou a tempo.");
-                document.getElementById('erroLogin').innerText = "Erro interno: Falha ao carregar banco de dados.";
-                document.getElementById('erroLogin').classList.remove('hidden');
-            }
+            dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            await iniciarSupabase(); 
         };
 
         async function iniciarSupabase() {
             try {
-                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-                const { data: { session } } = await supabaseClient.auth.getSession();
+                const { data: { session } } = await dbClient.auth.getSession();
                 if (session) {
                     emailUsuarioLogado = session.user.email;
                     await logarSucesso();
@@ -534,7 +526,9 @@ let supabaseClient;
             const btn = document.getElementById('btnEntrar');
             btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Validando...';
             const emailFinal = usuarioInput.includes('@') ? usuarioInput : `${usuarioInput}@5pelotao.internal`;
-            const { data, error } = await supabaseClient.auth.signInWithPassword({ email: emailFinal, password: senha });
+            
+            const { data, error } = await dbClient.auth.signInWithPassword({ email: emailFinal, password: senha });
+            
             if (error) { 
                 document.getElementById('erroLogin').innerText = "Acesso Negado."; 
                 document.getElementById('erroLogin').classList.remove('hidden'); 
@@ -563,7 +557,7 @@ let supabaseClient;
         async function sincronizarDadosManualmente() {
             mostrarLoading(true);
             await carregarAlunos(); 
-            const { data: dadosT } = await supabaseClient.from('corpo_tecnico').select('*'); listaTecnicoCache = dadosT || [];
+            const { data: dadosT } = await dbClient.from('corpo_tecnico').select('*'); listaTecnicoCache = dadosT || [];
             
             atualizarUsuarioLogado(); 
             
@@ -611,7 +605,7 @@ let supabaseClient;
             if (el) el.innerHTML = `<i class="fa-solid fa-user-check text-pmmt-gold mr-1"></i> LOGADO: <span class="text-white">${cargoUsuario} ${nomeUsuario}</span>`;
         }
 
-        async function deslogarUsuario() { if (confirm("Encerrar sessão?")) { await supabaseClient.auth.signOut(); window.location.reload(); } }
+        async function deslogarUsuario() { if (confirm("Encerrar sessão?")) { await dbClient.auth.signOut(); window.location.reload(); } }
 
         function mudarModulo(moduloDestino) {
             const modulos = ['home', 'efetivo', 'cautela', 'financeiro', 'efetivodados', 'academico', 'aluno', 'taf', 'toques', 'gerador'];
@@ -625,12 +619,12 @@ let supabaseClient;
         }
 
         async function carregarDisciplinas() {
-            const { data } = await supabaseClient.from('academico_disciplinas').select('*');
+            const { data } = await dbClient.from('academico_disciplinas').select('*');
             disciplinasGlobais = data || [];
         }
 
         async function carregarQtsPDF() {
-            const { data } = await supabaseClient.from('qts_pdf').select('*').order('criado_em', { ascending: false }).limit(1).single();
+            const { data } = await dbClient.from('qts_pdf').select('*').order('criado_em', { ascending: false }).limit(1).single();
             qtsPdfGlobal = data || null;
             renderizarQtsPDF();
         }
@@ -668,7 +662,7 @@ let supabaseClient;
             if (!titulo || !url) return alert("Preencha a Semana e o Link do Arquivo!");
             
             mostrarLoading(true);
-            const { error } = await supabaseClient.from('qts_pdf').insert([{ titulo: titulo, url_drive: url }]);
+            const { error } = await dbClient.from('qts_pdf').insert([{ titulo: titulo, url_drive: url }]);
             if (error) alert("Erro ao salvar PDF: " + error.message);
             else {
                 document.getElementById('inputTituloQtsPDF').value = '';
@@ -828,8 +822,8 @@ let supabaseClient;
 
         function mostrarLoading(show) { document.getElementById('loaderAlert').style.display = show ? 'flex' : 'none'; }
 
-        async function carregarAlunos() { const { data } = await supabaseClient.from('alunos_pelotao').select('*').order('numero', { ascending: true }); listaAlunosFull = data || []; }
-        async function carregarFuncoesComando() { const { data } = await supabaseClient.from('funcoes_comando').select('*'); if (data) funcoesComandoGlobais = data; }
+        async function carregarAlunos() { const { data } = await dbClient.from('alunos_pelotao').select('*').order('numero', { ascending: true }); listaAlunosFull = data || []; }
+        async function carregarFuncoesComando() { const { data } = await dbClient.from('funcoes_comando').select('*'); if (data) funcoesComandoGlobais = data; }
 
         async function abrirRankingGeral() {
             const modal = document.getElementById('modalRankingGeral');
@@ -840,12 +834,12 @@ let supabaseClient;
             
             try {
                 if (!listaAlunosFull || listaAlunosFull.length === 0) {
-                    const { data: alunos } = await supabaseClient.from('alunos_pelotao').select('*').order('numero', { ascending: true });
+                    const { data: alunos } = await dbClient.from('alunos_pelotao').select('*').order('numero', { ascending: true });
                     listaAlunosFull = alunos || [];
                 }
 
                 if (!todasNotasGlobais || todasNotasGlobais.length === 0) {
-                    const { data: notas } = await supabaseClient.from('academico_notas').select('*');
+                    const { data: notas } = await dbClient.from('academico_notas').select('*');
                     todasNotasGlobais = notas || [];
                 }
                 const notas = todasNotasGlobais;
@@ -975,7 +969,7 @@ let supabaseClient;
             if(dashXerifeEl) dashXerifeEl.innerText = textoXerifeExibicao;
         }
 
-        async function carregarCautelasFixas() { const { data } = await supabaseClient.from('cautela_fixa').select('*'); if (data) { cautelasFixasGlobais = data || []; renderizarTabelaCautelaFixa(); } }
+        async function carregarCautelasFixas() { const { data } = await dbClient.from('cautela_fixa').select('*'); if (data) { cautelasFixasGlobais = data || []; renderizarTabelaCautelaFixa(); } }
 
         function renderizarTabelaCautelaFixa() {
             const tbody = document.getElementById('tabelaCautelaFixa'); if (!tbody) return;
@@ -999,7 +993,7 @@ let supabaseClient;
         }
 
         function fecharModalCautelaFixa() { document.getElementById('modalCautelaFixa').classList.add('hidden'); }
-        async function deletarCautelaFixa(id) { if (confirm("Excluir arma?")) { await supabaseClient.from('cautela_fixa').delete().eq('id', id); await carregarCautelasFixas(); } }
+        async function deletarCautelaFixa(id) { if (confirm("Excluir arma?")) { await dbClient.from('cautela_fixa').delete().eq('id', id); await carregarCautelasFixas(); } }
 
         function imprimirCautelaFixa() {
             document.body.classList.add('printing-cautela'); window.print();
@@ -1014,7 +1008,7 @@ let supabaseClient;
         }
 
         async function carregarMateriaisApoio() {
-            const { data } = await supabaseClient.from('material_apoio').select('*').order('categoria', { ascending: true });
+            const { data } = await dbClient.from('material_apoio').select('*').order('categoria', { ascending: true });
             const container = document.getElementById('containerMateriais'); if(!container) return;
             if (!data || data.length === 0) { container.innerHTML = '<p>Nenhum material.</p>'; return; }
             const categorias = {}; data.forEach(item => { if (!categorias[item.categoria]) categorias[item.categoria] = []; categorias[item.categoria].push(item); });
