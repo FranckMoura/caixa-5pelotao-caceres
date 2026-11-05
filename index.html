@@ -482,7 +482,7 @@
     </div>
 
     <script>
-        let supabaseClient;
+let supabaseClient;
         let alunosMap = {};
         let listaAlunosFull = []; 
         let listaTecnicoCache = [];
@@ -498,26 +498,20 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
         const GEMINI_API_KEY = 'AQ.Ab8RN6IOzdHSTG5CUoojPZXssiiqxDUv_NXsupGR9tqhGdi2Rw';        
         
-        window.onload = async function() { await iniciarSupabase(); };
-
-        function toggleMenuLateral() {
-            const menu = document.getElementById('wrapperLateral');
-            menu.classList.toggle('retraido');
-            const estaRetraido = menu.classList.contains('retraido');
-            
-            const imgBrasao = document.getElementById('imgBrasaoSidebar');
-            if (estaRetraido) {
-                imgBrasao.classList.remove('w-28', 'h-28');
-                imgBrasao.classList.add('w-10', 'h-10');
+        window.onload = async function() { 
+            // Garante que a biblioteca carregou antes de invocar
+            if (window.supabase) {
+                await iniciarSupabase(); 
             } else {
-                imgBrasao.classList.remove('w-10', 'h-10');
-                imgBrasao.classList.add('w-28', 'h-28');
+                console.error("Supabase CDN não carregou a tempo.");
+                document.getElementById('erroLogin').innerText = "Erro interno: Falha ao carregar banco de dados.";
+                document.getElementById('erroLogin').classList.remove('hidden');
             }
-        }
+        };
 
         async function iniciarSupabase() {
             try {
-                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
                 const { data: { session } } = await supabaseClient.auth.getSession();
                 if (session) {
                     emailUsuarioLogado = session.user.email;
@@ -526,7 +520,11 @@
                     document.getElementById('telaLogin').classList.remove('hidden'); 
                     document.getElementById('painelPrincipal').classList.add('hidden'); 
                 }
-            } catch (error) { console.error("Erro DB"); }
+            } catch (error) { 
+                console.error("Erro DB", error); 
+                document.getElementById('erroLogin').innerText = "Erro ao conectar ao banco de dados.";
+                document.getElementById('erroLogin').classList.remove('hidden');
+            }
         }
 
         async function autenticarUsuario(e) {
