@@ -82,7 +82,7 @@
                 <input type="hidden" id="prevDataIso"><input type="hidden" id="prevEquipeNome">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <div class="bg-white p-3 rounded-lg shadow-sm border border-slate-200"><label class="block text-[10px] font-black text-sys-dark uppercase tracking-widest mb-1">Nº da Escala</label><input type="number" id="prevNumEscala" class="w-full bg-slate-50 border border-slate-300 p-2 rounded text-xs font-bold outline-none"></div>
-                    <div class="bg-white p-3 rounded-lg shadow-sm border border-slate-200"><label class="block text-[10px] font-black text-sys-dark uppercase tracking-widest mb-1">Graduado (CMT)</label><select id="prevGraduado" class="w-full bg-slate-50 border border-slate-300 p-2 rounded text-xs font-bold outline-none"><option value="1º SGT PM ORTIZ">1º SGT PM ORTIZ</option><option value="1º SGT PM MAURIZON">1º SGT PM MAURIZON</option><option value="2º SGT PM SOUZA">2º SGT PM SOUZA</option><option value="A DEFINIR">A DEFINIR</option></select></div>
+                    <div class="bg-white p-3 rounded-lg shadow-sm border border-slate-200"><label class="block text-[10px] font-black text-sys-dark uppercase tracking-widest mb-1">Graduado (CMT)</label><select id="prevGraduado" class="w-full bg-slate-50 border border-slate-300 p-2 rounded text-xs font-bold outline-none"><option value="1º SGT PM ORTIZ">1º SGT PM ORTIZ</option><option value="2º SGT PM MAURIZON">2º SGT PM MAURIZON</option><option value="2º SGT PM SOUZA">2º SGT PM SOUZA</option><option value="A DEFINIR">A DEFINIR</option></select></div>
                     <div class="bg-white p-3 rounded-lg shadow-sm border border-slate-200"><label class="block text-[10px] font-black text-sys-dark uppercase tracking-widest mb-1">Aluno de Dia</label><select id="prevAlunoDia" class="w-full bg-slate-50 border border-slate-300 p-2 rounded text-xs font-bold outline-none"></select></div>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -221,28 +221,32 @@
         }
 
         function calcularEscalaDoDia(dataAlvo) {
+            // TRANSIÇÃO DE EQUIPES (Data base ajustada para a de 5 Equipes: 31/10)
             const marcoTransicao = new Date('2026-11-10T12:00:00Z');
-            const dataBaseAntiga = new Date('2026-08-11T12:00:00Z');
-            const dataBaseNova = new Date('2026-11-10T12:00:00Z');
+            const dataBaseAntigaEq = new Date('2026-10-31T12:00:00Z'); 
+            const dataBaseNovaEq = new Date('2026-11-10T12:00:00Z');
             
             const seqEqAntiga = ['ALFA', 'BRAVO', 'CHARLIE', 'DELTA', 'ECO'];
             const seqEqNova = ['ALFA', 'BRAVO', 'CHARLIE', 'DELTA'];
-            const seqSgt = ['1º SGT PM ORTIZ', '1º SGT PM MAURIZON', '2º SGT PM SOUZA'];
             
-            let eq, diffDias;
+            // SARGENTOS: São apenas 2 rodando (SOUZA e MAURIZON) desde a data base mais antiga
+            const dataBaseSgt = new Date('2026-08-11T12:00:00Z');
+            const seqSgt = ['2º SGT PM MAURIZON', '2º SGT PM SOUZA'];
+            
+            let eq, diffDiasEq;
 
             if (dataAlvo < marcoTransicao) {
-                diffDias = Math.round((dataAlvo - dataBaseAntiga) / 86400000);
-                eq = seqEqAntiga[(diffDias % 5 + 5) % 5];
+                diffDiasEq = Math.round((dataAlvo - dataBaseAntigaEq) / 86400000);
+                eq = seqEqAntiga[(diffDiasEq % 5 + 5) % 5];
             } else {
-                diffDias = Math.round((dataAlvo - dataBaseNova) / 86400000);
-                eq = seqEqNova[(diffDias % 4 + 4) % 4];
+                diffDiasEq = Math.round((dataAlvo - dataBaseNovaEq) / 86400000);
+                eq = seqEqNova[(diffDiasEq % 4 + 4) % 4];
             }
 
-            let diffDiasSgt = Math.round((dataAlvo - dataBaseAntiga) / 86400000);
-            let sgt = seqSgt[(diffDiasSgt % 3 + 3) % 3];
+            let diffDiasSgt = Math.round((dataAlvo - dataBaseSgt) / 86400000);
+            let sgt = seqSgt[(diffDiasSgt % 2 + 2) % 2];
 
-            return { equipe: eq, sgt: sgt, diffDias: diffDias };
+            return { equipe: eq, sgt: sgt, diffDias: diffDiasEq };
         }
 
         function renderizarEscala() {
@@ -361,7 +365,7 @@
                 document.getElementById('modalFuncaoDataDisplay').value = dataRef.split('-').reverse().join('/');
                 label.innerText = 'Selecione o Comandante (Sargento)';
                 sel.add(new Option('1º SGT PM ORTIZ', '1º SGT PM ORTIZ'));
-                sel.add(new Option('1º SGT PM MAURIZON', '1º SGT PM MAURIZON'));
+                sel.add(new Option('2º SGT PM MAURIZON', '2º SGT PM MAURIZON'));
                 sel.add(new Option('2º SGT PM SOUZA', '2º SGT PM SOUZA'));
                 sel.add(new Option('A DEFINIR', 'A DEFINIR'));
             } else if(tipo === 'EQUIPE') {
@@ -445,6 +449,7 @@
             document.getElementById('prevAlunoDia').value = getSavedPosto('ALUNO_DIA', dataIso, objAlunoDia ? objAlunoDia.id : '');
             let remaining = teamSorted.filter(a => !objAlunoDia || a.id !== objAlunoDia.id);
 
+            // CORREÇÃO DOS CAMPOS VAZIOS NA EQUIPE ECO: Se "remaining" não tiver aluno suficiente, não dá mais erro
             document.getElementById('prevP1_23').value = getSavedPosto('P1_23', dataIso, remaining[0] ? remaining[0].id : '');
             document.getElementById('prevP2_23').value = getSavedPosto('P2_23', dataIso, remaining[1] ? remaining[1].id : '');
             document.getElementById('prevP1_03').value = getSavedPosto('P1_03', dataIso, remaining[2] ? remaining[2].id : '');
@@ -452,7 +457,6 @@
             document.getElementById('prevP1_01').value = getSavedPosto('P1_01', dataIso, remaining[4] ? remaining[4].id : '');
             document.getElementById('prevP2_01').value = getSavedPosto('P2_01', dataIso, remaining[5] ? remaining[5].id : '');
             
-            // Tratamento corrigido para campos vazios
             document.getElementById('prevP1_23_extra').value = getSavedPosto('P1_23_EXTRA', dataIso, '');
             document.getElementById('prevP2_23_extra').value = getSavedPosto('P2_23_EXTRA', dataIso, '');
             document.getElementById('prevP1_03_extra').value = getSavedPosto('P1_03_EXTRA', dataIso, '');
