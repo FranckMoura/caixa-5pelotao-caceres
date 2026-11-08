@@ -409,77 +409,79 @@
             }
         }
 
-        async function salvarTAF(e) {
-            e.preventDefault();
-            if(!alunoSelecionadoId || alunoSelecionadoId === 'TODOS') return;
-            mostrarLoading(true);
-            
-            const btn = document.getElementById('btnSalvarTAF');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
+async function salvarTAF(e) {
+    e.preventDefault();
+    if(!alunoSelecionadoId || alunoSelecionadoId === 'TODOS') return;
+    mostrarLoading(true);
+    
+    const btn = document.getElementById('btnSalvarTAF');
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
 
-            const id = document.getElementById('tafId').value;
-            const sexo = document.getElementById('tafSexo').value;
-            const idade = parseInt(document.getElementById('tafIdade').value) || 25;
-            
-            const valBarra = parseFloat(document.getElementById('tafBarra').value) || 0;
-            const valCorrida = parseFloat(document.getElementById('tafCorrida').value) || 0;
-            const valFlexao = parseFloat(document.getElementById('tafFlexao').value) || 0;
-            const valAbd = parseFloat(document.getElementById('tafAbdominal').value) || 0;
-            const valNatacao = parseFloat(document.getElementById('tafNatacao').value) || 0;
+    const id = document.getElementById('tafId').value;
+    const sexo = document.getElementById('tafSexo').value;
+    const idade = parseInt(document.getElementById('tafIdade').value) || 25;
+    
+    // Função segura que preserva o 0 numérico e retorna null apenas se o campo estiver vazio
+    const getVal = (fieldId) => {
+        const val = document.getElementById(fieldId).value;
+        return val !== '' ? parseFloat(val) : null;
+    };
 
-            const pB = getPts('barra', sexo, idade, valBarra);
-            const pC = getPts('corrida', sexo, idade, valCorrida);
-            const pF = getPts('flexao', sexo, idade, valFlexao);
-            const pA = getPts('abdominal', sexo, idade, valAbd);
-            const pN = getPts('natacao', sexo, idade, valNatacao);
+    const valBarra = getVal('tafBarra');
+    const valCorrida = getVal('tafCorrida');
+    const valFlexao = getVal('tafFlexao');
+    const valAbd = getVal('tafAbdominal');
+    const valNatacao = getVal('tafNatacao');
 
-            let qtdAtividades = 0, soma = 0;
-            [pB, pC, pF, pA, pN].forEach((p, idx) => {
-                const val = [valBarra, valCorrida, valFlexao, valAbd, valNatacao][idx];
-                if (val > 0) { soma += p; qtdAtividades++; }
-            });
-            const mediaFinal = (soma / 5).toFixed(2);
+    const pB = valBarra !== null ? getPts('barra', sexo, idade, valBarra) : 0;
+    const pC = valCorrida !== null ? getPts('corrida', sexo, idade, valCorrida) : 0;
+    const pF = valFlexao !== null ? getPts('flexao', sexo, idade, valFlexao) : 0;
+    const pA = valAbd !== null ? getPts('abdominal', sexo, idade, valAbd) : 0;
+    const pN = valNatacao !== null ? getPts('natacao', sexo, idade, valNatacao) : 0;
 
-            // Objeto blindado contra erros de tipos (strings vs numbers)
-            const obj = {
-                aluno_id: parseInt(alunoSelecionadoId),
-                data_taf: document.getElementById('tafData').value,
-                sexo: sexo,
-                idade: parseInt(idade),
-                barra: valBarra || null, pts_barra: parseFloat(pB),
-                corrida: valCorrida || null, pts_corrida: parseFloat(pC),
-                flexao: valFlexao || null, pts_flexao: parseFloat(pF),
-                abdominal: valAbd || null, pts_abdominal: parseFloat(pA),
-                natacao: valNatacao || null, pts_natacao: parseFloat(pN),
-                media_final: parseFloat(mediaFinal)
-            };
+    const soma = pB + pC + pF + pA + pN;
+    const mediaFinal = (soma / 5).toFixed(2);
 
-            let error;
-            if(id) {
-                const res = await dbClient.from('taf_resultados').update(obj).eq('id', id);
-                error = res.error;
-                document.getElementById('tafId').value = '';
-                btn.innerHTML = '<i class="fa-solid fa-check"></i> Calcular e Salvar';
-            } else {
-                const res = await dbClient.from('taf_resultados').insert([obj]);
-                error = res.error;
-                btn.innerHTML = '<i class="fa-solid fa-check"></i> Calcular e Salvar';
-            }
+    const obj = {
+        aluno_id: alunoSelecionadoId, // Removido parseInt() para suportar UUIDs com segurança
+        data_taf: document.getElementById('tafData').value,
+        sexo: sexo,
+        idade: idade,
+        barra: valBarra, pts_barra: parseFloat(pB),
+        corrida: valCorrida, pts_corrida: parseFloat(pC),
+        flexao: valFlexao, pts_flexao: parseFloat(pF),
+        abdominal: valAbd, pts_abdominal: parseFloat(pA),
+        natacao: valNatacao, pts_natacao: parseFloat(pN),
+        media_final: parseFloat(mediaFinal)
+    };
 
-            if(!error) {
-                document.getElementById('formTAF').reset();
-                document.getElementById('tafData').value = new Date().toISOString().split('T')[0];
-                
-                const aluno = listaAlunosFull.find(a => a.id == alunoSelecionadoId);
-                if (aluno) document.getElementById('tafIdade').value = calcularIdade(aluno.data_nascimento);
+    let error;
+    if(id) {
+        const res = await dbClient.from('taf_resultados').update(obj).eq('id', id);
+        error = res.error;
+    } else {
+        const res = await dbClient.from('taf_resultados').insert([obj]);
+        error = res.error;
+    }
 
-                await carregarTAF();
-            } else {
-                alert("Erro ao salvar! Execute o comando SQL no Supabase para garantir que a tabela existe.");
-                console.error(error);
-            }
-            mostrarLoading(false);
-        }
+    if(!error) {
+        document.getElementById('formTAF').reset();
+        document.getElementById('tafData').value = new Date().toISOString().split('T')[0];
+        
+        const aluno = listaAlunosFull.find(a => a.id == alunoSelecionadoId);
+        if (aluno) document.getElementById('tafIdade').value = calcularIdade(aluno.data_nascimento);
+
+        await carregarTAF();
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Calcular e Salvar';
+    } else {
+        // Agora o alerta mostrará exatamente qual coluna ou regra está bloqueando a inserção
+        alert(`Erro ao salvar no Banco de Dados:\n${error.message}`);
+        console.error("Supabase Erro Detalhado:", error);
+        btn.innerHTML = '<i class="fa-solid fa-xmark"></i> Erro ao Salvar';
+    }
+    
+    mostrarLoading(false);
+}
 
         function editarTAF(id) {
             const t = historicoTAF.find(x => x.id == id);
