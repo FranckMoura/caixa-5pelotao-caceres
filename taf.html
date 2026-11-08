@@ -427,31 +427,37 @@ async function salvarTAF(e) {
         return val !== '' ? parseFloat(val) : null;
     };
 
+    // Captura a performance bruta (metros, repetições, segundos)
     const valBarra = getVal('tafBarra');
     const valCorrida = getVal('tafCorrida');
     const valFlexao = getVal('tafFlexao');
     const valAbd = getVal('tafAbdominal');
     const valNatacao = getVal('tafNatacao');
 
-    const pB = valBarra !== null ? getPts('barra', sexo, idade, valBarra) : 0;
-    const pC = valCorrida !== null ? getPts('corrida', sexo, idade, valCorrida) : 0;
-    const pF = valFlexao !== null ? getPts('flexao', sexo, idade, valFlexao) : 0;
-    const pA = valAbd !== null ? getPts('abdominal', sexo, idade, valAbd) : 0;
-    const pN = valNatacao !== null ? getPts('natacao', sexo, idade, valNatacao) : 0;
+    // Fator de peso: Converte a nota do Edital (Max 5.0) para a nota do Painel (Max 2.0)
+    const FATOR_PESO = 0.4;
 
-    const soma = pB + pC + pF + pA + pN;
-    const mediaFinal = (soma / 5).toFixed(2);
+    // Busca a nota na matriz do edital e já multiplica pelo peso de 0.4
+    const pB = valBarra !== null ? (getPts('barra', sexo, idade, valBarra) * FATOR_PESO) : 0;
+    const pC = valCorrida !== null ? (getPts('corrida', sexo, idade, valCorrida) * FATOR_PESO) : 0;
+    const pF = valFlexao !== null ? (getPts('flexao', sexo, idade, valFlexao) * FATOR_PESO) : 0;
+    const pA = valAbd !== null ? (getPts('abdominal', sexo, idade, valAbd) * FATOR_PESO) : 0;
+    const pN = valNatacao !== null ? (getPts('natacao', sexo, idade, valNatacao) * FATOR_PESO) : 0;
+
+    // A Média Final passa a ser o somatório direto dos pesos (Máximo de 10.0)
+    const somaTotal = pB + pC + pF + pA + pN;
+    const mediaFinal = somaTotal.toFixed(2);
 
     const obj = {
-        aluno_id: alunoSelecionadoId, // Removido parseInt() para suportar UUIDs com segurança
+        aluno_id: alunoSelecionadoId,
         data_taf: document.getElementById('tafData').value,
         sexo: sexo,
         idade: idade,
-        barra: valBarra, pts_barra: parseFloat(pB),
-        corrida: valCorrida, pts_corrida: parseFloat(pC),
-        flexao: valFlexao, pts_flexao: parseFloat(pF),
-        abdominal: valAbd, pts_abdominal: parseFloat(pA),
-        natacao: valNatacao, pts_natacao: parseFloat(pN),
+        barra: valBarra, pts_barra: parseFloat(pB.toFixed(2)),
+        corrida: valCorrida, pts_corrida: parseFloat(pC.toFixed(2)),
+        flexao: valFlexao, pts_flexao: parseFloat(pF.toFixed(2)),
+        abdominal: valAbd, pts_abdominal: parseFloat(pA.toFixed(2)),
+        natacao: valNatacao, pts_natacao: parseFloat(pN.toFixed(2)),
         media_final: parseFloat(mediaFinal)
     };
 
@@ -474,7 +480,6 @@ async function salvarTAF(e) {
         await carregarTAF();
         btn.innerHTML = '<i class="fa-solid fa-check"></i> Calcular e Salvar';
     } else {
-        // Agora o alerta mostrará exatamente qual coluna ou regra está bloqueando a inserção
         alert(`Erro ao salvar no Banco de Dados:\n${error.message}`);
         console.error("Supabase Erro Detalhado:", error);
         btn.innerHTML = '<i class="fa-solid fa-xmark"></i> Erro ao Salvar';
