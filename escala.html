@@ -49,12 +49,12 @@
             <div id="gridEscala" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-7 gap-4"></div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
+        <!-- DIVISÃO POR EQUIPES (4 COLUNAS - NOVO CICLO) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
             <div class="bg-white shadow-sm border border-slate-200 rounded-xl overflow-hidden"><div class="bg-slate-50 py-2 px-4 border-b border-slate-200 flex justify-between items-center"><h3 class="text-xs font-black text-sys-dark tracking-wide">ALFA</h3><span class="text-[8px] bg-slate-200 px-1.5 py-0.5 rounded font-bold">24/96</span></div><ul id="tabelaAlfa" class="p-2 text-slate-700 divide-y divide-slate-100 h-48 overflow-y-auto text-xs custom-scrollbar"></ul></div>
             <div class="bg-white shadow-sm border border-slate-200 rounded-xl overflow-hidden"><div class="bg-slate-50 py-2 px-4 border-b border-slate-200 flex justify-between items-center"><h3 class="text-xs font-black text-sys-dark tracking-wide">BRAVO</h3><span class="text-[8px] bg-slate-200 px-1.5 py-0.5 rounded font-bold">24/96</span></div><ul id="tabelaBravo" class="p-2 text-slate-700 divide-y divide-slate-100 h-48 overflow-y-auto text-xs custom-scrollbar"></ul></div>
             <div class="bg-white shadow-sm border border-slate-200 rounded-xl overflow-hidden"><div class="bg-slate-50 py-2 px-4 border-b border-slate-200 flex justify-between items-center"><h3 class="text-xs font-black text-sys-dark tracking-wide">CHARLIE</h3><span class="text-[8px] bg-slate-200 px-1.5 py-0.5 rounded font-bold">24/96</span></div><ul id="tabelaCharlie" class="p-2 text-slate-700 divide-y divide-slate-100 h-48 overflow-y-auto text-xs custom-scrollbar"></ul></div>
             <div class="bg-white shadow-sm border border-slate-200 rounded-xl overflow-hidden"><div class="bg-slate-50 py-2 px-4 border-b border-slate-200 flex justify-between items-center"><h3 class="text-xs font-black text-sys-dark tracking-wide">DELTA</h3><span class="text-[8px] bg-slate-200 px-1.5 py-0.5 rounded font-bold">24/96</span></div><ul id="tabelaDelta" class="p-2 text-slate-700 divide-y divide-slate-100 h-48 overflow-y-auto text-xs custom-scrollbar"></ul></div>
-            <div class="bg-white shadow-sm border border-slate-200 rounded-xl overflow-hidden"><div class="bg-slate-50 py-2 px-4 border-b border-slate-200 flex justify-between items-center"><h3 class="text-xs font-black text-sys-dark tracking-wide">ECO</h3><span class="text-[8px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-bold">24/96</span></div><ul id="tabelaEco" class="p-2 text-slate-700 divide-y divide-slate-100 h-48 overflow-y-auto text-xs custom-scrollbar"></ul></div>
         </div>
     </div>
 
@@ -132,12 +132,7 @@
             <div class="bg-gray-200 text-center font-bold uppercase py-1 border border-black border-b-0 text-[10px]">SERVIÇO 24 HORAS - TURNO DAS 06H00MIN AS 06H00MIN</div>
             <table class="w-full text-center border-collapse print-table text-[9px]">
                 <tbody>
-                    <tr class="font-bold">
-                        <td class="p-1 w-1/3 text-left">COMANDANTE DE PELOTÃO</td>
-                        <td class="p-1 w-1/4" id="printCmtGrad">1° SGT PM</td>
-                        <td class="p-1 w-1/4" id="printCmtNome">ORTIZ</td>
-                        <td class="p-1 w-1/4" id="printCmtRg">883.202</td>
-                    </tr>
+                    <tr class="font-bold"><td class="p-1 w-1/3 text-left">COMANDANTE DE PELOTÃO</td><td class="p-1 w-1/4" id="printCmtGrad">1° SGT PM</td><td class="p-1 w-1/4" id="printCmtNome">ORTIZ</td><td class="p-1" id="printCmtRg">--</td></tr>
                     <tr><td colspan="4" class="text-left font-bold p-1">OBS: <span id="printNumEscalaTxt">ESCALA Nº 001</span> - UNIFORME: 4º F3</td></tr>
                 </tbody>
             </table>
@@ -213,8 +208,7 @@
                 'ALFA': document.getElementById('tabelaAlfa'), 
                 'BRAVO': document.getElementById('tabelaBravo'), 
                 'CHARLIE': document.getElementById('tabelaCharlie'), 
-                'DELTA': document.getElementById('tabelaDelta'),
-                'ECO': document.getElementById('tabelaEco')
+                'DELTA': document.getElementById('tabelaDelta')
             };
             Object.values(tabs).forEach(t => t.innerHTML = '');
             listaAlunosFull.forEach(a => {
@@ -226,50 +220,59 @@
             });
         }
 
-        function calcularEscalaDoDia(dt) {
-            let dtMid = new Date(Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate(), 12, 0, 0));
-            const dataBaseOld = new Date('2026-08-11T12:00:00Z');
-            const dataBaseNew = new Date('2026-10-31T12:00:00Z');
+        function calcularEscalaDoDia(dataAlvo) {
+            const marcoTransicao = new Date('2026-11-10T12:00:00Z');
+            const dataBaseAntiga = new Date('2026-08-11T12:00:00Z');
+            const dataBaseNova = new Date('2026-11-10T12:00:00Z');
+            
+            const seqEqAntiga = ['ALFA', 'BRAVO', 'CHARLIE', 'DELTA', 'ECO'];
+            const seqEqNova = ['ALFA', 'BRAVO', 'CHARLIE', 'DELTA'];
             const seqSgt = ['1º SGT PM ORTIZ', '1º SGT PM MAURIZON', '2º SGT PM SOUZA'];
             
-            let diffDiasOld = Math.round((dtMid - dataBaseOld) / 86400000);
-            let sgtCalculado = seqSgt[(diffDiasOld % seqSgt.length + seqSgt.length) % seqSgt.length];
-            
-            let eqCalculada = '';
-            let idxBaseAluno = 0;
+            let eq, diffDias;
 
-            if (dtMid >= dataBaseNew) {
-                const seqEq5 = ['ALFA', 'BRAVO', 'CHARLIE', 'DELTA', 'ECO'];
-                let diffDiasNew = Math.round((dtMid - dataBaseNew) / 86400000);
-                eqCalculada = seqEq5[(diffDiasNew % 5 + 5) % 5];
-                idxBaseAluno = Math.floor(diffDiasNew / 5);
+            if (dataAlvo < marcoTransicao) {
+                diffDias = Math.round((dataAlvo - dataBaseAntiga) / 86400000);
+                eq = seqEqAntiga[(diffDias % 5 + 5) % 5];
             } else {
-                const seqEq4 = ['ALFA', 'BRAVO', 'CHARLIE', 'DELTA'];
-                eqCalculada = seqEq4[(diffDiasOld % 4 + 4) % 4];
-                idxBaseAluno = Math.floor(diffDiasOld / 4);
+                diffDias = Math.round((dataAlvo - dataBaseNova) / 86400000);
+                eq = seqEqNova[(diffDias % 4 + 4) % 4];
             }
 
-            return { eqCalculada, sgtCalculado, idxBaseAluno };
+            let diffDiasSgt = Math.round((dataAlvo - dataBaseAntiga) / 86400000);
+            let sgt = seqSgt[(diffDiasSgt % 3 + 3) % 3];
+
+            return { equipe: eq, sgt: sgt, diffDias: diffDias };
         }
 
         function renderizarEscala() {
             const grid = document.getElementById('gridEscala'); if(!grid) return; grid.innerHTML = '';
+            
             let hoje = new Date(); hoje.setHours(12, 0, 0, 0); 
             
             for(let i = 0; i < 7; i++) {
                 let dt = new Date(hoje); dt.setDate(hoje.getDate() + i);
                 let dtIso = dt.toISOString().split('T')[0];
+                let dataAlvoCalculo = new Date(Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate(), 12, 0, 0));
                 
-                let escala = calcularEscalaDoDia(dt);
-
+                let calc = calcularEscalaDoDia(dataAlvoCalculo);
+                let equipeCalculada = calc.equipe;
+                let sgtCalculado = calc.sgt;
+                let diffDias = calc.diffDias;
+                
                 let overrideEquipe = funcoesComandoGlobais.find(f => f.tipo === 'EQUIPE' && f.data_referencia === dtIso);
-                let eq = (overrideEquipe && overrideEquipe.valor_texto) ? overrideEquipe.valor_texto : escala.eqCalculada;
+                let eq = (overrideEquipe && overrideEquipe.valor_texto) ? overrideEquipe.valor_texto : equipeCalculada;
 
                 let overrideSgt = funcoesComandoGlobais.find(f => f.tipo === 'CMT' && f.data_referencia === dtIso);
-                let sgtFinal = (overrideSgt && overrideSgt.valor_texto) ? overrideSgt.valor_texto : escala.sgtCalculado;
+                let sgtFinal = (overrideSgt && overrideSgt.valor_texto) ? overrideSgt.valor_texto : sgtCalculado;
                 
                 let alunosEq = [...listaAlunosFull].filter(a => a.equipe === eq).sort((a, b) => a.numero - b.numero);
-                let idxAluno = escala.idxBaseAluno % alunosEq.length; if (idxAluno < 0) idxAluno += alunosEq.length;
+                
+                let idxAluno = 0;
+                if(alunosEq.length > 0) {
+                    idxAluno = Math.floor(Math.abs(diffDias) / (eq === 'ECO' ? 5 : 4)) % alunosEq.length;
+                    if (diffDias < 0 && (Math.abs(diffDias) % (eq === 'ECO' ? 5 : 4)) !== 0) idxAluno = (alunosEq.length - idxAluno) % alunosEq.length;
+                }
                 
                 let alDia = funcoesComandoGlobais.find(f => f.tipo === 'ALUNO_DIA' && f.data_referencia === dtIso)
                     ? listaAlunosFull.find(a => a.id == funcoesComandoGlobais.find(f => f.tipo === 'ALUNO_DIA' && f.data_referencia === dtIso).aluno_id) || (alunosEq[idxAluno] || {qra:'N/A', numero:0})
@@ -278,15 +281,17 @@
                 let qra = (alDia.qra || alDia.nome || '-').replace(/AL SD PM |AL SD /gi, '').trim().toUpperCase();
                 let nomeEx = alDia.numero > 0 ? `5${alDia.numero.toString().padStart(2, '0')} ${qra}` : qra;
 
+                let isToday = i === 0;
+
                 grid.innerHTML += `
-                    <div class="relative p-3 rounded-xl border flex flex-col items-center justify-center ${i===0?'border-sys-dark bg-blue-50/50':'border-slate-200 bg-slate-50'} hover:shadow-md transition">
-                        ${i===0?'<span class="absolute -top-2.5 bg-sys-dark text-white text-[9px] font-black px-2 py-0.5 rounded-full uppercase">Hoje</span>':''}
+                    <div class="relative p-3 rounded-xl border flex flex-col items-center justify-center ${isToday?'border-sys-dark bg-blue-50/50':'border-slate-200 bg-slate-50'} hover:shadow-md transition">
+                        ${isToday?'<span class="absolute -top-2.5 bg-sys-dark text-white text-[9px] font-black px-2 py-0.5 rounded-full uppercase">Hoje</span>':''}
                         <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">${dt.toLocaleDateString('pt-BR', {weekday: 'short'})}</p>
                         <p class="text-lg font-black text-slate-800 leading-tight mt-0.5">${dt.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'})}</p>
                         
-                        <div class="text-[9px] font-black px-2 py-0.5 rounded bg-pmmt-blue text-white mt-2 w-full text-center tracking-widest flex items-center justify-center gap-1 shadow-sm">
+                        <div class="text-[9px] font-black px-2 py-0.5 rounded bg-pmmt-gold text-sys-dark mt-2 w-full text-center tracking-widest flex items-center justify-center gap-1 shadow-sm">
                             ${eq}
-                            ${isAdmin ? `<button onclick="abrirModalFuncao('EQUIPE', '${dtIso}', '')" class="text-white/70 hover:text-white admin-only shrink-0"><i class="fa-solid fa-pen text-[9px]"></i></button>` : ''}
+                            ${isAdmin ? `<button onclick="abrirModalFuncao('EQUIPE', '${dtIso}', '')" class="text-sys-dark/70 hover:text-white admin-only shrink-0"><i class="fa-solid fa-pen text-[9px]"></i></button>` : ''}
                         </div>
                         
                         <div class="text-[9px] font-bold px-1 py-0.5 rounded border border-slate-300 bg-white text-black mt-1 w-full text-center break-words leading-tight shadow-sm flex items-center justify-center gap-1">
@@ -308,20 +313,31 @@
 
         function imprimirEscalaDeHoje() {
             let hoje = new Date(); hoje.setHours(12, 0, 0, 0); 
-            let dataIso = hoje.toISOString().split('T')[0];
+            let dataIso = hoje.toISOString().split('T')[0]; 
+            let dataAlvoCalculo = new Date(Date.UTC(hoje.getFullYear(), hoje.getMonth(), hoje.getDate(), 12, 0, 0));
             
-            let escala = calcularEscalaDoDia(hoje);
+            let calc = calcularEscalaDoDia(dataAlvoCalculo);
+            let equipeCalculada = calc.equipe;
+            let sgtCalculado = calc.sgt;
+            let diffDias = calc.diffDias;
             
             let overrideEquipe = funcoesComandoGlobais.find(f => f.tipo === 'EQUIPE' && f.data_referencia === dataIso);
-            let eq = (overrideEquipe && overrideEquipe.valor_texto) ? overrideEquipe.valor_texto : escala.eqCalculada;
+            let eq = (overrideEquipe && overrideEquipe.valor_texto) ? overrideEquipe.valor_texto : equipeCalculada;
             
             let overrideSgt = funcoesComandoGlobais.find(f => f.tipo === 'CMT' && f.data_referencia === dataIso);
-            let sgtFinal = (overrideSgt && overrideSgt.valor_texto) ? overrideSgt.valor_texto : escala.sgtCalculado;
+            let sgtFinal = (overrideSgt && overrideSgt.valor_texto) ? overrideSgt.valor_texto : sgtCalculado;
 
             const alunosEq = [...listaAlunosFull].filter(a => a.equipe === eq).sort((a, b) => a.numero - b.numero);
-            let idx = escala.idxBaseAluno % alunosEq.length; if(idx < 0) idx += alunosEq.length;
             
-            let alDia = funcoesComandoGlobais.find(f => f.tipo === 'ALUNO_DIA' && f.data_referencia === dataIso) ? listaAlunosFull.find(a => a.id == funcoesComandoGlobais.find(f => f.tipo === 'ALUNO_DIA' && f.data_referencia === dataIso).aluno_id) || alunosEq[idx] : alunosEq[idx];
+            let idx = 0;
+            if(alunosEq.length > 0) {
+                idx = Math.floor(Math.abs(diffDias) / (eq === 'ECO' ? 5 : 4)) % alunosEq.length;
+                if (diffDias < 0 && (Math.abs(diffDias) % (eq === 'ECO' ? 5 : 4)) !== 0) idx = (alunosEq.length - idx) % alunosEq.length;
+            }
+            
+            let alDia = funcoesComandoGlobais.find(f => f.tipo === 'ALUNO_DIA' && f.data_referencia === dataIso) 
+                ? listaAlunosFull.find(a => a.id == funcoesComandoGlobais.find(f => f.tipo === 'ALUNO_DIA' && f.data_referencia === dataIso).aluno_id) || alunosEq[idx] 
+                : alunosEq[idx];
             
             abrirPreviaEscala(dataIso, eq, sgtFinal, alDia ? alDia.id : '');
         }
@@ -356,7 +372,7 @@
                 sel.add(new Option('BRAVO', 'BRAVO'));
                 sel.add(new Option('CHARLIE', 'CHARLIE'));
                 sel.add(new Option('DELTA', 'DELTA'));
-                sel.add(new Option('ECO', 'ECO'));
+                sel.add(new Option('ECO', 'ECO')); 
             }
 
             const ext = funcoesComandoGlobais.find(f => f.tipo === tipo && f.data_referencia === dataRef);
@@ -436,6 +452,7 @@
             document.getElementById('prevP1_01').value = getSavedPosto('P1_01', dataIso, remaining[4] ? remaining[4].id : '');
             document.getElementById('prevP2_01').value = getSavedPosto('P2_01', dataIso, remaining[5] ? remaining[5].id : '');
             
+            // Tratamento corrigido para campos vazios
             document.getElementById('prevP1_23_extra').value = getSavedPosto('P1_23_EXTRA', dataIso, '');
             document.getElementById('prevP2_23_extra').value = getSavedPosto('P2_23_EXTRA', dataIso, '');
             document.getElementById('prevP1_03_extra').value = getSavedPosto('P1_03_EXTRA', dataIso, '');
