@@ -50,18 +50,17 @@
             </div>
 
             <div class="overflow-x-auto">
-                <!-- CABEÇALHO ALTERADO PARA INCLUIR TODOS OS EXERCÍCIOS -->
                 <table class="w-full text-left border-collapse text-[13px] whitespace-nowrap min-w-[700px]">
                     <thead class="bg-slate-100 font-extrabold text-slate-500 uppercase">
                         <tr>
                             <th class="p-3 border-b border-slate-200">Aluno</th>
                             <th class="p-3 text-center border-b border-slate-200">Data TAF</th>
-                            <th class="p-3 text-center border-b border-slate-200">Barra (Pts)</th>
-                            <th class="p-3 text-center border-b border-slate-200">Corrida (Pts)</th>
-                            <th class="p-3 text-center border-b border-slate-200">Flexão (Pts)</th>
-                            <th class="p-3 text-center border-b border-slate-200">Abd. (Pts)</th>
-                            <th class="p-3 text-center border-b border-slate-200">Nat. (Pts)</th>
-                            <th class="p-3 text-center border-b border-slate-200 text-pmmt-blue">Média TAF</th>
+                            <th class="p-3 text-center border-b border-slate-200">Barra <span class="text-[9px]">(Qtd)</span></th>
+                            <th class="p-3 text-center border-b border-slate-200">Corrida <span class="text-[9px]">(m)</span></th>
+                            <th class="p-3 text-center border-b border-slate-200">Flexão <span class="text-[9px]">(Rep)</span></th>
+                            <th class="p-3 text-center border-b border-slate-200">Abd. <span class="text-[9px]">(Rep)</span></th>
+                            <th class="p-3 text-center border-b border-slate-200">Natação <span class="text-[9px]">(m)</span></th>
+                            <th class="p-3 text-center border-b border-slate-200 text-pmmt-blue">Média (10.0)</th>
                         </tr>
                     </thead>
                     <tbody id="tabelaResumoGeral" class="divide-y divide-slate-100 font-semibold text-slate-700 bg-white">
@@ -133,7 +132,7 @@
                             </div>
                         </div>
                         
-                        <!-- Inputs de Exercícios (Adequados ao Edital) -->
+                        <!-- Inputs de Exercícios (Quantidade Física Real) -->
                         <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 mt-2">
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-500 uppercase">Barra Fixa (Rep/s)</label>
@@ -190,11 +189,11 @@
                         <thead class="bg-slate-100 text-[11px] font-extrabold text-slate-500 uppercase">
                             <tr>
                                 <th class="p-3 whitespace-nowrap border-b border-slate-200">Data</th>
-                                <th class="p-3 text-center border-b border-slate-200">Barra</th>
-                                <th class="p-3 text-center border-b border-slate-200">Corrida</th>
-                                <th class="p-3 text-center border-b border-slate-200">Flexão</th>
-                                <th class="p-3 text-center border-b border-slate-200">Abd.</th>
-                                <th class="p-3 text-center border-b border-slate-200">Natação</th>
+                                <th class="p-3 text-center border-b border-slate-200">Barra (Qtd)</th>
+                                <th class="p-3 text-center border-b border-slate-200">Corrida (m)</th>
+                                <th class="p-3 text-center border-b border-slate-200">Flexão (Rep)</th>
+                                <th class="p-3 text-center border-b border-slate-200">Abd. (Rep)</th>
+                                <th class="p-3 text-center border-b border-slate-200">Nat. (m)</th>
                                 <th class="p-3 text-center border-b border-slate-200 text-pmmt-blue">Média</th>
                                 <th class="p-3 text-center border-b border-slate-200 admin-only">Ações</th>
                             </tr>
@@ -220,7 +219,7 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
 
         // ==========================================
-        // MATRIZ DE PONTUAÇÃO (EDITAL)
+        // MATRIZ DE PONTUAÇÃO (EDITAL - 1.0 a 5.0)
         // ==========================================
         const MATRIZ_TAF = {
             'barra': {
@@ -245,6 +244,7 @@
             }
         };
 
+        // Encontra a nota da faixa etária (1.0 a 5.0)
         function getPts(exercicio, sexo, idade, valorRaw) {
             if (!valorRaw || isNaN(valorRaw) || valorRaw < 0) return 0.0;
             let ageIdx = 0;
@@ -324,7 +324,7 @@
             const aluno = listaAlunosFull.find(a => a.id == alunoSelecionadoId);
             if (aluno) {
                 const idadeCalc = calcularIdade(aluno.data_nascimento);
-                document.getElementById('bioTipagem').innerText = aluno.tipo_sanguineo || 'N/I';
+                document.getElementById('bioTipagem').innerText = aluno.tipagem_sanguinea || aluno.tipo_sanguineo || 'N/I';
                 document.getElementById('bioAltura').innerText = aluno.altura ? aluno.altura + ' m' : 'N/I';
                 document.getElementById('bioPeso').innerText = aluno.peso ? aluno.peso + ' kg' : 'N/I';
                 document.getElementById('bioIdade').innerText = aluno.data_nascimento ? idadeCalc + ' anos' : 'N/I';
@@ -380,7 +380,6 @@
                 let qraBruto = aluno.qra || aluno.nome.split(' ')[0];
                 let nomeDisplay = qraBruto.replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase();
 
-                // DADOS PREENCHIDOS SE O TAF EXISTIR
                 let dataStr = '-';
                 let barraStr = '-';
                 let corridaStr = '-';
@@ -391,12 +390,13 @@
 
                 if (tafDoAluno) {
                     dataStr = tafDoAluno.data_taf.split('-').reverse().join('/');
-                    // Formata a nota (pontuação convertida) com 2 casas decimais. Se for nulo ou n/a exibe '-'
-                    barraStr = tafDoAluno.pts_barra !== null ? tafDoAluno.pts_barra.toFixed(2) : '-';
-                    corridaStr = tafDoAluno.pts_corrida !== null ? tafDoAluno.pts_corrida.toFixed(2) : '-';
-                    flexaoStr = tafDoAluno.pts_flexao !== null ? tafDoAluno.pts_flexao.toFixed(2) : '-';
-                    abdStr = tafDoAluno.pts_abdominal !== null ? tafDoAluno.pts_abdominal.toFixed(2) : '-';
-                    natStr = tafDoAluno.pts_natacao !== null ? tafDoAluno.pts_natacao.toFixed(2) : '-';
+                    
+                    // Exibindo a quantidade bruta realizada em vez dos pontos
+                    barraStr = tafDoAluno.barra !== null ? tafDoAluno.barra : '-';
+                    corridaStr = tafDoAluno.corrida !== null ? tafDoAluno.corrida : '-';
+                    flexaoStr = tafDoAluno.flexao !== null ? tafDoAluno.flexao : '-';
+                    abdStr = tafDoAluno.abdominal !== null ? tafDoAluno.abdominal : '-';
+                    natStr = tafDoAluno.natacao !== null ? tafDoAluno.natacao : '-';
                     
                     mediaStr = `<span class="font-black text-pmmt-blue text-sm">${tafDoAluno.media_final.toFixed(2)}</span>`;
                 }
@@ -409,11 +409,11 @@
                         <span class="uppercase font-bold text-pmmt-blue text-[13px]">${nomeDisplay}</span>
                     </td>
                     <td class="p-3 text-center text-slate-500 text-xs font-bold">${dataStr}</td>
-                    <td class="p-3 text-center text-slate-500 text-xs font-bold">${barraStr}</td>
-                    <td class="p-3 text-center text-slate-500 text-xs font-bold">${corridaStr}</td>
-                    <td class="p-3 text-center text-slate-500 text-xs font-bold">${flexaoStr}</td>
-                    <td class="p-3 text-center text-slate-500 text-xs font-bold">${abdStr}</td>
-                    <td class="p-3 text-center text-slate-500 text-xs font-bold">${natStr}</td>
+                    <td class="p-3 text-center text-slate-700 text-[13px] font-bold">${barraStr}</td>
+                    <td class="p-3 text-center text-slate-700 text-[13px] font-bold">${corridaStr}</td>
+                    <td class="p-3 text-center text-slate-700 text-[13px] font-bold">${flexaoStr}</td>
+                    <td class="p-3 text-center text-slate-700 text-[13px] font-bold">${abdStr}</td>
+                    <td class="p-3 text-center text-slate-700 text-[13px] font-bold">${natStr}</td>
                     <td class="p-3 text-center">${mediaStr}</td>
                 `;
                 tbody.appendChild(tr);
@@ -444,36 +444,43 @@
             const sexo = document.getElementById('tafSexo').value;
             const idade = parseInt(document.getElementById('tafIdade').value) || 25;
             
-            const valBarra = parseFloat(document.getElementById('tafBarra').value) || 0;
-            const valCorrida = parseFloat(document.getElementById('tafCorrida').value) || 0;
-            const valFlexao = parseFloat(document.getElementById('tafFlexao').value) || 0;
-            const valAbd = parseFloat(document.getElementById('tafAbdominal').value) || 0;
-            const valNatacao = parseFloat(document.getElementById('tafNatacao').value) || 0;
+            const getVal = (fieldId) => {
+                const val = document.getElementById(fieldId).value;
+                return val !== '' ? parseFloat(val) : null;
+            };
 
-            const pB = getPts('barra', sexo, idade, valBarra);
-            const pC = getPts('corrida', sexo, idade, valCorrida);
-            const pF = getPts('flexao', sexo, idade, valFlexao);
-            const pA = getPts('abdominal', sexo, idade, valAbd);
-            const pN = getPts('natacao', sexo, idade, valNatacao);
+            // Captura a performance bruta (metros, repetições, segundos)
+            const valBarra = getVal('tafBarra');
+            const valCorrida = getVal('tafCorrida');
+            const valFlexao = getVal('tafFlexao');
+            const valAbd = getVal('tafAbdominal');
+            const valNatacao = getVal('tafNatacao');
 
-            let qtdAtividades = 0, soma = 0;
-            [pB, pC, pF, pA, pN].forEach((p, idx) => {
-                const val = [valBarra, valCorrida, valFlexao, valAbd, valNatacao][idx];
-                if (val > 0) { soma += p; qtdAtividades++; }
-            });
-            const mediaFinal = (soma / 5).toFixed(2);
+            // Fator de peso: Converte a nota original do Edital (Max 5.0) para a nota do Painel (Max 2.0)
+            const FATOR_PESO = 0.4;
 
-            // Objeto blindado contra erros de tipos (strings vs numbers)
+            // Busca a nota na matriz do edital com base na performance digitada e multiplica pelo peso de 0.4
+            const pB = valBarra !== null ? (getPts('barra', sexo, idade, valBarra) * FATOR_PESO) : 0;
+            const pC = valCorrida !== null ? (getPts('corrida', sexo, idade, valCorrida) * FATOR_PESO) : 0;
+            const pF = valFlexao !== null ? (getPts('flexao', sexo, idade, valFlexao) * FATOR_PESO) : 0;
+            const pA = valAbd !== null ? (getPts('abdominal', sexo, idade, valAbd) * FATOR_PESO) : 0;
+            const pN = valNatacao !== null ? (getPts('natacao', sexo, idade, valNatacao) * FATOR_PESO) : 0;
+
+            // A Média Final é a soma inteligente das notas convertidas, com teto de 10.0
+            let somaTotal = pB + pC + pF + pA + pN;
+            if (somaTotal > 10.0) somaTotal = 10.0;
+            const mediaFinal = somaTotal.toFixed(2);
+
             const obj = {
                 aluno_id: parseInt(alunoSelecionadoId),
                 data_taf: document.getElementById('tafData').value,
                 sexo: sexo,
-                idade: parseInt(idade),
-                barra: valBarra || null, pts_barra: parseFloat(pB),
-                corrida: valCorrida || null, pts_corrida: parseFloat(pC),
-                flexao: valFlexao || null, pts_flexao: parseFloat(pF),
-                abdominal: valAbd || null, pts_abdominal: parseFloat(pA),
-                natacao: valNatacao || null, pts_natacao: parseFloat(pN),
+                idade: idade,
+                barra: valBarra, pts_barra: parseFloat(pB.toFixed(2)),
+                corrida: valCorrida, pts_corrida: parseFloat(pC.toFixed(2)),
+                flexao: valFlexao, pts_flexao: parseFloat(pF.toFixed(2)),
+                abdominal: valAbd, pts_abdominal: parseFloat(pA.toFixed(2)),
+                natacao: valNatacao, pts_natacao: parseFloat(pN.toFixed(2)),
                 media_final: parseFloat(mediaFinal)
             };
 
@@ -481,12 +488,9 @@
             if(id) {
                 const res = await dbClient.from('taf_resultados').update(obj).eq('id', id);
                 error = res.error;
-                document.getElementById('tafId').value = '';
-                btn.innerHTML = '<i class="fa-solid fa-check"></i> Calcular e Salvar';
             } else {
                 const res = await dbClient.from('taf_resultados').insert([obj]);
                 error = res.error;
-                btn.innerHTML = '<i class="fa-solid fa-check"></i> Calcular e Salvar';
             }
 
             if(!error) {
@@ -497,10 +501,13 @@
                 if (aluno) document.getElementById('tafIdade').value = calcularIdade(aluno.data_nascimento);
 
                 await carregarTAF();
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Calcular e Salvar';
             } else {
-                alert("Erro ao salvar! Execute o comando SQL no Supabase para garantir que a tabela existe.");
-                console.error(error);
+                alert(`Erro ao salvar no Banco de Dados:\n${error.message}`);
+                console.error("Supabase Erro Detalhado:", error);
+                btn.innerHTML = '<i class="fa-solid fa-xmark"></i> Erro ao Salvar';
             }
+            
             mostrarLoading(false);
         }
 
@@ -511,11 +518,12 @@
             document.getElementById('tafData').value = t.data_taf;
             document.getElementById('tafSexo').value = t.sexo || 'M';
             document.getElementById('tafIdade').value = t.idade || 25;
-            document.getElementById('tafBarra').value = t.barra || '';
-            document.getElementById('tafCorrida').value = t.corrida || '';
-            document.getElementById('tafFlexao').value = t.flexao || '';
-            document.getElementById('tafAbdominal').value = t.abdominal || '';
-            document.getElementById('tafNatacao').value = t.natacao || '';
+            // Carrega os valores brutos para o formulário
+            document.getElementById('tafBarra').value = t.barra !== null ? t.barra : '';
+            document.getElementById('tafCorrida').value = t.corrida !== null ? t.corrida : '';
+            document.getElementById('tafFlexao').value = t.flexao !== null ? t.flexao : '';
+            document.getElementById('tafAbdominal').value = t.abdominal !== null ? t.abdominal : '';
+            document.getElementById('tafNatacao').value = t.natacao !== null ? t.natacao : '';
             document.getElementById('btnSalvarTAF').innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Atualizar Lançamento';
         }
 
@@ -534,9 +542,10 @@
             historicoTAF.forEach(t => {
                 const df = t.data_taf.split('-').reverse().join('/');
                 
+                // Exibe a quantidade executada em cima e a nota em baixo
                 const formatCell = (val, pts) => {
-                    if(!val) return '-';
-                    return `<div class="leading-tight">${val}<br><span class="text-[9px] text-slate-400 font-bold">${pts.toFixed(1)} pts</span></div>`;
+                    if(val === null || val === undefined) return '-';
+                    return `<div class="leading-tight text-[13px]">${val}<br><span class="text-[9px] text-slate-400 font-bold">${pts.toFixed(2)} pts</span></div>`;
                 };
 
                 const tr = document.createElement('tr');
