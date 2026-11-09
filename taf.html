@@ -24,13 +24,18 @@
         <p class="text-sm font-bold text-white">Sincronizando dados...</p>
     </div>
 
-    <!-- SELETOR DE TROPA -->
+    <!-- SELETOR DE TROPA E BOTÃO DE CONSULTA -->
     <div class="bg-white rounded-xl shadow-md border-l-4 border-pmmt-blue p-4 mb-5 flex flex-col md:flex-row justify-between items-center gap-4">
         <h2 class="text-lg font-extrabold text-pmmt-blue uppercase tracking-wider"><i class="fa-solid fa-stopwatch text-pmmt-gold mr-2"></i> Avaliação Física (TAF)</h2>
-        <select id="alunoSelecionado" onchange="selecionarAluno()" class="w-full md:w-1/2 bg-slate-50 border border-slate-300 p-3 rounded-lg text-sm font-bold text-pmmt-blue outline-none focus:border-pmmt-gold shadow-inner">
-            <option value="">-- Selecione o Aluno para Gerenciar --</option>
-            <option value="TODOS">-- MOSTRAR TODOS (Resumo Geral) --</option>
-        </select>
+        <div class="w-full md:w-2/3 flex flex-col sm:flex-row gap-3">
+            <button onclick="abrirModalTabelas()" class="w-full sm:w-auto bg-pmmt-gold hover:bg-yellow-600 text-white font-bold py-3 px-4 rounded-lg shadow transition text-xs uppercase tracking-wider flex justify-center items-center gap-2">
+                <i class="fa-solid fa-table list-alt"></i> Tabelas TAF
+            </button>
+            <select id="alunoSelecionado" onchange="selecionarAluno()" class="w-full bg-slate-50 border border-slate-300 p-3 rounded-lg text-sm font-bold text-pmmt-blue outline-none focus:border-pmmt-gold shadow-inner flex-1">
+                <option value="">-- Selecione o Aluno para Gerenciar --</option>
+                <option value="TODOS">-- MOSTRAR TODOS (Resumo Geral) --</option>
+            </select>
+        </div>
     </div>
 
     <!-- PAINEL TODOS (RESUMO GERAL) -->
@@ -201,6 +206,22 @@
                         <tbody id="tabelaTAF" class="divide-y divide-slate-100 text-[13px] font-semibold text-slate-700 bg-white"></tbody>
                     </table>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL TABELAS DE PONTUAÇÃO -->
+    <div id="modalTabelas" class="fixed inset-0 bg-slate-900/80 z-50 hidden flex justify-center items-start pt-10 pb-10 px-4 overflow-y-auto">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-5xl relative flex flex-col border-t-4 border-pmmt-gold">
+            <div class="bg-pmmt-blue px-5 py-4 flex justify-between items-center sticky top-0 z-10 rounded-t-lg shadow-md">
+                <h2 class="text-white font-black uppercase tracking-wider text-sm"><i class="fa-solid fa-table list-alt mr-2 text-pmmt-gold"></i> Tabelas de Pontuação - TAF</h2>
+                <button onclick="fecharModalTabelas()" class="text-white hover:text-rose-400 transition transform hover:scale-110"><i class="fa-solid fa-xmark text-2xl"></i></button>
+            </div>
+            <div class="p-4 md:p-6 overflow-y-auto custom-scrollbar bg-slate-50" id="containerTabelas">
+                <!-- Gerado via JS -->
+            </div>
+            <div class="bg-slate-100 p-3 text-center border-t border-slate-200 text-[10px] text-slate-500 font-bold uppercase rounded-b-xl">
+                Baseado na Portaria e Edital de Teste de Aptidão Física
             </div>
         </div>
     </div>
@@ -391,7 +412,6 @@
                 if (tafDoAluno) {
                     dataStr = tafDoAluno.data_taf.split('-').reverse().join('/');
                     
-                    // Exibindo a quantidade bruta realizada em vez dos pontos
                     barraStr = tafDoAluno.barra !== null ? tafDoAluno.barra : '-';
                     corridaStr = tafDoAluno.corrida !== null ? tafDoAluno.corrida : '-';
                     flexaoStr = tafDoAluno.flexao !== null ? tafDoAluno.flexao : '-';
@@ -449,7 +469,6 @@
                 return val !== '' ? parseFloat(val) : null;
             };
 
-            // Captura a performance bruta (metros, repetições, segundos)
             const valBarra = getVal('tafBarra');
             const valCorrida = getVal('tafCorrida');
             const valFlexao = getVal('tafFlexao');
@@ -459,14 +478,12 @@
             // Fator de peso: Converte a nota original do Edital (Max 5.0) para a nota do Painel (Max 2.0)
             const FATOR_PESO = 0.4;
 
-            // Busca a nota na matriz do edital com base na performance digitada e multiplica pelo peso de 0.4
             const pB = valBarra !== null ? (getPts('barra', sexo, idade, valBarra) * FATOR_PESO) : 0;
             const pC = valCorrida !== null ? (getPts('corrida', sexo, idade, valCorrida) * FATOR_PESO) : 0;
             const pF = valFlexao !== null ? (getPts('flexao', sexo, idade, valFlexao) * FATOR_PESO) : 0;
             const pA = valAbd !== null ? (getPts('abdominal', sexo, idade, valAbd) * FATOR_PESO) : 0;
             const pN = valNatacao !== null ? (getPts('natacao', sexo, idade, valNatacao) * FATOR_PESO) : 0;
 
-            // A Média Final é a soma inteligente das notas convertidas, com teto de 10.0
             let somaTotal = pB + pC + pF + pA + pN;
             if (somaTotal > 10.0) somaTotal = 10.0;
             const mediaFinal = somaTotal.toFixed(2);
@@ -518,7 +535,6 @@
             document.getElementById('tafData').value = t.data_taf;
             document.getElementById('tafSexo').value = t.sexo || 'M';
             document.getElementById('tafIdade').value = t.idade || 25;
-            // Carrega os valores brutos para o formulário
             document.getElementById('tafBarra').value = t.barra !== null ? t.barra : '';
             document.getElementById('tafCorrida').value = t.corrida !== null ? t.corrida : '';
             document.getElementById('tafFlexao').value = t.flexao !== null ? t.flexao : '';
@@ -542,7 +558,6 @@
             historicoTAF.forEach(t => {
                 const df = t.data_taf.split('-').reverse().join('/');
                 
-                // Exibe a quantidade executada em cima e a nota em baixo
                 const formatCell = (val, pts) => {
                     if(val === null || val === undefined) return '-';
                     return `<div class="leading-tight text-[13px]">${val}<br><span class="text-[9px] text-slate-400 font-bold">${pts.toFixed(2)} pts</span></div>`;
@@ -607,6 +622,86 @@
         }
 
         function mostrarLoading(show) { document.getElementById('loaderAlert').classList.toggle('hidden', !show); }
+
+        // ==========================================
+        // TABELAS DE CONSULTA (MODAL DINÂMICO)
+        // ==========================================
+        function abrirModalTabelas() {
+            document.getElementById('modalTabelas').classList.remove('hidden');
+            if(!document.getElementById('tabelasGeradas')) {
+                gerarTabelasDOM();
+            }
+        }
+
+        function fecharModalTabelas() {
+            document.getElementById('modalTabelas').classList.add('hidden');
+        }
+
+        function gerarTabelasDOM() {
+            const container = document.getElementById('containerTabelas');
+            const titulos = {
+                'barra': 'Flexão/Sustentação na Barra Fixa',
+                'corrida': 'Corrida de 12 Minutos',
+                'flexao': 'Flexão de Braço',
+                'abdominal': 'Abdominal Remador',
+                'natacao': 'Natação 50m'
+            };
+            const idades = ['Até 24 anos', '25-29 anos', '30-34 anos', '35-39 anos', '40-44 anos', '45-49 anos', '50-54 anos', '55-60 anos'];
+            
+            let html = '<div id="tabelasGeradas" class="space-y-6">';
+            
+            for(let ex in MATRIZ_TAF) {
+                html += `
+                <div class="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
+                    <h3 class="bg-slate-200 text-pmmt-blue font-extrabold p-3 text-[13px] uppercase text-center border-b border-slate-300">
+                        <i class="fa-solid fa-medal text-pmmt-gold mr-1"></i> ${titulos[ex]}
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-center text-xs whitespace-nowrap">
+                            <thead class="bg-slate-100 text-slate-500 font-bold uppercase text-[10px]">
+                                <tr>
+                                    <th class="p-2 border-r border-slate-200">Pts</th>
+                                    <th class="p-2 border-r border-slate-200">Sexo</th>
+                                    ${idades.map(i => `<th class="p-2 min-w-[70px]">${i}</th>`).join('')}
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 text-slate-700 font-semibold">
+                `;
+                
+                // Pontuações em ordem crescente de 1.0 a 5.0 baseadas no Edital
+                const ptsList = [1.0, 2.0, 3.0, 4.0, 5.0];
+                ptsList.forEach((pt, index) => {
+                    const reqM = MATRIZ_TAF[ex]['M'].find(r => r.pts === pt).req;
+                    const reqF = MATRIZ_TAF[ex]['F'].find(r => r.pts === pt).req;
+                    
+                    // Formata a unidade de medida adequada (Metros para Corrida e Segundos para Barra Fem.)
+                    const fmt = (val, s) => {
+                        if (ex === 'barra' && s === 'F') return val + '\"';
+                        if (ex === 'corrida') return val + 'm';
+                        return val;
+                    };
+                    
+                    const bgClass = index % 2 === 0 ? 'bg-white' : 'bg-slate-50';
+
+                    html += `
+                        <tr class="${bgClass} hover:bg-slate-100 transition">
+                            <td rowspan="2" class="p-2 border-r border-slate-200 font-black text-pmmt-blue align-middle text-sm">${pt.toFixed(1)}</td>
+                            <td class="p-2 border-r border-slate-200 font-bold text-slate-500 text-[11px] uppercase">Masc</td>
+                            ${reqM.map(v => `<td class="p-2">${fmt(v, 'M')}</td>`).join('')}
+                        </tr>
+                        <tr class="${bgClass} hover:bg-slate-100 transition border-b-2 border-slate-200">
+                            <td class="p-2 border-r border-slate-200 font-bold text-slate-500 text-[11px] uppercase">Fem</td>
+                            ${reqF.map(v => `<td class="p-2">${fmt(v, 'F')}</td>`).join('')}
+                        </tr>
+                    `;
+                });
+                
+                html += `</tbody></table></div></div>`;
+            }
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
     </script>
 </body>
 </html>
