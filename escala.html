@@ -33,10 +33,10 @@
     </div>
 
     <div id="painelPrincipal" class="h-full flex flex-col p-4 md:p-6 overflow-y-auto space-y-5">
-        <div class="bg-sys-dark text-white rounded-xl shadow-sm border-b-4 border-pmmt-gold p-4 flex justify-between items-center relative overflow-hidden">
+        <div class="bg-sys-dark text-white rounded-xl shadow-sm border-b-4 border-pmmt-gold p-4 flex justify-between items-center relative overflow-hidden shrink-0">
             <div class="z-10">
                 <h3 class="text-[10px] font-bold text-slate-300 uppercase tracking-widest mb-1"><i class="fa-solid fa-users-gear text-pmmt-gold mr-1.5"></i> Gestão de Escala</h3>
-                <h2 class="text-xl font-black uppercase tracking-wider text-white">Escalas de Serviço (24/96h)</h2>
+                <h2 class="text-xl font-black uppercase tracking-wider text-white">Escalas de Serviço (24/72h)</h2>
             </div>
             <div class="z-10 flex gap-2">
                 <button onclick="imprimirEscalaDeHoje()" class="bg-sys-dark hover:bg-pmmt-blue border border-white/20 text-white px-3 py-2 rounded shadow transition text-[10px] uppercase font-bold flex items-center gap-1.5"><i class="fa-solid fa-magnifying-glass text-pmmt-gold"></i> Prévia Hoje</button>
@@ -44,17 +44,20 @@
             <i class="fa-solid fa-shield-halved absolute -right-4 -bottom-6 text-6xl text-white/5 pointer-events-none"></i>
         </div>
 
-        <div class="bg-white shadow-sm border border-slate-200 p-4 rounded-xl">
-            <h3 class="text-xs font-bold text-sys-dark mb-4 border-b border-slate-100 pb-2 uppercase tracking-wider"><i class="fas fa-calendar-alt text-pmmt-gold mr-2"></i>Próximos Serviços</h3>
+        <div class="bg-white shadow-sm border border-slate-200 p-4 rounded-xl relative">
+            <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-2">
+                <h3 class="text-xs font-bold text-sys-dark uppercase tracking-wider"><i class="fas fa-calendar-alt text-pmmt-gold mr-2"></i>Próximos Serviços</h3>
+                <button id="btnToggleEscalaMensal" onclick="toggleEscalaMensal()" class="text-[10px] font-bold text-sys-dark bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded uppercase tracking-widest transition">Ver Mês Completo <i class="fa-solid fa-chevron-down ml-1"></i></button>
+            </div>
             <div id="gridEscala" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-7 gap-4"></div>
         </div>
 
         <!-- DIVISÃO POR EQUIPES (4 COLUNAS - NOVO CICLO) -->
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-            <div class="bg-white shadow-sm border border-slate-200 rounded-xl overflow-hidden"><div class="bg-slate-50 py-2 px-4 border-b border-slate-200 flex justify-between items-center"><h3 class="text-xs font-black text-sys-dark tracking-wide">ALFA</h3><span class="text-[8px] bg-slate-200 px-1.5 py-0.5 rounded font-bold">24/96</span></div><ul id="tabelaAlfa" class="p-2 text-slate-700 divide-y divide-slate-100 h-48 overflow-y-auto text-xs custom-scrollbar"></ul></div>
-            <div class="bg-white shadow-sm border border-slate-200 rounded-xl overflow-hidden"><div class="bg-slate-50 py-2 px-4 border-b border-slate-200 flex justify-between items-center"><h3 class="text-xs font-black text-sys-dark tracking-wide">BRAVO</h3><span class="text-[8px] bg-slate-200 px-1.5 py-0.5 rounded font-bold">24/96</span></div><ul id="tabelaBravo" class="p-2 text-slate-700 divide-y divide-slate-100 h-48 overflow-y-auto text-xs custom-scrollbar"></ul></div>
-            <div class="bg-white shadow-sm border border-slate-200 rounded-xl overflow-hidden"><div class="bg-slate-50 py-2 px-4 border-b border-slate-200 flex justify-between items-center"><h3 class="text-xs font-black text-sys-dark tracking-wide">CHARLIE</h3><span class="text-[8px] bg-slate-200 px-1.5 py-0.5 rounded font-bold">24/96</span></div><ul id="tabelaCharlie" class="p-2 text-slate-700 divide-y divide-slate-100 h-48 overflow-y-auto text-xs custom-scrollbar"></ul></div>
-            <div class="bg-white shadow-sm border border-slate-200 rounded-xl overflow-hidden"><div class="bg-slate-50 py-2 px-4 border-b border-slate-200 flex justify-between items-center"><h3 class="text-xs font-black text-sys-dark tracking-wide">DELTA</h3><span class="text-[8px] bg-slate-200 px-1.5 py-0.5 rounded font-bold">24/96</span></div><ul id="tabelaDelta" class="p-2 text-slate-700 divide-y divide-slate-100 h-48 overflow-y-auto text-xs custom-scrollbar"></ul></div>
+            <div class="bg-white shadow-sm border border-slate-200 rounded-xl overflow-hidden flex flex-col"><div class="bg-slate-50 py-2 px-4 border-b border-slate-200 flex justify-between items-center"><h3 class="text-xs font-black text-sys-dark tracking-wide">ALFA</h3><span class="text-[8px] bg-slate-200 px-1.5 py-0.5 rounded font-bold">24/72</span></div><ul id="tabelaAlfa" class="p-2 text-slate-700 divide-y divide-slate-100 h-64 overflow-y-auto text-xs custom-scrollbar"></ul></div>
+            <div class="bg-white shadow-sm border border-slate-200 rounded-xl overflow-hidden flex flex-col"><div class="bg-slate-50 py-2 px-4 border-b border-slate-200 flex justify-between items-center"><h3 class="text-xs font-black text-sys-dark tracking-wide">BRAVO</h3><span class="text-[8px] bg-slate-200 px-1.5 py-0.5 rounded font-bold">24/72</span></div><ul id="tabelaBravo" class="p-2 text-slate-700 divide-y divide-slate-100 h-64 overflow-y-auto text-xs custom-scrollbar"></ul></div>
+            <div class="bg-white shadow-sm border border-slate-200 rounded-xl overflow-hidden flex flex-col"><div class="bg-slate-50 py-2 px-4 border-b border-slate-200 flex justify-between items-center"><h3 class="text-xs font-black text-sys-dark tracking-wide">CHARLIE</h3><span class="text-[8px] bg-slate-200 px-1.5 py-0.5 rounded font-bold">24/72</span></div><ul id="tabelaCharlie" class="p-2 text-slate-700 divide-y divide-slate-100 h-64 overflow-y-auto text-xs custom-scrollbar"></ul></div>
+            <div class="bg-white shadow-sm border border-slate-200 rounded-xl overflow-hidden flex flex-col"><div class="bg-slate-50 py-2 px-4 border-b border-slate-200 flex justify-between items-center"><h3 class="text-xs font-black text-sys-dark tracking-wide">DELTA</h3><span class="text-[8px] bg-slate-200 px-1.5 py-0.5 rounded font-bold">24/72</span></div><ul id="tabelaDelta" class="p-2 text-slate-700 divide-y divide-slate-100 h-64 overflow-y-auto text-xs custom-scrollbar"></ul></div>
         </div>
     </div>
 
@@ -175,6 +178,7 @@
         let listaAlunosFull = [];
         let funcoesComandoGlobais = [];
         let isAdmin = false;
+        let visualizacaoMensal = false;
         
         const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
@@ -248,13 +252,21 @@
 
             return { equipe: eq, sgt: sgt, diffDias: diffDiasEq };
         }
+        
+        function toggleEscalaMensal() {
+            visualizacaoMensal = !visualizacaoMensal;
+            const btn = document.getElementById('btnToggleEscalaMensal');
+            btn.innerHTML = visualizacaoMensal ? 'Recolher Previsão <i class="fa-solid fa-chevron-up ml-1"></i>' : 'Ver Mês Completo <i class="fa-solid fa-chevron-down ml-1"></i>';
+            renderizarEscala();
+        }
 
         function renderizarEscala() {
             const grid = document.getElementById('gridEscala'); if(!grid) return; grid.innerHTML = '';
             
             let hoje = new Date(); hoje.setHours(12, 0, 0, 0); 
+            let diasRenderizar = visualizacaoMensal ? 30 : 7;
             
-            for(let i = 0; i < 7; i++) {
+            for(let i = 0; i < diasRenderizar; i++) {
                 let dt = new Date(hoje); dt.setDate(hoje.getDate() + i);
                 let dtIso = dt.toISOString().split('T')[0];
                 let dataAlvoCalculo = new Date(Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate(), 12, 0, 0));
@@ -449,7 +461,6 @@
             document.getElementById('prevAlunoDia').value = getSavedPosto('ALUNO_DIA', dataIso, objAlunoDia ? objAlunoDia.id : '');
             let remaining = teamSorted.filter(a => !objAlunoDia || a.id !== objAlunoDia.id);
 
-            // CORREÇÃO DOS CAMPOS VAZIOS NA EQUIPE ECO: Se "remaining" não tiver aluno suficiente, não dá mais erro
             document.getElementById('prevP1_23').value = getSavedPosto('P1_23', dataIso, remaining[0] ? remaining[0].id : '');
             document.getElementById('prevP2_23').value = getSavedPosto('P2_23', dataIso, remaining[1] ? remaining[1].id : '');
             document.getElementById('prevP1_03').value = getSavedPosto('P1_03', dataIso, remaining[2] ? remaining[2].id : '');
