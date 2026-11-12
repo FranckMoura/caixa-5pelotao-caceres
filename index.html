@@ -461,7 +461,6 @@
         let isAdmin = false;
         let emailUsuarioLogado = null;
 
-        // CHAVES EMBUTIDAS CONFORME SOLICITADO
         const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
         
@@ -620,22 +619,44 @@
         }
 
         async function renderizarDashboardHome() {
-            const dataBase = new Date('2026-08-11T12:00:00Z'); 
-            const seqEq = ['ALFA', 'BRAVO', 'CHARLIE', 'DELTA'];
             let hoje = new Date(); hoje.setHours(12, 0, 0, 0); 
             let dtIso = hoje.toISOString().split('T')[0];
-            let diffDias = Math.round((new Date(Date.UTC(hoje.getFullYear(), hoje.getMonth(), hoje.getDate(), 12, 0, 0)) - dataBase) / 86400000);
             
-            let equipeCalculada = seqEq[(diffDias % 4 + 4) % 4];
+            let dtMid = new Date(Date.UTC(hoje.getFullYear(), hoje.getMonth(), hoje.getDate(), 12, 0, 0));
+            const dataBaseOld = new Date('2026-08-11T12:00:00Z');
+            const dataBaseNew = new Date('2026-11-10T12:00:00Z');
+            const seqSgt = ['1º SGT PM ORTIZ', '1º SGT PM MAURIZON', '2º SGT PM SOUZA'];
+            
+            let diffDiasOld = Math.round((dtMid - dataBaseOld) / 86400000);
+            let sgtCalculado = seqSgt[(diffDiasOld % seqSgt.length + seqSgt.length) % seqSgt.length];
+            
+            let equipeCalculada = '';
+            let idxBaseAluno = 0;
+
+            if (dtMid >= dataBaseNew) {
+                const seqEq4 = ['ALFA', 'BRAVO', 'CHARLIE', 'DELTA'];
+                let diffDiasNew = Math.round((dtMid - dataBaseNew) / 86400000);
+                equipeCalculada = seqEq4[(diffDiasNew % 4 + 4) % 4];
+                idxBaseAluno = Math.floor(diffDiasNew / 4);
+            } else {
+                const seqEq5 = ['ALFA', 'BRAVO', 'CHARLIE', 'DELTA', 'ECO'];
+                let diffDiasOldTransition = Math.round((dtMid - new Date('2026-10-31T12:00:00Z')) / 86400000);
+                equipeCalculada = seqEq5[(diffDiasOldTransition % 5 + 5) % 5];
+                idxBaseAluno = Math.floor(diffDiasOldTransition / 5);
+            }
+            
             let overrideEquipe = funcoesComandoGlobais.find(f => f.tipo === 'EQUIPE' && f.data_referencia === dtIso);
             let eq = (overrideEquipe && overrideEquipe.valor_texto) ? overrideEquipe.valor_texto : equipeCalculada;
             
-            let sgtCalculado = ['1º SGT PM ORTIZ', '1º SGT PM MAURIZON', '2º SGT PM SOUZA'][(diffDias % 3 + 3) % 3];
             let overrideSgt = funcoesComandoGlobais.find(f => f.tipo === 'CMT' && f.data_referencia === dtIso);
             let sgtFinal = (overrideSgt && overrideSgt.valor_texto) ? overrideSgt.valor_texto : sgtCalculado;
             
             let alunosEq = [...listaAlunosFull].filter(a => a.equipe === eq).sort((a, b) => a.numero - b.numero);
-            let idxAluno = Math.floor(diffDias / 4) % alunosEq.length; if (idxAluno < 0) idxAluno += alunosEq.length;
+            let idxAluno = 0;
+            if (alunosEq.length > 0) {
+                idxAluno = idxBaseAluno % alunosEq.length;
+                if (idxAluno < 0) idxAluno += alunosEq.length;
+            }
             
             let alDia = funcoesComandoGlobais.find(f => f.tipo === 'ALUNO_DIA' && f.data_referencia === dtIso)
                 ? listaAlunosFull.find(a => a.id == funcoesComandoGlobais.find(f => f.tipo === 'ALUNO_DIA' && f.data_referencia === dtIso).aluno_id) || (alunosEq[idxAluno] || {qra:'N/A', numero:0})
