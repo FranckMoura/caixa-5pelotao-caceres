@@ -4,53 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal Institucional - 5º Pelotão | Força Tática</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <script>
-        tailwind.config = { theme: { extend: { colors: { sys: { dark: '#0f172a', header: '#1e293b', menu: '#1e293b', bg: '#f1f5f9', blue: '#1e3a8a', breadcrumb: '#334155' }, pmmt: { blue: '#0B1C3D', gold: '#C5A059', light: '#142A5C' } }, fontFamily: { sans: ['"Open Sans"', 'sans-serif'] } } } }
+        tailwind.config = { 
+            theme: { 
+                extend: { 
+                    colors: { 
+                        sys: { dark: '#0a101f', header: '#151e2e', menu: '#1e293b', bg: '#f1f5f9', blue: '#1e3a8a' }, 
+                        pmmt: { blue: '#0B1C3D', gold: '#C5A059', light: '#142A5C' } 
+                    }, 
+                    fontFamily: { sans: ['"Open Sans"', 'sans-serif'] } 
+                } 
+            } 
+        }
     </script>
     <style>
         body { background-color: #f1f5f9; color: #1e293b; }
-        .painel-conteudo { transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out; overflow: hidden; }
-        th { cursor: pointer; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #cbd5e1; }
-        ::-webkit-scrollbar-thumb { background: #64748b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #64748b; border-radius: 0px; }
         ::-webkit-scrollbar-thumb:hover { background: #475569; }
-        .menu-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 1rem; font-size: 12px; font-weight: 600; color: #cbd5e1; border-left: 4px solid transparent; transition: all 0.2s ease; width: 100%; text-align: left; white-space: nowrap; }
-        .menu-item i { width: 1.25rem; text-align: center; font-size: 16px; }
-        .menu-item:hover { background-color: rgba(255, 255, 255, 0.05); color: white; }
-        .menu-item.ativo { background-color: rgba(197, 160, 89, 0.15); border-left-color: #C5A059; color: #C5A059; font-weight: 800; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* Controle do Sidebar Expandido/Retraído */
-        #wrapperLateral { transition: width 0.3s ease; }
-        #wrapperLateral.retraido { width: 4.5rem; }
-        #wrapperLateral.retraido .menu-item span, 
-        #wrapperLateral.retraido .header-menu-txt { display: none; }
-        #wrapperLateral.retraido .menu-item { justify-content: center; padding: 0.8rem 0; }
-        #wrapperLateral.retraido .menu-item i { margin: 0; }
-
+        /* Menu Horizontal Militarizado */
+        .menu-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.25rem; font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.2s ease; white-space: nowrap; border-bottom: 3px solid transparent; }
+        .menu-item:hover { background-color: #1e3a8a; color: white; }
+        .menu-item.ativo { background-color: #0B1C3D; color: #C5A059; border-bottom-color: #C5A059; }
+        
+        .tabela-qts th, .tabela-qts td { border: 1px solid #94a3b8; padding: 0.25rem; text-align: center; font-size: 9px; text-transform: uppercase; }
+        .tabela-qts th { background-color: #e2e8f0; font-weight: 800; color: #1e293b; }
+        .tabela-qts .col-periodo { background-color: #e2e8f0; font-weight: 800; writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); }
+        .tabela-qts .row-intervalo { background-color: #cbd5e1; font-weight: 800; letter-spacing: 0.1em; }
+        
+        /* --- CONTROLE INTELIGENTE DE IMPRESSÃO --- */
         @media print {
-            body:not(.printing-escala):not(.printing-cautela):not(.printing-qts) aside, 
-            body:not(.printing-escala):not(.printing-cautela):not(.printing-qts) .no-print, 
-            body:not(.printing-escala):not(.printing-cautela):not(.printing-qts) #telaLogin, 
-            body:not(.printing-escala):not(.printing-cautela):not(.printing-qts) header, 
-            body:not(.printing-escala):not(.printing-cautela):not(.printing-qts) #breadcrumb-bar { display: none !important; }
+            body:not(.printing-escala):not(.printing-cautela):not(.printing-qts):not(.printing-presenca) nav, 
+            body:not(.printing-escala):not(.printing-cautela):not(.printing-qts):not(.printing-presenca) .no-print, 
+            body:not(.printing-escala):not(.printing-cautela):not(.printing-qts):not(.printing-presenca) #telaLogin, 
+            body:not(.printing-escala):not(.printing-cautela):not(.printing-qts):not(.printing-presenca) header { display: none !important; }
+            body:not(.printing-escala):not(.printing-cautela):not(.printing-qts):not(.printing-presenca) main { margin: 0 !important; padding: 0 !important; width: 100% !important; background: white; }
+            body:not(.printing-escala):not(.printing-cautela):not(.printing-qts):not(.printing-presenca) { background: white; color: black; }
+            body:not(.printing-escala):not(.printing-cautela):not(.printing-qts):not(.printing-presenca) table, 
+            body:not(.printing-escala):not(.printing-cautela):not(.printing-qts):not(.printing-presenca) th, 
+            body:not(.printing-escala):not(.printing-cautela):not(.printing-qts):not(.printing-presenca) td { border: 1px solid #cbd5e1 !important; color: black !important; }
             
-            body:not(.printing-escala):not(.printing-cautela):not(.printing-qts) main { margin: 0 !important; padding: 0 !important; width: 100% !important; background: white; }
-            body:not(.printing-escala):not(.printing-cautela):not(.printing-qts) { background: white; color: black; }
-
             body.printing-escala * { visibility: hidden; }
-            body.printing-escala #modulo-impressao-escala, 
-            body.printing-escala #modulo-impressao-escala * { visibility: visible; }
+            body.printing-escala #modulo-impressao-escala, body.printing-escala #modulo-impressao-escala * { visibility: visible; }
             body.printing-escala #modulo-impressao-escala { position: absolute; left: 0; top: 0; width: 100%; display: block !important; }
             body.printing-escala #painelPrincipal { display: none !important; }
-
+            
             body.printing-cautela * { visibility: hidden; }
-            body.printing-cautela #modulo-cautela, 
-            body.printing-cautela #modulo-cautela * { visibility: visible; }
+            body.printing-cautela #modulo-cautela, body.printing-cautela #modulo-cautela * { visibility: visible; }
             body.printing-cautela #modulo-cautela { position: absolute; left: 0; top: 0; width: 100%; display: block !important; margin: 0; padding: 0; }
             body.printing-cautela .no-print { display: none !important; }
             body.printing-cautela table, body.printing-cautela th, body.printing-cautela td { border: 1px solid #000 !important; color: #000 !important; }
@@ -60,392 +70,352 @@
 </head>
 <body class="h-screen flex flex-col overflow-hidden antialiased">
     <div class="flex-1 flex overflow-hidden relative w-full">
+        
         <!-- TELA DE LOGIN INSTITUCIONAL E PROFISSIONAL -->
-        <div id="telaLogin" class="flex flex-col items-center justify-between w-full h-full bg-slate-900 p-4 z-[100] relative overflow-y-auto">
-            <div class="fixed inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 z-0 pointer-events-none"></div>
-            <div class="fixed inset-0 bg-gradient-to-br from-sys-dark via-pmmt-blue to-sys-dark z-0 pointer-events-none opacity-95"></div>
+        <div id="telaLogin" class="flex flex-col items-center justify-between w-full h-full bg-sys-dark p-4 z-[100] relative overflow-y-auto">
+            <div class="fixed inset-0 bg-pmmt-blue z-0 pointer-events-none opacity-20"></div>
 
             <div class="w-full flex-1 flex items-center justify-center z-10 mt-4 md:mt-8">
-                <div class="flex flex-col md:flex-row w-full max-w-5xl bg-sys-dark/80 backdrop-blur-md rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden border border-white/10 relative">
-                    <div class="w-full md:w-1/2 flex flex-col items-center justify-center p-8 md:p-12 relative border-b md:border-b-0 md:border-r border-white/5 bg-gradient-to-t from-black/40 to-transparent">
-                        <img src="logo_brasao_5.png" alt="Brasão 5º Pelotão" class="w-56 h-56 md:w-80 md:h-80 object-contain drop-shadow-[0_0_25px_rgba(255,255,255,0.1)] z-10 hover:scale-105 transition-transform duration-700" onerror="this.onerror=null; this.src='https://via.placeholder.com/300?text=Brasao+PMMT';">
-                        <div class="text-center mt-6 z-10">
-                            <h2 class="text-3xl font-black text-pmmt-gold tracking-widest uppercase drop-shadow-md">5º PELOTÃO</h2>
-                            <p class="text-xs font-bold text-slate-300 uppercase tracking-widest mt-1">Força Tática - Cáceres/MT</p>
+                <div class="flex flex-col md:flex-row w-full max-w-4xl bg-sys-dark rounded-sm shadow-2xl overflow-hidden border border-slate-700 relative">
+                    <div class="w-full md:w-1/2 flex flex-col items-center justify-center p-8 md:p-12 relative border-b md:border-b-0 md:border-r border-slate-700 bg-black/40">
+                        <img src="logo_brasao_5.png" alt="Brasão 5º Pelotão" class="w-48 h-48 md:w-64 md:h-64 object-contain z-10 hover:scale-105 transition-transform duration-700" onerror="this.onerror=null; this.src='https://via.placeholder.com/300?text=Brasao+PMMT';">
+                        <div class="text-center mt-6 z-10 border-t border-slate-600 pt-4 w-full">
+                            <h2 class="text-2xl font-black text-pmmt-gold tracking-widest uppercase">5º PELOTÃO</h2>
+                            <p class="text-[11px] font-bold text-slate-300 uppercase tracking-widest mt-1">Força Tática - Cáceres/MT</p>
                         </div>
                     </div>
-                    <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center relative bg-pmmt-blue/40">
-                        <div class="flex flex-col items-center justify-center mb-8 border-b border-white/10 pb-6">
-                            <img src="logo_pmmt_branco_para_fundo_azul.png" alt="PMMT" class="h-16 object-contain mb-3 drop-shadow-md" onerror="this.style.display='none'">
-                            <h3 class="text-sm font-extrabold tracking-widest text-pmmt-gold uppercase text-center drop-shadow-md">Polícia Militar de Mato Grosso</h3>
-                            <p class="text-[10px] text-slate-300 uppercase tracking-widest mt-1">Portal Institucional do 35º CFSD</p>
+                    <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center relative bg-sys-header">
+                        <div class="flex flex-col items-center justify-center mb-8 border-b border-slate-700 pb-6">
+                            <img src="logo_pmmt_branco_para_fundo_azul.png" alt="PMMT" class="h-14 object-contain mb-3" onerror="this.style.display='none'">
+                            <h3 class="text-[11px] font-extrabold tracking-widest text-pmmt-gold uppercase text-center">Polícia Militar de Mato Grosso</h3>
+                            <p class="text-[9px] text-slate-400 uppercase tracking-widest mt-1">Portal Institucional do 35º CFSD</p>
                         </div>
-                        <form id="formLogin" onsubmit="autenticarUsuario(event)" class="w-full space-y-5 z-10">
+                        <form id="formLogin" onsubmit="autenticarUsuario(event)" class="w-full space-y-4 z-10">
                             <div>
-                                <label class="block text-[10px] font-bold text-slate-300 uppercase tracking-wider mb-1.5 ml-1">Usuário / QRA</label>
+                                <label class="block text-[10px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">Usuário / QRA</label>
                                 <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><i class="fa-solid fa-user text-slate-400 text-sm"></i></div>
-                                    <input type="text" id="loginEmail" required placeholder="Ex: willys" class="w-full bg-sys-dark/50 border border-slate-600/50 p-3.5 pl-11 rounded-lg text-sm text-white outline-none focus:border-pmmt-gold focus:ring-1 focus:ring-pmmt-gold transition shadow-inner font-semibold placeholder-slate-500">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-user text-slate-400 text-sm"></i></div>
+                                    <input type="text" id="loginEmail" required placeholder="Ex: willys" class="w-full bg-sys-dark border border-slate-600 p-3 pl-10 rounded-sm text-sm text-white outline-none focus:border-pmmt-gold transition font-semibold placeholder-slate-500">
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-[10px] font-bold text-slate-300 uppercase tracking-wider mb-1.5 ml-1">Senha de Acesso</label>
+                                <label class="block text-[10px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">Senha de Acesso</label>
                                 <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><i class="fa-solid fa-lock text-slate-400 text-sm"></i></div>
-                                    <input type="password" id="loginSenha" required placeholder="••••••••" class="w-full bg-sys-dark/50 border border-slate-600/50 p-3.5 pl-11 rounded-lg text-sm text-white outline-none focus:border-pmmt-gold focus:ring-1 focus:ring-pmmt-gold transition shadow-inner font-semibold placeholder-slate-500">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-lock text-slate-400 text-sm"></i></div>
+                                    <input type="password" id="loginSenha" required placeholder="••••••••" class="w-full bg-sys-dark border border-slate-600 p-3 pl-10 rounded-sm text-sm text-white outline-none focus:border-pmmt-gold transition font-semibold placeholder-slate-500">
                                 </div>
                             </div>
-                            <button type="submit" id="btnEntrar" class="w-full bg-pmmt-gold hover:bg-yellow-500 text-sys-dark font-black py-4 shadow-[0_0_15px_rgba(197,160,89,0.3)] rounded-lg transition-colors text-sm mt-4 uppercase tracking-widest flex items-center justify-center gap-2 border border-yellow-400"><i class="fa-solid fa-right-to-bracket"></i> Acessar Sistema</button>
+                            <button type="submit" id="btnEntrar" class="w-full bg-pmmt-gold hover:bg-yellow-600 text-sys-dark font-black py-3.5 rounded-sm transition-colors text-[11px] mt-4 uppercase tracking-widest flex items-center justify-center gap-2"><i class="fa-solid fa-right-to-bracket"></i> Acessar Sistema</button>
                         </form>
-                        <p id="erroLogin" class="text-[11px] font-bold text-rose-300 mt-4 text-center bg-rose-900/50 p-3 rounded border border-rose-500/50 hidden"></p>
+                        <p id="erroLogin" class="text-[10px] font-bold text-rose-400 mt-4 text-center bg-rose-900/30 p-2 rounded-sm border border-rose-500/50 hidden uppercase tracking-widest"></p>
                     </div>
                 </div>
             </div>
-            <div class="w-full text-center z-10 shrink-0 mt-4 pb-2"><p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider drop-shadow-md">Desenvolvido por: AL SD PM WILLYS - 5º PELOTÃO - 35º CFSD</p></div>
+            <div class="w-full text-center z-10 shrink-0 mt-4 pb-2 border-t border-slate-700/50 pt-3"><p class="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Desenvolvido por: AL SD PM WILLYS - 5º PELOTÃO - 35º CFSD</p></div>
         </div>
 
         <!-- PAINEL PRINCIPAL (ÁREA LOGADA) -->
         <div id="painelPrincipal" class="hidden h-full flex flex-col overflow-hidden w-full">
-            <header class="bg-sys-dark text-white h-16 flex items-center justify-between px-4 md:px-8 z-40 shrink-0 shadow-md border-b-4 border-pmmt-gold">
-                <div class="flex items-center gap-4 w-full">
-                    <button onclick="document.getElementById('wrapperLateral').classList.toggle('hidden')" class="md:hidden text-white text-2xl px-2 focus:outline-none hover:text-pmmt-gold transition"><i class="fa-solid fa-bars"></i></button>
-                    <div class="flex items-center gap-4">
-                        <img src="logo_pmmt_branco_para_fundo_azul.png" alt="Logo PMMT" onclick="mudarModulo('home')" class="h-10 object-contain drop-shadow-md cursor-pointer hover:scale-105 transition-transform" onerror="this.style.display='none'">
-                        <div class="border-l border-white/20 pl-4">
-                            <h1 class="text-sm md:text-base font-extrabold tracking-wider text-white">35º CFSD PMMT <span class="text-pmmt-gold">| 6º CR</span></h1>
-                            <p class="text-[9px] md:text-[10px] font-semibold text-slate-400 uppercase tracking-widest mt-0.5">Portal Institucional Integrado</p>
-                        </div>
+            
+            <!-- HEADER TOPO -->
+            <header class="bg-sys-dark text-white h-16 flex items-center justify-between px-4 md:px-6 z-40 shrink-0 border-b-2 border-slate-700">
+                <div class="flex items-center gap-4">
+                    <img src="logo_pmmt_branco_para_fundo_azul.png" alt="Logo PMMT" class="h-10 object-contain cursor-pointer hover:opacity-80 transition" onclick="mudarModulo('home')" onerror="this.style.display='none'">
+                    <div class="border-l border-slate-600 pl-4">
+                        <h1 class="text-xs md:text-sm font-black tracking-wider text-white uppercase">35º CFSD <span class="text-pmmt-gold">| 6º CR</span></h1>
+                        <p class="text-[9px] font-semibold text-slate-400 uppercase tracking-widest mt-0.5">Portal de Gestão Integrada</p>
                     </div>
                 </div>
                 <!-- EXIBIÇÃO DO USUÁRIO LOGADO -->
-                <div class="flex flex-col items-end justify-center min-w-max border-l border-white/20 pl-4 h-full pr-2 hidden sm:flex">
-                    <p class="text-sm font-bold uppercase text-pmmt-gold tracking-wider">5º PELOTÃO</p>
-                    <p class="text-[10px] text-slate-300 uppercase tracking-widest mt-0.5">Força Tática - Cáceres</p>
-                    <p id="usuarioLogadoInfo" class="text-[9px] text-emerald-400 font-bold uppercase mt-1 tracking-wider"></p>
+                <div class="flex flex-col items-end justify-center min-w-max border-l border-slate-600 pl-4 h-full pr-2 hidden sm:flex">
+                    <p class="text-xs font-black uppercase text-pmmt-gold tracking-widest">5º PELOTÃO - F.T.</p>
+                    <p id="usuarioLogadoInfo" class="text-[9px] text-slate-300 font-bold uppercase mt-1 tracking-wider"></p>
                 </div>
             </header>
 
-            <div id="breadcrumb-bar" class="bg-white text-slate-700 px-6 py-2.5 text-xs flex items-center shrink-0 shadow-sm border-b border-slate-200 font-bold tracking-wide">
-                <button onclick="mudarModulo('home')" class="flex items-center hover:text-pmmt-blue transition-colors focus:outline-none cursor-pointer group">
-                    <i class="fa-solid fa-home text-slate-400 group-hover:text-pmmt-blue mr-2 transition-colors"></i> Home 
-                </button>
-                <span class="mx-2 text-slate-300">/</span> 
-                <span id="txt-breadcrumb" class="font-black text-sys-dark uppercase tracking-wider">Painel Diário</span>
-            </div>
-            
-            <div class="flex-1 flex overflow-hidden">
-                <!-- MENU LATERAL (SIDEBAR) TÁTICA -->
-                <aside id="wrapperLateral" class="w-64 bg-sys-dark text-white flex flex-col shadow-2xl z-50 hidden md:flex shrink-0">
-                    <div class="py-6 px-4 text-center flex flex-col items-center justify-center relative shrink-0 border-b border-white/5 bg-gradient-to-b from-black/20 to-transparent">
-                        <img id="imgBrasaoSidebar" src="logo_brasao_5.png" alt="Brasão 5º Pelotão" class="w-28 h-28 object-contain mb-3 relative z-10 drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] hover:scale-105 transition-transform" onerror="this.onerror=null; this.src='https://via.placeholder.com/150?text=Brasao';">
-                        <h2 class="header-menu-txt text-sm font-black text-pmmt-gold tracking-widest uppercase relative z-10">5º PELOTÃO</h2>
-                        <p class="header-menu-txt text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5 relative z-10">Força Tática - Cáceres</p>
-                    </div>
-                    <div class="flex-1 overflow-y-auto py-3 px-0 space-y-0.5 custom-scrollbar">
-                        <p class="header-menu-txt px-5 text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2 mt-2">Módulos do Sistema</p>
-                        <button onclick="mudarModulo('home')" id="btn-home" class="menu-item ativo"><i class="fa-solid fa-house"></i> <span>Início / Painel</span></button>
-                        <button onclick="mudarModulo('efetivo')" id="btn-efetivo" class="menu-item"><i class="fa-solid fa-users-gear"></i> <span>Efetivo e Escala</span></button>
-                        <button onclick="mudarModulo('cautela')" id="btn-cautela" class="menu-item"><i class="fa-solid fa-gun"></i> <span>Cautela Fixa</span></button>
-                        <button onclick="mudarModulo('financeiro')" id="btn-financeiro" class="menu-item"><i class="fa-solid fa-vault"></i> <span>Gestão Financeira</span></button>
-                        <button onclick="mudarModulo('efetivodados')" id="btn-efetivodados" class="menu-item"><i class="fa-solid fa-brain"></i> <span>Inteligência</span></button>
-                        <button onclick="mudarModulo('academico')" id="btn-academico" class="menu-item"><i class="fa-solid fa-graduation-cap"></i> <span>Módulo Acadêmico</span></button>
-                        <button onclick="mudarModulo('aluno')" id="btn-aluno" class="menu-item"><i class="fa-solid fa-folder-open"></i> <span>Área do Aluno (QTS)</span></button>
-                        <button onclick="mudarModulo('taf')" id="btn-taf" class="menu-item"><i class="fa-solid fa-person-running"></i> <span>TAF</span></button>
-                        <button onclick="mudarModulo('toques')" id="btn-toques" class="menu-item"><i class="fa-solid fa-bullhorn"></i> <span>Toques de Corneta</span></button>
-                        <button onclick="mudarModulo('gerador')" id="btn-gerador" class="menu-item"><i class="fa-solid fa-file-pdf"></i> <span>Gerador Documentos</span></button>
-                    </div>
-                    <div class="p-3 border-t border-white/5 flex flex-col gap-3 items-center bg-black/20 shrink-0">
-                        <button onclick="toggleMenuLateral()" class="text-slate-400 hover:text-white transition w-full flex items-center justify-center p-2 rounded hover:bg-white/10" title="Expandir/Recolher Menu">
-                            <i class="fa-solid fa-arrows-left-right"></i>
-                        </button>
-                        <div class="flex justify-between items-center w-full gap-2">
-                            <button onclick="sincronizarDadosManualmente()" class="text-[10px] font-bold text-slate-400 hover:text-white transition px-3 py-1.5 rounded border border-white/10 hover:bg-white/10 flex-1 flex items-center justify-center" title="Sincronizar Dados">
-                                <i class="fa-solid fa-arrows-rotate"></i> <span class="header-menu-txt ml-1.5">Sincronizar</span>
-                            </button>
-                            <button onclick="deslogarUsuario()" class="text-rose-500 hover:text-rose-400 text-base no-print p-2 transition" title="Sair do Portal">
-                                <i class="fa-solid fa-power-off"></i>
-                            </button>
-                        </div>
-                    </div>
-                </aside>
+            <!-- MENU HORIZONTAL (SUBSTITUTO DA SIDEBAR) -->
+            <nav class="bg-sys-header border-b-2 border-pmmt-gold flex overflow-x-auto no-scrollbar shadow-md shrink-0">
+                <button onclick="mudarModulo('home')" id="btn-home" class="menu-item border-r border-slate-700 ativo"><i class="fa-solid fa-house"></i> Início</button>
+                <button onclick="mudarModulo('efetivo')" id="btn-efetivo" class="menu-item border-r border-slate-700"><i class="fa-solid fa-users-viewfinder"></i> Efetivo</button>
+                <button onclick="mudarModulo('cautela')" id="btn-cautela" class="menu-item border-r border-slate-700"><i class="fa-solid fa-gun"></i> Cautela</button>
+                <button onclick="mudarModulo('financeiro')" id="btn-financeiro" class="menu-item border-r border-slate-700"><i class="fa-solid fa-vault"></i> Finanças</button>
+                <button onclick="mudarModulo('efetivodados')" id="btn-efetivodados" class="menu-item border-r border-slate-700"><i class="fa-solid fa-brain"></i> Efetivo & Dados</button>
+                <button onclick="mudarModulo('academico')" id="btn-academico" class="menu-item border-r border-slate-700"><i class="fa-solid fa-graduation-cap"></i> Acadêmico</button>
+                <button onclick="mudarModulo('aluno')" id="btn-aluno" class="menu-item border-r border-slate-700"><i class="fa-solid fa-folder-open"></i> Área do Aluno</button>
+                <button onclick="mudarModulo('sociograma')" id="btn-sociograma" class="menu-item border-r border-slate-700"><i class="fa-solid fa-network-wired"></i> Sociograma</button>
+                <button onclick="mudarModulo('sociogramapainel')" id="btn-sociogramapainel" class="menu-item admin-only border-r border-slate-700 text-amber-500"><i class="fa-solid fa-chart-line"></i> Painel Socio</button>
+                <button onclick="mudarModulo('taf')" id="btn-taf" class="menu-item border-r border-slate-700"><i class="fa-solid fa-person-running"></i> TAF</button>
+                <button onclick="mudarModulo('toques')" id="btn-toques" class="menu-item border-r border-slate-700"><i class="fa-solid fa-bullhorn"></i> Toques</button>
+                <button onclick="mudarModulo('gerador')" id="btn-gerador" class="menu-item border-r border-slate-700"><i class="fa-solid fa-file-pdf"></i> Documentos</button>
+                
+                <!-- Botões de Ação na Direita -->
+                <div class="flex-1 min-w-[50px]"></div>
+                <button onclick="sincronizarDadosManualmente()" class="menu-item text-slate-400 hover:text-white border-l border-slate-700" title="Sincronizar Dados"><i class="fa-solid fa-arrows-rotate"></i> Sync</button>
+                <button onclick="deslogarUsuario()" class="menu-item text-rose-500 hover:text-rose-400 border-l border-slate-700" title="Sair do Portal"><i class="fa-solid fa-power-off"></i> Sair</button>
+            </nav>
 
-                <main class="flex-1 overflow-y-auto p-4 md:p-6 bg-sys-bg flex flex-col relative custom-scrollbar">
-                    <div id="loaderAlert" class="hidden bg-amber-100 border border-amber-300 text-amber-800 px-4 py-3 rounded-lg mb-4 flex items-center gap-3 shadow-sm transition-opacity shrink-0">
-                        <i class="fa-solid fa-circle-notch fa-spin text-lg"></i>
-                        <span class="text-sm font-semibold">Sincronizando dados com o servidor...</span>
-                    </div>
+            <main class="flex-1 overflow-y-auto p-4 md:p-6 bg-sys-bg flex flex-col relative custom-scrollbar">
+                
+                <div id="loaderAlert" class="hidden bg-pmmt-gold/20 border border-pmmt-gold text-sys-dark px-4 py-3 rounded-sm mb-4 flex items-center gap-3 shadow-sm transition-opacity shrink-0">
+                    <i class="fa-solid fa-circle-notch fa-spin text-lg"></i>
+                    <span class="text-[10px] font-bold uppercase tracking-widest">Sincronizando dados com o servidor...</span>
+                </div>
 
-                    <!-- MÓDULO HOME -->
-                    <section id="modulo-home" class="space-y-6">
-                        
-                        <!-- HEADER TEMPO REAL -->
-                        <div class="bg-sys-dark rounded-xl shadow-lg border-l-4 border-pmmt-gold overflow-hidden p-5 flex flex-col md:flex-row items-center justify-between text-white gap-4 relative">
-                            <div class="flex items-center gap-4 z-10 w-full md:w-auto">
-                                <div class="bg-white/5 w-12 h-12 flex items-center justify-center rounded-lg shadow-inner border border-white/10"><i class="fa-regular fa-clock text-2xl text-pmmt-gold"></i></div>
-                                <div><h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Tempo Real - QTS</h3><p id="relogioAtual" class="text-2xl md:text-3xl font-black tracking-wider font-mono drop-shadow-md">00:00:00</p></div>
-                            </div>
-                            <div class="text-left md:text-right border-t md:border-t-0 md:border-l border-white/10 pt-3 md:pt-0 md:pl-6 z-10 w-full md:w-auto">
-                                <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Status de Atividade Atual</h3>
-                                <p id="statusAulaAtual" class="text-sm md:text-base font-black text-pmmt-gold uppercase tracking-wide truncate max-w-full md:max-w-[300px]">Carregando...</p>
-                                <p id="progressoAula" class="text-[10px] text-slate-500 font-bold mt-1 uppercase tracking-wider">--</p>
-                            </div>
-                            <i class="fa-solid fa-crosshairs absolute right-4 -bottom-8 text-8xl text-white/5 pointer-events-none transform -rotate-45"></i>
-                        </div>
-
-                        <!-- CARDS LAYOUT PAISAGEM -->
-                        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 items-stretch">
-                            
-                            <!-- PROGRESSO ACADÊMICO (ESQUERDA) -->
-                            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-full">
-                                <div class="bg-sys-dark px-5 py-4 border-b-4 border-pmmt-gold flex justify-between items-center">
-                                    <h3 class="text-xs font-bold text-white uppercase tracking-wide"><i class="fa-solid fa-graduation-cap text-pmmt-gold mr-2"></i>Progresso do 35º CFSD</h3>
-                                </div>
-                                <div class="p-5 flex flex-col justify-center gap-3 bg-slate-50 flex-1">
-                                    
-                                    <div class="flex justify-between items-end mb-2">
-                                        <div class="text-left">
-                                            <p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Início Curso</p>
-                                            <p class="text-[11px] font-black text-sys-dark">26/06/2026</p>
-                                        </div>
-                                        <div class="text-right">
-                                            <p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Formatura Prevista</p>
-                                            <p class="text-[11px] font-black text-pmmt-gold">21/04/2027</p>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="w-full bg-slate-200 rounded-full h-5 shadow-inner overflow-hidden relative border border-slate-300 mb-4">
-                                        <div id="barraProgressoCurso" class="bg-gradient-to-r from-sys-dark to-pmmt-blue h-5 rounded-full transition-all duration-1000 ease-out w-0"></div>
-                                        <span id="txtPorcentagemCurso" class="absolute inset-0 flex items-center justify-center text-[9px] font-black text-white mix-blend-difference drop-shadow-md tracking-widest">0% CONCLUÍDO</span>
-                                    </div>
-                                    
-                                    <!-- MATRIZ NOVA -->
-                                    <div class="flex flex-col gap-2">
-                                        <!-- LINHA 1: DIAS -->
-                                        <div class="grid grid-cols-3 gap-2">
-                                            <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center">
-                                                <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Dias Decorridos</p>
-                                                <p id="diasDecorridos" class="text-base font-black text-sys-dark leading-none">0</p>
-                                            </div>
-                                            <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center">
-                                                <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Dias Restantes</p>
-                                                <p id="diasRestantes" class="text-base font-black text-pmmt-gold leading-none">0</p>
-                                            </div>
-                                            <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center bg-slate-100">
-                                                <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Total de Dias</p>
-                                                <p id="diasTotaisCurso" class="text-base font-black text-slate-600 leading-none">0</p>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- LINHA 2: MATÉRIAS -->
-                                        <div class="grid grid-cols-4 gap-2">
-                                            <div onclick="abrirModalDisciplinas('concluidas')" class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center cursor-pointer hover:bg-slate-50 hover:border-emerald-300 transition-colors" title="Ver Concluídas">
-                                                <p class="text-[7.5px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Concluídas</p>
-                                                <p id="materiasConcluidas" class="text-base font-black text-emerald-600 leading-none">0</p>
-                                            </div>
-                                            <div onclick="abrirModalDisciplinas('andamento')" class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center cursor-pointer hover:bg-slate-50 hover:border-pmmt-blue transition-colors" title="Ver Em Curso">
-                                                <p class="text-[7.5px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Em Curso</p>
-                                                <p id="materiasAndamento" class="text-base font-black text-pmmt-blue leading-none">0</p>
-                                            </div>
-                                            <div onclick="abrirModalDisciplinas('restantes')" class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center cursor-pointer hover:bg-slate-50 hover:border-rose-300 transition-colors" title="Ver Pendentes">
-                                                <p class="text-[7.5px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Pendentes</p>
-                                                <p id="materiasRestantes" class="text-base font-black text-rose-500 leading-none">0</p>
-                                            </div>
-                                            <div onclick="abrirModalDisciplinas('totais')" class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center bg-slate-100 cursor-pointer hover:bg-slate-200 hover:border-slate-400 transition-colors" title="Ver Grade Total">
-                                                <p class="text-[7.5px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Total Mat.</p>
-                                                <p id="materiasTotais" class="text-base font-black text-slate-600 leading-none">0</p>
-                                            </div>
-                                        </div>
-
-                                        <!-- LINHA 3: HORAS AULA -->
-                                        <div class="grid grid-cols-3 gap-2">
-                                            <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center">
-                                                <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Horas Concluídas</p>
-                                                <p id="horasConcluidas" class="text-base font-black text-pmmt-blue leading-none">0</p>
-                                            </div>
-                                            <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center">
-                                                <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Horas Restantes</p>
-                                                <p id="horasRestantes" class="text-base font-black text-amber-500 leading-none">0</p>
-                                            </div>
-                                            <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center bg-slate-100">
-                                                <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Carga (h/a)</p>
-                                                <p id="horasTotais" class="text-base font-black text-slate-600 leading-none">0</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                                
-                            <!-- SERVIÇO DIÁRIO E XERIFADO (DIREITA) -->
-                            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-full">
-                                <div class="bg-sys-dark px-5 py-4 border-b-4 border-pmmt-gold flex justify-between items-center">
-                                    <h3 class="text-xs font-bold text-white uppercase tracking-wide"><i class="fa-solid fa-user-shield text-pmmt-gold mr-2"></i>Serviço Diário & Xerifado</h3>
-                                    <button onclick="mudarModulo('efetivo')" class="text-[10px] font-bold uppercase tracking-widest text-pmmt-gold hover:text-white transition flex items-center gap-1">Ver Escala <i class="fa-solid fa-arrow-right"></i></button>
-                                </div>
-                                <div id="homeEscalaDia" class="p-6 flex-1 flex flex-col justify-center bg-slate-50 gap-5">
-                                    <div class="w-full text-center py-6 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><p class="text-[10px] uppercase tracking-widest font-bold">Carregando guarnição...</p></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- CARDS INFERIORES: QTS E RANKING (COM ALTURA MÁXIMA CONTROLADA) -->
-                        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 items-start">
-                            
-                            <!-- QTS (AGORA É UM VISUALIZADOR DE PDF) -->
-                            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col w-full max-h-[350px]">
-                                <div class="bg-sys-dark px-5 py-3 border-b-4 border-pmmt-gold flex justify-between items-center shrink-0">
-                                    <h3 class="text-[10px] font-bold text-white uppercase tracking-wide"><i class="fa-solid fa-list-check text-pmmt-gold mr-2"></i>QTS Atual (Oficial)</h3>
-                                    <button onclick="mudarModulo('aluno'); abrirAbaAluno('aba-qts', document.querySelectorAll('.aba-btn')[1]);" class="text-[9px] font-bold uppercase tracking-widest text-pmmt-gold hover:text-white transition flex items-center gap-1">Ver Completo <i class="fa-solid fa-maximize"></i></button>
-                                </div>
-                                <div id="homeQtsDia" class="p-0 bg-slate-50 overflow-hidden flex-1 h-full min-h-[300px] flex items-center justify-center relative">
-                                    <div class="w-full text-center py-6 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><p class="text-[10px] uppercase tracking-widest font-bold">Buscando PDF Oficial...</p></div>
-                                </div>
-                            </div>
-
-                            <!-- RANKING -->
-                            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col w-full max-h-[350px]">
-                                <div class="bg-sys-dark px-5 py-3 border-b-4 border-yellow-500 flex justify-between items-center shrink-0">
-                                    <h3 class="text-[10px] font-bold text-white uppercase tracking-wide"><i class="fa-solid fa-trophy text-yellow-400 mr-2"></i>Top 3 Acadêmico</h3>
-                                    <button onclick="abrirRankingGeral()" class="text-[9px] font-bold uppercase tracking-widest text-yellow-400 hover:text-white transition flex items-center gap-1">Ver Todos <i class="fa-solid fa-arrow-right"></i></button>
-                                </div>
-                                <div class="p-4 bg-slate-50 flex-1 flex flex-col justify-center items-center overflow-y-auto custom-scrollbar relative">
-                                    <i class="fa-solid fa-ranking-star absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-9xl text-slate-200/50 pointer-events-none z-0"></i>
-                                    <div id="homeRankingTop3" class="w-full relative z-10 flex flex-col gap-3">
-                                        <div class="w-full text-center py-6 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><p class="text-[10px] uppercase tracking-widest font-bold">Processando Notas...</p></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </section>
-
-                    <!-- DEMAIS MÓDULOS -->
-                    <section id="modulo-efetivo" class="hidden flex-1 flex flex-col h-full min-h-[85vh]">
-                        <iframe id="iframeEfetivo" src="escala.html" class="w-full h-full border border-slate-200 bg-transparent shadow-sm rounded-xl"></iframe>
-                    </section>
-
-                    <section id="modulo-cautela" class="hidden space-y-5">
-                        <div class="bg-white shadow-sm border border-slate-300 rounded-xl overflow-hidden mb-4">
-                            <div class="bg-sys-dark px-5 py-4 flex justify-between items-center border-b-4 border-pmmt-gold shrink-0">
-                                <div><h2 class="text-sm font-black tracking-widest uppercase text-white"><i class="fa-solid fa-gun text-pmmt-gold mr-2"></i>Livro de Cautela Fixa</h2><p class="text-slate-300 text-[9px] font-bold mt-0.5 uppercase tracking-widest">Controle Bélico - 5º Pelotão</p></div>
-                                <div class="flex gap-2 no-print"><button onclick="abrirModalCautelaFixa()" class="admin-only bg-pmmt-blue hover:bg-sys-blue text-white font-bold px-3 py-1.5 rounded text-[10px] uppercase flex items-center gap-1.5 border border-white/20"><i class="fa-solid fa-plus"></i> Novo Registro</button><button onclick="imprimirCautelaFixa()" class="bg-pmmt-gold hover:bg-yellow-500 text-sys-dark font-bold px-3 py-1.5 rounded text-[10px] uppercase flex items-center gap-1.5"><i class="fa-solid fa-print"></i> Imprimir Livro</button></div>
-                            </div>
-                            <div class="overflow-x-auto p-2 bg-white">
-                                <table class="w-full text-left border-collapse min-w-[1000px] text-[10px]">
-                                    <thead><tr class="bg-slate-100 text-sys-dark uppercase tracking-wider border border-slate-300"><th class="p-2 border border-slate-300 font-bold text-center w-24">Data / Hora</th><th class="p-2 border border-slate-300 font-bold text-center w-16">Nº</th><th class="p-2 border border-slate-300 font-bold w-48">QRA do Aluno</th><th class="p-2 border border-slate-300 font-bold text-center w-36">Material</th><th class="p-2 border border-slate-300 font-bold text-center w-28">Nº Série</th><th class="p-2 border border-slate-300 font-bold text-center w-40">Assinatura Retirada</th><th class="p-2 border border-slate-300 font-bold text-center w-20 no-print admin-only">Ações</th></tr></thead>
-                                    <tbody id="tabelaCautelaFixa" class="divide-y divide-slate-100 text-slate-700"><tr><td colspan="7" class="p-4 text-center font-bold text-slate-500"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Carregando armamentos...</td></tr></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </section>
-
-                    <section id="modulo-financeiro" class="hidden flex-1 flex flex-col h-full min-h-[85vh]">
-                        <iframe id="iframeFinanceiro" src="financeiro.html" class="w-full h-full border border-slate-200 bg-transparent shadow-sm rounded-xl"></iframe>
-                    </section>
-
-                    <section id="modulo-efetivodados" class="hidden flex-1 flex flex-col h-full min-h-[85vh]">
-                        <iframe id="iframeEfetivoDados" src="inteligencia.html" class="w-full h-full border border-slate-200 bg-transparent shadow-sm rounded-xl"></iframe>
-                    </section>
-
-                    <section id="modulo-academico" class="hidden flex-1 flex flex-col h-full min-h-[85vh]">
-                        <iframe id="iframeAcademico" src="academico.html" class="w-full h-full border border-slate-200 bg-white shadow-sm rounded-xl"></iframe>
-                    </section>
-
-                    <section id="modulo-aluno" class="hidden flex-1 flex flex-col h-full min-h-[85vh] space-y-4">
-                        <div class="bg-white shadow-sm border border-slate-200 overflow-hidden rounded-xl flex flex-col h-full">
-                            <div class="bg-sys-dark text-white px-5 py-4 flex justify-between items-center shrink-0 border-b-4 border-pmmt-gold"><div><h2 class="text-sm font-black tracking-widest uppercase"><i class="fa-solid fa-folder-open text-pmmt-gold mr-2"></i> Área do Aluno</h2><p class="text-[9px] text-slate-300 uppercase mt-0.5">Material de Estudo e Quadro de Trabalho Oficial</p></div></div>
-                            <div class="flex border-b border-slate-200 bg-slate-50 overflow-x-auto shrink-0">
-                                <button onclick="abrirAbaAluno('aba-material', this)" class="aba-btn flex-1 py-3 px-4 text-xs font-black uppercase tracking-wider text-pmmt-blue border-b-2 border-pmmt-blue bg-white transition whitespace-nowrap"><i class="fa-solid fa-book mr-1.5"></i> Material de Apoio</button>
-                                <button onclick="abrirAbaAluno('aba-qts', this)" class="aba-btn flex-1 py-3 px-4 text-xs font-bold uppercase tracking-wider text-slate-500 border-b-2 border-transparent hover:bg-slate-100 transition whitespace-nowrap"><i class="fa-solid fa-file-pdf mr-1.5"></i> QTS Oficial (PDF)</button>
-                            </div>
-                            <div class="p-4 md:p-6 bg-white flex-1 overflow-y-auto relative">
-                                <!-- ABA MATERIAIS DE APOIO -->
-                                <div id="aba-material" class="aba-content block space-y-6">
-                                    <div class="bg-gradient-to-r from-sys-dark to-pmmt-blue rounded-xl p-6 text-white shadow border border-pmmt-gold/30 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-4"><i class="fa-solid fa-shield-halved absolute -right-4 -bottom-6 text-7xl text-white/5 pointer-events-none"></i><div class="relative z-10 text-center md:text-left"><h3 class="text-lg font-black uppercase tracking-widest text-pmmt-gold mb-1"><i class="fa-solid fa-book-open-reader mr-2"></i> Módulo Interativo POP PMMT</h3><p class="text-xs font-medium text-slate-300">Acesse o sistema dinâmico do Procedimento Operacional Padrão.</p></div><a href="estudo_pop.html" target="_blank" class="relative z-10 bg-pmmt-gold hover:bg-yellow-500 text-sys-dark font-black px-5 py-2.5 rounded shadow-lg transition uppercase tracking-widest text-[10px] whitespace-nowrap flex items-center gap-2 border border-yellow-400">Acessar POP <i class="fa-solid fa-arrow-up-right-from-square"></i></a></div>
-                                    <div class="bg-white rounded-xl shadow-md border border-slate-300 overflow-hidden"><div class="bg-sys-dark px-5 py-4 border-b-4 border-pmmt-gold flex items-center justify-between relative overflow-hidden"><div class="relative z-10"><h3 class="text-sm md:text-base font-black uppercase tracking-widest text-white"><i class="fa-solid fa-location-crosshairs text-pmmt-gold mr-2"></i> Mapa Tático Regional</h3><p class="text-[9px] text-slate-300 uppercase tracking-widest mt-0.5">Fronteiras de Atuação: 6º BPM (Cáceres) e 17º BPM (Mirassol D'Oeste)</p></div></div><div class="p-2 bg-slate-100"><iframe src="https://www.google.com/maps/d/u/0/embed?mid=1B2yEMA2-Si3-B8CEABa2SAd5Pq9Zpzg" class="w-full h-80 md:h-[400px] rounded-lg border border-slate-300 shadow-inner grayscale-[20%] hover:grayscale-0 transition duration-500" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div></div>
-                                    <div id="containerMateriais" class="space-y-4"><p class="text-xs text-slate-500 text-center py-6"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Carregando acervo...</p></div>
-                                </div>
-                                
-                                <!-- ABA DO NOVO QTS PDF OFICIAL -->
-                                <div id="aba-qts" class="aba-content hidden h-full flex flex-col gap-4">
-                                    
-                                    <!-- Controles (Apenas para Admins inserirem o Link do QTS) -->
-                                    <div class="admin-only bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col gap-3 shadow-sm shrink-0">
-                                        <div class="flex justify-between items-center border-b border-slate-200 pb-2">
-                                            <h3 class="text-xs font-black text-sys-dark uppercase tracking-widest"><i class="fa-solid fa-upload text-pmmt-blue mr-2"></i> Lançamento do QTS (Coordenação)</h3>
-                                        </div>
-                                        <div class="flex flex-col md:flex-row gap-3 items-end">
-                                            <div class="w-full md:w-1/3">
-                                                <label class="block text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Semana Referência</label>
-                                                <input type="text" id="inputTituloQtsPDF" placeholder="Ex: 11ª Semana: 07 a 13/09" class="w-full border border-slate-300 rounded p-2 text-xs font-semibold outline-none focus:border-pmmt-blue">
-                                            </div>
-                                            <div class="w-full md:w-1/2">
-                                                <label class="block text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Link do Arquivo (PDF no Google Drive)</label>
-                                                <input type="url" id="inputUrlQtsPDF" placeholder="Cole o link de compartilhamento do Google Drive aqui..." class="w-full border border-slate-300 rounded p-2 text-xs font-semibold outline-none focus:border-pmmt-blue">
-                                            </div>
-                                            <button onclick="salvarQtsPDF()" class="w-full md:w-auto bg-pmmt-gold hover:bg-yellow-500 text-sys-dark px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest shadow-md transition flex items-center justify-center gap-2">
-                                                <i class="fa-solid fa-save"></i> Gravar Oficial
-                                            </button>
-                                        </div>
-                                        <p class="text-[9px] text-slate-500 italic mt-1">* Dica: Suba o PDF do QTS Assinado no seu Google Drive, clique em "Compartilhar", libere para "Qualquer pessoa com o link" e cole o link acima.</p>
-                                    </div>
-
-                                    <!-- Visualizador Nativo do QTS -->
-                                    <div class="bg-sys-dark text-white rounded-t-xl px-5 py-3 flex justify-between items-center border-b-4 border-pmmt-gold shrink-0">
-                                        <div>
-                                            <h3 class="text-xs font-bold uppercase tracking-wider" id="viewerQtsTitulo"><i class="fa-solid fa-file-pdf text-rose-400 mr-2"></i>QTS Oficial Vigente</h3>
-                                        </div>
-                                        <a href="#" id="linkBaixarQTS" target="_blank" class="text-[9px] bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded font-bold uppercase tracking-widest transition flex items-center gap-2 hidden">
-                                            <i class="fa-solid fa-download"></i> Baixar PDF
-                                        </a>
-                                    </div>
-                                    <!-- Container onde o Iframe vai abrir -->
-                                    <div id="containerIframeQTS" class="flex-1 w-full border border-slate-300 bg-slate-100 rounded-b-xl min-h-[500px] flex items-center justify-center relative overflow-hidden">
-                                        <div class="text-center text-slate-400">
-                                            <i class="fa-solid fa-circle-notch fa-spin text-3xl mb-3"></i>
-                                            <p class="text-[10px] font-bold uppercase tracking-widest">Localizando Documento Oficial...</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
+                <!-- MÓDULO HOME -->
+                <section id="modulo-home" class="space-y-6">
                     
-                    <!-- NOVO MÓDULO TAF -->
-                    <section id="modulo-taf" class="hidden flex-1 flex flex-col h-full min-h-[85vh]">
-                        <iframe id="iframeTaf" src="taf.html" class="w-full h-full border border-slate-200 bg-transparent shadow-sm rounded-xl"></iframe>
-                    </section>
+                    <!-- HEADER TEMPO REAL -->
+                    <div class="bg-sys-dark rounded-sm shadow-md border-t-4 border-pmmt-gold overflow-hidden p-5 flex flex-col md:flex-row items-center justify-between text-white gap-4 relative">
+                        <div class="flex items-center gap-4 z-10 w-full md:w-auto border-b md:border-b-0 md:border-r border-slate-700 pb-3 md:pb-0 md:pr-6">
+                            <div class="bg-white/5 w-10 h-10 flex items-center justify-center rounded-sm border border-slate-600"><i class="fa-regular fa-clock text-xl text-pmmt-gold"></i></div>
+                            <div>
+                                <h3 class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Tempo Real - QTS</h3>
+                                <p id="relogioAtual" class="text-2xl font-black tracking-wider font-mono">00:00:00</p>
+                            </div>
+                        </div>
+                        <div class="text-center md:text-left z-10 w-full md:w-auto flex-1">
+                            <h3 class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Status de Atividade Atual</h3>
+                            <p id="statusAulaAtual" class="text-sm md:text-base font-black text-pmmt-gold uppercase tracking-wide truncate max-w-full md:max-w-[400px]">Carregando...</p>
+                        </div>
+                        <i class="fa-solid fa-crosshairs absolute right-2 -bottom-4 text-7xl text-white/5 pointer-events-none transform -rotate-45"></i>
+                    </div>
 
-                    <section id="modulo-toques" class="hidden flex-1 flex flex-col h-full min-h-[85vh]"><iframe id="iframeToques" src="toques_corneta.html" class="w-full h-full border border-slate-200 bg-transparent shadow-sm rounded-xl"></iframe></section>
-                    <section id="modulo-gerador" class="hidden flex-1 flex flex-col h-full min-h-[85vh]"><iframe id="iframeGerador" src="gerador_documentos.html" class="w-full h-full border border-slate-200 bg-transparent shadow-sm rounded-xl"></iframe></section>
+                    <!-- CARDS LAYOUT PAISAGEM -->
+                    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 items-stretch">
+                        
+                        <!-- PROGRESSO ACADÊMICO -->
+                        <div class="bg-white rounded-sm shadow-sm border border-slate-300 overflow-hidden flex flex-col h-full">
+                            <div class="bg-sys-header px-5 py-3 border-b-2 border-pmmt-gold flex justify-between items-center">
+                                <h3 class="text-[10px] font-black text-white uppercase tracking-widest"><i class="fa-solid fa-graduation-cap text-pmmt-gold mr-2"></i>Progresso Acadêmico</h3>
+                            </div>
+                            <div class="p-5 flex flex-col justify-center gap-3 bg-slate-50 flex-1">
+                                <div class="flex justify-between items-end mb-1">
+                                    <div class="text-left">
+                                        <p class="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Início Curso</p>
+                                        <p class="text-[10px] font-black text-sys-dark">26/06/2026</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Formatura</p>
+                                        <p class="text-[10px] font-black text-pmmt-gold">21/04/2027</p>
+                                    </div>
+                                </div>
+                                <div class="w-full bg-slate-200 rounded-sm h-4 shadow-inner overflow-hidden relative border border-slate-300 mb-3">
+                                    <div id="barraProgressoCurso" class="bg-pmmt-blue h-4 transition-all duration-1000 ease-out w-0"></div>
+                                    <span id="txtPorcentagemCurso" class="absolute inset-0 flex items-center justify-center text-[8px] font-black text-white mix-blend-difference tracking-widest">0% CONCLUÍDO</span>
+                                </div>
+                                
+                                <!-- MATRIZ NOVA -->
+                                <div class="flex flex-col gap-2 mt-1">
+                                    <!-- LINHA 1: DIAS -->
+                                    <div class="grid grid-cols-3 gap-2">
+                                        <div class="bg-white p-2 rounded-sm border border-slate-300 text-center shadow-sm">
+                                            <p class="text-[7.5px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Dias Decorridos</p>
+                                            <p id="diasDecorridos" class="text-sm font-black text-sys-dark">0</p>
+                                        </div>
+                                        <div class="bg-white p-2 rounded-sm border border-slate-300 text-center shadow-sm">
+                                            <p class="text-[7.5px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Dias Restantes</p>
+                                            <p id="diasRestantes" class="text-sm font-black text-pmmt-gold">0</p>
+                                        </div>
+                                        <div class="bg-slate-100 p-2 rounded-sm border border-slate-300 text-center shadow-sm">
+                                            <p class="text-[7.5px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Total de Dias</p>
+                                            <p id="diasTotaisCurso" class="text-sm font-black text-slate-600">0</p>
+                                        </div>
+                                    </div>
+                                    <!-- LINHA 2: MATÉRIAS -->
+                                    <div class="grid grid-cols-4 gap-2">
+                                        <div onclick="abrirModalDisciplinas('concluidas')" class="bg-white p-2 rounded-sm border border-slate-300 text-center cursor-pointer hover:bg-slate-100 transition shadow-sm">
+                                            <p class="text-[7px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Concluídas</p>
+                                            <p id="materiasConcluidas" class="text-sm font-black text-emerald-600">0</p>
+                                        </div>
+                                        <div onclick="abrirModalDisciplinas('andamento')" class="bg-white p-2 rounded-sm border border-slate-300 text-center cursor-pointer hover:bg-slate-100 transition shadow-sm">
+                                            <p class="text-[7px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Em Curso</p>
+                                            <p id="materiasAndamento" class="text-sm font-black text-pmmt-blue">0</p>
+                                        </div>
+                                        <div onclick="abrirModalDisciplinas('restantes')" class="bg-white p-2 rounded-sm border border-slate-300 text-center cursor-pointer hover:bg-slate-100 transition shadow-sm">
+                                            <p class="text-[7px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Pendentes</p>
+                                            <p id="materiasRestantes" class="text-sm font-black text-rose-500">0</p>
+                                        </div>
+                                        <div onclick="abrirModalDisciplinas('totais')" class="bg-slate-100 p-2 rounded-sm border border-slate-300 text-center cursor-pointer hover:bg-slate-200 transition shadow-sm">
+                                            <p class="text-[7px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Total Mat.</p>
+                                            <p id="materiasTotais" class="text-sm font-black text-slate-600">0</p>
+                                        </div>
+                                    </div>
+                                    <!-- LINHA 3: HORAS AULA -->
+                                    <div class="grid grid-cols-3 gap-2">
+                                        <div class="bg-white p-2 rounded-sm border border-slate-300 text-center shadow-sm">
+                                            <p class="text-[7.5px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Horas Concluídas</p>
+                                            <p id="horasConcluidas" class="text-sm font-black text-pmmt-blue">0</p>
+                                        </div>
+                                        <div class="bg-white p-2 rounded-sm border border-slate-300 text-center shadow-sm">
+                                            <p class="text-[7.5px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Horas Restantes</p>
+                                            <p id="horasRestantes" class="text-sm font-black text-amber-500">0</p>
+                                        </div>
+                                        <div class="bg-slate-100 p-2 rounded-sm border border-slate-300 text-center shadow-sm">
+                                            <p class="text-[7.5px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Carga (h/a)</p>
+                                            <p id="horasTotais" class="text-sm font-black text-slate-600">0</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- SERVIÇO DIÁRIO E XERIFADO (AGORA NA DIREITA) -->
+                        <div class="bg-white rounded-sm shadow-sm border border-slate-300 overflow-hidden flex flex-col h-full">
+                            <div class="bg-sys-header px-5 py-3 border-b-2 border-pmmt-gold flex justify-between items-center">
+                                <h3 class="text-[10px] font-black text-white uppercase tracking-widest"><i class="fa-solid fa-user-shield text-pmmt-gold mr-2"></i>Efetivo de Serviço</h3>
+                                <button onclick="mudarModulo('efetivo')" class="text-[8px] font-bold uppercase tracking-widest text-slate-300 hover:text-white transition flex items-center gap-1">Ver Escala <i class="fa-solid fa-arrow-right"></i></button>
+                            </div>
+                            <div id="homeEscalaDia" class="p-5 flex-1 flex flex-col justify-center bg-slate-50 gap-4">
+                                <div class="w-full text-center py-6 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><p class="text-[9px] uppercase tracking-widest font-bold">Carregando guarnição...</p></div>
+                            </div>
+                        </div>
+                    </div>
 
-                </main>
-            </div>
+                    <!-- CARDS INFERIORES: QTS E RANKING -->
+                    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 items-start">
+                        
+                        <!-- QTS -->
+                        <div class="bg-white rounded-sm shadow-sm border border-slate-300 overflow-hidden flex flex-col w-full max-h-[350px]">
+                            <div class="bg-sys-header px-5 py-3 border-b-2 border-pmmt-gold flex justify-between items-center shrink-0">
+                                <h3 class="text-[10px] font-black text-white uppercase tracking-widest"><i class="fa-solid fa-file-pdf text-pmmt-gold mr-2"></i>Quadro de Trabalho (QTS)</h3>
+                                <button onclick="mudarModulo('aluno'); abrirAbaAluno('aba-qts', document.querySelectorAll('.aba-btn')[1]);" class="text-[8px] font-bold uppercase tracking-widest text-slate-300 hover:text-white transition flex items-center gap-1">Expandir <i class="fa-solid fa-maximize"></i></button>
+                            </div>
+                            <div id="homeQtsDia" class="p-0 bg-slate-50 overflow-hidden flex-1 h-full min-h-[300px] flex items-center justify-center relative">
+                                <div class="w-full text-center py-6 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><p class="text-[9px] uppercase tracking-widest font-bold">Buscando Documento...</p></div>
+                            </div>
+                        </div>
+
+                        <!-- RANKING -->
+                        <div class="bg-white rounded-sm shadow-sm border border-slate-300 overflow-hidden flex flex-col w-full max-h-[350px]">
+                            <div class="bg-sys-header px-5 py-3 border-b-2 border-yellow-500 flex justify-between items-center shrink-0">
+                                <h3 class="text-[10px] font-black text-white uppercase tracking-widest"><i class="fa-solid fa-trophy text-yellow-400 mr-2"></i>Top 3 Acadêmico</h3>
+                                <button onclick="abrirRankingGeral()" class="text-[8px] font-bold uppercase tracking-widest text-yellow-400 hover:text-white transition flex items-center gap-1">Ver Todos <i class="fa-solid fa-arrow-right"></i></button>
+                            </div>
+                            <div class="p-4 bg-slate-50 flex-1 flex flex-col justify-center items-center overflow-y-auto custom-scrollbar relative border-t border-slate-200">
+                                <i class="fa-solid fa-ranking-star absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-8xl text-slate-200/40 pointer-events-none z-0"></i>
+                                <div id="homeRankingTop3" class="w-full relative z-10 flex flex-col gap-2">
+                                    <div class="w-full text-center py-6 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><p class="text-[9px] uppercase tracking-widest font-bold">Processando Notas...</p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+
+                <!-- DEMAIS MÓDULOS (IFRAMES) -->
+                <section id="modulo-efetivo" class="hidden flex-1 flex flex-col h-full min-h-[85vh]">
+                    <iframe id="iframeEfetivo" src="escala.html" class="w-full h-full border border-slate-300 bg-transparent shadow-sm rounded-sm"></iframe>
+                </section>
+                <section id="modulo-cautela" class="hidden space-y-5">
+                    <div class="bg-white shadow-sm border border-slate-300 rounded-sm overflow-hidden mb-4">
+                        <div class="bg-sys-header px-5 py-4 flex justify-between items-center border-b-2 border-pmmt-gold shrink-0">
+                            <div><h2 class="text-xs font-black tracking-widest uppercase text-white"><i class="fa-solid fa-gun text-pmmt-gold mr-2"></i>Livro de Cautela Fixa</h2><p class="text-slate-400 text-[8px] font-bold mt-0.5 uppercase tracking-widest">Controle Bélico</p></div>
+                            <div class="flex gap-2 no-print"><button onclick="abrirModalCautelaFixa()" class="admin-only bg-pmmt-blue hover:bg-sys-blue text-white font-bold px-3 py-1.5 rounded-sm text-[9px] uppercase flex items-center gap-1.5 border border-slate-600"><i class="fa-solid fa-plus"></i> Novo</button><button onclick="imprimirCautelaFixa()" class="bg-slate-200 hover:bg-slate-300 text-sys-dark font-bold px-3 py-1.5 rounded-sm text-[9px] uppercase flex items-center gap-1.5 border border-slate-400"><i class="fa-solid fa-print"></i> Imprimir</button></div>
+                        </div>
+                        <div class="overflow-x-auto p-2 bg-white">
+                            <table class="w-full text-left border-collapse min-w-[1000px] text-[10px]">
+                                <thead><tr class="bg-slate-100 text-sys-dark uppercase tracking-wider border border-slate-300"><th class="p-2 border border-slate-300 font-bold text-center w-24">Data / Hora</th><th class="p-2 border border-slate-300 font-bold text-center w-16">Nº</th><th class="p-2 border border-slate-300 font-bold w-48">QRA do Aluno</th><th class="p-2 border border-slate-300 font-bold text-center w-36">Material</th><th class="p-2 border border-slate-300 font-bold text-center w-28">Nº Série</th><th class="p-2 border border-slate-300 font-bold text-center w-40">Assinatura</th><th class="p-2 border border-slate-300 font-bold text-center w-20 no-print admin-only">Ações</th></tr></thead>
+                                <tbody id="tabelaCautelaFixa" class="divide-y divide-slate-100 text-slate-700"><tr><td colspan="7" class="p-4 text-center font-bold text-slate-500"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Carregando armamentos...</td></tr></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="modulo-financeiro" class="hidden flex-1 flex flex-col h-full min-h-[85vh]"><iframe id="iframeFinanceiro" src="financeiro.html" class="w-full h-full border border-slate-300 bg-transparent shadow-sm rounded-sm"></iframe></section>
+                <section id="modulo-efetivodados" class="hidden flex-1 flex flex-col h-full min-h-[85vh]"><iframe id="iframeEfetivoDados" src="efetivo_dados.html" class="w-full h-full border border-slate-300 bg-transparent shadow-sm rounded-sm"></iframe></section>
+                <section id="modulo-academico" class="hidden flex-1 flex flex-col h-full min-h-[85vh]"><iframe id="iframeAcademico" src="academico.html" class="w-full h-full border border-slate-300 bg-white shadow-sm rounded-sm"></iframe></section>
+                
+                <!-- NOVOS MÓDULOS SOCIOGRAMA -->
+                <section id="modulo-sociograma" class="hidden flex-1 flex flex-col h-full min-h-[85vh]"><iframe id="iframeSociograma" src="sociograma_aluno.html" class="w-full h-full border border-slate-300 bg-white shadow-sm rounded-sm"></iframe></section>
+                <section id="modulo-sociogramapainel" class="hidden flex-1 flex flex-col h-full min-h-[85vh]"><iframe id="iframeSociogramaPainel" src="sociograma_painel.html" class="w-full h-full border border-slate-300 bg-white shadow-sm rounded-sm"></iframe></section>
+                
+                <!-- ÁREA DO ALUNO (PASTAS) -->
+                <section id="modulo-aluno" class="hidden flex-1 flex flex-col h-full min-h-[85vh] space-y-4">
+                    <div class="bg-white shadow-sm border border-slate-300 overflow-hidden rounded-sm flex flex-col h-full">
+                        <div class="bg-sys-header text-white px-5 py-3 flex justify-between items-center shrink-0 border-b-2 border-pmmt-gold"><div><h2 class="text-xs font-black tracking-widest uppercase"><i class="fa-solid fa-folder-open text-pmmt-gold mr-2"></i> Área do Aluno</h2><p class="text-[8px] text-slate-400 uppercase mt-0.5 tracking-widest">Material de Estudo Oficial</p></div></div>
+                        <div class="flex border-b border-slate-300 bg-slate-100 overflow-x-auto shrink-0">
+                            <button onclick="abrirAbaAluno('aba-material', this)" class="aba-btn flex-1 py-3 px-4 text-[10px] font-black uppercase tracking-wider text-pmmt-blue border-b-2 border-pmmt-blue bg-white transition whitespace-nowrap"><i class="fa-solid fa-book mr-1.5"></i> Acervo Técnico</button>
+                            <button onclick="abrirAbaAluno('aba-qts', this)" class="aba-btn flex-1 py-3 px-4 text-[10px] font-bold uppercase tracking-wider text-slate-500 border-b-2 border-transparent hover:bg-slate-200 transition whitespace-nowrap"><i class="fa-solid fa-file-pdf mr-1.5"></i> QTS Oficial</button>
+                        </div>
+                        <div class="p-4 md:p-6 bg-slate-50 flex-1 overflow-y-auto relative">
+                            <!-- ABA MATERIAIS DE APOIO (PASTAS) -->
+                            <div id="aba-material" class="aba-content block space-y-6">
+                                <div id="containerMateriais" class="space-y-6">
+                                    <p class="text-xs text-slate-500 text-center py-6"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Carregando acervo...</p>
+                                </div>
+                                <!-- MAPA TÁTICO NO FINAL -->
+                                <div class="bg-white border border-slate-300 shadow-sm mt-8 rounded-sm overflow-hidden">
+                                    <div class="bg-sys-header px-4 py-3 border-b-2 border-pmmt-gold">
+                                        <h3 class="text-[10px] font-black uppercase tracking-widest text-white"><i class="fa-solid fa-location-crosshairs text-pmmt-gold mr-2"></i> Mapa Tático Regional (6º CR)</h3>
+                                    </div>
+                                    <div class="p-1 bg-slate-200">
+                                        <iframe src="https://www.google.com/maps/d/u/0/embed?mid=1B2yEMA2-Si3-B8CEABa2SAd5Pq9Zpzg" class="w-full h-80 md:h-[400px] border border-slate-300 grayscale-[20%] hover:grayscale-0 transition duration-500" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- ABA DO NOVO QTS PDF OFICIAL -->
+                            <div id="aba-qts" class="aba-content hidden h-full flex flex-col gap-4">
+                                <div class="admin-only bg-white p-4 border border-slate-300 flex flex-col gap-3 shadow-sm shrink-0 rounded-sm">
+                                    <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+                                        <h3 class="text-[10px] font-black text-sys-dark uppercase tracking-widest"><i class="fa-solid fa-upload text-pmmt-blue mr-2"></i> Atualizar QTS (Coordenação)</h3>
+                                    </div>
+                                    <div class="flex flex-col md:flex-row gap-3 items-end">
+                                        <div class="w-full md:w-1/3">
+                                            <label class="block text-[8px] font-bold text-slate-500 uppercase tracking-widest mb-1">Semana Referência</label>
+                                            <input type="text" id="inputTituloQtsPDF" placeholder="Ex: 11ª Semana: 07 a 13/09" class="w-full border border-slate-400 rounded-sm p-2 text-xs font-semibold outline-none focus:border-pmmt-blue">
+                                        </div>
+                                        <div class="w-full md:w-1/2">
+                                            <label class="block text-[8px] font-bold text-slate-500 uppercase tracking-widest mb-1">Link Compartilhado (Drive)</label>
+                                            <input type="url" id="inputUrlQtsPDF" placeholder="Cole o link do Google Drive aqui..." class="w-full border border-slate-400 rounded-sm p-2 text-xs font-semibold outline-none focus:border-pmmt-blue">
+                                        </div>
+                                        <button onclick="salvarQtsPDF()" class="w-full md:w-auto bg-pmmt-blue hover:bg-sys-blue text-white px-5 py-2 rounded-sm text-[10px] font-black uppercase tracking-widest shadow-sm transition flex items-center justify-center gap-2 border border-slate-600">
+                                            <i class="fa-solid fa-save"></i> Gravar
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="bg-sys-header text-white rounded-t-sm px-4 py-2.5 flex justify-between items-center border-b-2 border-pmmt-gold shrink-0">
+                                    <h3 class="text-[10px] font-bold uppercase tracking-wider" id="viewerQtsTitulo"><i class="fa-solid fa-file-pdf text-rose-400 mr-2"></i>Documento Oficial Vigente</h3>
+                                    <a href="#" id="linkBaixarQTS" target="_blank" class="text-[9px] bg-slate-700 hover:bg-slate-600 border border-slate-500 px-3 py-1.5 rounded-sm font-bold uppercase tracking-widest transition flex items-center gap-2 hidden"><i class="fa-solid fa-download"></i> PDF</a>
+                                </div>
+                                <div id="containerIframeQTS" class="flex-1 w-full border border-slate-300 bg-white rounded-b-sm min-h-[500px] flex items-center justify-center relative overflow-hidden">
+                                    <div class="text-center text-slate-400"><i class="fa-solid fa-circle-notch fa-spin text-2xl mb-2"></i><p class="text-[9px] font-bold uppercase tracking-widest">Localizando Documento...</p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="modulo-taf" class="hidden flex-1 flex flex-col h-full min-h-[85vh]"><iframe id="iframeTaf" src="taf.html" class="w-full h-full border border-slate-300 bg-transparent shadow-sm rounded-sm"></iframe></section>
+                <section id="modulo-toques" class="hidden flex-1 flex flex-col h-full min-h-[85vh]"><iframe id="iframeToques" src="toques_corneta.html" class="w-full h-full border border-slate-300 bg-transparent shadow-sm rounded-sm"></iframe></section>
+                <section id="modulo-gerador" class="hidden flex-1 flex flex-col h-full min-h-[85vh]"><iframe id="iframeGerador" src="gerador_documentos.html" class="w-full h-full border border-slate-300 bg-transparent shadow-sm rounded-sm"></iframe></section>
+
+            </main>
         </div>
     </div>
 
     <!-- MODAL RANKING GERAL -->
-    <div id="modalRankingGeral" class="fixed inset-0 bg-slate-900/80 z-[300] hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden border border-slate-300 flex flex-col max-h-[90vh]">
-            <div class="bg-sys-dark px-5 py-4 flex justify-between items-center border-b-4 border-pmmt-gold shrink-0">
+    <div id="modalRankingGeral" class="fixed inset-0 bg-sys-dark/90 z-[300] hidden flex items-center justify-center p-4">
+        <div class="bg-slate-50 rounded-sm shadow-2xl w-full max-w-3xl overflow-hidden border border-slate-400 flex flex-col max-h-[90vh]">
+            <div class="bg-sys-header px-5 py-4 flex justify-between items-center border-b-2 border-pmmt-gold shrink-0">
                 <div>
-                    <h3 class="text-white font-black text-sm uppercase tracking-wider"><i class="fa-solid fa-trophy text-yellow-400 mr-2"></i>Classificação Geral Acadêmica</h3>
-                    <p class="text-slate-400 text-[10px] font-bold mt-0.5 uppercase tracking-widest">Ranking Oficial por Antiguidade (MGC)</p>
+                    <h3 class="text-white font-black text-xs uppercase tracking-wider"><i class="fa-solid fa-trophy text-yellow-400 mr-2"></i>Classificação Geral (MGC)</h3>
                 </div>
-                <button onclick="fecharRankingGeral()" class="text-white/70 hover:text-white transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+                <button onclick="fecharRankingGeral()" class="text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <div class="p-5 overflow-y-auto flex-1 bg-slate-50 custom-scrollbar">
-                <div class="overflow-x-auto border border-slate-200 rounded-lg shadow-sm">
-                    <table class="w-full text-left border-collapse whitespace-nowrap text-xs bg-white">
-                        <thead class="bg-slate-100 text-slate-700">
+            <div class="p-5 overflow-y-auto flex-1 custom-scrollbar">
+                <div class="border border-slate-300 shadow-sm bg-white">
+                    <table class="w-full text-left border-collapse whitespace-nowrap text-[10px] uppercase">
+                        <thead class="bg-slate-200 text-sys-dark border-b border-slate-300">
                             <tr>
-                                <th class="p-3 border-b border-slate-200 text-center w-20">Classificação</th>
-                                <th class="p-3 border-b border-slate-200">Nº / Aluno Soldado</th>
-                                <th class="p-3 text-center border-b border-slate-200 w-24">Disciplinas</th>
-                                <th class="p-3 text-center border-b border-slate-200 w-32">Média (MGC)</th>
+                                <th class="p-2 border-r border-slate-300 text-center w-16 font-black">Class.</th>
+                                <th class="p-2 border-r border-slate-300 font-black">Nº / QRA</th>
+                                <th class="p-2 border-r border-slate-300 text-center w-24 font-black">Discip.</th>
+                                <th class="p-2 text-center w-28 font-black">Média (MGC)</th>
                             </tr>
                         </thead>
-                        <tbody id="tabelaRankingGeral" class="divide-y divide-slate-100">
-                            <tr><td colspan="4" class="p-6 text-center text-slate-500 font-bold"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Calculando ranking atual...</td></tr>
+                        <tbody id="tabelaRankingGeral" class="divide-y divide-slate-200 text-slate-700 font-bold">
+                            <tr><td colspan="4" class="p-4 text-center"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Calculando ranking...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -453,29 +423,27 @@
         </div>
     </div>
 
-    <!-- MODAL LISTAGEM DE DISCIPLINAS -->
-    <div id="modalDisciplinas" class="fixed inset-0 bg-slate-900/80 z-[300] hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden border border-slate-300 flex flex-col max-h-[80vh]">
-            <div class="bg-sys-dark px-5 py-4 flex justify-between items-center border-b-4 border-pmmt-gold shrink-0">
+    <!-- MODAL DISCIPLINAS -->
+    <div id="modalDisciplinas" class="fixed inset-0 bg-sys-dark/90 z-[300] hidden flex items-center justify-center p-4">
+        <div class="bg-slate-50 rounded-sm shadow-2xl w-full max-w-2xl overflow-hidden border border-slate-400 flex flex-col max-h-[80vh]">
+            <div class="bg-sys-header px-5 py-4 flex justify-between items-center border-b-2 border-pmmt-gold shrink-0">
                 <div>
-                    <h3 class="text-white font-black text-sm uppercase tracking-wider" id="modalDisciplinasTitle"><i class="fa-solid fa-book-open text-pmmt-gold mr-2"></i>Relação de Matérias</h3>
-                    <p class="text-slate-400 text-[10px] font-bold mt-0.5 uppercase tracking-widest" id="modalDisciplinasSub">Grade Curricular</p>
+                    <h3 class="text-white font-black text-xs uppercase tracking-wider" id="modalDisciplinasTitle"><i class="fa-solid fa-book-open text-pmmt-gold mr-2"></i>Matérias</h3>
+                    <p class="text-slate-400 text-[9px] font-bold mt-0.5 uppercase tracking-widest" id="modalDisciplinasSub">Grade Curricular</p>
                 </div>
-                <button onclick="fecharModalDisciplinas()" class="text-white/70 hover:text-white transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+                <button onclick="fecharModalDisciplinas()" class="text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <div class="p-0 overflow-y-auto flex-1 bg-slate-50 custom-scrollbar">
-                <table class="w-full text-left border-collapse text-xs bg-white">
-                    <thead class="bg-slate-100 text-slate-700 sticky top-0 shadow-sm z-10">
+            <div class="p-0 overflow-y-auto flex-1 custom-scrollbar">
+                <table class="w-full text-left border-collapse text-[10px] uppercase bg-white">
+                    <thead class="bg-slate-200 text-sys-dark sticky top-0 shadow-sm z-10 border-b border-slate-300">
                         <tr>
-                            <th class="p-3 border-b border-slate-200 text-center w-12 font-black">#</th>
-                            <th class="p-3 border-b border-slate-200 font-black">Disciplina / Matéria</th>
-                            <th class="p-3 text-center border-b border-slate-200 w-24 font-black">Carga Horária</th>
-                            <th class="p-3 text-center border-b border-slate-200 w-28 font-black">Status</th>
+                            <th class="p-2 border-r border-slate-300 text-center w-12 font-black">#</th>
+                            <th class="p-2 border-r border-slate-300 font-black">Disciplina</th>
+                            <th class="p-2 border-r border-slate-300 text-center w-24 font-black">Carga Horária</th>
+                            <th class="p-2 text-center w-28 font-black">Status</th>
                         </tr>
                     </thead>
-                    <tbody id="tabelaModalDisciplinas" class="divide-y divide-slate-100">
-                        <!-- Preenchido via JS -->
-                    </tbody>
+                    <tbody id="tabelaModalDisciplinas" class="divide-y divide-slate-200 text-slate-700 font-bold"></tbody>
                 </table>
             </div>
         </div>
@@ -483,7 +451,6 @@
 
     <script>
         let dbClient; 
-        let alunosMap = {};
         let listaAlunosFull = []; 
         let listaTecnicoCache = [];
         let funcoesComandoGlobais = []; 
@@ -494,6 +461,7 @@
         let isAdmin = false;
         let emailUsuarioLogado = null;
 
+        // CHAVES EMBUTIDAS CONFORME SOLICITADO
         const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
         
@@ -514,7 +482,7 @@
                 }
             } catch (error) { 
                 console.error("Erro DB", error); 
-                document.getElementById('erroLogin').innerText = "Erro ao conectar ao banco de dados.";
+                document.getElementById('erroLogin').innerText = "Erro ao conectar ao banco.";
                 document.getElementById('erroLogin').classList.remove('hidden');
             }
         }
@@ -568,7 +536,7 @@
             await carregarMateriaisApoio();
             await renderizarDashboardHome();
             
-            const iframesToReload = ['iframeEfetivo', 'iframeEfetivoDados', 'iframeAcademico', 'iframeFinanceiro', 'iframeToques', 'iframeGerador', 'iframeTaf'];
+            const iframesToReload = ['iframeEfetivo', 'iframeEfetivoDados', 'iframeAcademico', 'iframeFinanceiro', 'iframeToques', 'iframeGerador', 'iframeTaf', 'iframeSociograma', 'iframeSociogramaPainel'];
             iframesToReload.forEach(id => { const iframe = document.getElementById(id); if (iframe && iframe.contentWindow) iframe.contentWindow.location.reload(); });
             mostrarLoading(false);
         }
@@ -576,31 +544,23 @@
         function atualizarUsuarioLogado() {
             if (!emailUsuarioLogado) return;
             const emailPrefix = emailUsuarioLogado.split('@')[0].toLowerCase();
-            let cargoUsuario = "SISTEMA";
+            let cargoUsuario = "SIST.";
             let nomeUsuario = emailPrefix.toUpperCase();
 
-            const aluno = listaAlunosFull.find(a => 
-                (a.qra && a.qra.toLowerCase() === emailPrefix) || 
-                (a.nome && a.nome.toLowerCase().includes(emailPrefix))
-            );
-            
+            const aluno = listaAlunosFull.find(a => (a.qra && a.qra.toLowerCase() === emailPrefix) || (a.nome && a.nome.toLowerCase().includes(emailPrefix)));
             if (aluno) {
-                cargoUsuario = "AL SD PM";
+                cargoUsuario = "AL SD";
                 nomeUsuario = (aluno.qra || aluno.nome.split(' ')[0]).replace(/AL SD PM |AL SD /gi, '').trim().toUpperCase();
             } else {
-                const tecnico = listaTecnicoCache.find(t => 
-                    (t.nome_guerra && t.nome_guerra.toLowerCase() === emailPrefix) ||
-                    (t.nome && t.nome.toLowerCase().includes(emailPrefix))
-                );
+                const tecnico = listaTecnicoCache.find(t => (t.nome_guerra && t.nome_guerra.toLowerCase() === emailPrefix) || (t.nome && t.nome.toLowerCase().includes(emailPrefix)));
                 if (tecnico) {
                     cargoUsuario = (tecnico.posto_graduacao || "PM").toUpperCase();
                     nomeUsuario = (tecnico.nome_guerra || tecnico.nome.split(' ')[0]).toUpperCase();
                 } else {
-                    if (emailPrefix === 'comando') { cargoUsuario = "CMT"; nomeUsuario = "5º PELOTÃO"; }
-                    else if (emailPrefix === 'tesouraria' || emailPrefix === 'financeiro') { cargoUsuario = "FINANÇAS"; nomeUsuario = "5º PELOTÃO"; }
+                    if (emailPrefix === 'comando') { cargoUsuario = "CMT"; nomeUsuario = "PELOTÃO"; }
+                    else if (emailPrefix === 'tesouraria' || emailPrefix === 'financeiro') { cargoUsuario = "FIN"; nomeUsuario = "PELOTÃO"; }
                 }
             }
-            
             const el = document.getElementById('usuarioLogadoInfo');
             if (el) el.innerHTML = `<i class="fa-solid fa-user-check text-pmmt-gold mr-1"></i> LOGADO: <span class="text-white">${cargoUsuario} ${nomeUsuario}</span>`;
         }
@@ -608,20 +568,18 @@
         async function deslogarUsuario() { if (confirm("Encerrar sessão?")) { await dbClient.auth.signOut(); window.location.reload(); } }
 
         function mudarModulo(moduloDestino) {
-            const modulos = ['home', 'efetivo', 'cautela', 'financeiro', 'efetivodados', 'academico', 'aluno', 'taf', 'toques', 'gerador'];
-            const nomes = { 'home': 'Painel Diário', 'efetivo': 'Efetivo e Escala', 'cautela': 'Cautela Fixa (Armas)', 'financeiro': 'Gestão Financeira', 'efetivodados': 'Inteligência', 'academico': 'Módulo Acadêmico', 'aluno': 'Área do Aluno', 'taf': 'TAF (Teste de Aptidão Física)', 'toques': 'Toques de Corneta', 'gerador': 'Gerador de Documentos' };
-            modulos.forEach(m => { const el = document.getElementById('modulo-' + m); if(el) el.classList.add('hidden'); const btn = document.getElementById('btn-' + m); if(btn) btn.className = "menu-item rounded-lg"; });
+            const modulos = ['home', 'efetivo', 'cautela', 'financeiro', 'efetivodados', 'academico', 'aluno', 'taf', 'toques', 'gerador', 'sociograma', 'sociogramapainel'];
+            modulos.forEach(m => { 
+                const el = document.getElementById('modulo-' + m); if(el) el.classList.add('hidden'); 
+                const btn = document.getElementById('btn-' + m); if(btn) { btn.classList.remove('ativo'); }
+            });
             const modAtivo = document.getElementById('modulo-' + moduloDestino); if(modAtivo) modAtivo.classList.remove('hidden');
-            const btnAtivo = document.getElementById('btn-' + moduloDestino); if(btnAtivo) btnAtivo.className = "menu-item ativo rounded-lg";
-            document.getElementById('txt-breadcrumb').innerText = nomes[moduloDestino];
-            if (window.innerWidth < 768) { document.getElementById('wrapperLateral').classList.add('hidden'); }
+            const btnAtivo = document.getElementById('btn-' + moduloDestino); if(btnAtivo) btnAtivo.classList.add('ativo');
+            
             if(moduloDestino === 'aluno') abrirAbaAluno('aba-material', document.querySelector('.aba-btn'));
         }
 
-        async function carregarDisciplinas() {
-            const { data } = await dbClient.from('academico_disciplinas').select('*');
-            disciplinasGlobais = data || [];
-        }
+        async function carregarDisciplinas() { const { data } = await dbClient.from('academico_disciplinas').select('*'); disciplinasGlobais = data || []; }
 
         async function carregarQtsPDF() {
             const { data } = await dbClient.from('qts_pdf').select('*').order('criado_em', { ascending: false }).limit(1).single();
@@ -638,17 +596,12 @@
             if (qtsPdfGlobal && qtsPdfGlobal.url_drive) {
                 let urlPreview = qtsPdfGlobal.url_drive;
                 if (urlPreview.includes('/view')) urlPreview = urlPreview.replace('/view', '/preview');
-                
                 if (containerHome) containerHome.innerHTML = `<iframe src="${urlPreview}" class="w-full h-full border-none" loading="lazy"></iframe>`;
                 if (containerInterno) containerInterno.innerHTML = `<iframe src="${urlPreview}" class="w-full h-full border-none" allow="autoplay"></iframe>`;
-                if (tituloInterno) tituloInterno.innerHTML = `<i class="fa-solid fa-file-pdf text-rose-400 mr-2"></i>${qtsPdfGlobal.titulo || 'QTS OFICIAL VIGENTE'}`;
-                
-                if (linkBaixar) {
-                    linkBaixar.href = qtsPdfGlobal.url_drive;
-                    linkBaixar.classList.remove('hidden');
-                }
+                if (tituloInterno) tituloInterno.innerHTML = `<i class="fa-solid fa-file-pdf text-rose-400 mr-2"></i>${qtsPdfGlobal.titulo || 'QTS VIGENTE'}`;
+                if (linkBaixar) { linkBaixar.href = qtsPdfGlobal.url_drive; linkBaixar.classList.remove('hidden'); }
             } else {
-                const htmlVazio = `<div class="w-full flex flex-col items-center justify-center text-slate-400 py-10 h-full"><i class="fa-solid fa-file-circle-xmark text-4xl mb-2 text-slate-300"></i><p class="text-[10px] font-bold uppercase tracking-widest">Nenhum QTS em PDF foi anexado ainda.</p></div>`;
+                const htmlVazio = `<div class="w-full flex flex-col items-center justify-center text-slate-400 py-10 h-full"><i class="fa-solid fa-file-circle-xmark text-3xl mb-2 text-slate-300"></i><p class="text-[9px] font-bold uppercase tracking-widest">Nenhum QTS anexado.</p></div>`;
                 if (containerHome) containerHome.innerHTML = htmlVazio;
                 if (containerInterno) containerInterno.innerHTML = htmlVazio;
                 if (linkBaixar) linkBaixar.classList.add('hidden');
@@ -658,17 +611,11 @@
         async function salvarQtsPDF() {
             const titulo = document.getElementById('inputTituloQtsPDF').value.trim();
             const url = document.getElementById('inputUrlQtsPDF').value.trim();
-            
             if (!titulo || !url) return alert("Preencha a Semana e o Link do Arquivo!");
-            
             mostrarLoading(true);
             const { error } = await dbClient.from('qts_pdf').insert([{ titulo: titulo, url_drive: url }]);
             if (error) alert("Erro ao salvar PDF: " + error.message);
-            else {
-                document.getElementById('inputTituloQtsPDF').value = '';
-                document.getElementById('inputUrlQtsPDF').value = '';
-                await carregarQtsPDF();
-            }
+            else { document.getElementById('inputTituloQtsPDF').value = ''; document.getElementById('inputUrlQtsPDF').value = ''; await carregarQtsPDF(); }
             mostrarLoading(false);
         }
 
@@ -697,255 +644,146 @@
             let nomeEx = alDia && alDia.numero ? `5${alDia.numero.toString().padStart(2, '0')} - ${(alDia.qra || alDia.nome).replace(/AL SD PM |AL SD /gi, '').trim().toUpperCase()}` : 'A DEFINIR';
 
             document.getElementById('homeEscalaDia').innerHTML = `
-                <div class="w-full flex flex-col gap-5">
-                    <div class="flex items-center gap-4 bg-sys-dark text-white p-4 rounded-xl shadow-inner border border-pmmt-blue">
-                        <div class="w-12 h-12 rounded-full bg-pmmt-gold/20 flex items-center justify-center border-2 border-pmmt-gold shrink-0">
-                            <i class="fa-solid fa-star text-pmmt-gold text-lg"></i>
-                        </div>
-                        <div>
-                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Xerifado da Semana</p>
-                            <h4 class="text-base font-black text-white uppercase tracking-wider" id="dashXerifeNome">CARREGANDO...</h4>
-                        </div>
+                <div class="flex items-center gap-4 bg-sys-dark text-white p-3 rounded-sm border-l-4 border-pmmt-gold shadow-sm">
+                    <div class="w-10 h-10 rounded-sm bg-white/5 flex items-center justify-center border border-slate-600 shrink-0"><i class="fa-solid fa-star text-pmmt-gold"></i></div>
+                    <div>
+                        <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Xerifado da Semana</p>
+                        <h4 class="text-sm font-black text-white uppercase tracking-wider" id="dashXerifeNome">CARREGANDO...</h4>
                     </div>
-                    <div class="grid grid-cols-3 gap-3">
-                        <div class="flex flex-col items-center justify-center bg-white p-3 rounded-xl border border-slate-200 shadow-sm text-center">
-                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Equipe (24h)</span>
-                            <span class="text-xs font-black bg-pmmt-blue text-white px-3 py-1 rounded shadow-sm w-full">${eq}</span>
-                        </div>
-                        <div class="flex flex-col items-center justify-center bg-white p-3 rounded-xl border border-slate-200 shadow-sm text-center">
-                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Graduado CMT</span>
-                            <span class="text-[11px] font-bold text-slate-700 w-full truncate">${sgtFinal}</span>
-                        </div>
-                        <div class="flex flex-col items-center justify-center bg-white p-3 rounded-xl border border-slate-200 shadow-sm text-center">
-                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Aluno de Dia</span>
-                            <span class="text-[11px] font-black text-sys-dark w-full truncate">${nomeEx}</span>
-                        </div>
+                </div>
+                <div class="grid grid-cols-3 gap-2 mt-1">
+                    <div class="flex flex-col items-center justify-center bg-white p-2 rounded-sm border border-slate-300 shadow-sm text-center">
+                        <span class="text-[7.5px] font-bold text-slate-400 uppercase tracking-widest mb-1">Equipe (24h)</span>
+                        <span class="text-[10px] font-black bg-pmmt-blue text-white px-2 py-1 rounded-sm w-full">${eq}</span>
+                    </div>
+                    <div class="flex flex-col items-center justify-center bg-white p-2 rounded-sm border border-slate-300 shadow-sm text-center">
+                        <span class="text-[7.5px] font-bold text-slate-400 uppercase tracking-widest mb-1">Graduado CMT</span>
+                        <span class="text-[9px] font-bold text-slate-700 w-full truncate">${sgtFinal}</span>
+                    </div>
+                    <div class="flex flex-col items-center justify-center bg-white p-2 rounded-sm border border-slate-300 shadow-sm text-center">
+                        <span class="text-[7.5px] font-bold text-slate-400 uppercase tracking-widest mb-1">Aluno de Dia</span>
+                        <span class="text-[9px] font-black text-sys-dark w-full truncate">${nomeEx}</span>
                     </div>
                 </div>
             `;
 
             let totalMat = disciplinasGlobais.length > 0 ? disciplinasGlobais.length : 41;
-            let concluidasMat = 0;
-            let andamentoMat = 0;
-            let totalHoras = 0;
-            let concluidasHoras = 0;
+            let concluidasMat = 0; let andamentoMat = 0; let totalHoras = 0; let concluidasHoras = 0;
 
             disciplinasGlobais.forEach(d => {
                 totalHoras += d.carga_horaria;
                 const statusReal = d.status || (d.concluida ? 'CONCLUIDA' : 'PENDENTE');
-                
-                if (statusReal === 'CONCLUIDA') {
-                    concluidasMat++;
-                    concluidasHoras += d.carga_horaria;
-                } else if (statusReal === 'EM ANDAMENTO') {
-                    andamentoMat++;
-                }
+                if (statusReal === 'CONCLUIDA') { concluidasMat++; concluidasHoras += d.carga_horaria; } 
+                else if (statusReal === 'EM ANDAMENTO') { andamentoMat++; }
             });
             if (totalHoras === 0) totalHoras = 1895;
-
-            let restantesMat = totalMat - concluidasMat - andamentoMat;
-            let restantesHoras = totalHoras - concluidasHoras; 
 
             document.getElementById('materiasTotais').innerText = totalMat;
             document.getElementById('materiasConcluidas').innerText = concluidasMat;
             document.getElementById('materiasAndamento').innerText = andamentoMat;
-            document.getElementById('materiasRestantes').innerText = restantesMat;
-            
+            document.getElementById('materiasRestantes').innerText = totalMat - concluidasMat - andamentoMat;
             document.getElementById('horasTotais').innerText = totalHoras;
             document.getElementById('horasConcluidas').innerText = concluidasHoras;
-            document.getElementById('horasRestantes').innerText = restantesHoras;
+            document.getElementById('horasRestantes').innerText = totalHoras - concluidasHoras;
 
-            renderizarQtsPDF();
-            renderizarXerife();
+            renderizarQtsPDF(); renderizarXerife();
         }
 
         function abrirModalDisciplinas(tipo) {
-            const modal = document.getElementById('modalDisciplinas');
-            const tbody = document.getElementById('tabelaModalDisciplinas');
-            const titulo = document.getElementById('modalDisciplinasTitle');
-            const sub = document.getElementById('modalDisciplinasSub');
-            
-            modal.classList.remove('hidden');
-            tbody.innerHTML = '';
+            const modal = document.getElementById('modalDisciplinas'); const tbody = document.getElementById('tabelaModalDisciplinas');
+            const titulo = document.getElementById('modalDisciplinasTitle'); const sub = document.getElementById('modalDisciplinasSub');
+            modal.classList.remove('hidden'); tbody.innerHTML = '';
             
             let filtradas = [];
             if (tipo === 'concluidas') {
                 filtradas = disciplinasGlobais.filter(d => d.status === 'CONCLUIDA' || d.concluida === true);
-                titulo.innerHTML = '<i class="fa-solid fa-check-double text-emerald-400 mr-2"></i>Matérias Concluídas';
-                sub.innerText = `Total: ${filtradas.length} disciplinas concluídas`;
+                titulo.innerHTML = '<i class="fa-solid fa-check-double text-emerald-500 mr-2"></i>Concluídas';
+                sub.innerText = `Total: ${filtradas.length}`;
             } else if (tipo === 'restantes') {
                 filtradas = disciplinasGlobais.filter(d => (!d.status && !d.concluida) || d.status === 'PENDENTE');
-                titulo.innerHTML = '<i class="fa-solid fa-hourglass-half text-rose-400 mr-2"></i>Matérias Restantes / Pendentes';
-                sub.innerText = `Faltam: ${filtradas.length} disciplinas para iniciar`;
+                titulo.innerHTML = '<i class="fa-solid fa-hourglass-half text-rose-500 mr-2"></i>Pendentes';
+                sub.innerText = `Faltam: ${filtradas.length}`;
             } else if (tipo === 'andamento') {
                 filtradas = disciplinasGlobais.filter(d => d.status === 'EM ANDAMENTO');
-                titulo.innerHTML = '<i class="fa-solid fa-spinner text-pmmt-blue mr-2"></i>Matérias em Curso';
-                sub.innerText = `Atualmente: ${filtradas.length} disciplinas ativas`;
+                titulo.innerHTML = '<i class="fa-solid fa-spinner text-pmmt-blue mr-2"></i>Em Curso';
+                sub.innerText = `Ativas: ${filtradas.length}`;
             } else {
                 filtradas = [...disciplinasGlobais];
                 titulo.innerHTML = '<i class="fa-solid fa-book-open text-pmmt-gold mr-2"></i>Total de Matérias';
-                sub.innerText = `Grade Curricular Completa: ${filtradas.length} disciplinas`;
+                sub.innerText = `Grade: ${filtradas.length}`;
             }
 
-            if (filtradas.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-500 font-bold">Nenhuma disciplina encontrada nesta categoria.</td></tr>';
-                return;
-            }
+            if (filtradas.length === 0) { tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-slate-500 font-bold">Nenhuma disciplina.</td></tr>'; return; }
 
             filtradas.forEach((d, index) => {
                 const statusReal = d.status || (d.concluida ? 'CONCLUIDA' : 'PENDENTE');
                 let statusHtml = '';
+                if (statusReal === 'CONCLUIDA') statusHtml = `<span class="text-emerald-600 font-black"><i class="fa-solid fa-check mr-1"></i> OK</span>`;
+                else if (statusReal === 'EM ANDAMENTO') statusHtml = `<span class="text-pmmt-blue font-black"><i class="fa-solid fa-spinner fa-spin mr-1"></i> CURSO</span>`;
+                else statusHtml = `<span class="text-slate-400 font-bold"><i class="fa-regular fa-clock mr-1"></i> PENDENTE</span>`;
                 
-                if (statusReal === 'CONCLUIDA') {
-                    statusHtml = `<span class="bg-emerald-100 text-emerald-700 font-bold px-2 py-1 rounded text-[9px] uppercase tracking-widest border border-emerald-200"><i class="fa-solid fa-check mr-1"></i> Concluída</span>`;
-                } else if (statusReal === 'EM ANDAMENTO') {
-                    statusHtml = `<span class="bg-blue-100 text-pmmt-blue font-bold px-2 py-1 rounded text-[9px] uppercase tracking-widest border border-blue-200"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Em Curso</span>`;
-                } else {
-                    statusHtml = `<span class="bg-rose-100 text-rose-700 font-bold px-2 py-1 rounded text-[9px] uppercase tracking-widest border border-rose-200"><i class="fa-regular fa-clock mr-1"></i> Pendente</span>`;
-                }
-                
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 transition";
-                tr.innerHTML = `
-                    <td class="p-3 text-center font-bold text-slate-400">${index + 1}</td>
-                    <td class="p-3 font-bold text-slate-700 uppercase">${d.nome}</td>
-                    <td class="p-3 text-center text-sys-dark font-black">${d.carga_horaria} h/a</td>
-                    <td class="p-3 text-center">${statusHtml}</td>
-                `;
-                tbody.appendChild(tr);
+                tbody.innerHTML += `<tr class="hover:bg-slate-50 border-b border-slate-200"><td class="p-2 text-center text-slate-400">${index + 1}</td><td class="p-2 font-bold">${d.nome}</td><td class="p-2 text-center">${d.carga_horaria} h/a</td><td class="p-2 text-center">${statusHtml}</td></tr>`;
             });
         }
-
-        function fecharModalDisciplinas() {
-            document.getElementById('modalDisciplinas').classList.add('hidden');
-        }
-
+        function fecharModalDisciplinas() { document.getElementById('modalDisciplinas').classList.add('hidden'); }
         function mostrarLoading(show) { document.getElementById('loaderAlert').style.display = show ? 'flex' : 'none'; }
 
         async function carregarAlunos() { const { data } = await dbClient.from('alunos_pelotao').select('*').order('numero', { ascending: true }); listaAlunosFull = data || []; }
         async function carregarFuncoesComando() { const { data } = await dbClient.from('funcoes_comando').select('*'); if (data) funcoesComandoGlobais = data; }
 
         async function abrirRankingGeral() {
-            const modal = document.getElementById('modalRankingGeral');
-            const tbody = document.getElementById('tabelaRankingGeral');
-            
-            modal.classList.remove('hidden');
-            tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-500 font-bold"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Calculando ranking atual...</td></tr>';
-            
+            const modal = document.getElementById('modalRankingGeral'); const tbody = document.getElementById('tabelaRankingGeral');
+            modal.classList.remove('hidden'); tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-slate-500"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Calculando...</td></tr>';
             try {
-                if (!listaAlunosFull || listaAlunosFull.length === 0) {
-                    const { data: alunos } = await dbClient.from('alunos_pelotao').select('*').order('numero', { ascending: true });
-                    listaAlunosFull = alunos || [];
-                }
-
-                if (!todasNotasGlobais || todasNotasGlobais.length === 0) {
-                    const { data: notas } = await dbClient.from('academico_notas').select('*');
-                    todasNotasGlobais = notas || [];
-                }
-                const notas = todasNotasGlobais;
+                if (listaAlunosFull.length === 0) { const { data } = await dbClient.from('alunos_pelotao').select('*'); listaAlunosFull = data || []; }
+                if (todasNotasGlobais.length === 0) { const { data } = await dbClient.from('academico_notas').select('*'); todasNotasGlobais = data || []; }
                 
                 let ranking = [];
                 listaAlunosFull.forEach(aluno => {
-                    const notasDoAluno = (notas || []).filter(n => n.aluno_id === aluno.id && n.mgm != null);
-                    let mgc = 0;
-                    let totalDisciplinas = notasDoAluno.length;
-                    
-                    if (totalDisciplinas > 0) {
-                        let soma = 0;
-                        notasDoAluno.forEach(n => { soma += parseFloat(n.mgm || 0); });
-                        mgc = soma / totalDisciplinas;
-                    }
-                    
-                    ranking.push({
-                        id: aluno.id,
-                        numero: aluno.numero,
-                        nome: aluno.nome,
-                        qra: aluno.qra,
-                        mgc: parseFloat(mgc.toFixed(2)),
-                        totalDisciplinas: totalDisciplinas
-                    });
+                    const notas = todasNotasGlobais.filter(n => n.aluno_id === aluno.id && n.mgm != null);
+                    let mgc = 0; let total = notas.length;
+                    if (total > 0) { let soma = 0; notas.forEach(n => { soma += parseFloat(n.mgm); }); mgc = soma / total; }
+                    ranking.push({ id: aluno.id, numero: aluno.numero, qra: aluno.qra, nome: aluno.nome, mgc: parseFloat(mgc.toFixed(2)), total: total });
                 });
 
-                ranking.sort((a, b) => {
-                    if (b.mgc !== a.mgc) return b.mgc - a.mgc;
-                    return (a.numero || 999) - (b.numero || 999);
-                });
+                ranking.sort((a, b) => { if (b.mgc !== a.mgc) return b.mgc - a.mgc; return (a.numero || 999) - (b.numero || 999); });
 
                 tbody.innerHTML = '';
-                
-                if(ranking.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-500 font-bold">Nenhuma nota lançada no sistema ainda.</td></tr>';
-                    return;
-                }
+                if(ranking.length === 0) { tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center">Sem notas.</td></tr>'; return; }
 
                 ranking.forEach((aluno, index) => {
-                    const rankFormatado = (index + 1).toString().padStart(2, '0');
-                    const qraAjustado = (aluno.qra || aluno.nome).replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase();
-                    
-                    let rankVisual = `<span class="font-bold text-slate-600 ml-2">${rankFormatado}</span>`;
-                    
-                    if(index === 0) rankVisual = `<span class="bg-yellow-400 text-yellow-900 px-3 py-1.5 rounded-lg text-xs font-black shadow border border-yellow-500 flex items-center justify-center gap-1 w-16 mx-auto"><i class="fa-solid fa-crown"></i> 01</span>`;
-                    else if(index === 1) rankVisual = `<span class="bg-slate-300 text-slate-800 px-3 py-1.5 rounded-lg text-xs font-black shadow border border-slate-400 flex items-center justify-center gap-1 w-16 mx-auto"><i class="fa-solid fa-medal"></i> 02</span>`;
-                    else if(index === 2) rankVisual = `<span class="bg-amber-600 text-amber-100 px-3 py-1.5 rounded-lg text-xs font-black shadow border border-amber-700 flex items-center justify-center gap-1 w-16 mx-auto"><i class="fa-solid fa-medal"></i> 03</span>`;
+                    const qra = (aluno.qra || aluno.nome).replace(/AL SD PM |AL SD /gi, '').trim().toUpperCase();
+                    let rankV = `<span class="text-slate-500">${(index + 1).toString().padStart(2, '0')}</span>`;
+                    if(index === 0) rankV = `<span class="bg-yellow-400 text-yellow-900 px-2 py-1 rounded-sm border border-yellow-500"><i class="fa-solid fa-crown"></i> 01</span>`;
+                    else if(index === 1) rankV = `<span class="bg-slate-300 text-slate-800 px-2 py-1 rounded-sm border border-slate-400"><i class="fa-solid fa-medal"></i> 02</span>`;
+                    else if(index === 2) rankV = `<span class="bg-amber-600 text-amber-100 px-2 py-1 rounded-sm border border-amber-700"><i class="fa-solid fa-medal"></i> 03</span>`;
 
-                    let corNota = 'text-slate-700';
-                    if (index < 3) corNota = 'text-emerald-600 font-black'; 
-                    else if (aluno.mgc < 5) corNota = 'text-red-600 font-black'; 
+                    let cor = 'text-slate-700';
+                    if (index < 3) cor = 'text-emerald-600 font-black'; else if (aluno.mgc < 5) cor = 'text-red-600 font-black';
 
-                    const tr = document.createElement('tr');
-                    tr.className = `hover:bg-slate-50 transition border-b ${index < 3 ? 'border-slate-200 bg-slate-50/50' : 'border-slate-100'}`;
-                    tr.innerHTML = `
-                        <td class="p-3 text-center">${rankVisual}</td>
-                        <td class="p-3 text-slate-700"><span class="font-bold text-pmmt-blue">${aluno.numero || '-'}</span> - ${qraAjustado}</td>
-                        <td class="p-3 text-center text-slate-500 text-xs">${aluno.totalDisciplinas}</td>
-                        <td class="p-3 text-center font-bold text-sm ${corNota}">${aluno.mgc.toFixed(2)}</td>
-                    `;
-                    tbody.appendChild(tr);
+                    tbody.innerHTML += `<tr class="border-b border-slate-200"><td class="p-2 text-center border-r border-slate-200">${rankV}</td><td class="p-2 border-r border-slate-200"><span class="text-pmmt-blue font-black">${aluno.numero||'-'}</span> - ${qra}</td><td class="p-2 text-center border-r border-slate-200">${aluno.total}</td><td class="p-2 text-center text-sm ${cor}">${aluno.mgc.toFixed(2)}</td></tr>`;
                 });
 
                 const dashTop3 = document.getElementById('homeRankingTop3');
                 if (dashTop3) {
                     dashTop3.innerHTML = '';
-                    const top3Array = ranking.slice(0, 3);
-                    
-                    if (top3Array.length === 0) {
-                        dashTop3.innerHTML = `<div class="w-full text-center py-6 text-slate-400"><p class="text-[10px] uppercase tracking-widest font-bold">Sem notas computadas.</p></div>`;
-                        return;
-                    }
-
-                    top3Array.forEach((aluno, index) => {
-                        const qraTop = (aluno.qra || aluno.nome).replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase();
-                        let medCor = ['bg-yellow-400 text-yellow-900 border-yellow-500', 'bg-slate-300 text-slate-800 border-slate-400', 'bg-amber-600 text-amber-100 border-amber-700'][index];
-                        let icon = ['fa-crown', 'fa-medal', 'fa-medal'][index];
-                        
+                    ranking.slice(0, 3).forEach((aluno, index) => {
+                        const qra = (aluno.qra || aluno.nome).replace(/AL SD PM |AL SD /gi, '').trim().toUpperCase();
+                        let med = ['text-yellow-500 fa-crown', 'text-slate-400 fa-medal', 'text-amber-600 fa-medal'][index];
                         dashTop3.innerHTML += `
-                            <div class="flex items-center justify-between bg-white p-3 rounded-xl border border-slate-200 shadow-sm w-full">
-                                <div class="flex items-center gap-3">
-                                    <div class="${medCor} w-10 h-10 rounded-full flex items-center justify-center border font-black shadow-sm shrink-0">
-                                        <i class="fa-solid ${icon}"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-0.5">${index+1}º Colocado</p>
-                                        <p class="text-sm font-black text-sys-dark truncate">5${aluno.numero.toString().padStart(2, '0')} - ${qraTop}</p>
-                                    </div>
+                            <div class="flex justify-between items-center bg-white p-2.5 border border-slate-300 rounded-sm w-full">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-6 text-center"><i class="fa-solid ${med} text-lg"></i></div>
+                                    <div><p class="text-[7.5px] font-bold text-slate-400 uppercase leading-none">${index+1}º Colocado</p><p class="text-xs font-black text-sys-dark">5${aluno.numero.toString().padStart(2,'0')} - ${qra}</p></div>
                                 </div>
-                                <div class="text-right pl-2 border-l border-slate-100">
-                                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-0.5">MGC</p>
-                                    <p class="text-base font-black text-emerald-600">${aluno.mgc.toFixed(2)}</p>
-                                </div>
+                                <div class="text-right pl-2 border-l border-slate-200"><p class="text-[7.5px] font-bold text-slate-400 uppercase leading-none">MGC</p><p class="text-sm font-black text-emerald-600">${aluno.mgc.toFixed(2)}</p></div>
                             </div>
                         `;
                     });
                 }
-            } catch (error) {
-                console.error("Erro ao gerar ranking:", error);
-                tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-rose-500 font-bold">Erro ao buscar dados do ranking.</td></tr>';
-            }
+            } catch (e) { console.error(e); }
         }
-
-        function fecharRankingGeral() {
-            document.getElementById('modalRankingGeral').classList.add('hidden');
-        }
+        function fecharRankingGeral() { document.getElementById('modalRankingGeral').classList.add('hidden'); }
 
         function renderizarXerife() {
             if(listaAlunosFull.length === 0) return;
@@ -963,102 +801,62 @@
                 ? listaAlunosFull.find(a => a.id == funcoesComandoGlobais.find(f => f.tipo === 'XERIFE' && f.data_referencia === window.currentMondayIso).aluno_id) || alunos[idx] 
                 : alunos[idx];
 
-            const textoXerifeExibicao = `5${xerife.numero.toString().padStart(2, '0')} - ${(xerife.qra || xerife.nome.split(' ')[0]).replace(/AL SD PM |AL SD /gi, '').trim().toUpperCase()}`;
-            
-            const dashXerifeEl = document.getElementById('dashXerifeNome');
-            if(dashXerifeEl) dashXerifeEl.innerText = textoXerifeExibicao;
+            const txt = `5${xerife.numero.toString().padStart(2, '0')} - ${(xerife.qra || xerife.nome.split(' ')[0]).replace(/AL SD PM |AL SD /gi, '').trim().toUpperCase()}`;
+            const el = document.getElementById('dashXerifeNome'); if(el) el.innerText = txt;
         }
 
         async function carregarCautelasFixas() { const { data } = await dbClient.from('cautela_fixa').select('*'); if (data) { cautelasFixasGlobais = data || []; renderizarTabelaCautelaFixa(); } }
-
         function renderizarTabelaCautelaFixa() {
             const tbody = document.getElementById('tabelaCautelaFixa'); if (!tbody) return;
-            let alunosComCautela = [];
-            cautelasFixasGlobais.forEach(c => { let a = listaAlunosFull.find(x => x.id === c.aluno_id); if(a) alunosComCautela.push({ cautela: c, aluno: a }); });
-            alunosComCautela.sort((a, b) => a.aluno.numero - b.aluno.numero);
-            if(alunosComCautela.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="p-6 text-center text-slate-500 font-bold">Nenhuma cautela.</td></tr>'; return; }
+            let arr = []; cautelasFixasGlobais.forEach(c => { let a = listaAlunosFull.find(x => x.id === c.aluno_id); if(a) arr.push({ c: c, a: a }); });
+            arr.sort((a, b) => a.a.numero - b.a.numero);
+            if(arr.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-slate-500">Nenhuma cautela.</td></tr>'; return; }
             let html = '';
-            alunosComCautela.forEach(item => {
-                let num = "5" + item.aluno.numero.toString().padStart(2, '0');
-                let qra = item.aluno.qra ? item.aluno.qra.replace(/AL SD PM /gi, '').trim().toUpperCase() : item.aluno.nome.split(' ')[0].toUpperCase();
-                html += `<tr class="border-b border-slate-200"><td class="p-2 border-r border-slate-300 text-center text-slate-400">___/___<br>__:__</td><td class="p-2 border-r border-slate-300 text-center font-bold text-pmmt-blue">${num}</td><td class="p-2 border-r border-slate-300 font-bold uppercase text-[11px]">AL SD PM ${qra}</td><td class="p-2 border-r border-slate-300 text-center">${item.cautela.material}</td><td class="p-2 border-r border-slate-300 text-center">${item.cautela.serie}</td><td class="p-2 border-r border-slate-300 text-center">____________</td><td class="p-2 text-center admin-only no-print"><button onclick="deletarCautelaFixa(${item.cautela.id})" class="text-rose-500"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+            arr.forEach(i => {
+                let num = "5" + i.a.numero.toString().padStart(2, '0'); let qra = i.a.qra ? i.a.qra.replace(/AL SD PM /gi, '').trim().toUpperCase() : i.a.nome.split(' ')[0].toUpperCase();
+                html += `<tr class="border-b border-slate-200 hover:bg-slate-50"><td class="p-2 border-r border-slate-300 text-center text-slate-400">___/___<br>__:__</td><td class="p-2 border-r border-slate-300 text-center font-bold text-pmmt-blue">${num}</td><td class="p-2 border-r border-slate-300 font-bold uppercase text-[10px]">AL SD PM ${qra}</td><td class="p-2 border-r border-slate-300 text-center font-bold">${i.c.material}</td><td class="p-2 border-r border-slate-300 text-center">${i.c.serie}</td><td class="p-2 border-r border-slate-300 text-center">____________</td><td class="p-2 text-center admin-only no-print"><button onclick="deletarCautelaFixa(${i.c.id})" class="text-rose-500 hover:text-rose-700"><i class="fa-solid fa-trash"></i></button></td></tr>`;
             });
             tbody.innerHTML = html;
-        }
-
-        function abrirModalCautelaFixa() {
-            const select = document.getElementById('cautelaFixaAluno'); select.innerHTML = '<option value="">Selecione o Aluno...</option>';
-            [...listaAlunosFull].sort((a,b) => a.numero - b.numero).forEach(a => { select.add(new Option(`5${a.numero.toString().padStart(2, '0')} - ${(a.qra?a.qra:a.nome).toUpperCase()}`, a.id)); });
-            document.getElementById('modalCautelaFixa').classList.remove('hidden');
-        }
-
-        function fecharModalCautelaFixa() { document.getElementById('modalCautelaFixa').classList.add('hidden'); }
-        async function deletarCautelaFixa(id) { if (confirm("Excluir arma?")) { await dbClient.from('cautela_fixa').delete().eq('id', id); await carregarCautelasFixas(); } }
-
-        function imprimirCautelaFixa() {
-            document.body.classList.add('printing-cautela'); window.print();
-            setTimeout(() => { document.body.classList.remove('printing-cautela'); }, 500);
-        }
-
-        function abrirAbaAluno(abaId, btnElement) {
-            document.querySelectorAll('.aba-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById(abaId).classList.remove('hidden');
-            document.querySelectorAll('.aba-btn').forEach(btn => { btn.classList.remove('text-pmmt-blue', 'border-pmmt-blue'); btn.classList.add('text-slate-500', 'border-transparent'); });
-            btnElement.classList.add('text-pmmt-blue', 'border-pmmt-blue'); btnElement.classList.remove('text-slate-500', 'border-transparent');
         }
 
         async function carregarMateriaisApoio() {
             const { data } = await dbClient.from('material_apoio').select('*').order('categoria', { ascending: true });
             const container = document.getElementById('containerMateriais'); if(!container) return;
-            if (!data || data.length === 0) { container.innerHTML = '<p>Nenhum material.</p>'; return; }
+            if (!data || data.length === 0) { container.innerHTML = '<p class="text-center text-xs text-slate-400">Nenhum material encontrado.</p>'; return; }
             const categorias = {}; data.forEach(item => { if (!categorias[item.categoria]) categorias[item.categoria] = []; categorias[item.categoria].push(item); });
             container.innerHTML = '';
             Object.keys(categorias).sort().forEach(cat => {
                 const section = document.createElement('div');
-                let html = categorias[cat].map(arq => `<a href="${arq.url_arquivo}" target="_blank" class="flex items-center gap-4 p-4 border border-slate-200 rounded-xl bg-slate-50 hover:bg-white hover:border-pmmt-gold transition group"><div class="bg-sys-dark text-white w-12 h-12 flex items-center justify-center rounded-lg shadow-md"><i class="fa-solid fa-file-pdf text-xl group-hover:text-pmmt-gold transition-colors"></i></div><div class="overflow-hidden"><h4 class="text-sm font-bold text-slate-800 truncate">${arq.titulo}</h4></div></a>`).join('');
-                section.innerHTML = `<div class="mb-4 border-b-2 border-slate-200 pb-2"><h3 class="text-sm font-black text-sys-dark uppercase">${cat}</h3></div><div class="grid grid-cols-1 md:grid-cols-3 gap-4">${html}</div>`;
+                let html = categorias[cat].map(arq => `<a href="${arq.url_arquivo}" target="_blank" class="flex items-center gap-3 p-3 border border-slate-300 rounded-sm bg-white hover:bg-slate-100 hover:border-pmmt-blue transition shadow-sm"><i class="fa-solid fa-file-pdf text-rose-500 text-xl"></i><div class="overflow-hidden"><h4 class="text-[10px] font-bold text-slate-700 uppercase truncate tracking-wider">${arq.titulo}</h4></div></a>`).join('');
+                section.innerHTML = `<div class="mb-3 border-b-2 border-slate-300 pb-2 flex items-center gap-2"><i class="fa-solid fa-folder text-pmmt-gold text-lg"></i><h3 class="text-xs font-black text-sys-dark uppercase tracking-widest">${cat}</h3></div><div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">${html}</div>`;
                 container.appendChild(section);
             });
+        }
+
+        function abrirAbaAluno(abaId, btnElement) {
+            document.querySelectorAll('.aba-content').forEach(el => el.classList.add('hidden')); document.getElementById(abaId).classList.remove('hidden');
+            document.querySelectorAll('.aba-btn').forEach(btn => { btn.classList.remove('text-pmmt-blue', 'border-pmmt-blue', 'bg-white'); btn.classList.add('text-slate-500', 'border-transparent'); });
+            btnElement.classList.add('text-pmmt-blue', 'border-pmmt-blue', 'bg-white'); btnElement.classList.remove('text-slate-500', 'border-transparent');
         }
 
         let relogioInterval;
         function iniciarRelogioQTS() {
             relogioInterval = setInterval(() => {
-                const agora = new Date();
-                const hh = agora.getHours();
-                const mm = agora.getMinutes();
-                const ss = agora.getSeconds();
-                
+                const agora = new Date(); const hh = agora.getHours(); const mm = agora.getMinutes(); const ss = agora.getSeconds();
                 document.getElementById('relogioAtual').innerText = `${hh.toString().padStart(2,'0')}:${mm.toString().padStart(2,'0')}:${ss.toString().padStart(2,'0')}`;
                 
-                const minutosAtual = (hh * 60) + mm;
-                const i1_inicio = (9 * 60); const i1_fim = (9 * 60) + 30; // 09:00 as 09:30
-                const i2_inicio = (11 * 60) + 30; const i2_fim = (13 * 60) + 30; // 11:30 as 13:30 (Almoço)
-                const i3_inicio = (15 * 60) + 30; const i3_fim = (16 * 60); // 15:30 as 16:00
-                const i4_inicio = (19 * 60); const i4_fim = (20 * 60); // 19:00 as 20:00
+                const min = (hh * 60) + mm; let txt = "EM INSTRUÇÃO / A DISPOSIÇÃO";
+                if (min >= 540 && min < 570) txt = "INTERVALO MATUTINO"; else if (min >= 690 && min < 810) txt = "INTERVALO - ALMOÇO";
+                else if (min >= 930 && min < 960) txt = "INTERVALO VESPERTINO"; else if (min >= 1140 && min < 1200) txt = "INTERVALO NOTURNO";
+                else if (min > 1380) txt = "FORA DE EXPEDIENTE";
+                document.getElementById('statusAulaAtual').innerText = txt;
 
-                let statusText = "EM INSTRUÇÃO / A DISPOSIÇÃO";
-                if (minutosAtual >= i1_inicio && minutosAtual < i1_fim) statusText = "INTERVALO MATUTINO";
-                else if (minutosAtual >= i2_inicio && minutosAtual < i2_fim) statusText = "INTERVALO - ALMOÇO";
-                else if (minutosAtual >= i3_inicio && minutosAtual < i3_fim) statusText = "INTERVALO VESPERTINO";
-                else if (minutosAtual >= i4_inicio && minutosAtual < i4_fim) statusText = "INTERVALO NOTURNO";
-                else if (minutosAtual > (23 * 60)) statusText = "FORA DE EXPEDIENTE";
-
-                document.getElementById('statusAulaAtual').innerText = statusText;
-
-                const dataInicio = new Date('2026-06-26T00:00:00'); const dataFim = new Date('2027-04-21T23:59:59');
-                const tempoTotal = dataFim - dataInicio; const tempoDecorrido = Math.max(0, agora - dataInicio);
-                const diasTotais = Math.ceil(tempoTotal / (1000 * 60 * 60 * 24));
-                const diasDecorridos = Math.floor(Math.min(tempoDecorrido, tempoTotal) / (1000 * 60 * 60 * 24));
+                const inicio = new Date('2026-06-26T00:00:00'); const fim = new Date('2027-04-21T23:59:59');
+                const tTotal = fim - inicio; const tDec = Math.max(0, agora - inicio);
+                const dTot = Math.ceil(tTotal / 86400000); const dDec = Math.floor(Math.min(tDec, tTotal) / 86400000);
                 
                 const el = document.getElementById('diasDecorridos');
-                if(el) {
-                    el.innerText = diasDecorridos;
-                    document.getElementById('diasRestantes').innerText = Math.max(0, diasTotais - diasDecorridos);
-                    document.getElementById('diasTotaisCurso').innerText = diasTotais;
-                    document.getElementById('barraProgressoCurso').style.width = `${((diasDecorridos / diasTotais) * 100)}%`;
-                    document.getElementById('txtPorcentagemCurso').innerText = `${((diasDecorridos / diasTotais) * 100).toFixed(1)}% CONCLUÍDO`;
-                }
+                if(el) { el.innerText = dDec; document.getElementById('diasRestantes').innerText = Math.max(0, dTot - dDec); document.getElementById('diasTotaisCurso').innerText = dTot; document.getElementById('barraProgressoCurso').style.width = `${((dDec / dTot) * 100)}%`; document.getElementById('txtPorcentagemCurso').innerText = `${((dDec / dTot) * 100).toFixed(1)}%`; }
             }, 1000);
         }
     </script>
