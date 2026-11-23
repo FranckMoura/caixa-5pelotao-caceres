@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Módulo TCO - PMMT (6º BPM - Cáceres/MT)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+  :root {
+    --primary: #0a2240;
+    --secondary: #1e3a8a;
+    --accent: #d4af37;
+    --bg: #f1f5f9;
+    --card: #ffffff;
+    --border: #cbd5e1;
+    --text: #1e293b;
+    --muted: #64748b;
+  }
+  * { box-sizing: border-box; font-family: 'Segoe UI', Roboto, Arial, sans-serif; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-size: 14px; }
+
+  /* Barra Superior / Navegação */
+  .topbar {
+    background: var(--primary);
+    color: #fff;
+    padding: 12px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 4px solid var(--accent);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .topbar-brand { display: flex; align-items: center; gap: 12px; }
+  .topbar-brand i { color: var(--accent); font-size: 24px; }
+  .topbar h1 { margin: 0; font-size: 16px; letter-spacing: 0.6px; text-transform: uppercase; }
+  .topbar small { display: block; opacity: 0.85; font-size: 11px; color: #cbd5e1; }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.1);
+    color: #e2e8f0;
+  }
+  .status-pill.ok { background: rgba(16,185,129,0.2); color: #6ee7b7; }
+  .status-pill.err { background: rgba(239,68,68,0.2); color: #fca5a5; }
+
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s;
+  }
+  button:hover { filter: brightness(1.08); }
+  button:disabled { opacity: 0.6; cursor: not-allowed; }
+  .btn-save { background: #10b981; color: #fff; }
+  .btn-list { background: var(--accent); color: #0a2240; }
+  .btn-new { background: #334155; color: #fff; }
+  .btn-print { background: #2563eb; color: #fff; }
+  .btn-json { background: #475569; color: #fff; }
+  .btn-clear { background: #dc2626; color: #fff; }
+
+  /* Barra de Contexto / Vínculo com Banco */
+  .context-bar {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    padding: 10px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .context-group { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .context-group label { margin: 0; font-size: 11px; color: var(--primary); }
+  .context-group select { width: auto; min-width: 190px; padding: 5px 8px; font-size: 12px; }
+  .badge-edit {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #f59e0b;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .badge-edit.novo { background: #e0f2fe; color: #075985; border-color: #38bdf8; }
+
+  /* Abas dos Documentos */
+  .tabs {
+    background: #fff;
+    padding: 10px 20px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .tab-btn {
+    background: #e2e8f0;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+  .tab-btn.active {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+  }
+
+  /* Container Principal */
+  .container { max-width: 1100px; margin: 18px auto; padding: 0 14px 40px; }
+  .doc-section {
+    display: none;
+    background: var(--card);
+    padding: 26px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .doc-section.active { display: block; }
+
+  /* Cabeçalho Oficial PMMT */
+  .official-header {
+    text-align: center;
+    border-bottom: 2px solid #000;
+    padding-bottom: 10px;
+    margin-bottom: 18px;
+  }
+  .official-header h2 { margin: 2px 0; font-size: 15px; text-transform: uppercase; }
+  .official-header h3 { margin: 2px 0; font-size: 13px; font-weight: 600; color: var(--primary); }
+  .ref-box {
+    background: #edf2f7;
+    padding: 8px 12px;
+    border-left: 4px solid var(--primary);
+    margin-bottom: 16px;
+    font-weight: 700;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Grid de Formulários */
+  fieldset {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 16px;
+    padding: 14px;
+  }
+  legend {
+    font-weight: 700;
+    color: var(--primary);
+    padding: 0 8px;
+    font-size: 12.5px;
+    text-transform: uppercase;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 10px;
+  }
+  .col-12 { grid-column: span 12; }
+  .col-9 { grid-column: span 9; }
+  .col-8 { grid-column: span 8; }
+  .col-6 { grid-column: span 6; }
+  .col-5 { grid-column: span 5; }
+  .col-4 { grid-column: span 4; }
+  .col-3 { grid-column: span 3; }
+  .col-2 { grid-column: span 2; }
+
+  @media (max-width: 768px) {
+    .col-9, .col-8, .col-6, .col-5, .col-4, .col-3, .col-2 { grid-column: span 12; }
+  }
+
+  label { display: block; font-size: 11px; font-weight: 700; color: var(--muted); margin-bottom: 3px; text-transform: uppercase; }
+  input[type="text"], input[type="date"], input[type="time"], input[type="email"], select, textarea {
+    width: 100%;
+    padding: 7px 9px;
+    border: 1px solid #94a3b8;
+    border-radius: 4px;
+    font-size: 13px;
+    background: #fff;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(10, 34, 64, 0.15);
+  }
+  textarea { resize: vertical; min-height: 85px; line-height: 1.45; }
+
+  .legal-text { line-height: 1.75; text-align: justify; margin: 12px 0; font-size: 13.5px; }
+  .inline-input {
+    display: inline-block !important;
+    width: auto !important;
+    min-width: 140px;
+    padding: 3px 6px !important;
+    margin: 0 4px;
+    border: none !important;
+    border-bottom: 1px solid #000 !important;
+    border-radius: 0 !important;
+    background: #f8fafc !important;
+  }
+
+  .sig-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-top: 28px;
+    text-align: center;
+  }
+  .sig-box { border-top: 1px solid #000; padding-top: 6px; font-size: 12px; }
+
+  .official-footer {
+    margin-top: 24px;
+    padding-top: 8px;
+    border-top: 1px solid #000;
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* Modais (Histórico BD & JSON) */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(2px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+  }
+  .modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 900px;
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+  }
+  .modal-body { overflow-y: auto; flex: 1; margin-top: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th { background: var(--primary); color: #fff; text-align: left; padding: 9px 10px; font-size: 11px; text-transform: uppercase; }
+  td { padding: 9px 10px; border-bottom: 1px solid #e2e8f0; }
+  tr:hover td { background: #f8fafc; }
+  .st-badge { padding: 2px 8px; border-radius: 999px; font-size: 10px; font-weight: 800; }
+  .st-RASCUNHO { background: #fef3c7; color: #92400e; }
+  .st-FINALIZADO { background: #d1fae5; color: #065f46; }
+  .st-REMETIDO { background: #dbeafe; color: #1e40af; }
+
+  pre {
+    background: #0f172a;
+    color: #68d391;
+    padding: 12px;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-size: 12px;
+  }
+
+  @media print {
+    .topbar, .context-bar, .tabs, .no-print { display: none !important; }
+    body { background: #fff; }
+    .container { margin: 0; padding: 0; max-width: 100%; }
+    .doc-section { border: none; box-shadow: none; padding: 0; }
+    body.print-all .doc-section { display: block !important; page-break-after: always; }
+    body.print-all .doc-section:last-of-type { page-break-after: auto; }
+    input, textarea, select { border: 1px solid #ccc; background: transparent !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <i class="fa-solid fa-file-signature"></i>
+    <div>
+      <h1>Portal PMMT — Módulo TCO</h1>
+      <small>6º Comando Regional • 6º BPM / 5º Pelotão (Cáceres/MT)</small>
+    </div>
+    <span id="statusConexao" class="status-pill"><i class="fa-solid fa-circle-notch fa-spin"></i> Conectando...</span>
+  </div>
+  <div class="actions">
+    <button type="button" class="btn-save" id="btnSalvarBD" onclick="salvarTCONoBanco()">
+      <i class="fa-solid fa-cloud-arrow-up"></i> Salvar no Banco
+    </button>
+    <button type="button" class="btn-list" onclick="abrirHistoricoTCO()">
+      <i class="fa-solid fa-database"></i> TCOs Salvos (<span id="qtdSalvos">0</span>)
+    </button>
+    <button type="button" class="btn-new" onclick="novoTCO()">
+      <i class="fa-solid fa-plus"></i> Novo
+    </button>
+    <button type="button" class="btn-print" onclick="imprimirAbaAtual()">
+      <i class="fa-solid fa-print"></i> Imprimir Aba
+    </button>
+    <button type="button" class="btn-print" style="background:#0f766e;" onclick="imprimirTCOCompleto()">
+      <i class="fa-solid fa-copy"></i> TCO Completo
+    </button>
+    <button type="button" class="btn-json" onclick="exportarJSON()" title="Visualizar JSON Estruturado">
+      <i class="fa-solid fa-code"></i> JSON
+    </button>
+  </div>
+</div>
+
+<!-- BARRA DE INTEGRAÇÃO (ALUNO / STATUS / MODO EDIÇÃO) -->
+<div class="context-bar no-print">
+  <div class="context-group">
+    <span id="indicadorRegistro" class="badge-edit novo">
+      <i class="fa-solid fa-file-circle-plus"></i> Novo Registro (Não salvo)
+    </span>
+
+    <label for="selectAlunoResponsavel"><i class="fa-solid fa-user-shield"></i> Responsável (Efetivo):</label>
+    <select id="selectAlunoResponsavel" onchange="preencherGuarnicaoPorAluno()">
+      <option value="">Carregando efetivo...</option>
+    </select>
+
+    <label for="selectStatusTCO"><i class="fa-solid fa-flag"></i> Status:</label>
+    <select id="selectStatusTCO">
+      <option value="RASCUNHO">Rascunho</option>
+      <option value="FINALIZADO">Finalizado</option>
+      <option value="REMETIDO">Remetido ao PJe/JECRIM</option>
+    </select>
+  </div>
+  <div class="context-group">
+    <button type="button" class="btn-clear" style="padding:5px 10px; font-size:11px;" onclick="limparFormulario()">
+      <i class="fa-solid fa-eraser"></i> Limpar Tela
+    </button>
+  </div>
+</div>
+
+<!-- ABAS -->
+<div class="tabs no-print">
+  <button type="button" class="tab-btn active" onclick="openTab(event, 'tab-tco')">1. BO-TC Principal & Autuação</button>
+  <button type="button" class="tab-btn" onclick="openTab(event, 'tab-compromisso')">2. Compromisso Comparecimento</button>
+  <button type="button" class="tab-btn" onclick="openTab(event, 'tab-vitima')">3. Manifestação da Vítima</button>
+  <button type="button" class="tab-btn" onclick="openTab(event, 'tab-droga')">4. Constatação de Droga</button>
+  <button type="button" class="tab-btn" onclick="openTab(event, 'tab-apreensao')">5. Apreensão & Depósito</button>
+  <button type="button" class="tab-btn" onclick="openTab(event, 'tab-pericia')">6. Requisições Periciais (POLITEC)</button>
+  <button type="button" class="tab-btn" onclick="openTab(event, 'tab-encerramento')">7. Encerramento e Remessa</button>
+</div>
+
+<form id="tcoForm" class="container">
+
+  <!-- ABA 1: AUTUAÇÃO E TCO PRINCIPAL -->
+  <div id="tab-tco" class="doc-section active">
+    <div class="official-header">
+      <h2>ESTADO DE MATO GROSSO • POLÍCIA MILITAR</h2>
+      <h3>6º COMANDO REGIONAL — 6º BATALHÃO DE POLÍCIA MILITAR (CÁCERES/MT)</h3>
+    </div>
+
+    <div class="ref-box">
+      <span>TERMO CIRCUNSTANCIADO DE OCORRÊNCIA (BO-TC)</span>
+      <div>
+        Nº <input type="text" id="tco_numero" name="tco_numero" data-db="tco.numero" class="inline-input" placeholder="000/6ºBPM/2026" oninput="syncNumeroTCO(this.value)">
+      </div>
+    </div>
+
+    <fieldset>
+      <legend>Termo de Autuação</legend>
+      <p class="legal-text">
+        Aos <input type="text" name="autuacao_dia" data-db="autuacao.dia" class="inline-input" style="min-width:45px" placeholder="DD"> dias do mês de
+        <input type="text" name="autuacao_mes" data-db="autuacao.mes" class="inline-input" style="min-width:110px" placeholder="Mês"> do ano de
+        <input type="text" name="autuacao_ano" data-db="autuacao.ano" class="inline-input" style="min-width:65px" value="2026">, nesta cidade de
+        <input type="text" name="autuacao_cidade" data-db="autuacao.cidade" class="inline-input" value="Cáceres">, Estado de Mato Grosso, no Quartel do
+        <input type="text" name="autuacao_quartel" data-db="autuacao.quartel" class="inline-input" style="min-width:260px" value="6º Batalhão de Polícia Militar">, autuo as peças que adiante se seguem, do que para constar, lavrei este Termo. Eu,
+        <input type="text" id="autuacao_escrevente" name="autuacao_escrevente" data-db="guarnicao.escrevente" class="inline-input" style="min-width:250px" placeholder="Grad/RG/Nome completo">, escrevente, que o lavrei e assino.
+      </p>
+    </fieldset>
+
+    <fieldset>
+      <legend>1. Dados Gerais da Ocorrência</legend>
+      <div class="grid">
+        <div class="col-6">
+          <label>Natureza da Ocorrência *</label>
+          <input type="text" id="tco_natureza" name="tco_natureza" data-db="ocorrencia.natureza" placeholder="Ex: Ameaça / Perturbação do Sossego" oninput="syncCampo('sync-natureza', this.value)">
+        </div>
+        <div class="col-6">
+          <label>Tipificação Legal *</label>
+          <input type="text" id="tco_tipificacao" name="tco_tipificacao" data-db="ocorrencia.tipificacao_legal" placeholder="Ex: Art. 147 do Código Penal" oninput="syncCampo('sync-tipificacao', this.value)">
+        </div>
+        <div class="col-3">
+          <label>Data do Fato *</label>
+          <input type="date" id="tco_data_fato" name="tco_data_fato" data-db="ocorrencia.data_fato" oninput="syncCampo('sync-data-fato', this.value)">
+        </div>
+        <div class="col-3">
+          <label>Hora do Fato *</label>
+          <input type="time" id="tco_hora_fato" name="tco_hora_fato" data-db="ocorrencia.hora_fato">
+        </div>
+        <div class="col-3">
+          <label>Data do Registro *</label>
+          <input type="date" id="tco_data_registro" name="tco_data_registro" data-db="ocorrencia.data_registro">
+        </div>
+        <div class="col-3">
+          <label>Comunicante</label>
+          <input type="text" name="tco_comunicante" data-db="ocorrencia.comunicante" placeholder="Nome / CIOSP 190">
+        </div>
+        <div class="col-6">
+          <label>Endereço (Logradouro, Nº e Bairro) *</label>
+          <input type="text" name="tco_endereco" data-db="ocorrencia.endereco">
+        </div>
+        <div class="col-2">
+          <label>CEP *</label>
+          <input type="text" name="tco_cep" data-db="ocorrencia.cep" placeholder="78210-000">
+        </div>
+        <div class="col-4">
+          <label>Município / UF *</label>
+          <input type="text" name="tco_municipio" data-db="ocorrencia.municipio_uf" value="Cáceres/MT">
+        </div>
+        <div class="col-6">
+          <label>Local do Fato *</label>
+          <input type="text" name="tco_local_tipo" data-db="ocorrencia.local_tipo" placeholder="Ex: Via pública / Residência / Comércio">
+        </div>
+        <div class="col-6">
+          <label>Ponto de Referência / Coordenadas</label>
+          <input type="text" name="tco_referencia" data-db="ocorrencia.ponto_referencia">
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- QUALIFICAÇÃO VÍTIMA -->
+    <fieldset>
+      <legend>2.a) Qualificação da Vítima</legend>
+      <div class="grid">
+        <div class="col-6"><label>Nome Civil *</label><input type="text" id="vitima_nome" name="vitima_nome" data-db="vitima.nome_civil" oninput="syncCampo('sync-vitima-nome', this.value)"></div>
+        <div class="col-6"><label>Nome Social / Apelido</label><input type="text" name="vitima_nome_social" data-db="vitima.nome_social"></div>
+        <div class="col-4"><label>CPF ou Passaporte *</label><input type="text" name="vitima_cpf" data-db="vitima.cpf"></div>
+        <div class="col-3"><label>RG / CNH Nº</label><input type="text" name="vitima_rg" data-db="vitima.rg"></div>
+        <div class="col-3"><label>Órgão Expedidor / UF</label><input type="text" name="vitima_rg_orgao" data-db="vitima.rg_orgao" placeholder="SSP/MT"></div>
+        <div class="col-2"><label>Data Expedição</label><input type="date" name="vitima_rg_data" data-db="vitima.rg_data"></div>
+        <div class="col-6"><label>Filiação (Pai e Mãe)</label><input type="text" name="vitima_filiacao" data-db="vitima.filiacao"></div>
+        <div class="col-3"><label>Data de Nascimento</label><input type="date" name="vitima_nascimento" data-db="vitima.data_nascimento"></div>
+        <div class="col-3"><label>Sexo</label><select name="vitima_sexo" data-db="vitima.sexo"><option value="">Selecione</option><option value="M">Masculino</option><option value="F">Feminino</option></select></div>
+        <div class="col-6"><label>Endereço Residencial *</label><input type="text" name="vitima_endereco" data-db="vitima.endereco"></div>
+        <div class="col-4"><label>Município / UF</label><input type="text" name="vitima_municipio" data-db="vitima.municipio_uf" value="Cáceres/MT"></div>
+        <div class="col-2"><label>CEP *</label><input type="text" name="vitima_cep" data-db="vitima.cep"></div>
+        <div class="col-4"><label>Ponto de Referência</label><input type="text" name="vitima_ref" data-db="vitima.ponto_referencia"></div>
+        <div class="col-4"><label>Telefone(s) Pessoal(is) *</label><input type="text" name="vitima_tel" data-db="vitima.telefone"></div>
+        <div class="col-4"><label>E-mail Pessoal *</label><input type="email" name="vitima_email" data-db="vitima.email"></div>
+        <div class="col-3"><label>Estado Civil</label><input type="text" name="vitima_estado_civil" data-db="vitima.estado_civil"></div>
+        <div class="col-3"><label>Nacionalidade *</label><input type="text" name="vitima_nacionalidade" data-db="vitima.nacionalidade" value="Brasileira"></div>
+        <div class="col-3"><label>Naturalidade / UF *</label><input type="text" name="vitima_naturalidade" data-db="vitima.naturalidade"></div>
+        <div class="col-3"><label>Profissão</label><input type="text" name="vitima_profissao" data-db="vitima.profissao"></div>
+        <div class="col-4"><label>Local de Trabalho</label><input type="text" name="vitima_trabalho_local" data-db="vitima.trabalho_local"></div>
+        <div class="col-5"><label>Endereço Trabalho</label><input type="text" name="vitima_trabalho_end" data-db="vitima.trabalho_endereco"></div>
+        <div class="col-3"><label>Telefone Comercial</label><input type="text" name="vitima_trabalho_tel" data-db="vitima.trabalho_telefone"></div>
+        <div class="col-12"><label>Condições Físicas (Lesões aparentes / hematomas)</label><input type="text" name="vitima_condicoes" data-db="vitima.condicoes_fisicas" value="Sem lesões corporais aparentes."></div>
+      </div>
+    </fieldset>
+
+    <!-- QUALIFICAÇÃO TESTEMUNHA -->
+    <fieldset>
+      <legend>2.b) Qualificação da Testemunha</legend>
+      <div class="grid">
+        <div class="col-6"><label>Nome Civil</label><input type="text" name="testemunha_nome" data-db="testemunha.nome_civil"></div>
+        <div class="col-3"><label>CPF</label><input type="text" name="testemunha_cpf" data-db="testemunha.cpf"></div>
+        <div class="col-3"><label>RG / Órgão</label><input type="text" name="testemunha_rg" data-db="testemunha.rg"></div>
+        <div class="col-6"><label>Filiação</label><input type="text" name="testemunha_filiacao" data-db="testemunha.filiacao"></div>
+        <div class="col-3"><label>Data Nascimento</label><input type="date" name="testemunha_nascimento" data-db="testemunha.data_nascimento"></div>
+        <div class="col-3"><label>Telefone</label><input type="text" name="testemunha_tel" data-db="testemunha.telefone"></div>
+        <div class="col-8"><label>Endereço Completo</label><input type="text" name="testemunha_endereco" data-db="testemunha.endereco"></div>
+        <div class="col-4"><label>Profissão</label><input type="text" name="testemunha_profissao" data-db="testemunha.profissao"></div>
+      </div>
+    </fieldset>
+
+    <!-- QUALIFICAÇÃO AUTOR DO FATO -->
+    <fieldset>
+      <legend>2.c) Qualificação do Autor do Fato</legend>
+      <div class="grid">
+        <div class="col-6"><label>Nome Civil *</label><input type="text" id="autor_nome" name="autor_nome" data-db="autor.nome_civil" oninput="syncCampo('sync-autor-nome', this.value)"></div>
+        <div class="col-6"><label>Nome Social / Apelido</label><input type="text" name="autor_nome_social" data-db="autor.nome_social"></div>
+        <div class="col-4"><label>CPF ou Passaporte *</label><input type="text" id="autor_cpf" name="autor_cpf" data-db="autor.cpf" oninput="syncCampo('sync-autor-cpf', this.value)"></div>
+        <div class="col-3"><label>RG / CNH Nº</label><input type="text" id="autor_rg" name="autor_rg" data-db="autor.rg" oninput="syncCampo('sync-autor-rg', this.value)"></div>
+        <div class="col-3"><label>Órgão Expedidor / UF</label><input type="text" name="autor_rg_orgao" data-db="autor.rg_orgao" placeholder="SSP/MT"></div>
+        <div class="col-2"><label>Data Expedição</label><input type="date" name="autor_rg_data" data-db="autor.rg_data"></div>
+        <div class="col-6"><label>Filiação (Pai e Mãe)</label><input type="text" id="autor_filiacao" name="autor_filiacao" data-db="autor.filiacao" oninput="syncCampo('sync-autor-filiacao', this.value)"></div>
+        <div class="col-3"><label>Data de Nascimento</label><input type="date" name="autor_nascimento" data-db="autor.data_nascimento"></div>
+        <div class="col-3"><label>Sexo</label><select name="autor_sexo" data-db="autor.sexo"><option value="">Selecione</option><option value="M">Masculino</option><option value="F">Feminino</option></select></div>
+        <div class="col-6"><label>Endereço Residencial *</label><input type="text" id="autor_endereco" name="autor_endereco" data-db="autor.endereco" oninput="syncCampo('sync-autor-end', this.value)"></div>
+        <div class="col-4"><label>Município / UF</label><input type="text" name="autor_municipio" data-db="autor.municipio_uf" value="Cáceres/MT"></div>
+        <div class="col-2"><label>CEP *</label><input type="text" id="autor_cep" name="autor_cep" data-db="autor.cep" oninput="syncCampo('sync-autor-cep', this.value)"></div>
+        <div class="col-4"><label>Ponto de Referência</label><input type="text" name="autor_ref" data-db="autor.ponto_referencia"></div>
+        <div class="col-4"><label>Telefone(s) Pessoal(is) *</label><input type="text" id="autor_tel" name="autor_tel" data-db="autor.telefone" oninput="syncCampo('sync-autor-tel', this.value)"></div>
+        <div class="col-4"><label>E-mail Pessoal *</label><input type="email" name="autor_email" data-db="autor.email"></div>
+        <div class="col-3"><label>Estado Civil</label><input type="text" name="autor_estado_civil" data-db="autor.estado_civil"></div>
+        <div class="col-3"><label>Nacionalidade *</label><input type="text" name="autor_nacionalidade" data-db="autor.nacionalidade" value="Brasileira"></div>
+        <div class="col-3"><label>Naturalidade / UF *</label><input type="text" id="autor_naturalidade" name="autor_naturalidade" data-db="autor.naturalidade" oninput="syncCampo('sync-autor-nat', this.value)"></div>
+        <div class="col-3"><label>Profissão</label><input type="text" name="autor_profissao" data-db="autor.profissao"></div>
+        <div class="col-12"><label>Condições Físicas (Lesões aparentes / hematomas)</label><input type="text" name="autor_condicoes" data-db="autor.condicoes_fisicas" value="Sem lesões corporais aparentes."></div>
+      </div>
+    </fieldset>
+
+    <!-- HISTÓRICO -->
+    <fieldset>
+      <legend>3. Histórico da Ocorrência</legend>
+      <div class="grid">
+        <div class="col-12">
+          <label>Relato do Policial (Acionamento, constatação no local e condução)</label>
+          <textarea name="historico_policial" data-db="historico.relato_policial" placeholder="Às ___h do dia ___/___/2026, fomos solicitados pelo CIOSP/190..."></textarea>
+        </div>
+        <div class="col-12">
+          <label>Relato da Vítima (Iniciar respostas com "Que...")</label>
+          <textarea name="historico_vitima" data-db="historico.relato_vitima" placeholder="Relatou a vítima que... Lido e achado conforme. Nada mais disse e nem lhe foi perguntado(a)."></textarea>
+        </div>
+        <div class="col-12">
+          <label>Relato da Testemunha (Compromissada na forma da lei; iniciar com "Que...")</label>
+          <textarea name="historico_testemunha" data-db="historico.relato_testemunha" placeholder="A testemunha compromissada na forma da lei, aos costumes respondeu negativamente, declarou que..."></textarea>
+        </div>
+        <div class="col-12">
+          <label>Relato do Autor(a) do Fato (Cientificado dos direitos constitucionais; iniciar com "Que...")</label>
+          <textarea name="historico_autor" data-db="historico.relato_autor" placeholder="O autor dos fatos, cientificado de seus direitos constitucionais, inclusive o de permanecer calado, declarou que..."></textarea>
+        </div>
+        <div class="col-12">
+          <label>Conclusão do Policial</label>
+          <textarea name="historico_conclusao" data-db="historico.conclusao_policial" placeholder="Diante das circunstâncias e de tudo o que foi relatado, resta acrescentar que o autor infringiu o artigo..."></textarea>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- PROVIDÊNCIAS E GUARNIÇÃO -->
+    <fieldset>
+      <legend>4. Providências Adotadas & 5. Identificação da Guarnição</legend>
+      <div class="grid">
+        <div class="col-12"><label>Providências Adotadas</label><input type="text" name="providencias" data-db="ocorrencia.providencias"></div>
+        <div class="col-6"><label>Documentos / Anexos Produzidos</label><input type="text" name="anexos_lista" data-db="ocorrencia.documentos_anexos" value="Termo de Compromisso, Termo de Manifestação da Vítima, Termo de Encerramento."></div>
+        <div class="col-6"><label>Descrição de Objetos / Documentos Apreendidos</label><input type="text" name="objetos_lista" data-db="ocorrencia.objetos_apreendidos" value="Não houve."></div>
+
+        <div class="col-3"><label>Comandante GUPM (Posto/Grad)</label><input type="text" id="gu_cmt_posto" name="gu_cmt_posto" data-db="guarnicao.cmt_posto" placeholder="3º Sgt PM"></div>
+        <div class="col-6"><label>Nome Completo</label><input type="text" id="gu_cmt_nome" name="gu_cmt_nome" data-db="guarnicao.cmt_nome" oninput="syncCampo('sync-cmt-nome', this.value)"></div>
+        <div class="col-3"><label>RG PMMT</label><input type="text" id="gu_cmt_rg" name="gu_cmt_rg" data-db="guarnicao.cmt_rg" oninput="syncCampo('sync-cmt-rg', this.value)"></div>
+
+        <div class="col-3"><label>Auxiliar GUPM (Posto/Grad)</label><input type="text" id="gu_aux_posto" name="gu_aux_posto" data-db="guarnicao.aux_posto" placeholder="AL SD PM"></div>
+        <div class="col-6"><label>Nome Completo</label><input type="text" id="gu_aux_nome" name="gu_aux_nome" data-db="guarnicao.aux_nome"></div>
+        <div class="col-3"><label>RG PMMT</label><input type="text" id="gu_aux_rg" name="gu_aux_rg" data-db="guarnicao.aux_rg"></div>
+      </div>
+    </fieldset>
+  </div>
+
+  <!-- ABA 2: TERMO DE COMPROMISSO DE COMPARECIMENTO -->
+  <div id="tab-compromisso" class="doc-section">
+    <div class="official-header">
+      <h2>ESTADO DE MATO GROSSO • POLÍCIA MILITAR</h2>
+      <h3>6º COMANDO REGIONAL — 6º BATALHÃO DE POLÍCIA MILITAR (CÁCERES/MT)</h3>
+    </div>
+    <div class="ref-box">
+      <span>TERMO DE COMPROMISSO DE COMPARECIMENTO</span>
+      <span>Ref. TCO Nº: <strong class="sync-tco-num">___/6ºBPM/2026</strong></span>
+    </div>
+
+    <p class="legal-text">
+      Por este instrumento, eu <input type="text" name="comp_autor" data-db="compromisso.autor_nome" class="inline-input sync-autor-nome" style="min-width:280px" placeholder="Nome do autor do fato">, assumo, nos termos do parágrafo único do Art. 69 da Lei nº 9.099/95, o compromisso de comparecer no Juizado Especial Criminal, em virtude dos fatos registrados no Termo Circunstanciado de Ocorrência acima referenciado, conforme notificado abaixo.
+    </p>
+    <p class="legal-text">
+      Fico ciente de que a concordância em comparecer ao Juizado Especial Criminal, não implica confissão de qualquer natureza, admissão de culpa ou anuência às declarações da parte contrária e o não comparecimento no dia e hora ajustados neste termo sujeitará às medidas previstas na Lei nº 9.099/95.
+    </p>
+    <p class="legal-text">
+      Fico ciente também que deverei comparecer acompanhado de advogado e que na ausência deste será nomeado um defensor público.
+    </p>
+    <p class="legal-text">
+      Notifico Vossa Senhoria para comparecer no Fórum da Comarca de <input type="text" name="comp_comarca" data-db="compromisso.comarca" class="inline-input" value="Cáceres">, sito a <input type="text" name="comp_endereco_forum" data-db="compromisso.endereco_forum" class="inline-input" style="min-width:260px" value="Rua Coronel José Dulce, s/n, Centro"> na Secretaria do Juizado Especial Criminal:
+      <br>No dia <input type="text" name="comp_dia" data-db="compromisso.audiencia_dia" class="inline-input" style="min-width:45px" placeholder="DD"> do mês de <input type="text" name="comp_mes" data-db="compromisso.audiencia_mes" class="inline-input" style="min-width:110px" placeholder="Mês"> do ano de <input type="text" name="comp_ano" data-db="compromisso.audiencia_ano" class="inline-input" style="min-width:65px" value="2026">, às <input type="time" name="comp_hora" data-db="compromisso.audiencia_hora" class="inline-input" style="min-width:95px">.
+    </p>
+
+    <div class="sig-grid">
+      <div class="sig-box">Assinatura do Autor do Fato</div>
+      <div class="sig-box">Policial Militar Responsável (Posto/Grad, RG e Nome)</div>
+    </div>
+  </div>
+
+  <!-- ABA 3: TERMO DE MANIFESTAÇÃO DA VÍTIMA -->
+  <div id="tab-vitima" class="doc-section">
+    <div class="official-header">
+      <h2>ESTADO DE MATO GROSSO • POLÍCIA MILITAR</h2>
+      <h3>6º COMANDO REGIONAL — 6º BATALHÃO DE POLÍCIA MILITAR (CÁCERES/MT)</h3>
+    </div>
+    <div class="ref-box">
+      <span>TERMO DE MANIFESTAÇÃO DA VÍTIMA</span>
+      <span>Ref. TCO Nº: <strong class="sync-tco-num">___/6ºBPM/2026</strong></span>
+    </div>
+
+    <p class="legal-text">
+      Eu, <input type="text" name="manif_vitima_nome" data-db="manifestacao.vitima_nome" class="inline-input sync-vitima-nome" style="min-width:280px" placeholder="Nome da vítima">, por este instrumento, manifesto o meu interesse:
+    </p>
+
+    <fieldset>
+      <legend>Opção da Vítima (Ação Penal Pública Condicionada / Privada)</legend>
+      <div style="margin-bottom:12px;">
+        <label style="display:flex; align-items:flex-start; gap:8px; text-transform:none; font-size:13px; color:#000; font-weight:normal;">
+          <input type="radio" name="manif_opcao" data-db="manifestacao.opcao" value="REPRESENTAR" style="width:auto; margin-top:3px;">
+          <span><strong>Em exercer o direito de representação ou queixa contra o autor do fato.</strong> (Fica cientificada que em caso de queixa-crime, a vítima deverá constituir advogado).</span>
+        </label>
+      </div>
+      <div>
+        <label style="display:flex; align-items:flex-start; gap:8px; text-transform:none; font-size:13px; color:#000; font-weight:normal;">
+          <input type="radio" name="manif_opcao" data-db="manifestacao.opcao" value="DECIDIR_POSTERIORMENTE" style="width:auto; margin-top:3px;">
+          <span><strong>Em decidir posteriormente</strong>, estando ciente, para os fins previstos no art. 103 do Código Penal e art. 38 Código de Processo Penal que devo exercer o direito de representação ou de queixa, no prazo de 06 (seis) meses, a contar desta data, sendo certo que meu silêncio acarretará a extinção de punibilidade, na forma do art. 107, inc. IV, do Código Penal.</span>
+        </label>
+      </div>
+    </fieldset>
+
+    <p class="legal-text">
+      Notifico Vossa Senhoria para comparecer no Fórum da Comarca de <input type="text" name="manif_comarca" data-db="manifestacao.comarca" class="inline-input" value="Cáceres">, sito a <input type="text" name="manif_forum" data-db="manifestacao.endereco_forum" class="inline-input" style="min-width:260px" value="Rua Coronel José Dulce, s/n, Centro"> na Secretaria do Juizado Especial Criminal:
+      <br>No dia <input type="text" name="manif_dia" data-db="manifestacao.audiencia_dia" class="inline-input" style="min-width:45px" placeholder="DD"> do mês de <input type="text" name="manif_mes" data-db="manifestacao.audiencia_mes" class="inline-input" style="min-width:110px" placeholder="Mês"> do ano de <input type="text" name="manif_ano" data-db="manifestacao.audiencia_ano" class="inline-input" style="min-width:65px" value="2026">, às <input type="time" name="manif_hora" data-db="manifestacao.audiencia_hora" class="inline-input" style="min-width:95px">.
+    </p>
+
+    <div class="sig-grid">
+      <div class="sig-box">Assinatura da Vítima</div>
+      <div class="sig-box">Policial Militar Responsável</div>
+    </div>
+  </div>
+
+  <!-- ABA 4: CONSTATAÇÃO PRELIMINAR DE DROGA -->
+  <div id="tab-droga" class="doc-section">
+    <div class="official-header">
+      <h2>ESTADO DE MATO GROSSO • POLÍCIA MILITAR</h2>
+      <h3>6º COMANDO REGIONAL — 6º BATALHÃO DE POLÍCIA MILITAR (CÁCERES/MT)</h3>
+    </div>
+    <div class="ref-box">
+      <span>TERMO DE CONSTATAÇÃO PRELIMINAR DE DROGA</span>
+      <span>Ref. TCO Nº: <strong class="sync-tco-num">___/6ºBPM/2026</strong></span>
+    </div>
+
+    <p class="legal-text">
+      Em razão da lavratura deste Termo Circunstanciado de Ocorrência, pelo(s) delito(s) tipificado(s): <input type="text" name="droga_tipificacao" data-db="droga.tipificacao" class="inline-input" style="min-width:260px" value="Art. 28 da Lei nº 11.343/2006">, foi apreendido o material descrito abaixo, em poder do autor <input type="text" name="droga_autor" data-db="droga.autor_nome" class="inline-input sync-autor-nome" style="min-width:240px">, já qualificado no TCO-PM.
+    </p>
+    <p class="legal-text">
+      Após ciência das implicações legais do encargo assumido, firmou-se o compromisso legal de proceder à análise dos seguintes materiais:
+    </p>
+    <fieldset>
+      <legend>Substâncias Submetidas à Inspeção Visual e Olfativa</legend>
+      <div class="grid">
+        <div class="col-3"><label>Qtd. Porções (Vegetal)</label><input type="text" name="droga_veg_qtd" data-db="droga.vegetal_qtd" placeholder="Ex: 02 porções"></div>
+        <div class="col-9"><label>Descrição Vegetal (Cor, odor, peso aprox. e substância semelhante)</label><input type="text" name="droga_veg_desc" data-db="droga.vegetal_descricao" placeholder="Substância vegetal esverdeada, odor típico, semelhante a Maconha (Cannabis sativa), peso aprox. 10g"></div>
+        <div class="col-3"><label>Qtd. Porções (Química)</label><input type="text" name="droga_quim_qtd" data-db="droga.quimica_qtd" placeholder="Ex: 01 porção"></div>
+        <div class="col-9"><label>Descrição Química (Cor, odor, peso aprox. e substância semelhante)</label><input type="text" name="droga_quim_desc" data-db="droga.quimica_descricao" placeholder="Substância química em pó esbranquiçado, odor típico, semelhante a Cocaína, peso aprox. 1,5g"></div>
+      </div>
+    </fieldset>
+    <p class="legal-text">
+      O presente relatório tem por objetivo avaliar se a(s) substância(s) em questão se tratam de entorpecente(s), psicotrópica(s), precursora(s) ou outras sob controle especial da Portaria 344/1998 SVS/MS. Para verificação do exposto acima, foi realizada inspeção visual e olfativa do material.
+      <br>Cáceres/MT, <input type="date" name="droga_data" data-db="droga.data" class="inline-input">.
+    </p>
+
+    <div class="sig-grid">
+      <div class="sig-box">Testemunha / Pessoa Idônea (Nome e Assinatura)</div>
+      <div class="sig-box">Policial Militar (Posto/Grad, RG e Nome)</div>
+    </div>
+  </div>
+
+  <!-- ABA 5: TERMO DE APREENSÃO E TERMO DE DEPÓSITO -->
+  <div id="tab-apreensao" class="doc-section">
+    <div class="official-header">
+      <h2>ESTADO DE MATO GROSSO • POLÍCIA MILITAR</h2>
+      <h3>6º COMANDO REGIONAL — 6º BATALHÃO DE POLÍCIA MILITAR (CÁCERES/MT)</h3>
+    </div>
+    <div class="ref-box">
+      <span>TERMO DE APREENSÃO E TERMO DE DEPÓSITO</span>
+      <span>Ref. TCO Nº: <strong class="sync-tco-num">___/6ºBPM/2026</strong></span>
+    </div>
+
+    <fieldset>
+      <legend>Termo de Apreensão (Art. 6º, II do CPP e Art. 92 da Lei 9.099/95)</legend>
+      <div class="grid">
+        <div class="col-3"><label>Data</label><input type="date" name="apr_data" data-db="apreensao.data"></div>
+        <div class="col-3"><label>Hora</label><input type="time" name="apr_hora" data-db="apreensao.hora"></div>
+        <div class="col-6"><label>Local da Apreensão</label><input type="text" name="apr_local" data-db="apreensao.local"></div>
+        <div class="col-6"><label>Nome / Razão Social do Proprietário</label><input type="text" name="apr_prop" data-db="apreensao.proprietario_nome" class="sync-autor-nome"></div>
+        <div class="col-3"><label>RG</label><input type="text" name="apr_rg" data-db="apreensao.proprietario_rg" class="sync-autor-rg"></div>
+        <div class="col-3"><label>CPF / CNPJ</label><input type="text" name="apr_cpf" data-db="apreensao.proprietario_cpf" class="sync-autor-cpf"></div>
+        <div class="col-6"><label>Filiação (Pai e Mãe)</label><input type="text" name="apr_filiacao" data-db="apreensao.proprietario_filiacao" class="sync-autor-filiacao"></div>
+        <div class="col-3"><label>Naturalidade</label><input type="text" name="apr_nat" data-db="apreensao.proprietario_naturalidade" class="sync-autor-nat"></div>
+        <div class="col-3"><label>Telefone</label><input type="text" name="apr_tel" data-db="apreensao.proprietario_telefone" class="sync-autor-tel"></div>
+        <div class="col-8"><label>Endereço Completo</label><input type="text" name="apr_end" data-db="apreensao.proprietario_endereco" class="sync-autor-end"></div>
+        <div class="col-4"><label>CEP</label><input type="text" name="apr_cep" data-db="apreensao.proprietario_cep" class="sync-autor-cep"></div>
+        <div class="col-12">
+          <label>Fundamentação Legal da Apreensão</label>
+          <select name="apr_base_legal" data-db="apreensao.base_legal">
+            <option value="CPP_9099">O presente Termo de Apreensão foi lavrado com base no art. 6º, II, DO CPP, E art. 92 da Lei 9.099/1995.</option>
+            <option value="AMBIENTAL">O presente Termo de Apreensão foi lavrado com base no art. 25, caput da Lei 9.605/98, c/c Artigo 101, I do Decreto nº 6514/08 (Crimes Ambientais).</option>
+          </select>
+        </div>
+        <div class="col-12">
+          <label>Descrição Detalhada dos Bens Apreendidos</label>
+          <textarea name="apr_bens" data-db="apreensao.descricao_bens" placeholder="Discriminar quantidade, marca, modelo, número de série e estado de conservação..."></textarea>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Termo de Depósito (Quando houver Fiel Depositário autorizado pelo Oficial Gestor)</legend>
+      <p style="font-size:12px; margin-top:0;">Nomeio como fiel depositário, ficando ciente de que não poderá vender, usufruir, emprestar os bens mencionados, conforme os artigos 647 e 648 do Código Civil.</p>
+      <div class="grid">
+        <div class="col-6"><label>Nome / Razão Social do Fiel Depositário</label><input type="text" name="dep_nome" data-db="deposito.depositario_nome"></div>
+        <div class="col-3"><label>CPF / CNPJ</label><input type="text" name="dep_cpf" data-db="deposito.depositario_cpf"></div>
+        <div class="col-3"><label>Telefone</label><input type="text" name="dep_tel" data-db="deposito.depositario_telefone"></div>
+        <div class="col-6"><label>Filiação (Pai e Mãe)</label><input type="text" name="dep_filiacao" data-db="deposito.depositario_filiacao"></div>
+        <div class="col-6"><label>Endereço do Fiel Depositário</label><input type="text" name="dep_end" data-db="deposito.depositario_endereco"></div>
+        <div class="col-6"><label>Local do Depósito do Bem</label><input type="text" name="dep_local_bem" data-db="deposito.local_guarda"></div>
+        <div class="col-3"><label>Data Recebimento</label><input type="date" name="dep_data" data-db="deposito.data"></div>
+        <div class="col-3"><label>Hora</label><input type="time" name="dep_hora" data-db="deposito.hora"></div>
+        <div class="col-12"><label>Descrição do Bem Depositado</label><textarea name="dep_bens" data-db="deposito.descricao_bem"></textarea></div>
+      </div>
+    </fieldset>
+
+    <div class="sig-grid">
+      <div class="sig-box">Autor do Fato / Fiel Depositário</div>
+      <div class="sig-box">Policial Militar Responsável</div>
+    </div>
+  </div>
+
+  <!-- ABA 6: REQUISIÇÕES PERICIAIS POLITEC -->
+  <div id="tab-pericia" class="doc-section">
+    <div class="official-header">
+      <h2>ESTADO DE MATO GROSSO • POLÍCIA MILITAR</h2>
+      <h3>6º COMANDO REGIONAL — 6º BATALHÃO DE POLÍCIA MILITAR (CÁCERES/MT)</h3>
+    </div>
+    <div class="ref-box">
+      <span>REQUISIÇÕES PERICIAIS (POLITEC — CÁCERES/MT)</span>
+      <span>Ref. TCO Nº: <strong class="sync-tco-num">___/6ºBPM/2026</strong></span>
+    </div>
+
+    <fieldset>
+      <legend>A) Requisição de Exame de Lesão Corporal (Art. 158 CPP e Art. 69 Lei 9.099/95)</legend>
+      <p class="legal-text">
+        Requisito a POLITEC - Perícia Oficial e Identificação Técnica, a realização de exame de corpo de delito no(a) Sr.(a) <input type="text" name="per_lesao_paciente" data-db="pericia_lesao.paciente_nome" class="inline-input sync-vitima-nome" style="min-width:240px"> (Vítima / Autor do fato), por ter relatado que: <input type="text" name="per_lesao_relato" data-db="pericia_lesao.relato_lesao" class="inline-input" style="min-width:340px" placeholder="breve relato de como, com o que e onde foi lesionado(a)">, de natureza <input type="text" name="per_lesao_nat" data-db="pericia_lesao.natureza" class="inline-input sync-natureza" style="min-width:180px">, ocorrido na data <input type="date" name="per_lesao_data" data-db="pericia_lesao.data_fato" class="inline-input sync-data-fato">, respondendo aos quesitos oficiais (1 a 7 do Manual TCO/PMMT).
+      </p>
+    </fieldset>
+
+    <fieldset>
+      <legend>B) Requisição de Exame em Drogas de Abuso (Art. 48, §2º e Art. 50, §1º Lei 11.343/06)</legend>
+      <p class="legal-text">
+        Requisito a POLITEC - Perícia Oficial e Identificação Técnica, a realização de exame químico definitivo na substância análoga a entorpecente apensada, encontrada em posse do(a) Sr.(a) <input type="text" name="per_droga_autor" data-db="pericia_droga.autor_nome" class="inline-input sync-autor-nome" style="min-width:240px">, de natureza Porte de Drogas para Consumo Pessoal, ocorrido na data <input type="date" name="per_droga_data" data-db="pericia_droga.data_fato" class="inline-input sync-data-fato">.
+      </p>
+      <div class="grid">
+        <div class="col-12">
+          <label>Descrição do Material Apensado e Lacre</label>
+          <input type="text" name="per_droga_apenso" data-db="pericia_droga.apenso_lacre" placeholder="Ex: 01 envelope lacrado (Lacre nº 0000), contendo XX porções de substância análoga a...">
+        </div>
+      </div>
+    </fieldset>
+
+    <div class="sig-grid">
+      <div class="sig-box">Comandante da GUPM (Assinatura e RG PMMT)</div>
+      <div class="sig-box">Recebimento POLITEC / Periciando</div>
+    </div>
+  </div>
+
+  <!-- ABA 7: TERMO DE ENCERRAMENTO E REMESSA -->
+  <div id="tab-encerramento" class="doc-section">
+    <div class="official-header">
+      <h2>ESTADO DE MATO GROSSO • POLÍCIA MILITAR</h2>
+      <h3>6º COMANDO REGIONAL — 6º BATALHÃO DE POLÍCIA MILITAR (CÁCERES/MT)</h3>
+    </div>
+    <div class="ref-box">
+      <span>TERMO DE ENCERRAMENTO E REMESSA</span>
+      <span>Ref. TCO Nº: <strong class="sync-tco-num">___/6ºBPM/2026</strong></span>
+    </div>
+
+    <p class="legal-text">
+      Aos <input type="text" name="enc_dia" data-db="encerramento.dia" class="inline-input" style="min-width:45px" placeholder="DD"> dias do mês de <input type="text" name="enc_mes" data-db="encerramento.mes" class="inline-input" style="min-width:110px" placeholder="Mês"> do ano de <input type="text" name="enc_ano" data-db="encerramento.ano" class="inline-input" style="min-width:65px" value="2026">, por determinação da Autoridade Policial Militar, dou por encerrado a lavratura do presente Termo Circunstanciado de Ocorrência nº <strong class="sync-tco-num">___/6ºBPM/2026</strong>, em desfavor do senhor <input type="text" name="enc_autor" data-db="encerramento.autor_nome" class="inline-input sync-autor-nome" style="min-width:260px">, para as providências de remessa dos autos para apreciação do Núcleo de Resoluções de Conflitos e Justiça Restaurativa, da Vara do Juizado Especial da Comarca de <input type="text" name="enc_comarca" data-db="encerramento.comarca" class="inline-input" value="Cáceres-MT">, a quem compete deliberar sobre o suposto delito.
+    </p>
+    <p class="legal-text">
+      Quartel em <strong>Cáceres-MT</strong>, <input type="text" name="enc_data_extenso" data-db="encerramento.data_extenso" class="inline-input" style="min-width:220px" placeholder="DD de mês de 2026">.
+    </p>
+
+    <div class="sig-grid">
+      <div class="sig-box">
+        <strong class="sync-cmt-nome">Comandante de GUPM</strong><br>
+        RG nº <span class="sync-cmt-rg">_________</span> PMMT
+      </div>
+      <div class="sig-box">
+        <strong>Oficial Gestor de TCO — 6º BPM</strong><br>
+        Conferência e Remessa ao PJe/TJMT
+      </div>
+    </div>
+  </div>
+
+  <div class="official-footer">
+    6º Comando Regional • 6º Batalhão de Polícia Militar — Av. Getúlio Vargas, s/n, Centro, Cáceres/MT — CEP 78210-000
+  </div>
+</form>
+
+<!-- MODAL: HISTÓRICO DE TCOs SALVOS NO SUPABASE -->
+<div id="historicoModal" class="modal no-print">
+  <div class="modal-content">
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; border-bottom:2px solid var(--accent); padding-bottom:10px;">
+      <h3 style="margin:0; color:var(--primary);"><i class="fa-solid fa-folder-open"></i> TCOs Registrados no Banco de Dados</h3>
+      <div style="display:flex; gap:8px;">
+        <button type="button" class="btn-new" onclick="carregarListaTCOs()"><i class="fa-solid fa-arrows-rotate"></i> Atualizar</button>
+        <button type="button" class="btn-clear" onclick="fecharModal('historicoModal')"><i class="fa-solid fa-xmark"></i> Fechar</button>
+      </div>
+    </div>
+
+    <div style="margin-top:12px;">
+      <input type="text" id="buscaHistorico" onkeyup="filtrarHistorico()" placeholder="Pesquisar por Nº TCO, Natureza, Autor, Vítima ou Status...">
+    </div>
+
+    <div class="modal-body">
+      <table>
+        <thead>
+          <tr>
+            <th>Nº TCO</th>
+            <th>Data Fato</th>
+            <th>Natureza</th>
+            <th>Autor do Fato</th>
+            <th>Status</th>
+            <th style="text-align:right;">Ações</th>
+          </tr>
+        </thead>
+        <tbody id="tabelaHistoricoBody">
+          <tr><td colspan="6" style="text-align:center; padding:20px; color:var(--muted);">Carregando registros...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: PAYLOAD JSON -->
+<div id="jsonModal" class="modal no-print">
+  <div class="modal-content" style="max-width:750px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+      <h3 style="margin:0; color:var(--primary);">Payload JSON Estruturado (Banco de Dados)</h3>
+      <button type="button" class="btn-clear" onclick="fecharModal('jsonModal')">Fechar</button>
+    </div>
+    <div class="modal-body">
+      <pre id="jsonOutput"></pre>
+    </div>
+    <div style="margin-top:10px; text-align:right;">
+      <button type="button" class="btn-save" onclick="copiarJSON()"><i class="fa-solid fa-copy"></i> Copiar JSON</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ==========================================================
+  // CONFIGURAÇÃO SUPABASE (INTEGRADA AO PORTAL 5º PELOTÃO)
+  // ==========================================================
+  const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
+  const dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  let tcoAtualId = null;
+  let listaAlunos = [];
+  let listaTCOs = [];
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    definirDatasPadrao();
+    await inicializarConexao();
+  });
+
+  function definirDatasPadrao() {
+    const hoje = new Date().toISOString().split('T')[0];
+    const reg = document.getElementById('tco_data_registro');
+    if (reg && !reg.value) reg.value = hoje;
+  }
+
+  async function inicializarConexao() {
+    const badge = document.getElementById('statusConexao');
+    try {
+      await Promise.all([carregarEfetivo(), carregarListaTCOs()]);
+      badge.className = 'status-pill ok';
+      badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> Supabase Conectado';
+    } catch (err) {
+      console.error('Erro ao conectar ao Supabase:', err);
+      badge.className = 'status-pill err';
+      badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Sem Conexão BD';
+    }
+  }
+
+  // ==========================================================
+  // INTEGRAÇÃO COM EFETIVO (alunos_pelotao)
+  // ==========================================================
+  async function carregarEfetivo() {
+    const select = document.getElementById('selectAlunoResponsavel');
+    const { data, error } = await dbClient
+      .from('alunos_pelotao')
+      .select('id, numero, qra, nome, equipe')
+      .order('numero', { ascending: true });
+
+    if (error) {
+      select.innerHTML = '<option value="">Erro ao carregar efetivo</option>';
+      throw error;
+    }
+
+    listaAlunos = data || [];
+    select.innerHTML = '<option value="">-- Selecione o Aluno/Policial --</option>';
+    listaAlunos.forEach(a => {
+      const numFmt = a.numero ? '5' + String(a.numero).padStart(2, '0') : '---';
+      const qraFmt = (a.qra || a.nome || '').replace(/AL SD PM |AL SD /gi, '').trim().toUpperCase();
+      select.add(new Option(`${numFmt} - ${qraFmt} (${a.equipe || '5º PEL'})`, a.id));
+    });
+  }
+
+  function preencherGuarnicaoPorAluno() {
+    const id = document.getElementById('selectAlunoResponsavel').value;
+    if (!id) return;
+    const aluno = listaAlunos.find(a => a.id == id);
+    if (!aluno) return;
+
+    const nomeCompleto = aluno.nome || aluno.qra || '';
+    const escrevente = document.getElementById('autuacao_escrevente');
+    const auxPosto = document.getElementById('gu_aux_posto');
+    const auxNome = document.getElementById('gu_aux_nome');
+
+    if (escrevente && !escrevente.value) escrevente.value = `AL SD PM ${nomeCompleto}`;
+    if (auxPosto && !auxPosto.value) auxPosto.value = 'AL SD PM';
+    if (auxNome && !auxNome.value) auxNome.value = nomeCompleto;
+  }
+
+  // ==========================================================
+  // CRUD SUPABASE (tco_registros)
+  // ==========================================================
+  async function carregarListaTCOs() {
+    const { data, error } = await dbClient
+      .from('tco_registros')
+      .select('id, numero_tco, natureza, data_fato, autor_nome, vitima_nome, status, atualizado_em')
+      .order('atualizado_em', { ascending: false });
+
+    if (error) {
+      console.error('Erro ao buscar TCOs:', error);
+      document.getElementById('tabelaHistoricoBody').innerHTML =
+        `<tr><td colspan="6" style="text-align:center; color:#dc2626; padding:16px;">Erro ao ler tabela <code>tco_registros</code>. Verifique se o SQL foi executado no Supabase.</td></tr>`;
+      return;
+    }
+
+    listaTCOs = data || [];
+    document.getElementById('qtdSalvos').textContent = listaTCOs.length;
+    renderizarTabelaHistorico(listaTCOs);
+  }
+
+  function renderizarTabelaHistorico(registros) {
+    const tbody = document.getElementById('tabelaHistoricoBody');
+    if (!registros.length) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:22px; color:var(--muted);">Nenhum TCO registrado no banco ainda.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = registros.map(r => {
+      const dataFmt = r.data_fato ? r.data_fato.split('-').reverse().join('/') : '--/--/----';
+      const st = r.status || 'RASCUNHO';
+      return `
+        <tr>
+          <td><strong>${escapeHtml(r.numero_tco || 'S/N')}</strong></td>
+          <td>${dataFmt}</td>
+          <td>${escapeHtml(r.natureza || '-')}</td>
+          <td>${escapeHtml(r.autor_nome || '-')}</td>
+          <td><span class="st-badge st-${st}">${st}</span></td>
+          <td style="text-align:right; white-space:nowrap;">
+            <button type="button" class="btn-print" style="padding:5px 8px; font-size:11px;" onclick="carregarTCOPorId(${r.id})">
+              <i class="fa-solid fa-pen-to-square"></i> Abrir
+            </button>
+            <button type="button" class="btn-clear" style="padding:5px 8px; font-size:11px;" onclick="excluirTCO(${r.id}, '${escapeHtml(r.numero_tco || '')}')">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function filtrarHistorico() {
+    const termo = document.getElementById('buscaHistorico').value.toLowerCase();
+    const filtrados = listaTCOs.filter(r =>
+      (r.numero_tco && r.numero_tco.toLowerCase().includes(termo)) ||
+      (r.natureza && r.natureza.toLowerCase().includes(termo)) ||
+      (r.autor_nome && r.autor_nome.toLowerCase().includes(termo)) ||
+      (r.vitima_nome && r.vitima_nome.toLowerCase().includes(termo)) ||
+      (r.status && r.status.toLowerCase().includes(termo))
+    );
+    renderizarTabelaHistorico(filtrados);
+  }
+
+  async function salvarTCONoBanco() {
+    const dados = gerarObjetoBancoDados();
+    const numTco = (dados.tco?.numero || '').trim();
+
+    if (!numTco) {
+      Swal.fire('Campo obrigatório', 'Informe o Número do TCO antes de salvar no banco de dados.', 'warning');
+      document.getElementById('tco_numero').focus();
+      return;
+    }
+
+    const btn = document.getElementById('btnSalvarBD');
+    const htmlOriginal = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
+
+    const alunoIdVal = document.getElementById('selectAlunoResponsavel').value;
+    const statusVal = document.getElementById('selectStatusTCO').value;
+
+    const registro = {
+      numero_tco: numTco,
+      natureza: dados.ocorrencia?.natureza || null,
+      tipificacao: dados.ocorrencia?.tipificacao_legal || null,
+      data_fato: dados.ocorrencia?.data_fato || null,
+      vitima_nome: dados.vitima?.nome_civil || null,
+      autor_nome: dados.autor?.nome_civil || null,
+      guarnicao_cmt: dados.guarnicao?.cmt_nome || null,
+      aluno_id: alunoIdVal ? parseInt(alunoIdVal, 10) : null,
+      status: statusVal,
+      dados_completos: dados,
+      atualizado_em: new Date().toISOString()
+    };
+
+    try {
+      let resultado;
+      if (tcoAtualId) {
+        resultado = await dbClient
+          .from('tco_registros')
+          .update(registro)
+          .eq('id', tcoAtualId)
+          .select('id, numero_tco')
+          .single();
+      } else {
+        resultado = await dbClient
+          .from('tco_registros')
+          .insert([registro])
+          .select('id, numero_tco')
+          .single();
+      }
+
+      if (resultado.error) throw resultado.error;
+
+      tcoAtualId = resultado.data.id;
+      atualizarIndicadorEdicao(resultado.data.numero_tco);
+      await carregarListaTCOs();
+
+      Swal.fire({
+        icon: 'success',
+        title: 'TCO Salvo no Banco!',
+        text: `Registro Nº ${resultado.data.numero_tco} sincronizado com sucesso.`,
+        confirmButtonColor: '#0a2240',
+        timer: 2200
+      });
+    } catch (err) {
+      console.error('Erro ao salvar TCO:', err);
+      Swal.fire('Erro ao salvar', err.message || 'Verifique se a tabela tco_registros foi criada no Supabase.', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = htmlOriginal;
+    }
+  }
+
+  async function carregarTCOPorId(id) {
+    const { data, error } = await dbClient
+      .from('tco_registros')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error || !data) {
+      Swal.fire('Erro', 'Não foi possível carregar este TCO.', 'error');
+      return;
+    }
+
+    document.getElementById('tcoForm').reset();
+    tcoAtualId = data.id;
+    document.getElementById('selectAlunoResponsavel').value = data.aluno_id || '';
+    document.getElementById('selectStatusTCO').value = data.status || 'RASCUNHO';
+
+    if (data.dados_completos) {
+      window.preencherTCOComDadosDoBanco(data.dados_completos);
+    }
+
+    atualizarIndicadorEdicao(data.numero_tco);
+    fecharModal('historicoModal');
+  }
+
+  async function excluirTCO(id, numero) {
+    const conf = await Swal.fire({
+      title: `Excluir TCO ${numero}?`,
+      text: 'Esta ação removerá o registro permanentemente do banco de dados.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc2626',
+      cancelButtonColor: '#64748b',
+      confirmButtonText: 'Sim, excluir',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (!conf.isConfirmed) return;
+
+    const { error } = await dbClient.from('tco_registros').delete().eq('id', id);
+    if (error) {
+      Swal.fire('Erro', 'Falha ao excluir registro: ' + error.message, 'error');
+      return;
+    }
+
+    if (tcoAtualId === id) {
+      novoTCO(true);
+    }
+    await carregarListaTCOs();
+    Swal.fire({ icon: 'success', title: 'Excluído!', timer: 1400, showConfirmButton: false });
+  }
+
+  function atualizarIndicadorEdicao(numero) {
+    const badge = document.getElementById('indicadorRegistro');
+    if (tcoAtualId) {
+      badge.className = 'badge-edit';
+      badge.innerHTML = `<i class="fa-solid fa-pen"></i> Editando TCO #${tcoAtualId} (${escapeHtml(numero)})`;
+    } else {
+      badge.className = 'badge-edit novo';
+      badge.innerHTML = '<i class="fa-solid fa-file-circle-plus"></i> Novo Registro (Não salvo)';
+    }
+  }
+
+  function novoTCO(silencioso = false) {
+    if (!silencioso && !confirm('Iniciar um novo TCO em branco? Alterações não salvas serão perdidas.')) return;
+    tcoAtualId = null;
+    document.getElementById('tcoForm').reset();
+    document.getElementById('selectStatusTCO').value = 'RASCUNHO';
+    definirDatasPadrao();
+    syncNumeroTCO('');
+    syncCampo('sync-cmt-nome', 'Comandante de GUPM');
+    syncCampo('sync-cmt-rg', '_________');
+    atualizarIndicadorEdicao('');
+  }
+
+  // ==========================================================
+  // CONTROLE DE ABAS, SINCRONIZAÇÃO E SERIALIZAÇÃO
+  // ==========================================================
+  function openTab(evt, tabId) {
+    document.querySelectorAll('.doc-section').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    evt.currentTarget.classList.add('active');
+  }
+
+  function syncNumeroTCO(valor) {
+    const texto = valor.trim() || '___/6ºBPM/2026';
+    document.querySelectorAll('.sync-tco-num').forEach(el => el.textContent = texto);
+  }
+
+  function syncCampo(classe, valor) {
+    document.querySelectorAll('.' + classe).forEach(el => {
+      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+        el.value = valor;
+      } else {
+        el.textContent = valor || '_________________';
+      }
+    });
+  }
+
+  function gerarObjetoBancoDados() {
+    const payload = {};
+    const elementos = document.querySelectorAll('#tcoForm [data-db]');
+    elementos.forEach(el => {
+      if (el.type === 'radio' && !el.checked) return;
+      const [tabela, coluna] = el.getAttribute('data-db').split('.');
+      if (!payload[tabela]) payload[tabela] = {};
+      payload[tabela][coluna] = el.value;
+    });
+    return payload;
+  }
+
+  window.preencherTCOComDadosDoBanco = function(dadosDB) {
+    document.querySelectorAll('#tcoForm [data-db]').forEach(el => {
+      const [tabela, coluna] = el.getAttribute('data-db').split('.');
+      if (dadosDB[tabela] && dadosDB[tabela][coluna] !== undefined) {
+        if (el.type === 'radio') {
+          el.checked = (el.value === dadosDB[tabela][coluna]);
+        } else {
+          el.value = dadosDB[tabela][coluna];
+        }
+      }
+    });
+
+    // Atualiza rótulos espelhados sem sobrescrever edições manuais nas abas secundárias
+    syncNumeroTCO(dadosDB.tco?.numero || '');
+    document.querySelectorAll('.sync-cmt-nome').forEach(el => {
+      if (el.tagName !== 'INPUT') el.textContent = dadosDB.guarnicao?.cmt_nome || 'Comandante de GUPM';
+    });
+    document.querySelectorAll('.sync-cmt-rg').forEach(el => {
+      if (el.tagName !== 'INPUT') el.textContent = dadosDB.guarnicao?.cmt_rg || '_________';
+    });
+  };
+
+  // ==========================================================
+  // IMPRESSÃO, MODAIS E UTILITÁRIOS
+  // ==========================================================
+  function imprimirAbaAtual() {
+    document.body.classList.remove('print-all');
+    window.print();
+  }
+
+  function imprimirTCOCompleto() {
+    document.body.classList.add('print-all');
+    window.print();
+    setTimeout(() => document.body.classList.remove('print-all'), 500);
+  }
+
+  function abrirHistoricoTCO() {
+    carregarListaTCOs();
+    document.getElementById('historicoModal').style.display = 'flex';
+  }
+
+  function fecharModal(id) {
+    document.getElementById(id).style.display = 'none';
+  }
+
+  function exportarJSON() {
+    const dados = gerarObjetoBancoDados();
+    document.getElementById('jsonOutput').textContent = JSON.stringify(dados, null, 2);
+    document.getElementById('jsonModal').style.display = 'flex';
+  }
+
+  function copiarJSON() {
+    const texto = document.getElementById('jsonOutput').textContent;
+    navigator.clipboard.writeText(texto);
+    Swal.fire({ icon: 'success', title: 'JSON copiado!', timer: 1200, showConfirmButton: false });
+  }
+
+  function limparFormulario() {
+    if (confirm('Deseja limpar todos os campos preenchidos na tela?')) {
+      document.getElementById('tcoForm').reset();
+      definirDatasPadrao();
+      syncNumeroTCO('');
+    }
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+</script>
+</body>
+</html>

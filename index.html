@@ -162,6 +162,7 @@
                 <button onclick="mudarModulo('taf')" id="btn-taf" class="menu-item border-r border-slate-700"><i class="fa-solid fa-person-running"></i> TAF</button>
                 <button onclick="mudarModulo('toques')" id="btn-toques" class="menu-item border-r border-slate-700"><i class="fa-solid fa-bullhorn"></i> Toques</button>
                 <button onclick="mudarModulo('gerador')" id="btn-gerador" class="menu-item border-r border-slate-700"><i class="fa-solid fa-file-pdf"></i> Documentos</button>
+                <button onclick="mudarModulo('tco')" id="btn-tco" class="menu-item border-r border-slate-700"><i class="fa-solid fa-file-signature"></i> Módulo TCO</button>
                 
                 <!-- Botões de Ação na Direita -->
                 <div class="flex-1 min-w-[50px]"></div>
@@ -317,10 +318,11 @@
 
                 </section>
 
-                <!-- DEMAIS MÓDULOS (IFRAMES) -->
+                <!-- DEMAIS MÓDULOS (IFRAMES E CONTEÚDOS) -->
                 <section id="modulo-efetivo" class="hidden flex-1 flex flex-col h-full min-h-[85vh]">
                     <iframe id="iframeEfetivo" src="escala.html" class="w-full h-full border border-slate-300 bg-transparent shadow-sm rounded-sm"></iframe>
                 </section>
+                
                 <section id="modulo-cautela" class="hidden space-y-5">
                     <div class="bg-white shadow-sm border border-slate-300 rounded-sm overflow-hidden mb-4">
                         <div class="bg-sys-header px-5 py-4 flex justify-between items-center border-b-2 border-pmmt-gold shrink-0">
@@ -339,8 +341,6 @@
                 <section id="modulo-financeiro" class="hidden flex-1 flex flex-col h-full min-h-[85vh]"><iframe id="iframeFinanceiro" src="financeiro.html" class="w-full h-full border border-slate-300 bg-transparent shadow-sm rounded-sm"></iframe></section>
                 <section id="modulo-efetivodados" class="hidden flex-1 flex flex-col h-full min-h-[85vh]"><iframe id="iframeEfetivoDados" src="efetivo_dados.html" class="w-full h-full border border-slate-300 bg-transparent shadow-sm rounded-sm"></iframe></section>
                 <section id="modulo-academico" class="hidden flex-1 flex flex-col h-full min-h-[85vh]"><iframe id="iframeAcademico" src="academico.html" class="w-full h-full border border-slate-300 bg-white shadow-sm rounded-sm"></iframe></section>
-                
-                <!-- NOVOS MÓDULOS SOCIOGRAMA -->
                 
                 <!-- ÁREA DO ALUNO (PASTAS) -->
                 <section id="modulo-aluno" class="hidden flex-1 flex flex-col h-full min-h-[85vh] space-y-4">
@@ -402,8 +402,38 @@
                 <section id="modulo-taf" class="hidden flex-1 flex flex-col h-full min-h-[85vh]"><iframe id="iframeTaf" src="taf.html" class="w-full h-full border border-slate-300 bg-transparent shadow-sm rounded-sm"></iframe></section>
                 <section id="modulo-toques" class="hidden flex-1 flex flex-col h-full min-h-[85vh]"><iframe id="iframeToques" src="toques_corneta.html" class="w-full h-full border border-slate-300 bg-transparent shadow-sm rounded-sm"></iframe></section>
                 <section id="modulo-gerador" class="hidden flex-1 flex flex-col h-full min-h-[85vh]"><iframe id="iframeGerador" src="gerador_documentos.html" class="w-full h-full border border-slate-300 bg-transparent shadow-sm rounded-sm"></iframe></section>
+                <section id="modulo-tco" class="hidden flex-1 flex flex-col h-full min-h-[85vh]"><iframe id="iframeTco" src="tco.html" class="w-full h-full border border-slate-300 bg-transparent shadow-sm rounded-sm"></iframe></section>
 
             </main>
+        </div>
+    </div>
+
+    <!-- MODAL CAUTELA FIXA -->
+    <div id="modalCautelaFixa" class="fixed inset-0 bg-sys-dark/90 z-[300] hidden flex items-center justify-center p-4">
+        <div class="bg-slate-50 rounded-sm shadow-2xl w-full max-w-md overflow-hidden border border-slate-400">
+            <div class="bg-sys-header px-5 py-4 flex justify-between items-center border-b-2 border-pmmt-gold">
+                <h3 class="text-white font-black text-xs uppercase tracking-wider"><i class="fa-solid fa-gun text-pmmt-gold mr-2"></i>Registrar Cautela Fixa</h3>
+                <button type="button" onclick="fecharModalCautelaFixa()" class="text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="formCautelaFixa" onsubmit="salvarCautelaFixa(event)" class="p-5 space-y-4">
+                <div>
+                    <label class="block text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Policial / Aluno (QRA)</label>
+                    <select id="cautelaFixaAluno" required class="w-full bg-white border border-slate-300 p-2 rounded-sm text-xs font-bold text-slate-800 outline-none focus:border-pmmt-blue"></select>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Material</label>
+                        <input type="text" id="cautelaFixaMaterial" required placeholder="Ex: PT 100 Plus + 3 Car." class="w-full bg-white border border-slate-300 p-2 rounded-sm text-xs font-bold text-slate-800 outline-none focus:border-pmmt-blue">
+                    </div>
+                    <div>
+                        <label class="block text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Nº de Série</label>
+                        <input type="text" id="cautelaFixaSerie" required placeholder="Ex: SDY 81206" class="w-full bg-white border border-slate-300 p-2 rounded-sm text-xs font-bold text-slate-800 outline-none focus:border-pmmt-blue">
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-pmmt-blue hover:bg-sys-blue text-white font-black py-2.5 rounded-sm text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 border border-slate-600">
+                    <i class="fa-solid fa-save"></i> Gravar Cautela
+                </button>
+            </form>
         </div>
     </div>
 
@@ -540,11 +570,15 @@
                 isAdmin = emailUsuarioLogado.includes('willys') || emailUsuarioLogado.includes('comando') || emailUsuarioLogado.includes('tesouraria');
             }
             
-            document.querySelectorAll('.admin-only').forEach(el => isAdmin ? el.classList.remove('hidden') : el.classList.add('hidden'));
+            aplicarPermissoesAdmin();
             
             mudarModulo('home');
             await sincronizarDadosManualmente();
             iniciarRelogioQTS();
+        }
+
+        function aplicarPermissoesAdmin() {
+            document.querySelectorAll('.admin-only').forEach(el => isAdmin ? el.classList.remove('hidden') : el.classList.add('hidden'));
         }
 
         async function sincronizarDadosManualmente() {
@@ -559,9 +593,10 @@
             await carregarCautelasFixas(); 
             await carregarQtsPDF(); 
             await carregarMateriaisApoio();
+            await carregarNotasERankingHome();
             await renderizarDashboardHome();
             
-            const iframesToReload = ['iframeEfetivo', 'iframeEfetivoDados', 'iframeAcademico', 'iframeFinanceiro', 'iframeToques', 'iframeGerador', 'iframeTaf'];
+            const iframesToReload = ['iframeEfetivo', 'iframeEfetivoDados', 'iframeAcademico', 'iframeFinanceiro', 'iframeToques', 'iframeGerador', 'iframeTaf', 'iframeTco'];
             iframesToReload.forEach(id => { const iframe = document.getElementById(id); if (iframe && iframe.contentWindow) iframe.contentWindow.location.reload(); });
             mostrarLoading(false);
         }
@@ -593,7 +628,7 @@
         async function deslogarUsuario() { if (confirm("Encerrar sessão?")) { await dbClient.auth.signOut(); window.location.reload(); } }
 
         function mudarModulo(moduloDestino) {
-            const modulos = ['home', 'efetivo', 'cautela', 'financeiro', 'efetivodados', 'academico', 'aluno', 'taf', 'toques', 'gerador'];
+            const modulos = ['home', 'efetivo', 'cautela', 'financeiro', 'efetivodados', 'academico', 'aluno', 'taf', 'toques', 'gerador', 'tco'];
             modulos.forEach(m => { 
                 const el = document.getElementById('modulo-' + m); if(el) el.classList.add('hidden'); 
                 const btn = document.getElementById('btn-' + m); if(btn) { btn.classList.remove('ativo'); }
@@ -778,22 +813,52 @@
         async function carregarAlunos() { const { data } = await dbClient.from('alunos_pelotao').select('*').order('numero', { ascending: true }); listaAlunosFull = data || []; }
         async function carregarFuncoesComando() { const { data } = await dbClient.from('funcoes_comando').select('*'); if (data) funcoesComandoGlobais = data; }
 
+        function calcularRankingArray() {
+            let ranking = [];
+            listaAlunosFull.forEach(aluno => {
+                const notas = todasNotasGlobais.filter(n => n.aluno_id === aluno.id && n.mgm != null);
+                let mgc = 0; let total = notas.length;
+                if (total > 0) { let soma = 0; notas.forEach(n => { soma += parseFloat(n.mgm); }); mgc = soma / total; }
+                ranking.push({ id: aluno.id, numero: aluno.numero, qra: aluno.qra, nome: aluno.nome, mgc: parseFloat(mgc.toFixed(2)), total: total });
+            });
+            ranking.sort((a, b) => { if (b.mgc !== a.mgc) return b.mgc - a.mgc; return (a.numero || 999) - (b.numero || 999); });
+            return ranking;
+        }
+
+        async function carregarNotasERankingHome() {
+            const { data } = await dbClient.from('academico_notas').select('*');
+            todasNotasGlobais = data || [];
+            const ranking = calcularRankingArray();
+            const dashTop3 = document.getElementById('homeRankingTop3');
+            if (!dashTop3) return;
+            if (ranking.length === 0) {
+                dashTop3.innerHTML = '<div class="w-full text-center py-6 text-slate-400 text-[10px] font-bold uppercase">Sem notas lançadas.</div>';
+                return;
+            }
+            dashTop3.innerHTML = '';
+            ranking.slice(0, 3).forEach((aluno, index) => {
+                const qra = (aluno.qra || aluno.nome).replace(/AL SD PM |AL SD /gi, '').trim().toUpperCase();
+                let med = ['text-yellow-500 fa-crown', 'text-slate-400 fa-medal', 'text-amber-600 fa-medal'][index];
+                dashTop3.innerHTML += `
+                    <div class="flex justify-between items-center bg-white p-2.5 border border-slate-300 rounded-sm w-full">
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 text-center"><i class="fa-solid ${med} text-lg"></i></div>
+                            <div><p class="text-[7.5px] font-bold text-slate-400 uppercase leading-none">${index+1}º Colocado</p><p class="text-xs font-black text-sys-dark">5${aluno.numero.toString().padStart(2,'0')} - ${qra}</p></div>
+                        </div>
+                        <div class="text-right pl-2 border-l border-slate-200"><p class="text-[7.5px] font-bold text-slate-400 uppercase leading-none">MGC</p><p class="text-sm font-black text-emerald-600">${aluno.mgc.toFixed(2)}</p></div>
+                    </div>
+                `;
+            });
+        }
+
         async function abrirRankingGeral() {
             const modal = document.getElementById('modalRankingGeral'); const tbody = document.getElementById('tabelaRankingGeral');
             modal.classList.remove('hidden'); tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-slate-500"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Calculando...</td></tr>';
             try {
-                if (listaAlunosFull.length === 0) { const { data } = await dbClient.from('alunos_pelotao').select('*'); listaAlunosFull = data || []; }
-                if (todasNotasGlobais.length === 0) { const { data } = await dbClient.from('academico_notas').select('*'); todasNotasGlobais = data || []; }
+                if (listaAlunosFull.length === 0) await carregarAlunos();
+                if (todasNotasGlobais.length === 0) await carregarNotasERankingHome();
                 
-                let ranking = [];
-                listaAlunosFull.forEach(aluno => {
-                    const notas = todasNotasGlobais.filter(n => n.aluno_id === aluno.id && n.mgm != null);
-                    let mgc = 0; let total = notas.length;
-                    if (total > 0) { let soma = 0; notas.forEach(n => { soma += parseFloat(n.mgm); }); mgc = soma / total; }
-                    ranking.push({ id: aluno.id, numero: aluno.numero, qra: aluno.qra, nome: aluno.nome, mgc: parseFloat(mgc.toFixed(2)), total: total });
-                });
-
-                ranking.sort((a, b) => { if (b.mgc !== a.mgc) return b.mgc - a.mgc; return (a.numero || 999) - (b.numero || 999); });
+                const ranking = calcularRankingArray();
 
                 tbody.innerHTML = '';
                 if(ranking.length === 0) { tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center">Sem notas.</td></tr>'; return; }
@@ -810,24 +875,6 @@
 
                     tbody.innerHTML += `<tr class="border-b border-slate-200"><td class="p-2 text-center border-r border-slate-200">${rankV}</td><td class="p-2 border-r border-slate-200"><span class="text-pmmt-blue font-black">${aluno.numero||'-'}</span> - ${qra}</td><td class="p-2 text-center border-r border-slate-200">${aluno.total}</td><td class="p-2 text-center text-sm ${cor}">${aluno.mgc.toFixed(2)}</td></tr>`;
                 });
-
-                const dashTop3 = document.getElementById('homeRankingTop3');
-                if (dashTop3) {
-                    dashTop3.innerHTML = '';
-                    ranking.slice(0, 3).forEach((aluno, index) => {
-                        const qra = (aluno.qra || aluno.nome).replace(/AL SD PM |AL SD /gi, '').trim().toUpperCase();
-                        let med = ['text-yellow-500 fa-crown', 'text-slate-400 fa-medal', 'text-amber-600 fa-medal'][index];
-                        dashTop3.innerHTML += `
-                            <div class="flex justify-between items-center bg-white p-2.5 border border-slate-300 rounded-sm w-full">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-6 text-center"><i class="fa-solid ${med} text-lg"></i></div>
-                                    <div><p class="text-[7.5px] font-bold text-slate-400 uppercase leading-none">${index+1}º Colocado</p><p class="text-xs font-black text-sys-dark">5${aluno.numero.toString().padStart(2,'0')} - ${qra}</p></div>
-                                </div>
-                                <div class="text-right pl-2 border-l border-slate-200"><p class="text-[7.5px] font-bold text-slate-400 uppercase leading-none">MGC</p><p class="text-sm font-black text-emerald-600">${aluno.mgc.toFixed(2)}</p></div>
-                            </div>
-                        `;
-                    });
-                }
             } catch (e) { console.error(e); }
         }
         function fecharRankingGeral() { document.getElementById('modalRankingGeral').classList.add('hidden'); }
@@ -852,6 +899,9 @@
             const el = document.getElementById('dashXerifeNome'); if(el) el.innerText = txt;
         }
 
+        // ==========================================
+        // LIVRO DE CAUTELA FIXA
+        // ==========================================
         async function carregarCautelasFixas() { const { data } = await dbClient.from('cautela_fixa').select('*'); if (data) { cautelasFixasGlobais = data || []; renderizarTabelaCautelaFixa(); } }
         function renderizarTabelaCautelaFixa() {
             const tbody = document.getElementById('tabelaCautelaFixa'); if (!tbody) return;
@@ -864,6 +914,60 @@
                 html += `<tr class="border-b border-slate-200 hover:bg-slate-50"><td class="p-2 border-r border-slate-300 text-center text-slate-400">___/___<br>__:__</td><td class="p-2 border-r border-slate-300 text-center font-bold text-pmmt-blue">${num}</td><td class="p-2 border-r border-slate-300 font-bold uppercase text-[10px]">AL SD PM ${qra}</td><td class="p-2 border-r border-slate-300 text-center font-bold">${i.c.material}</td><td class="p-2 border-r border-slate-300 text-center">${i.c.serie}</td><td class="p-2 border-r border-slate-300 text-center">____________</td><td class="p-2 text-center admin-only no-print"><button onclick="deletarCautelaFixa(${i.c.id})" class="text-rose-500 hover:text-rose-700"><i class="fa-solid fa-trash"></i></button></td></tr>`;
             });
             tbody.innerHTML = html;
+            aplicarPermissoesAdmin();
+        }
+
+        function abrirModalCautelaFixa() {
+            document.getElementById('formCautelaFixa').reset();
+            const select = document.getElementById('cautelaFixaAluno');
+            select.innerHTML = '<option value="">Selecione o Aluno...</option>';
+            [...listaAlunosFull].sort((a, b) => a.numero - b.numero).forEach(a => {
+                let num = "5" + a.numero.toString().padStart(2, '0');
+                let qra = a.qra ? a.qra.replace(/AL SD PM |AL SD /gi, '').trim().toUpperCase() : a.nome.split(' ')[0].toUpperCase();
+                select.add(new Option(`${num} - ${qra}`, a.id));
+            });
+            document.getElementById('modalCautelaFixa').classList.remove('hidden');
+        }
+
+        function fecharModalCautelaFixa() { document.getElementById('modalCautelaFixa').classList.add('hidden'); }
+
+        async function salvarCautelaFixa(e) {
+            e.preventDefault();
+            mostrarLoading(true);
+            const payload = {
+                aluno_id: document.getElementById('cautelaFixaAluno').value,
+                material: document.getElementById('cautelaFixaMaterial').value.trim().toUpperCase(),
+                serie: document.getElementById('cautelaFixaSerie').value.trim().toUpperCase()
+            };
+            const { error } = await dbClient.from('cautela_fixa').insert([payload]);
+            if (error) alert("Erro ao gravar cautela: " + error.message);
+            else { fecharModalCautelaFixa(); await carregarCautelasFixas(); }
+            mostrarLoading(false);
+        }
+
+        async function deletarCautelaFixa(id) {
+            if (!confirm("Deseja excluir esta arma da Cautela Fixa?")) return;
+            mostrarLoading(true);
+            const { error } = await dbClient.from('cautela_fixa').delete().eq('id', id);
+            if (error) alert("Erro ao excluir: " + error.message);
+            else await carregarCautelasFixas();
+            mostrarLoading(false);
+        }
+
+        function imprimirCautelaFixa() {
+            const s = document.createElement('style');
+            s.innerHTML = `
+                @page { size: A4 portrait; margin: 10mm; }
+                body.printing-cautela table { min-width: 0 !important; width: 100% !important; }
+                body.printing-cautela th, body.printing-cautela td { word-wrap: break-word; white-space: normal !important; }
+            `;
+            document.head.appendChild(s);
+            document.body.classList.add('printing-cautela');
+            window.print();
+            setTimeout(() => {
+                document.body.classList.remove('printing-cautela');
+                document.head.removeChild(s);
+            }, 500);
         }
 
         async function carregarMateriaisApoio() {
@@ -888,6 +992,7 @@
 
         let relogioInterval;
         function iniciarRelogioQTS() {
+            if (relogioInterval) clearInterval(relogioInterval);
             relogioInterval = setInterval(() => {
                 const agora = new Date(); const hh = agora.getHours(); const mm = agora.getMinutes(); const ss = agora.getSeconds();
                 document.getElementById('relogioAtual').innerText = `${hh.toString().padStart(2,'0')}:${mm.toString().padStart(2,'0')}:${ss.toString().padStart(2,'0')}`;
