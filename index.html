@@ -443,6 +443,7 @@
             <div class="bg-sys-header px-5 py-4 flex justify-between items-center border-b-2 border-pmmt-gold shrink-0">
                 <div>
                     <h3 class="text-white font-black text-xs uppercase tracking-wider"><i class="fa-solid fa-trophy text-yellow-400 mr-2"></i>Classificação Geral (MGC)</h3>
+                    <p class="text-slate-400 text-[9px] font-bold mt-0.5 uppercase tracking-widest">Critério: MGC (6 casas decimais) • Desempate: Maior Idade</p>
                 </div>
                 <button onclick="fecharRankingGeral()" class="text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
@@ -814,14 +815,45 @@
         async function carregarFuncoesComando() { const { data } = await dbClient.from('funcoes_comando').select('*'); if (data) funcoesComandoGlobais = data; }
 
         function calcularRankingArray() {
+            const parseNasc = (dt) => {
+                if (!dt) return Infinity;
+                const ts = new Date(String(dt).slice(0, 10) + 'T00:00:00').getTime();
+                return isNaN(ts) ? Infinity : ts;
+            };
+
             let ranking = [];
             listaAlunosFull.forEach(aluno => {
                 const notas = todasNotasGlobais.filter(n => n.aluno_id === aluno.id && n.mgm != null);
-                let mgc = 0; let total = notas.length;
-                if (total > 0) { let soma = 0; notas.forEach(n => { soma += parseFloat(n.mgm); }); mgc = soma / total; }
-                ranking.push({ id: aluno.id, numero: aluno.numero, qra: aluno.qra, nome: aluno.nome, mgc: parseFloat(mgc.toFixed(2)), total: total });
+                let mgcBruta = 0; let total = notas.length;
+                if (total > 0) {
+                    let soma = 0;
+                    notas.forEach(n => { soma += parseFloat(n.mgm); });
+                    mgcBruta = soma / total;
+                }
+                // Precisão oficial até a 6ª casa decimal antes da ordenação
+                const mgc6 = parseFloat(mgcBruta.toFixed(6));
+                ranking.push({
+                    id: aluno.id,
+                    numero: aluno.numero,
+                    qra: aluno.qra,
+                    nome: aluno.nome,
+                    data_nascimento: aluno.data_nascimento || null,
+                    mgc: mgc6,
+                    total: total
+                });
             });
-            ranking.sort((a, b) => { if (b.mgc !== a.mgc) return b.mgc - a.mgc; return (a.numero || 999) - (b.numero || 999); });
+
+            ranking.sort((a, b) => {
+                // 1º Critério: Maior MGC (precisão de 6 casas decimais)
+                if (b.mgc !== a.mgc) return b.mgc - a.mgc;
+                // 2º Critério: Maior idade (data_nascimento mais antiga primeiro)
+                const nascA = parseNasc(a.data_nascimento);
+                const nascB = parseNasc(b.data_nascimento);
+                if (nascA !== nascB) return nascA - nascB;
+                // 3º Critério (reserva): Menor número do aluno
+                return (a.numero || 999) - (b.numero || 999);
+            });
+
             return ranking;
         }
 
@@ -843,9 +875,9 @@
                     <div class="flex justify-between items-center bg-white p-2.5 border border-slate-300 rounded-sm w-full">
                         <div class="flex items-center gap-2">
                             <div class="w-6 text-center"><i class="fa-solid ${med} text-lg"></i></div>
-                            <div><p class="text-[7.5px] font-bold text-slate-400 uppercase leading-none">${index+1}º Colocado</p><p class="text-xs font-black text-sys-dark">5${aluno.numero.toString().padStart(2,'0')} - ${qra}</p></div>
+                            <div><p class="text-[7.5px] font-bold text-slate-400 uppercase leading-none">${index+1}º Colocado</p><p class="text-xs font-black text-sys-dark">5${(aluno.numero || 0).toString().padStart(2,'0')} - ${qra}</p></div>
                         </div>
-                        <div class="text-right pl-2 border-l border-slate-200"><p class="text-[7.5px] font-bold text-slate-400 uppercase leading-none">MGC</p><p class="text-sm font-black text-emerald-600">${aluno.mgc.toFixed(2)}</p></div>
+                        <div class="text-right pl-2 border-l border-slate-200" title="MGC (6 casas): ${aluno.mgc.toFixed(6)}"><p class="text-[7.5px] font-bold text-slate-400 uppercase leading-none">MGC</p><p class="text-sm font-black text-emerald-600">${aluno.mgc.toFixed(4)}</p></div>
                     </div>
                 `;
             });
@@ -873,7 +905,7 @@
                     let cor = 'text-slate-700';
                     if (index < 3) cor = 'text-emerald-600 font-black'; else if (aluno.mgc < 5) cor = 'text-red-600 font-black';
 
-                    tbody.innerHTML += `<tr class="border-b border-slate-200"><td class="p-2 text-center border-r border-slate-200">${rankV}</td><td class="p-2 border-r border-slate-200"><span class="text-pmmt-blue font-black">${aluno.numero||'-'}</span> - ${qra}</td><td class="p-2 text-center border-r border-slate-200">${aluno.total}</td><td class="p-2 text-center text-sm ${cor}">${aluno.mgc.toFixed(2)}</td></tr>`;
+                    tbody.innerHTML += `<tr class="border-b border-slate-200"><td class="p-2 text-center border-r border-slate-200">${rankV}</td><td class="p-2 border-r border-slate-200"><span class="text-pmmt-blue font-black">${aluno.numero||'-'}</span> - ${qra}</td><td class="p-2 text-center border-r border-slate-200">${aluno.total}</td><td class="p-2 text-center text-sm ${cor}" title="MGC (6 casas): ${aluno.mgc.toFixed(6)}">${aluno.mgc.toFixed(4)}</td></tr>`;
                 });
             } catch (e) { console.error(e); }
         }
