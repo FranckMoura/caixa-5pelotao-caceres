@@ -208,7 +208,7 @@
                                 <div class="flex justify-between items-end mb-1">
                                     <div class="text-left">
                                         <p class="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Início Curso</p>
-                                        <p class="text-[10px] font-black text-sys-dark">26/06/2026</p>
+                                        <p class="text-[10px] font-black text-sys-dark">22/06/2026</p>
                                     </div>
                                     <div class="text-right">
                                         <p class="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Formatura</p>
@@ -1003,7 +1003,7 @@
                 else if (min > 1380) txt = "FORA DE EXPEDIENTE";
                 document.getElementById('statusAulaAtual').innerText = txt;
 
-                const inicio = new Date('2026-06-26T00:00:00'); const fim = new Date('2027-04-21T23:59:59');
+                const inicio = new Date('2026-06-22T00:00:00'); const fim = new Date('2027-04-21T23:59:59');
                 const tTotal = fim - inicio; const tDec = Math.max(0, agora - inicio);
                 const dTot = Math.ceil(tTotal / 86400000); const dDec = Math.floor(Math.min(tDec, tTotal) / 86400000);
                 
