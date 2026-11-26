@@ -32,8 +32,23 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* Menu Horizontal Militarizado */
-        .menu-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.25rem; font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.2s ease; white-space: nowrap; border-bottom: 3px solid transparent; }
+        /* Menu Horizontal Militarizado Compacto e Responsivo */
+        .menu-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+            padding: 0.65rem 0.6rem;
+            font-size: 10px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+            flex: 1 1 auto;
+        }
         .menu-item:hover { background-color: #1e3a8a; color: white; }
         .menu-item.ativo { background-color: #0B1C3D; color: #C5A059; border-bottom-color: #C5A059; }
         
@@ -134,40 +149,51 @@
         <!-- PAINEL PRINCIPAL (ÁREA LOGADA) -->
         <div id="painelPrincipal" class="hidden h-full flex flex-col overflow-hidden w-full">
             
-            <!-- HEADER TOPO -->
-            <header class="bg-sys-dark text-white h-16 flex items-center justify-between px-4 md:px-6 z-40 shrink-0 border-b-2 border-slate-700">
-                <div class="flex items-center gap-4">
-                    <img src="logo_pmmt_branco_para_fundo_azul.png" alt="Logo PMMT" class="h-10 object-contain cursor-pointer hover:opacity-80 transition" onclick="mudarModulo('home')" onerror="this.style.display='none'">
-                    <div class="border-l border-slate-600 pl-4">
+            <!-- HEADER TOPO (COM AÇÕES DE SISTEMA INTEGRADAS) -->
+            <header class="bg-sys-dark text-white min-h-[3.75rem] py-2 flex flex-wrap items-center justify-between px-4 md:px-6 z-40 shrink-0 border-b border-slate-700 gap-3">
+                <div class="flex items-center gap-3">
+                    <img src="logo_pmmt_branco_para_fundo_azul.png" alt="Logo PMMT" class="h-9 object-contain cursor-pointer hover:opacity-80 transition" onclick="mudarModulo('home')" onerror="this.style.display='none'">
+                    <div class="border-l border-slate-600 pl-3">
                         <h1 class="text-xs md:text-sm font-black tracking-wider text-white uppercase">35º CFSD <span class="text-pmmt-gold">| 6º CR</span></h1>
                         <p class="text-[9px] font-semibold text-slate-400 uppercase tracking-widest mt-0.5">Portal de Gestão Integrada</p>
                     </div>
                 </div>
-                <!-- EXIBIÇÃO DO USUÁRIO LOGADO -->
-                <div class="flex flex-col items-end justify-center min-w-max border-l border-slate-600 pl-4 h-full pr-2 hidden sm:flex">
-                    <p class="text-xs font-black uppercase text-pmmt-gold tracking-widest">5º PELOTÃO - F.T.</p>
-                    <p id="usuarioLogadoInfo" class="text-[9px] text-slate-300 font-bold uppercase mt-1 tracking-wider"></p>
+
+                <div class="flex items-center gap-3 md:gap-4">
+                    <!-- AÇÕES DO SISTEMA (FORA DA BARRA DE MÓDULOS) -->
+                    <div class="flex items-center gap-1.5">
+                        <button onclick="abrirModalAdmins()" class="admin-only hidden inline-flex items-center gap-1.5 bg-pmmt-blue hover:bg-sys-blue text-pmmt-gold border border-pmmt-gold/60 px-2.5 py-1.5 rounded-sm text-[10px] font-extrabold uppercase tracking-wider transition" title="Gerenciar Usuários Autorizados">
+                            <i class="fa-solid fa-user-shield"></i> <span class="hidden md:inline">Acessos</span>
+                        </button>
+                        <button onclick="sincronizarDadosManualmente()" class="inline-flex items-center gap-1.5 bg-sys-header hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-600 px-2.5 py-1.5 rounded-sm text-[10px] font-extrabold uppercase tracking-wider transition" title="Sincronizar Dados">
+                            <i class="fa-solid fa-arrows-rotate"></i> <span class="hidden md:inline">Sync</span>
+                        </button>
+                        <button onclick="deslogarUsuario()" class="inline-flex items-center gap-1.5 bg-rose-950/60 hover:bg-rose-700 text-rose-400 hover:text-white border border-rose-700/70 px-2.5 py-1.5 rounded-sm text-[10px] font-extrabold uppercase tracking-wider transition" title="Sair do Portal">
+                            <i class="fa-solid fa-power-off"></i> <span class="hidden md:inline">Sair</span>
+                        </button>
+                    </div>
+
+                    <!-- EXIBIÇÃO DO USUÁRIO LOGADO -->
+                    <div class="flex flex-col items-end justify-center min-w-max border-l border-slate-600 pl-3 hidden sm:flex">
+                        <p class="text-[11px] font-black uppercase text-pmmt-gold tracking-widest leading-tight">5º PELOTÃO - F.T.</p>
+                        <p id="usuarioLogadoInfo" class="text-[9px] text-slate-300 font-bold uppercase mt-0.5 tracking-wider"></p>
+                    </div>
                 </div>
             </header>
 
-            <!-- MENU HORIZONTAL (SUBSTITUTO DA SIDEBAR) -->
-            <nav class="bg-sys-header border-b-2 border-pmmt-gold flex overflow-x-auto no-scrollbar shadow-md shrink-0">
-                <button onclick="mudarModulo('home')" id="btn-home" class="menu-item border-r border-slate-700 ativo"><i class="fa-solid fa-house"></i> Início</button>
-                <button onclick="mudarModulo('efetivo')" id="btn-efetivo" class="menu-item border-r border-slate-700"><i class="fa-solid fa-users-viewfinder"></i> Efetivo</button>
-                <button onclick="mudarModulo('cautela')" id="btn-cautela" class="menu-item border-r border-slate-700"><i class="fa-solid fa-gun"></i> Cautela</button>
-                <button onclick="mudarModulo('financeiro')" id="btn-financeiro" class="menu-item border-r border-slate-700"><i class="fa-solid fa-vault"></i> Finanças</button>
-                <button onclick="mudarModulo('efetivodados')" id="btn-efetivodados" class="menu-item border-r border-slate-700"><i class="fa-solid fa-brain"></i> Efetivo & Dados</button>
-                <button onclick="mudarModulo('academico')" id="btn-academico" class="menu-item border-r border-slate-700"><i class="fa-solid fa-graduation-cap"></i> Acadêmico</button>
-                <button onclick="mudarModulo('aluno')" id="btn-aluno" class="menu-item border-r border-slate-700"><i class="fa-solid fa-folder-open"></i> Área do Aluno</button>
-                <button onclick="mudarModulo('taf')" id="btn-taf" class="menu-item border-r border-slate-700"><i class="fa-solid fa-person-running"></i> TAF</button>
-                <button onclick="mudarModulo('toques')" id="btn-toques" class="menu-item border-r border-slate-700"><i class="fa-solid fa-bullhorn"></i> Toques</button>
-                <button onclick="mudarModulo('gerador')" id="btn-gerador" class="menu-item border-r border-slate-700"><i class="fa-solid fa-file-pdf"></i> Documentos</button>
-                <button onclick="mudarModulo('tco')" id="btn-tco" class="menu-item border-r border-slate-700"><i class="fa-solid fa-file-signature"></i> Módulo TCO</button>
-                
-                <!-- Botões de Ação na Direita -->
-                <div class="flex-1 min-w-[50px]"></div>
-                <button onclick="sincronizarDadosManualmente()" class="menu-item text-slate-400 hover:text-white border-l border-slate-700" title="Sincronizar Dados"><i class="fa-solid fa-arrows-rotate"></i> Sync</button>
-                <button onclick="deslogarUsuario()" class="menu-item text-rose-500 hover:text-rose-400 border-l border-slate-700" title="Sair do Portal"><i class="fa-solid fa-power-off"></i> Sair</button>
+            <!-- MENU HORIZONTAL (TODOS OS 11 MÓDULOS VISÍVEIS) -->
+            <nav class="bg-sys-header border-b-2 border-pmmt-gold flex flex-wrap items-stretch shadow-md shrink-0">
+                <button onclick="mudarModulo('home')" id="btn-home" class="menu-item border-r border-slate-700/80 ativo"><i class="fa-solid fa-house"></i> Início</button>
+                <button onclick="mudarModulo('efetivo')" id="btn-efetivo" class="menu-item border-r border-slate-700/80"><i class="fa-solid fa-users-viewfinder"></i> Efetivo</button>
+                <button onclick="mudarModulo('cautela')" id="btn-cautela" class="menu-item border-r border-slate-700/80"><i class="fa-solid fa-gun"></i> Cautela</button>
+                <button onclick="mudarModulo('financeiro')" id="btn-financeiro" class="menu-item border-r border-slate-700/80"><i class="fa-solid fa-vault"></i> Finanças</button>
+                <button onclick="mudarModulo('efetivodados')" id="btn-efetivodados" class="menu-item border-r border-slate-700/80"><i class="fa-solid fa-brain"></i> Efetivo & Dados</button>
+                <button onclick="mudarModulo('academico')" id="btn-academico" class="menu-item border-r border-slate-700/80"><i class="fa-solid fa-graduation-cap"></i> Acadêmico</button>
+                <button onclick="mudarModulo('aluno')" id="btn-aluno" class="menu-item border-r border-slate-700/80"><i class="fa-solid fa-folder-open"></i> Área do Aluno</button>
+                <button onclick="mudarModulo('taf')" id="btn-taf" class="menu-item border-r border-slate-700/80"><i class="fa-solid fa-person-running"></i> TAF</button>
+                <button onclick="mudarModulo('toques')" id="btn-toques" class="menu-item border-r border-slate-700/80"><i class="fa-solid fa-bullhorn"></i> Toques</button>
+                <button onclick="mudarModulo('gerador')" id="btn-gerador" class="menu-item border-r border-slate-700/80"><i class="fa-solid fa-file-pdf"></i> Documentos</button>
+                <button onclick="mudarModulo('tco')" id="btn-tco" class="menu-item" title="Módulo TCO"><i class="fa-solid fa-file-signature"></i> TCO</button>
             </nav>
 
             <main class="flex-1 overflow-y-auto p-4 md:p-6 bg-sys-bg flex flex-col relative custom-scrollbar">
@@ -408,6 +434,78 @@
         </div>
     </div>
 
+    <!-- MODAL: GERENCIAR USUÁRIOS AUTORIZADOS (ADMINISTRADORES) -->
+    <div id="modalGerenciarAdmins" class="fixed inset-0 bg-sys-dark/90 z-[310] hidden flex items-center justify-center p-4">
+        <div class="bg-slate-50 rounded-sm shadow-2xl w-full max-w-3xl overflow-hidden border border-slate-400 flex flex-col max-h-[90vh]">
+            <div class="bg-sys-header px-5 py-4 flex justify-between items-center border-b-2 border-pmmt-gold shrink-0">
+                <div>
+                    <h3 class="text-white font-black text-xs uppercase tracking-wider"><i class="fa-solid fa-user-shield text-pmmt-gold mr-2"></i>Controle de Usuários Autorizados</h3>
+                    <p class="text-slate-400 text-[9px] font-bold mt-0.5 uppercase tracking-widest">Somente usuários ativos nesta lista podem lançar notas, editar dados ou enviar arquivos</p>
+                </div>
+                <button type="button" onclick="fecharModalAdmins()" class="text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <div class="p-5 overflow-y-auto flex-1 custom-scrollbar space-y-5">
+                <!-- Formulário de Adição -->
+                <form id="formNovoAdmin" onsubmit="adicionarUsuarioAutorizado(event)" class="bg-white border border-slate-300 p-4 rounded-sm shadow-sm space-y-3">
+                    <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+                        <h4 class="text-[10px] font-black text-sys-dark uppercase tracking-widest"><i class="fa-solid fa-user-plus text-pmmt-blue mr-1.5"></i>Autorizar Novo Usuário</h4>
+                        <span class="text-[9px] text-slate-400 font-bold uppercase">Use o mesmo login/e-mail do acesso ao portal</span>
+                    </div>
+
+                    <div>
+                        <label class="block text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Preenchimento Rápido pelo Efetivo (Opcional)</label>
+                        <select id="selectEfetivoParaAdmin" onchange="preencherAdminPeloEfetivo()" class="w-full bg-slate-50 border border-slate-300 p-2 rounded-sm text-xs font-semibold text-slate-700 outline-none focus:border-pmmt-blue">
+                            <option value="">-- Selecionar aluno ou corpo técnico para sugerir login --</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+                        <div class="md:col-span-5">
+                            <label class="block text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Usuário ou E-mail *</label>
+                            <input type="text" id="inputAdminEmail" required placeholder="Ex: queiroz ou nome@5pelotao.internal" class="w-full bg-white border border-slate-300 p-2 rounded-sm text-xs font-bold text-slate-800 outline-none focus:border-pmmt-blue">
+                        </div>
+                        <div class="md:col-span-4">
+                            <label class="block text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Nome / Identificação *</label>
+                            <input type="text" id="inputAdminNome" required placeholder="Ex: AL SD PM QUEIROZ" class="w-full bg-white border border-slate-300 p-2 rounded-sm text-xs font-bold text-slate-800 outline-none focus:border-pmmt-blue">
+                        </div>
+                        <div class="md:col-span-3">
+                            <button type="submit" id="btnSalvarAdmin" class="w-full bg-pmmt-blue hover:bg-sys-blue text-white font-black py-2 px-3 rounded-sm text-[10px] uppercase tracking-widest flex items-center justify-center gap-1.5 border border-slate-600 h-[34px]">
+                                <i class="fa-solid fa-plus"></i> Autorizar
+                            </button>
+                        </div>
+                    </div>
+                    <p id="msgAdminFeedback" class="text-[10px] font-bold uppercase tracking-wider hidden"></p>
+                </form>
+
+                <!-- Lista Atual -->
+                <div class="border border-slate-300 shadow-sm bg-white rounded-sm overflow-hidden">
+                    <div class="bg-slate-100 px-4 py-2.5 border-b border-slate-300 flex justify-between items-center">
+                        <span class="text-[10px] font-black text-sys-dark uppercase tracking-widest">Usuários com Permissão de Edição</span>
+                        <button type="button" onclick="carregarUsuariosAutorizados()" class="text-[9px] font-bold text-pmmt-blue hover:underline uppercase flex items-center gap-1">
+                            <i class="fa-solid fa-arrows-rotate"></i> Atualizar Lista
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-[10.5px]">
+                            <thead class="bg-slate-200 text-sys-dark border-b border-slate-300 uppercase">
+                                <tr>
+                                    <th class="p-2.5 border-r border-slate-300 font-black">Identificação</th>
+                                    <th class="p-2.5 border-r border-slate-300 font-black">Login / E-mail</th>
+                                    <th class="p-2.5 border-r border-slate-300 text-center w-24 font-black">Status</th>
+                                    <th class="p-2.5 text-center w-36 font-black">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelaUsuariosAutorizados" class="divide-y divide-slate-200 text-slate-700 font-semibold">
+                                <tr><td colspan="4" class="p-5 text-center text-slate-400"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Carregando usuários autorizados...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL CAUTELA FIXA -->
     <div id="modalCautelaFixa" class="fixed inset-0 bg-sys-dark/90 z-[300] hidden flex items-center justify-center p-4">
         <div class="bg-slate-50 rounded-sm shadow-2xl w-full max-w-md overflow-hidden border border-slate-400">
@@ -505,21 +603,20 @@
         let isAdmin = false;
         let emailUsuarioLogado = null;
 
-        // CHAVES EMBUTIDAS CONFORME SOLICITADO
         const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
         
         // ==========================================
         // TRAVA DE MANUTENÇÃO DO SISTEMA
         // ==========================================
-        const SISTEMA_EM_MANUTENCAO = false; // Mude para true para tirar o portal do ar
+        const SISTEMA_EM_MANUTENCAO = false;
 
         window.onload = async function() { 
             if (SISTEMA_EM_MANUTENCAO) {
                 document.getElementById('telaManutencao').classList.remove('hidden');
                 document.getElementById('telaLogin').classList.add('hidden');
                 document.getElementById('painelPrincipal').classList.add('hidden');
-                return; // Impede o sistema de carregar qualquer coisa do banco
+                return;
             }
 
             dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -566,13 +663,18 @@
         async function logarSucesso() {
             document.getElementById('telaLogin').classList.add('hidden');
             document.getElementById('painelPrincipal').classList.remove('hidden');
-
-            // Consulta diretamente a tabela usuarios_autorizados no Supabase
+            
+            // Consulta segura na tabela usuarios_autorizados via RPC no servidor
             const { data: podeEditar, error } = await dbClient.rpc('is_portal_admin');
-            isAdmin = !error && Boolean(podeEditar);
-
+            if (error) {
+                console.warn("Função is_portal_admin() não encontrada no banco. Execute o SQL de permissões.", error);
+                isAdmin = false;
+            } else {
+                isAdmin = Boolean(podeEditar);
+            }
+            
             aplicarPermissoesAdmin();
-
+            
             mudarModulo('home');
             await sincronizarDadosManualmente();
             iniciarRelogioQTS();
@@ -623,7 +725,10 @@
                 }
             }
             const el = document.getElementById('usuarioLogadoInfo');
-            if (el) el.innerHTML = `<i class="fa-solid fa-user-check text-pmmt-gold mr-1"></i> LOGADO: <span class="text-white">${cargoUsuario} ${nomeUsuario}</span>`;
+            const tagPerfil = isAdmin
+                ? '<span class="ml-1.5 bg-pmmt-gold/20 text-pmmt-gold border border-pmmt-gold/50 px-1.5 py-0.5 rounded-sm text-[8px]">ADMIN</span>'
+                : '<span class="ml-1.5 bg-slate-700 text-slate-300 px-1.5 py-0.5 rounded-sm text-[8px]">CONSULTA</span>';
+            if (el) el.innerHTML = `<i class="fa-solid fa-user-check text-pmmt-gold mr-1"></i> LOGADO: <span class="text-white">${cargoUsuario} ${nomeUsuario}</span>${tagPerfil}`;
         }
 
         async function deslogarUsuario() { if (confirm("Encerrar sessão?")) { await dbClient.auth.signOut(); window.location.reload(); } }
@@ -640,6 +745,218 @@
             if(moduloDestino === 'aluno') abrirAbaAluno('aba-material', document.querySelector('.aba-btn'));
         }
 
+        // ==========================================
+        // PAINEL DE GESTÃO DE USUÁRIOS AUTORIZADOS
+        // ==========================================
+        function escapeHtml(str) {
+            return String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function normalizarLoginParaSlug(txt) {
+            return String(txt || '')
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase()
+                .replace(/[^a-z0-9._-]/g, '');
+        }
+
+        function popularSeletorEfetivoAdmin() {
+            const sel = document.getElementById('selectEfetivoParaAdmin');
+            if (!sel) return;
+            sel.innerHTML = '<option value="">-- Selecionar aluno ou corpo técnico para sugerir login --</option>';
+
+            if (listaAlunosFull.length > 0) {
+                const grpAl = document.createElement('optgroup');
+                grpAl.label = 'ALUNOS DO 5º PELOTÃO';
+                [...listaAlunosFull].sort((a, b) => (a.numero || 999) - (b.numero || 999)).forEach(a => {
+                    const num = a.numero ? '5' + String(a.numero).padStart(2, '0') : '---';
+                    const qraLimpo = (a.qra || a.nome.split(' ')[0]).replace(/AL SD PM |AL SD /gi, '').trim().toUpperCase();
+                    const slug = normalizarLoginParaSlug(qraLimpo.split(/\s+/)[0]);
+                    const opt = new Option(`${num} - AL SD PM ${qraLimpo}`, JSON.stringify({
+                        email: `${slug}@5pelotao.internal`,
+                        nome: `AL SD PM ${qraLimpo}`
+                    }));
+                    grpAl.appendChild(opt);
+                });
+                sel.appendChild(grpAl);
+            }
+
+            if (listaTecnicoCache.length > 0) {
+                const grpTec = document.createElement('optgroup');
+                grpTec.label = 'CORPO TÉCNICO / COMANDO';
+                listaTecnicoCache.forEach(t => {
+                    const posto = (t.posto_graduacao || 'PM').toUpperCase();
+                    const guerra = (t.nome_guerra || t.nome || '').trim().toUpperCase();
+                    const slug = normalizarLoginParaSlug(guerra.split(/\s+/)[0]);
+                    const opt = new Option(`${posto} ${guerra}`, JSON.stringify({
+                        email: `${slug}@5pelotao.internal`,
+                        nome: `${posto} ${guerra}`
+                    }));
+                    grpTec.appendChild(opt);
+                });
+                sel.appendChild(grpTec);
+            }
+        }
+
+        function preencherAdminPeloEfetivo() {
+            const val = document.getElementById('selectEfetivoParaAdmin').value;
+            if (!val) return;
+            try {
+                const dados = JSON.parse(val);
+                document.getElementById('inputAdminEmail').value = dados.email;
+                document.getElementById('inputAdminNome').value = dados.nome;
+            } catch (e) {}
+        }
+
+        function exibirFeedbackAdmin(texto, tipo) {
+            const el = document.getElementById('msgAdminFeedback');
+            if (!el) return;
+            el.textContent = texto;
+            el.className = `text-[10px] font-bold uppercase tracking-wider p-2 rounded-sm border ${
+                tipo === 'ok'
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
+                    : 'bg-rose-50 text-rose-700 border-rose-300'
+            }`;
+            el.classList.remove('hidden');
+            setTimeout(() => el.classList.add('hidden'), 4000);
+        }
+
+        async function abrirModalAdmins() {
+            if (!isAdmin) return alert("Acesso restrito a administradores.");
+            document.getElementById('formNovoAdmin').reset();
+            document.getElementById('msgAdminFeedback').classList.add('hidden');
+            popularSeletorEfetivoAdmin();
+            document.getElementById('modalGerenciarAdmins').classList.remove('hidden');
+            await carregarUsuariosAutorizados();
+        }
+
+        function fecharModalAdmins() {
+            document.getElementById('modalGerenciarAdmins').classList.add('hidden');
+        }
+
+        async function carregarUsuariosAutorizados() {
+            const tbody = document.getElementById('tabelaUsuariosAutorizados');
+            tbody.innerHTML = '<tr><td colspan="4" class="p-5 text-center text-slate-400"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Carregando...</td></tr>';
+
+            const { data, error } = await dbClient
+                .from('usuarios_autorizados')
+                .select('*')
+                .order('ativo', { ascending: false })
+                .order('nome', { ascending: true });
+
+            if (error) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-rose-600 font-bold">Erro ao consultar tabela <code>usuarios_autorizados</code>: ${escapeHtml(error.message)}</td></tr>`;
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="p-5 text-center text-slate-400">Nenhum usuário autorizado cadastrado.</td></tr>';
+                return;
+            }
+
+            const meuEmail = (emailUsuarioLogado || '').toLowerCase();
+
+            tbody.innerHTML = data.map(u => {
+                const ehVoce = (u.email || '').toLowerCase() === meuEmail;
+                const badgeStatus = u.ativo
+                    ? '<span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded-sm text-[9px] font-black uppercase">ATIVO</span>'
+                    : '<span class="bg-slate-200 text-slate-600 border border-slate-300 px-2 py-0.5 rounded-sm text-[9px] font-black uppercase">BLOQUEADO</span>';
+
+                const acoesHtml = ehVoce
+                    ? '<span class="text-[9px] font-black text-pmmt-gold uppercase bg-sys-dark px-2 py-1 rounded-sm"><i class="fa-solid fa-shield-halved mr-1"></i>Sua conta</span>'
+                    : `
+                        <div class="flex items-center justify-center gap-1.5">
+                            <button type="button" onclick="alternarStatusAdmin(${u.id}, ${!u.ativo})" class="${u.ativo ? 'bg-amber-100 hover:bg-amber-200 text-amber-800 border-amber-300' : 'bg-emerald-100 hover:bg-emerald-200 text-emerald-800 border-emerald-300'} border px-2 py-1 rounded-sm text-[9px] font-black uppercase transition" title="${u.ativo ? 'Suspender permissão' : 'Reativar permissão'}">
+                                <i class="fa-solid ${u.ativo ? 'fa-ban' : 'fa-check'}"></i> ${u.ativo ? 'Bloquear' : 'Ativar'}
+                            </button>
+                            <button type="button" onclick="removerUsuarioAutorizado(${u.id}, '${escapeHtml(u.email)}')" class="bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white border border-rose-300 px-2 py-1 rounded-sm text-[9px] font-black uppercase transition" title="Remover permanentemente">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+
+                return `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-2.5 border-r border-slate-200 font-bold text-sys-dark uppercase">${escapeHtml(u.nome || '-')}</td>
+                        <td class="p-2.5 border-r border-slate-200 font-mono text-[10px] text-slate-600">${escapeHtml(u.email)}</td>
+                        <td class="p-2.5 border-r border-slate-200 text-center">${badgeStatus}</td>
+                        <td class="p-2.5 text-center">${acoesHtml}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function adicionarUsuarioAutorizado(e) {
+            e.preventDefault();
+            if (!isAdmin) return;
+
+            let rawEmail = document.getElementById('inputAdminEmail').value.trim().toLowerCase();
+            const nome = document.getElementById('inputAdminNome').value.trim().toUpperCase();
+            if (!rawEmail || !nome) return;
+
+            const emailFinal = rawEmail.includes('@') ? rawEmail : `${rawEmail}@5pelotao.internal`;
+            const btn = document.getElementById('btnSalvarAdmin');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Gravando...';
+
+            const { error } = await dbClient
+                .from('usuarios_autorizados')
+                .upsert([{ email: emailFinal, nome: nome, ativo: true }], { onConflict: 'email' });
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-plus"></i> Autorizar';
+
+            if (error) {
+                exibirFeedbackAdmin('Erro ao autorizar usuário: ' + error.message, 'err');
+            } else {
+                document.getElementById('formNovoAdmin').reset();
+                exibirFeedbackAdmin(`Permissão concedida para ${emailFinal}.`, 'ok');
+                await carregarUsuariosAutorizados();
+            }
+        }
+
+        async function alternarStatusAdmin(id, novoStatus) {
+            if (!isAdmin) return;
+            const { error } = await dbClient
+                .from('usuarios_autorizados')
+                .update({ ativo: novoStatus })
+                .eq('id', id);
+
+            if (error) {
+                exibirFeedbackAdmin('Erro ao alterar status: ' + error.message, 'err');
+            } else {
+                exibirFeedbackAdmin(novoStatus ? 'Usuário reativado com sucesso.' : 'Permissão de edição suspensa.', 'ok');
+                await carregarUsuariosAutorizados();
+            }
+        }
+
+        async function removerUsuarioAutorizado(id, email) {
+            if (!isAdmin) return;
+            if ((email || '').toLowerCase() === (emailUsuarioLogado || '').toLowerCase()) {
+                return alert("Você não pode remover sua própria conta de administrador.");
+            }
+            if (!confirm(`Remover definitivamente a permissão de edição de "${email}"?`)) return;
+
+            const { error } = await dbClient
+                .from('usuarios_autorizados')
+                .delete()
+                .eq('id', id);
+
+            if (error) {
+                exibirFeedbackAdmin('Erro ao remover usuário: ' + error.message, 'err');
+            } else {
+                exibirFeedbackAdmin(`Usuário ${email} removido da lista de administradores.`, 'ok');
+                await carregarUsuariosAutorizados();
+            }
+        }
+
+        // ==========================================
+        // DISCIPLINAS E QTS
+        // ==========================================
         async function carregarDisciplinas() { const { data } = await dbClient.from('academico_disciplinas').select('*'); disciplinasGlobais = data || []; }
 
         async function carregarQtsPDF() {
@@ -670,6 +987,7 @@
         }
 
         async function salvarQtsPDF() {
+            if (!isAdmin) return alert("Acesso restrito a administradores.");
             const titulo = document.getElementById('inputTituloQtsPDF').value.trim();
             const url = document.getElementById('inputUrlQtsPDF').value.trim();
             if (!titulo || !url) return alert("Preencha a Semana e o Link do Arquivo!");
@@ -814,6 +1132,9 @@
         async function carregarAlunos() { const { data } = await dbClient.from('alunos_pelotao').select('*').order('numero', { ascending: true }); listaAlunosFull = data || []; }
         async function carregarFuncoesComando() { const { data } = await dbClient.from('funcoes_comando').select('*'); if (data) funcoesComandoGlobais = data; }
 
+        // ==========================================
+        // RANKING (6 CASAS DECIMAIS + MAIOR IDADE)
+        // ==========================================
         function calcularRankingArray() {
             const parseNasc = (dt) => {
                 if (!dt) return Infinity;
@@ -830,7 +1151,6 @@
                     notas.forEach(n => { soma += parseFloat(n.mgm); });
                     mgcBruta = soma / total;
                 }
-                // Precisão oficial até a 6ª casa decimal antes da ordenação
                 const mgc6 = parseFloat(mgcBruta.toFixed(6));
                 ranking.push({
                     id: aluno.id,
@@ -844,13 +1164,10 @@
             });
 
             ranking.sort((a, b) => {
-                // 1º Critério: Maior MGC (precisão de 6 casas decimais)
                 if (b.mgc !== a.mgc) return b.mgc - a.mgc;
-                // 2º Critério: Maior idade (data_nascimento mais antiga primeiro)
                 const nascA = parseNasc(a.data_nascimento);
                 const nascB = parseNasc(b.data_nascimento);
                 if (nascA !== nascB) return nascA - nascB;
-                // 3º Critério (reserva): Menor número do aluno
                 return (a.numero || 999) - (b.numero || 999);
             });
 
@@ -950,6 +1267,7 @@
         }
 
         function abrirModalCautelaFixa() {
+            if (!isAdmin) return alert("Acesso restrito a administradores.");
             document.getElementById('formCautelaFixa').reset();
             const select = document.getElementById('cautelaFixaAluno');
             select.innerHTML = '<option value="">Selecione o Aluno...</option>';
@@ -965,6 +1283,7 @@
 
         async function salvarCautelaFixa(e) {
             e.preventDefault();
+            if (!isAdmin) return alert("Acesso restrito a administradores.");
             mostrarLoading(true);
             const payload = {
                 aluno_id: document.getElementById('cautelaFixaAluno').value,
@@ -978,6 +1297,7 @@
         }
 
         async function deletarCautelaFixa(id) {
+            if (!isAdmin) return alert("Acesso restrito a administradores.");
             if (!confirm("Deseja excluir esta arma da Cautela Fixa?")) return;
             mostrarLoading(true);
             const { error } = await dbClient.from('cautela_fixa').delete().eq('id', id);
