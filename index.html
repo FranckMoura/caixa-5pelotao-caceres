@@ -566,13 +566,13 @@
         async function logarSucesso() {
             document.getElementById('telaLogin').classList.add('hidden');
             document.getElementById('painelPrincipal').classList.remove('hidden');
-            
-            if(emailUsuarioLogado) {
-                isAdmin = emailUsuarioLogado.includes('willys') || emailUsuarioLogado.includes('comando') || emailUsuarioLogado.includes('tesouraria');
-            }
-            
+
+            // Consulta diretamente a tabela usuarios_autorizados no Supabase
+            const { data: podeEditar, error } = await dbClient.rpc('is_portal_admin');
+            isAdmin = !error && Boolean(podeEditar);
+
             aplicarPermissoesAdmin();
-            
+
             mudarModulo('home');
             await sincronizarDadosManualmente();
             iniciarRelogioQTS();

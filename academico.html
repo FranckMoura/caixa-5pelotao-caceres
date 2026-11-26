@@ -23,7 +23,6 @@
         }
     </script>
 
-    <!-- CSS EXCLUSIVO PARA IMPRESSÃO DA LISTA DE PRESENÇA -->
     <style>
         @media screen {
             #printArea { display: none !important; }
@@ -50,7 +49,7 @@
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col">
 
     <header class="bg-pmmt-blue text-white shadow-lg border-b-4 border-pmmt-gold">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
             <div class="flex items-center gap-4">
                 <i class="fa-solid fa-book-open-reader text-pmmt-gold text-3xl"></i>
                 <div>
@@ -58,8 +57,13 @@
                     <p class="text-xs text-slate-300 font-semibold tracking-widest uppercase">Módulo Acadêmico • ESFAP</p>
                 </div>
             </div>
-            <div class="text-right hidden md:block">
-                <span id="statusConexao" class="text-sm font-bold text-slate-400"><i class="fa-solid fa-circle-notch fa-spin"></i> Conectando...</span>
+            <div class="flex items-center gap-3">
+                <span id="badgePermissao" class="text-[11px] font-bold px-2.5 py-1 rounded bg-slate-800 border border-slate-600 text-slate-300 uppercase tracking-wider">
+                    <i class="fa-solid fa-lock mr-1"></i> Verificando acesso...
+                </span>
+                <span id="statusConexao" class="text-sm font-bold text-slate-400 hidden md:inline">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i> Conectando...
+                </span>
             </div>
         </div>
     </header>
@@ -67,25 +71,24 @@
     <main class="flex-grow max-w-7xl mx-auto px-4 py-8 w-full">
         
         <div class="bg-white rounded-xl shadow-md border border-slate-200 p-6 mb-8">
-            <div class="flex items-center justify-between border-b pb-3 mb-6">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b pb-3 mb-6">
                 <div class="flex items-center gap-3">
                     <div class="bg-pmmt-blue p-2 rounded-lg text-pmmt-gold">
                         <i class="fa-solid fa-list-check"></i>
                     </div>
                     <div>
-                        <h2 class="text-xl font-bold text-pmmt-blue">Diário de Classe (Lançamento em Lote)</h2>
-                        <p class="text-xs text-slate-500">Selecione a disciplina para abrir a pauta do pelotão.</p>
+                        <h2 class="text-xl font-bold text-pmmt-blue">Diário de Classe</h2>
+                        <p id="subtituloDiario" class="text-xs text-slate-500">Selecione a disciplina para visualizar a pauta do pelotão.</p>
                     </div>
                 </div>
-                <!-- BOTÕES DE AÇÃO: Ranking adicionado aqui -->
-                <div class="flex gap-2">
+                <div class="flex flex-wrap gap-2">
                     <button onclick="prepararListaPresenca()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs py-2 px-3 rounded-lg shadow transition flex items-center gap-2">
                         <i class="fa-solid fa-print"></i> Lista de Presença
                     </button>
                     <button onclick="abrirRankingGeral()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-2 px-3 rounded-lg shadow transition flex items-center gap-2">
                         <i class="fa-solid fa-trophy text-yellow-300"></i> Ranking Geral
                     </button>
-                    <button onclick="cadastrarNovaDisciplina()" class="bg-pmmt-gold hover:bg-yellow-600 text-pmmt-blue font-bold text-xs py-2 px-3 rounded-lg shadow transition flex items-center gap-2">
+                    <button id="btnNovaDisciplina" onclick="cadastrarNovaDisciplina()" class="hidden bg-pmmt-gold hover:bg-yellow-600 text-pmmt-blue font-bold text-xs py-2 px-3 rounded-lg shadow transition flex items-center gap-2">
                         <i class="fa-solid fa-plus-circle"></i> Nova Disciplina
                     </button>
                 </div>
@@ -194,8 +197,8 @@
                         <p id="boletimTotalDisc" class="text-xl font-black text-pmmt-blue mt-1">0 / 36</p>
                     </div>
                     <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm text-center">
-                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Média Geral Parcial</p>
-                        <p id="boletimMediaGeral" class="text-xl font-black text-pmmt-blue mt-1">0.00</p>
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Média Geral Parcial (MGC)</p>
+                        <p id="boletimMediaGeral" class="text-xl font-black text-pmmt-blue mt-1">0.0000</p>
                     </div>
                     <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm text-center">
                         <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Status Atual</p>
@@ -211,7 +214,7 @@
                                 <th class="p-3 text-center border-b border-slate-200">MGM</th>
                                 <th class="p-3 text-center border-b border-slate-200">Faltas</th>
                                 <th class="p-3 text-center border-b border-slate-200">Situação</th>
-                                <th class="p-3 text-center border-b border-slate-200 w-16">Ação</th>
+                                <th id="thAcaoBoletim" class="p-3 text-center border-b border-slate-200 w-16 hidden">Ação</th>
                             </tr>
                         </thead>
                         <tbody id="tabelaBoletimIndividual" class="divide-y divide-slate-100">
@@ -222,13 +225,13 @@
         </div>
     </div>
 
-    <!-- MODAL RANKING GERAL (NOVO) -->
+    <!-- MODAL RANKING GERAL -->
     <div id="modalRankingGeral" class="fixed inset-0 bg-slate-900/80 z-[200] hidden flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden border border-slate-300 flex flex-col max-h-[90vh]">
             <div class="bg-pmmt-blue px-5 py-4 flex justify-between items-center border-b-4 border-pmmt-gold shrink-0">
                 <div>
                     <h3 class="text-white font-black text-sm uppercase tracking-wider"><i class="fa-solid fa-trophy text-yellow-400 mr-2"></i>Classificação Geral (Antiguidade)</h3>
-                    <p class="text-slate-300 text-[10px] font-bold mt-0.5 uppercase tracking-widest">Ranking Oficial do 5º Pelotão</p>
+                    <p class="text-slate-300 text-[10px] font-bold mt-0.5 uppercase tracking-widest">Critério: MGC (6 casas decimais) • Desempate: Maior Idade</p>
                 </div>
                 <button onclick="fecharRankingGeral()" class="text-white/70 hover:text-white transition"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
@@ -251,9 +254,7 @@
         </div>
     </div>
 
-    <!-- ============================================================== -->
-    <!-- ÁREA INVISÍVEL PARA IMPRESSÃO DA LISTA DE PRESENÇA OFICIAL     -->
-    <!-- ============================================================== -->
+    <!-- ÁREA PARA IMPRESSÃO DA LISTA DE PRESENÇA OFICIAL -->
     <div id="printArea" class="bg-white text-black p-4">
         <div class="text-center font-bold mb-4 print-header leading-tight">
             <p>ESTADO DE MATO GROSSO</p>
@@ -283,9 +284,7 @@
                     <th class="w-40">Assinatura</th>
                 </tr>
             </thead>
-            <tbody id="print-tbody">
-                <!-- Linhas injetadas dinamicamente via JS -->
-            </tbody>
+            <tbody id="print-tbody"></tbody>
         </table>
 
         <div class="text-xs font-bold mt-4">
@@ -300,35 +299,64 @@
     </div>
 
     <script>
-        // ==========================================
-        // CREDENCIAIS SUPABASE 
-        // ==========================================
         const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
 
         const dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+        let isAdmin = false;
         let listaAlunos = []; 
         let notasAtuaisDisciplina = []; 
-        let todasNotasGlobais = []; // NOVO: Armazena todas as notas para classificar alunos
+        let todasNotasGlobais = [];
 
         // ==========================================
-        // INICIALIZAÇÃO
+        // INICIALIZAÇÃO E VERIFICAÇÃO DE PERMISSÃO
         // ==========================================
         document.addEventListener('DOMContentLoaded', async () => {
             try {
+                await verificarPermissaoAdmin();
+
                 document.getElementById('statusConexao').innerHTML = '<i class="fa-solid fa-check-circle"></i> Conectado (Nuvem)';
-                document.getElementById('statusConexao').className = 'text-sm font-bold text-emerald-400';
+                document.getElementById('statusConexao').className = 'text-sm font-bold text-emerald-400 hidden md:inline';
                 
                 await carregarEfetivoEmMemoria();
-                await carregarTodasNotasGlobais(); // NOVO: Traz todos os históricos de notas
+                await carregarTodasNotasGlobais();
                 await carregarDisciplinas();
             } catch (error) {
                 console.error("Erro ao conectar:", error);
                 document.getElementById('statusConexao').innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Erro de Conexão';
-                document.getElementById('statusConexao').className = 'text-sm font-bold text-red-400';
+                document.getElementById('statusConexao').className = 'text-sm font-bold text-red-400 hidden md:inline';
             }
         });
+
+        async function verificarPermissaoAdmin() {
+            const { data: { session } } = await dbClient.auth.getSession();
+            if (session) {
+                const { data, error } = await dbClient.rpc('is_portal_admin');
+                isAdmin = !error && Boolean(data);
+            } else {
+                isAdmin = false;
+            }
+
+            const badge = document.getElementById('badgePermissao');
+            const btnNovaDisc = document.getElementById('btnNovaDisciplina');
+            const thAcao = document.getElementById('thAcaoBoletim');
+            const sub = document.getElementById('subtituloDiario');
+
+            if (isAdmin) {
+                badge.className = 'text-[11px] font-bold px-2.5 py-1 rounded bg-pmmt-gold/20 border border-pmmt-gold text-pmmt-gold uppercase tracking-wider';
+                badge.innerHTML = '<i class="fa-solid fa-user-shield mr-1"></i> Administrador';
+                btnNovaDisc.classList.remove('hidden');
+                thAcao.classList.remove('hidden');
+                sub.textContent = 'Selecione a disciplina para lançar ou editar as notas do pelotão.';
+            } else {
+                badge.className = 'text-[11px] font-bold px-2.5 py-1 rounded bg-slate-800 border border-slate-600 text-slate-300 uppercase tracking-wider';
+                badge.innerHTML = '<i class="fa-solid fa-eye mr-1"></i> Somente Leitura';
+                btnNovaDisc.classList.add('hidden');
+                thAcao.classList.add('hidden');
+                sub.textContent = 'Modo consulta: selecione a disciplina para visualizar notas e boletins.';
+            }
+        }
 
         // ==========================================
         // GESTÃO DINÂMICA DE DISCIPLINAS E ALUNOS
@@ -336,7 +364,7 @@
         async function carregarEfetivoEmMemoria() {
             const { data, error } = await dbClient
                 .from('alunos_pelotao')
-                .select('id, nome, qra, numero')
+                .select('id, nome, qra, numero, data_nascimento')
                 .order('numero', { ascending: true });
             
             if (!error && data) {
@@ -367,6 +395,11 @@
         }
 
         async function cadastrarNovaDisciplina() {
+            if (!isAdmin) {
+                Swal.fire('Acesso Restrito', 'Somente usuários autorizados podem cadastrar disciplinas.', 'warning');
+                return;
+            }
+
             const { value: formValues } = await Swal.fire({
                 title: 'Cadastrar Nova Disciplina',
                 html:
@@ -400,7 +433,7 @@
                     }]);
 
                 if (error) {
-                    Swal.fire('Erro!', 'Não foi possível cadastrar no banco.', 'error');
+                    Swal.fire('Acesso Negado ou Erro', 'Não foi possível cadastrar no banco.', 'error');
                     console.error(error);
                 } else {
                     Swal.fire('Sucesso!', `Disciplina "${formValues.nome}" cadastrada com sucesso!`, 'success');
@@ -410,7 +443,7 @@
         }
 
         // ==========================================
-        // LÓGICA DE IMPRESSÃO DA LISTA DE PRESENÇA
+        // LISTA DE PRESENÇA
         // ==========================================
         async function prepararListaPresenca() {
             const selectDisc = document.getElementById('disciplinaSelect');
@@ -502,7 +535,7 @@
         }
 
         // ==========================================
-        // LÓGICA DE RANKING GLOBAL (NOVO)
+        // RANKING GLOBAL (PPC/ESFAP: 6 CASAS + IDADE)
         // ==========================================
         async function carregarTodasNotasGlobais() {
             const { data, error } = await dbClient.from('academico_notas').select('*');
@@ -512,41 +545,51 @@
         }
 
         function calcularRankingGeral() {
+            const parseNasc = (dt) => {
+                if (!dt) return Infinity;
+                const ts = new Date(String(dt).slice(0, 10) + 'T00:00:00').getTime();
+                return isNaN(ts) ? Infinity : ts;
+            };
+
             let ranking = [];
             
             listaAlunos.forEach(aluno => {
-                const notasDoAluno = todasNotasGlobais.filter(n => n.aluno_id === aluno.id);
-                let mgc = 0;
+                const notasDoAluno = todasNotasGlobais.filter(n => n.aluno_id === aluno.id && n.mgm != null);
+                let mgcBruta = 0;
                 let totalDisciplinas = notasDoAluno.length;
                 let aprovadoGeral = true;
 
                 if (totalDisciplinas > 0) {
                     let soma = 0;
                     notasDoAluno.forEach(n => {
-                        soma += parseFloat(n.mgm || 0);
+                        soma += parseFloat(n.mgm);
                         if(n.status_final && n.status_final.includes("REPROVADO")) aprovadoGeral = false;
                     });
-                    mgc = soma / totalDisciplinas;
+                    mgcBruta = soma / totalDisciplinas;
                 }
+
+                const mgc6 = parseFloat(mgcBruta.toFixed(6));
 
                 ranking.push({
                     id: aluno.id,
                     numero: aluno.numero,
                     nome: aluno.nome,
                     qra: aluno.qra,
-                    mgc: parseFloat(mgc.toFixed(2)),
+                    data_nascimento: aluno.data_nascimento || null,
+                    mgc: mgc6,
                     totalDisciplinas: totalDisciplinas,
                     aprovadoGeral: aprovadoGeral
                 });
             });
 
-            // Ordena decrescente pela MGC. Em caso de empate na nota, usa o menor número de aluno (antiguidade inicial)
             ranking.sort((a, b) => {
                 if (b.mgc !== a.mgc) return b.mgc - a.mgc;
+                const nascA = parseNasc(a.data_nascimento);
+                const nascB = parseNasc(b.data_nascimento);
+                if (nascA !== nascB) return nascA - nascB;
                 return (a.numero || 999) - (b.numero || 999);
             });
 
-            // Atribui e formata os ranks
             ranking.forEach((aluno, index) => {
                 aluno.rank = index + 1;
                 aluno.rankFormatado = (index + 1).toString().padStart(2, '0');
@@ -562,6 +605,7 @@
                 const badge = document.getElementById(`badge_rank_${aluno.id}`);
                 if (badge) {
                     badge.innerText = aluno.rankFormatado;
+                    badge.title = `Colocação Geral: ${aluno.rankFormatado}º • MGC (6 casas): ${aluno.mgc.toFixed(6)}`;
                     
                     if (aluno.rank === 1) {
                         badge.className = "w-7 h-6 flex items-center justify-center bg-yellow-400 text-yellow-900 font-black rounded shadow text-xs border border-yellow-500";
@@ -595,7 +639,7 @@
                     <td class="p-3 text-center">${rankVisual}</td>
                     <td class="p-3 text-slate-700"><span class="font-bold text-pmmt-blue">${aluno.numero || '-'}</span> - ${qraAjustado}</td>
                     <td class="p-3 text-center text-slate-500 text-xs">${aluno.totalDisciplinas}</td>
-                    <td class="p-3 text-center font-black text-sm ${aluno.mgc >= 5 ? 'text-emerald-600' : 'text-red-600'}">${aluno.mgc.toFixed(2)}</td>
+                    <td class="p-3 text-center font-black text-sm ${aluno.mgc >= 5 ? 'text-emerald-600' : 'text-red-600'}" title="MGC (6 casas): ${aluno.mgc.toFixed(6)}">${aluno.mgc.toFixed(4)}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -608,7 +652,7 @@
         }
 
         // ==========================================
-        // FUNÇÕES DA PLANILHA DE NOTAS
+        // PLANILHA DE NOTAS (MODO ADMIN vs CONSULTA)
         // ==========================================
         async function carregarPautaTurma() {
             const selectDisc = document.getElementById('disciplinaSelect');
@@ -632,12 +676,7 @@
                 .select('*')
                 .eq('disciplina_nome', disciplinaNome);
             
-            if (!error && notasDB) {
-                notasAtuaisDisciplina = notasDB; 
-            } else {
-                notasAtuaisDisciplina = [];
-            }
-
+            notasAtuaisDisciplina = (!error && notasDB) ? notasDB : [];
             tbody.innerHTML = '';
 
             const tipo = option.getAttribute('data-tipo');
@@ -649,12 +688,12 @@
                 colunaVC2.classList.remove('opacity-40', 'line-through');
             }
 
+            const attrBloqueio = !isAdmin ? 'disabled' : '';
+
             listaAlunos.forEach(aluno => {
                 const notaSalva = notasAtuaisDisciplina.find(n => n.aluno_id === aluno.id) || {};
-                
                 const qraAjustado = (aluno.qra || aluno.nome).replace(/AL SD PM /gi, '').replace(/AL SD /gi, '').trim().toUpperCase();
                 
-                // NOVO: Adicionado um span (badge) para mostrar o ranking geral em tempo real
                 const indentificacao = `
                     <div class="flex items-center gap-2">
                         <span id="badge_rank_${aluno.id}" class="w-7 h-6 flex items-center justify-center bg-slate-200 text-slate-400 font-bold rounded text-[10px] shadow-sm transition-colors" title="Colocação Geral do Curso">-</span>
@@ -663,54 +702,50 @@
                 `;
                 
                 const nomeSeguroParaJS = qraAjustado.replace(/'/g, "\\'"); 
+                const classInputBase = "w-full border rounded p-1.5 text-center text-sm outline-none font-semibold";
+                const classEditavel = isAdmin ? "focus:ring-2 bg-white" : "bg-slate-100 text-slate-600 cursor-not-allowed";
+                const classVC2 = (isVC2Disabled || !isAdmin) ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'focus:ring-2 focus:ring-pmmt-blue bg-white';
+                const classFaltas = isAdmin ? "focus:ring-2 focus:ring-red-500 text-red-700 bg-red-50" : "bg-slate-100 text-red-700/80 cursor-not-allowed";
+                const classVse = isAdmin ? "focus:ring-2 focus:ring-yellow-600 text-yellow-700 bg-yellow-50" : "bg-slate-100 text-yellow-700/80 cursor-not-allowed";
 
-                const classInputBase = "w-full border rounded p-1.5 text-center text-sm outline-none focus:ring-2 font-semibold";
-                const classVC2 = isVC2Disabled ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'focus:ring-pmmt-blue bg-white';
+                const botaoSalvarHtml = isAdmin
+                    ? `<button onclick="salvarNotaLinha(${aluno.id}, ${notaSalva.id ? notaSalva.id : 'null'})" id="btn_${aluno.id}" class="flex-1 ${notaSalva.id ? 'bg-amber-600 hover:bg-amber-700 text-white' : 'bg-pmmt-blue hover:bg-blue-900 text-pmmt-gold'} text-xs font-bold py-2 px-2 rounded transition shadow flex items-center justify-center gap-2" title="${notaSalva.id ? 'Atualizar Nota' : 'Salvar Nota'}">
+                            <i class="fa-solid ${notaSalva.id ? 'fa-pen-to-square' : 'fa-save'}"></i> ${notaSalva.id ? 'Atual.' : 'Salvar'}
+                       </button>`
+                    : `<span class="text-[10px] font-bold text-slate-400 uppercase px-2">Consulta</span>`;
 
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-blue-50 transition';
                 tr.innerHTML = `
                     <td class="p-3 text-sm text-slate-700">${indentificacao}</td>
-                    
                     <td class="p-2">
-                        <input type="number" step="0.01" min="0" max="10" id="vc1_${aluno.id}" value="${notaSalva.vc1 !== undefined ? notaSalva.vc1 : ''}" class="${classInputBase} focus:ring-pmmt-blue text-blue-900 bg-white" placeholder="0.00">
+                        <input type="number" step="0.01" min="0" max="10" id="vc1_${aluno.id}" value="${notaSalva.vc1 !== undefined ? notaSalva.vc1 : ''}" class="${classInputBase} ${classEditavel} focus:ring-pmmt-blue text-blue-900" placeholder="0.00" ${attrBloqueio}>
                     </td>
-                    
                     <td class="p-2">
-                        <input type="number" step="0.01" min="0" max="10" id="vc2_${aluno.id}" value="${notaSalva.vc2 !== undefined ? notaSalva.vc2 : ''}" class="${classInputBase} ${classVC2}" placeholder="${isVC2Disabled ? '---' : '0.00'}" ${isVC2Disabled ? 'disabled' : ''}>
+                        <input type="number" step="0.01" min="0" max="10" id="vc2_${aluno.id}" value="${notaSalva.vc2 !== undefined ? notaSalva.vc2 : ''}" class="${classInputBase} ${classVC2}" placeholder="${isVC2Disabled ? '---' : '0.00'}" ${(isVC2Disabled || !isAdmin) ? 'disabled' : ''}>
                     </td>
-                    
                     <td class="p-2">
-                        <input type="number" step="0.01" min="0" max="10" id="vf_${aluno.id}" value="${notaSalva.vf !== undefined ? notaSalva.vf : ''}" class="${classInputBase} focus:ring-pmmt-blue text-blue-900 bg-white" placeholder="0.00">
+                        <input type="number" step="0.01" min="0" max="10" id="vf_${aluno.id}" value="${notaSalva.vf !== undefined ? notaSalva.vf : ''}" class="${classInputBase} ${classEditavel} focus:ring-pmmt-blue text-blue-900" placeholder="0.00" ${attrBloqueio}>
                     </td>
-                    
                     <td class="p-2">
-                        <input type="number" id="faltas_${aluno.id}" min="0" value="${notaSalva.faltas_horas !== undefined ? notaSalva.faltas_horas : ''}" class="${classInputBase} focus:ring-red-500 text-red-700 bg-red-50" placeholder="0">
+                        <input type="number" id="faltas_${aluno.id}" min="0" value="${notaSalva.faltas_horas !== undefined ? notaSalva.faltas_horas : ''}" class="${classInputBase} ${classFaltas}" placeholder="0" ${attrBloqueio}>
                     </td>
-                    
                     <td class="p-2">
-                        <input type="number" step="0.01" min="0" max="10" id="vse_${aluno.id}" value="${notaSalva.vse !== undefined && notaSalva.vse !== null ? notaSalva.vse : ''}" class="${classInputBase} focus:ring-yellow-600 text-yellow-700 bg-yellow-50" placeholder="0.00">
+                        <input type="number" step="0.01" min="0" max="10" id="vse_${aluno.id}" value="${notaSalva.vse !== undefined && notaSalva.vse !== null ? notaSalva.vse : ''}" class="${classInputBase} ${classVse}" placeholder="0.00" ${attrBloqueio}>
                     </td>
-                    
                     <td class="p-2 flex gap-1 justify-center items-center h-full">
                         <button onclick="abrirBoletimAluno(${aluno.id}, '${nomeSeguroParaJS}', ${aluno.numero})" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-2 rounded transition shadow-sm" title="Ver Histórico Deste Aluno">
                             <i class="fa-solid fa-folder-open"></i>
                         </button>
-                        <button onclick="salvarNotaLinha(${aluno.id}, ${notaSalva.id ? notaSalva.id : 'null'})" id="btn_${aluno.id}" class="flex-1 ${notaSalva.id ? 'bg-amber-600 hover:bg-amber-700 text-white' : 'bg-pmmt-blue hover:bg-blue-900 text-pmmt-gold'} text-xs font-bold py-2 px-2 rounded transition shadow flex items-center justify-center gap-2" title="${notaSalva.id ? 'Atualizar Nota' : 'Salvar Nota'}">
-                            <i class="fa-solid ${notaSalva.id ? 'fa-pen-to-square' : 'fa-save'}"></i> ${notaSalva.id ? 'Atual.' : 'Salvar'}
-                        </button>
+                        ${botaoSalvarHtml}
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
             
-            // NOVO: Chama a atualização dos badges assim que a tabela for montada
             atualizarBadgesRanking();
         }
 
-        // ==========================================
-        // REGRAS MATEMÁTICAS DO PPC 
-        // ==========================================
         function calcularMGM(vc1, vc2, vf, tipoCalculo) {
             let mgm = 0;
             if (tipoCalculo === "1") {
@@ -726,11 +761,7 @@
             const percentualFaltas = ((faltas / cargaHoraria) * 100).toFixed(1);
 
             if (faltas > limiteFaltas) return { texto: "REPROVADO (FALTAS)", classe: "bg-red-100 text-red-700 font-bold", perc: percentualFaltas };
-            
-            if(mgm === 0 && (vse === null || vse === "")) {
-                return { texto: "CURSANDO", classe: "bg-slate-100 text-slate-700 font-bold", perc: percentualFaltas };
-            }
-
+            if(mgm === 0 && (vse === null || vse === "")) return { texto: "CURSANDO", classe: "bg-slate-100 text-slate-700 font-bold", perc: percentualFaltas };
             if (mgm >= 5.0) return { texto: "APROVADO", classe: "bg-emerald-100 text-emerald-700 font-bold", perc: percentualFaltas };
             
             if (vse !== null && vse !== "" && !isNaN(vse)) {
@@ -741,10 +772,12 @@
             return { texto: "EM RECUPERAÇÃO", classe: "bg-yellow-100 text-yellow-700 font-bold", perc: percentualFaltas };
         }
 
-        // ==========================================
-        // SALVAR NO BANCO DE DADOS
-        // ==========================================
         async function salvarNotaLinha(alunoId, notaIdExistente) {
+            if (!isAdmin) {
+                Swal.fire('Acesso Restrito', 'Somente usuários autorizados podem lançar ou editar notas.', 'warning');
+                return;
+            }
+
             const selectDisc = document.getElementById('disciplinaSelect');
             const option = selectDisc.options[selectDisc.selectedIndex];
             
@@ -789,7 +822,7 @@
 
             if (error) {
                 console.error(error);
-                btn.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Erro';
+                btn.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Negado';
                 btn.classList.replace('bg-slate-400', 'bg-red-600');
                 
                 setTimeout(() => {
@@ -800,7 +833,6 @@
                 btn.innerHTML = '<i class="fa-solid fa-check-double"></i> Salvo';
                 btn.className = "flex-1 bg-emerald-600 text-white text-xs font-bold py-2 px-2 rounded shadow flex items-center justify-center gap-2";
                 
-                // NOVO: Recarrega as notas gerais rapidamente e já atualiza o ranking em tempo real
                 await carregarTodasNotasGlobais();
                 atualizarBadgesRanking();
                 
@@ -809,15 +841,16 @@
         }
 
         // ==========================================
-        // LÓGICA DO BOLETIM INDIVIDUAL (POPUP)
+        // BOLETIM INDIVIDUAL
         // ==========================================
         async function abrirBoletimAluno(alunoId, alunoNome, alunoNumero) {
             const numeroFormatado = "5" + alunoNumero.toString().padStart(2, '0');
             document.getElementById('modalBoletim').classList.remove('hidden');
             document.getElementById('boletimAlunoNome').innerText = `AL SD PM ${numeroFormatado} - ${alunoNome}`;
             
+            const colSpan = isAdmin ? 5 : 4;
             const tbody = document.getElementById('tabelaBoletimIndividual');
-            tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-500 font-bold"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Buscando histórico de avaliações...</td></tr>';
+            tbody.innerHTML = `<tr><td colspan="${colSpan}" class="p-6 text-center text-slate-500 font-bold"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Buscando histórico de avaliações...</td></tr>`;
             
             const { data, error } = await dbClient
                 .from('academico_notas')
@@ -826,56 +859,71 @@
                 .order('disciplina_nome', { ascending: true });
 
             if (error) {
-                tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-red-500 font-bold">Erro ao buscar histórico. Tente novamente.</td></tr>';
+                tbody.innerHTML = `<tr><td colspan="${colSpan}" class="p-6 text-center text-red-500 font-bold">Erro ao buscar histórico. Tente novamente.</td></tr>`;
                 return;
             }
 
             let somaMgm = 0;
+            let qtdNotasValidas = 0;
             let temReprovacao = false;
             let temRecuperacao = false;
 
             tbody.innerHTML = '';
             
             if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-500 font-bold">Nenhuma nota ou falta lançada para este aluno ainda.</td></tr>';
+                tbody.innerHTML = `<tr><td colspan="${colSpan}" class="p-6 text-center text-slate-500 font-bold">Nenhuma nota ou falta lançada para este aluno ainda.</td></tr>`;
                 document.getElementById('boletimTotalDisc').innerText = '0 / 36';
-                document.getElementById('boletimMediaGeral').innerText = '0.00';
+                const elMedia = document.getElementById('boletimMediaGeral');
+                elMedia.innerText = '0.0000';
+                elMedia.title = 'MGC (6 casas): 0.000000';
                 document.getElementById('boletimStatusGeral').innerText = 'AGUARDANDO';
                 document.getElementById('boletimStatusGeral').className = 'text-lg font-black mt-1 text-slate-400';
                 return;
             }
 
             data.forEach(item => {
-                somaMgm += parseFloat(item.mgm);
+                if (item.mgm != null) {
+                    somaMgm += parseFloat(item.mgm);
+                    qtdNotasValidas++;
+                }
                 
+                const statusTxt = item.status_final || '-';
                 let badgeClass = "bg-slate-100 text-slate-700";
-                if(item.status_final.includes("CURSANDO")) badgeClass = "bg-slate-100 text-slate-700 border border-slate-300";
-                if(item.status_final.includes("APROVADO")) badgeClass = "bg-emerald-100 text-emerald-800 border border-emerald-300";
-                if(item.status_final.includes("REPROVADO")) { badgeClass = "bg-red-100 text-red-800 border border-red-300"; temReprovacao = true; }
-                if(item.status_final.includes("RECUPERAÇÃO")) { badgeClass = "bg-yellow-100 text-yellow-800 border border-yellow-400"; temRecuperacao = true; }
-                if(item.status_final.includes("2ª ÉPOCA")) badgeClass = "bg-blue-100 text-blue-700 border border-blue-300";
+                if(statusTxt.includes("CURSANDO")) badgeClass = "bg-slate-100 text-slate-700 border border-slate-300";
+                if(statusTxt.includes("APROVADO")) badgeClass = "bg-emerald-100 text-emerald-800 border border-emerald-300";
+                if(statusTxt.includes("REPROVADO")) { badgeClass = "bg-red-100 text-red-800 border border-red-300"; temReprovacao = true; }
+                if(statusTxt.includes("RECUPERAÇÃO")) { badgeClass = "bg-yellow-100 text-yellow-800 border border-yellow-400"; temRecuperacao = true; }
+                if(statusTxt.includes("2ª ÉPOCA")) badgeClass = "bg-blue-100 text-blue-700 border border-blue-300";
+
+                const mgmFormatada = item.mgm != null ? parseFloat(item.mgm).toFixed(2) : '-';
+                const colAcaoHtml = isAdmin
+                    ? `<td class="p-3 text-center">
+                            <button onclick="deletarNotaModal(${item.id}, ${alunoId}, '${alunoNome.replace(/'/g, "\\'")}', ${alunoNumero})" class="text-rose-500 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 p-1.5 rounded transition" title="Excluir Lançamento">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                       </td>`
+                    : '';
 
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition">
                         <td class="p-3 text-slate-700 font-semibold truncate max-w-[200px]" title="${item.disciplina_nome}">${item.disciplina_nome}</td>
-                        <td class="p-3 text-center font-black text-pmmt-blue">${item.mgm.toFixed(2)}</td>
+                        <td class="p-3 text-center font-black text-pmmt-blue">${mgmFormatada}</td>
                         <td class="p-3 text-center text-slate-600">${item.percentual_faltas}% <span class="text-[10px]">(${item.faltas_horas}h)</span></td>
                         <td class="p-3 text-center">
                             <span class="px-2 py-1 rounded text-[10px] font-bold shadow-sm whitespace-nowrap ${badgeClass}">
-                                ${item.status_final}
+                                ${statusTxt}
                             </span>
                         </td>
-                        <td class="p-3 text-center">
-                            <button onclick="deletarNotaModal(${item.id}, ${alunoId}, '${alunoNome.replace(/'/g, "\\'")}', ${alunoNumero})" class="text-rose-500 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 p-1.5 rounded transition" title="Excluir Lançamento">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </td>
+                        ${colAcaoHtml}
                     </tr>
                 `;
             });
 
-            document.getElementById('boletimTotalDisc').innerText = `${data.length} / 36`;
-            document.getElementById('boletimMediaGeral').innerText = (somaMgm / data.length).toFixed(2);
+            const mgc6 = qtdNotasValidas > 0 ? parseFloat((somaMgm / qtdNotasValidas).toFixed(6)) : 0;
+            const elMedia = document.getElementById('boletimMediaGeral');
+            document.getElementById('boletimTotalDisc').innerText = `${qtdNotasValidas} / 36`;
+            elMedia.innerText = mgc6.toFixed(4);
+            elMedia.title = `MGC (6 casas): ${mgc6.toFixed(6)}`;
             
             let statusGeral = "APROVADO PARCIAL";
             let statusClass = "text-lg font-black mt-1 text-emerald-600";
@@ -897,6 +945,11 @@
         }
 
         async function deletarNotaModal(idNota, alunoId, alunoNome, alunoNumero) {
+            if (!isAdmin) {
+                Swal.fire('Acesso Restrito', 'Somente usuários autorizados podem excluir lançamentos.', 'warning');
+                return;
+            }
+
             Swal.fire({
                 title: 'Tem certeza?',
                 text: "Isso apagará este lançamento do histórico do aluno!",
@@ -911,12 +964,12 @@
                     const { error } = await dbClient.from('academico_notas').delete().eq('id', idNota);
                     if(!error) {
                         Swal.fire('Excluído!', 'O lançamento foi apagado.', 'success');
-                        await carregarTodasNotasGlobais(); // NOVO: Atualiza a memória de rank pós deleção
+                        await carregarTodasNotasGlobais();
                         atualizarBadgesRanking();
                         abrirBoletimAluno(alunoId, alunoNome, alunoNumero); 
                         carregarPautaTurma(); 
                     } else {
-                        Swal.fire('Erro!', 'Não foi possível excluir.', 'error');
+                        Swal.fire('Acesso Negado ou Erro', 'Não foi possível excluir.', 'error');
                     }
                 }
             });
