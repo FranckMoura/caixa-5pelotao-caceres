@@ -32,7 +32,7 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* Menu Horizontal Militarizado Compacto e Responsivo */
+        /* Menu Horizontal Militarizado (Desktop) */
         .menu-item {
             display: flex;
             align-items: center;
@@ -51,6 +51,28 @@
         }
         .menu-item:hover { background-color: #1e3a8a; color: white; }
         .menu-item.ativo { background-color: #0B1C3D; color: #C5A059; border-bottom-color: #C5A059; }
+
+        /* Menu Retrátil Exclusivo para Celular (< 768px) */
+        @media (max-width: 767px) {
+            #menuModulos {
+                display: none;
+            }
+            #menuModulos.menu-aberto {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            #menuModulos .menu-item {
+                justify-content: flex-start;
+                padding: 0.72rem 0.85rem;
+                font-size: 10.5px;
+                border-bottom: 1px solid #334155;
+                border-right: 1px solid #334155;
+            }
+            #menuModulos .menu-item.ativo {
+                border-bottom-color: #C5A059;
+                border-left: 3px solid #C5A059;
+            }
+        }
         
         .tabela-qts th, .tabela-qts td { border: 1px solid #94a3b8; padding: 0.25rem; text-align: center; font-size: 9px; text-transform: uppercase; }
         .tabela-qts th { background-color: #e2e8f0; font-weight: 800; color: #1e293b; }
@@ -160,7 +182,7 @@
                 </div>
 
                 <div class="flex items-center gap-3 md:gap-4">
-                    <!-- AÇÕES DO SISTEMA (FORA DA BARRA DE MÓDULOS) -->
+                    <!-- AÇÕES DO SISTEMA -->
                     <div class="flex items-center gap-1.5">
                         <button onclick="abrirModalAdmins()" class="admin-only hidden inline-flex items-center gap-1.5 bg-pmmt-blue hover:bg-sys-blue text-pmmt-gold border border-pmmt-gold/60 px-2.5 py-1.5 rounded-sm text-[10px] font-extrabold uppercase tracking-wider transition" title="Gerenciar Usuários Autorizados">
                             <i class="fa-solid fa-user-shield"></i> <span class="hidden md:inline">Acessos</span>
@@ -181,8 +203,21 @@
                 </div>
             </header>
 
-            <!-- MENU HORIZONTAL (TODOS OS 11 MÓDULOS VISÍVEIS) -->
-            <nav class="bg-sys-header border-b-2 border-pmmt-gold flex flex-wrap items-stretch shadow-md shrink-0">
+            <!-- BOTÃO RETRÁTIL EXCLUSIVO MOBILE (< 768px) -->
+            <div class="md:hidden bg-sys-header border-b-2 border-pmmt-gold px-3 py-2 flex items-center justify-between shrink-0 no-print">
+                <button type="button" id="btnToggleMenuMobile" onclick="alternarMenuMobile()" aria-expanded="false" aria-controls="menuModulos" class="flex-1 flex items-center justify-between bg-pmmt-blue hover:bg-sys-blue text-white border border-slate-600 px-3 py-2 rounded-sm transition">
+                    <span class="flex items-center gap-2 text-[11px] font-black uppercase tracking-wider">
+                        <i id="iconeMenuMobile" class="fa-solid fa-bars text-pmmt-gold text-sm"></i>
+                        <span>Módulos</span>
+                        <span class="text-slate-500">|</span>
+                        <span id="labelModuloAtualMobile" class="text-pmmt-gold">Início</span>
+                    </span>
+                    <i id="setaMenuMobile" class="fa-solid fa-chevron-down text-xs text-slate-300 transition-transform duration-200"></i>
+                </button>
+            </div>
+
+            <!-- MENU DE MÓDULOS (HORIZONTAL NO DESKTOP / RETRÁTIL NO MOBILE) -->
+            <nav id="menuModulos" class="bg-sys-header border-b-2 border-pmmt-gold md:flex md:flex-wrap items-stretch shadow-md shrink-0">
                 <button onclick="mudarModulo('home')" id="btn-home" class="menu-item border-r border-slate-700/80 ativo"><i class="fa-solid fa-house"></i> Início</button>
                 <button onclick="mudarModulo('efetivo')" id="btn-efetivo" class="menu-item border-r border-slate-700/80"><i class="fa-solid fa-users-viewfinder"></i> Efetivo</button>
                 <button onclick="mudarModulo('cautela')" id="btn-cautela" class="menu-item border-r border-slate-700/80"><i class="fa-solid fa-gun"></i> Cautela</button>
@@ -603,6 +638,20 @@
         let isAdmin = false;
         let emailUsuarioLogado = null;
 
+        const NOMES_MODULOS = {
+            home: 'Início',
+            efetivo: 'Efetivo',
+            cautela: 'Cautela',
+            financeiro: 'Finanças',
+            efetivodados: 'Efetivo & Dados',
+            academico: 'Acadêmico',
+            aluno: 'Área do Aluno',
+            taf: 'TAF',
+            toques: 'Toques',
+            gerador: 'Documentos',
+            tco: 'TCO'
+        };
+
         const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
         
@@ -684,6 +733,35 @@
             document.querySelectorAll('.admin-only').forEach(el => isAdmin ? el.classList.remove('hidden') : el.classList.add('hidden'));
         }
 
+        // ==========================================
+        // CONTROLE DO MENU RETRÁTIL MOBILE
+        // ==========================================
+        function alternarMenuMobile() {
+            const nav = document.getElementById('menuModulos');
+            const btn = document.getElementById('btnToggleMenuMobile');
+            const icone = document.getElementById('iconeMenuMobile');
+            const seta = document.getElementById('setaMenuMobile');
+            if (!nav) return;
+
+            const aberto = nav.classList.toggle('menu-aberto');
+            if (btn) btn.setAttribute('aria-expanded', aberto ? 'true' : 'false');
+            if (icone) icone.className = aberto ? 'fa-solid fa-xmark text-pmmt-gold text-sm' : 'fa-solid fa-bars text-pmmt-gold text-sm';
+            if (seta) seta.classList.toggle('rotate-180', aberto);
+        }
+
+        function fecharMenuMobile() {
+            const nav = document.getElementById('menuModulos');
+            const btn = document.getElementById('btnToggleMenuMobile');
+            const icone = document.getElementById('iconeMenuMobile');
+            const seta = document.getElementById('setaMenuMobile');
+            if (!nav) return;
+
+            nav.classList.remove('menu-aberto');
+            if (btn) btn.setAttribute('aria-expanded', 'false');
+            if (icone) icone.className = 'fa-solid fa-bars text-pmmt-gold text-sm';
+            if (seta) seta.classList.remove('rotate-180');
+        }
+
         async function sincronizarDadosManualmente() {
             mostrarLoading(true);
             await carregarAlunos(); 
@@ -741,6 +819,10 @@
             });
             const modAtivo = document.getElementById('modulo-' + moduloDestino); if(modAtivo) modAtivo.classList.remove('hidden');
             const btnAtivo = document.getElementById('btn-' + moduloDestino); if(btnAtivo) btnAtivo.classList.add('ativo');
+
+            const labelMobile = document.getElementById('labelModuloAtualMobile');
+            if (labelMobile) labelMobile.textContent = NOMES_MODULOS[moduloDestino] || 'Início';
+            fecharMenuMobile();
             
             if(moduloDestino === 'aluno') abrirAbaAluno('aba-material', document.querySelector('.aba-btn'));
         }
@@ -827,6 +909,7 @@
 
         async function abrirModalAdmins() {
             if (!isAdmin) return alert("Acesso restrito a administradores.");
+            fecharMenuMobile();
             document.getElementById('formNovoAdmin').reset();
             document.getElementById('msgAdminFeedback').classList.add('hidden');
             popularSeletorEfetivoAdmin();
