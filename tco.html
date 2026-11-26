@@ -3,60 +3,92 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Módulo TCO - PMMT (6º BPM - Cáceres/MT)</title>
+<title>TCO Digital – 6º BPM Cáceres/MT (Portal 5º Pelotão)</title>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
   :root {
-    --sys-dark: #0a101f;
-    --sys-header: #151e2e;
-    --sys-menu: #1e293b;
-    --sys-blue: #1e3a8a;
-    --pmmt-blue: #0B1C3D;
-    --pmmt-gold: #C5A059;
-    --bg: #f1f5f9;
-    --card: #ffffff;
-    --border: #cbd5e1;
-    --text: #1e293b;
-    --muted: #64748b;
+    --bg-app: #0a101f;
+    --bg-header: #151e2e;
+    --bg-panel: #151e2e;
+    --bg-panel-hover: #1e293b;
+    --border-ui: #334155;
+    --text-ui: #f1f5f9;
+    --text-muted: #94a3b8;
+    --accent: #1e3a8a;
+    --accent-hover: #2563eb;
+    --pm-navy: #0B1C3D;
+    --pm-gold: #C5A059;
+    --success: #059669;
+    --danger: #b91c1c;
+    --warn: #d97706;
   }
-  * { box-sizing: border-box; font-family: 'Open Sans', 'Segoe UI', Arial, sans-serif; }
-  body { margin: 0; background: var(--bg); color: var(--text); font-size: 13.5px; }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg-app);
+    color: var(--text-ui);
+    font-family: 'Open Sans', system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
 
   ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: #cbd5e1; }
-  ::-webkit-scrollbar-thumb { background: #64748b; }
+  ::-webkit-scrollbar-track { background: #1e293b; }
+  ::-webkit-scrollbar-thumb { background: #475569; }
 
-  /* Barra Superior / Padrão index.html */
+  /* ===== TOP BAR (UI ONLY - PADRÃO PORTAL) ===== */
   .topbar {
-    background: var(--sys-dark);
-    color: #fff;
-    padding: 12px 20px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    border-bottom: 2px solid #334155;
     position: sticky;
     top: 0;
-    z-index: 60;
+    z-index: 100;
+    background: var(--bg-app);
+    border-bottom: 2px solid var(--pm-gold);
+    padding: 10px 16px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.4);
   }
-  .topbar-brand { display: flex; align-items: center; gap: 12px; }
-  .brand-icon {
-    width: 38px; height: 38px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid #475569;
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .brand-badge {
+    background: var(--pm-navy);
+    color: var(--pm-gold);
+    font-weight: 800;
+    font-size: 11px;
+    padding: 6px 10px;
     border-radius: 2px;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--pmmt-gold);
-    font-size: 18px;
+    border: 1px solid var(--pm-gold);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
   }
-  .topbar h1 { margin: 0; font-size: 14px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
-  .topbar h1 span { color: var(--pmmt-gold); }
-  .topbar small { display: block; color: #94a3b8; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
+  .brand-title {
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .brand-sub {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
 
   .status-pill {
     display: inline-flex;
@@ -65,8 +97,8 @@
     font-size: 10px;
     font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    padding: 4px 10px;
+    letter-spacing: 0.05em;
+    padding: 4px 9px;
     border-radius: 2px;
     background: rgba(255,255,255,0.06);
     border: 1px solid #475569;
@@ -75,865 +107,1800 @@
   .status-pill.ok { background: rgba(16,185,129,0.15); border-color: #10b981; color: #6ee7b7; }
   .status-pill.err { background: rgba(239,68,68,0.15); border-color: #ef4444; color: #fca5a5; }
 
-  .actions { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-  button {
-    padding: 7px 11px;
-    border: 1px solid transparent;
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn {
+    appearance: none;
+    border: 1px solid var(--border-ui);
+    background: var(--bg-panel);
+    color: var(--text-ui);
+    padding: 7px 10px;
     border-radius: 2px;
-    cursor: pointer;
-    font-weight: 800;
-    font-size: 10.5px;
+    font-size: 11px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
+    cursor: pointer;
     display: inline-flex;
     align-items: center;
     gap: 6px;
     transition: all 0.15s ease;
   }
-  button:hover { filter: brightness(1.1); }
-  button:disabled { opacity: 0.55; cursor: not-allowed; }
-  .btn-save { background: #059669; border-color: #10b981; color: #fff; }
-  .btn-list { background: var(--pmmt-gold); border-color: #b08b43; color: var(--sys-dark); }
-  .btn-new { background: var(--sys-menu); border-color: #475569; color: #e2e8f0; }
-  .btn-print { background: var(--pmmt-blue); border-color: #3b82f6; color: #fff; }
-  .btn-print-all { background: var(--sys-blue); border-color: #60a5fa; color: #fff; }
-  .btn-json { background: #334155; border-color: #475569; color: #cbd5e1; }
-  .btn-clear { background: #b91c1c; border-color: #ef4444; color: #fff; }
-
-  /* Abas em estilo Menu Horizontal Militarizado */
-  .tabs {
-    background: var(--sys-header);
-    border-bottom: 2px solid var(--pmmt-gold);
-    display: flex;
-    overflow-x: auto;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  .btn:hover { background: var(--bg-panel-hover); filter: brightness(1.08); }
+  .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+  .btn-primary {
+    background: var(--pm-navy);
+    border-color: #3b82f6;
+    color: #fff;
   }
-  .tabs::-webkit-scrollbar { display: none; }
-  .tab-btn {
+  .btn-primary:hover { background: var(--accent); }
+  .btn-gold {
+    background: var(--pm-gold);
+    border-color: #b08b43;
+    color: var(--bg-app);
+    font-weight: 800;
+  }
+  .btn-success {
+    background: var(--success);
+    border-color: #10b981;
+    color: #fff;
+  }
+  .btn-danger {
     background: transparent;
-    color: #94a3b8;
-    border: none;
-    border-right: 1px solid #334155;
-    border-bottom: 3px solid transparent;
-    border-radius: 0;
-    padding: 11px 14px;
+    border-color: #7f1d1d;
+    color: #fca5a5;
+  }
+  .btn-danger:hover { background: var(--danger); color: #fff; border-color: #ef4444; }
+  .btn-sm {
+    padding: 4px 8px;
+    font-size: 10.5px;
+  }
+
+  .sync-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     font-size: 10.5px;
     font-weight: 700;
-    white-space: nowrap;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: var(--bg-panel);
+    border: 1px solid var(--border-ui);
+    padding: 6px 9px;
+    border-radius: 2px;
+    cursor: pointer;
+    user-select: none;
   }
-  .tab-btn:hover { background: var(--sys-blue); color: #fff; }
-  .tab-btn.active {
-    background: var(--pmmt-blue);
-    color: var(--pmmt-gold);
-    border-bottom-color: var(--pmmt-gold);
+  .sync-pill input { accent-color: #10b981; margin: 0; }
+
+  /* ===== LAYOUT ===== */
+  .app-layout {
+    display: flex;
+    flex: 1;
+    min-height: 0;
   }
 
-  /* Barra de Contexto / Vínculo com Banco */
-  .context-bar {
-    background: #fff;
-    border-bottom: 1px solid var(--border);
-    padding: 9px 20px;
+  /* ===== SIDEBAR ===== */
+  .sidebar {
+    width: 300px;
+    flex-shrink: 0;
+    background: var(--bg-panel);
+    border-right: 1px solid var(--border-ui);
+    padding: 14px 12px;
+    position: sticky;
+    top: 58px;
+    height: calc(100vh - 58px);
+    overflow-y: auto;
+  }
+
+  .record-indicator {
     display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
     align-items: center;
     justify-content: space-between;
-  }
-  .context-group { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-  .context-group label { margin: 0; font-size: 10px; font-weight: 800; color: var(--pmmt-blue); letter-spacing: 0.05em; }
-  .context-group select { width: auto; min-width: 190px; padding: 5px 8px; font-size: 12px; font-weight: 600; }
-  .badge-edit {
-    background: #fef3c7;
-    color: #92400e;
-    border: 1px solid #d97706;
-    padding: 4px 10px;
+    gap: 6px;
+    padding: 6px 9px;
     border-radius: 2px;
     font-size: 10px;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    margin-bottom: 10px;
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid #0284c7;
+    color: #7dd3fc;
   }
-  .badge-edit.novo { background: #e0f2fe; color: #075985; border-color: #0284c7; }
+  .record-indicator.editing {
+    background: rgba(245, 158, 11, 0.14);
+    border-color: #d97706;
+    color: #fcd34d;
+  }
 
-  /* Container Principal */
-  .container { max-width: 1120px; margin: 18px auto; padding: 0 14px 40px; }
-  .doc-section {
-    display: none;
-    background: var(--card);
-    padding: 26px;
-    border: 1px solid var(--border);
-    border-top: 3px solid var(--pmmt-gold);
-    border-radius: 2px;
-    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06);
-  }
-  .doc-section.active { display: block; }
-
-  /* Cabeçalho Oficial PMMT */
-  .official-header {
-    text-align: center;
-    border-bottom: 2px solid #000;
-    padding-bottom: 10px;
-    margin-bottom: 18px;
-  }
-  .official-header h2 { margin: 2px 0; font-size: 14.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; }
-  .official-header h3 { margin: 2px 0; font-size: 12.5px; font-weight: 700; color: var(--pmmt-blue); }
-  .ref-box {
-    background: #f8fafc;
-    padding: 9px 14px;
-    border: 1px solid var(--border);
-    border-left: 4px solid var(--pmmt-blue);
-    margin-bottom: 16px;
+  .sidebar-section-title {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--pm-gold);
     font-weight: 800;
-    font-size: 12.5px;
-    letter-spacing: 0.04em;
+    margin: 0 0 8px 2px;
     display: flex;
-    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    gap: 8px;
-  }
-  .num-tco-group {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: wrap;
   }
 
-  /* Bloco Seletor de Infrações (Banco de Dados) */
-  .infracao-picker-box {
-    background: #f8fafc;
-    border: 1px solid var(--border);
-    border-left: 4px solid var(--pmmt-gold);
-    padding: 10px 12px;
-    margin-bottom: 12px;
+  .quick-box {
+    background: var(--bg-app);
+    border: 1px solid var(--border-ui);
+    border-top: 2px solid var(--pm-gold);
     border-radius: 2px;
+    padding: 10px;
+    margin-bottom: 14px;
   }
-  .infracao-picker-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-items: flex-end;
-  }
-  .infracao-picker-row > div { flex: 1; min-width: 260px; }
-  .acao-penal-banner {
-    margin-top: 8px;
-    padding: 6px 10px;
-    border-radius: 2px;
-    font-size: 11px;
+  .quick-box label {
+    display: block;
+    font-size: 10px;
     font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 3px;
+    margin-top: 8px;
+  }
+  .quick-box label:first-child { margin-top: 0; }
+  .quick-box input, .quick-box select {
+    width: 100%;
+    background: #1e293b;
+    border: 1px solid #475569;
+    color: #fff;
+    border-radius: 2px;
+    padding: 6px 8px;
+    font-size: 11.5px;
+    font-weight: 600;
+  }
+  .quick-box input:focus, .quick-box select:focus {
+    outline: none;
+    border-color: var(--pm-gold);
+  }
+  .quick-row {
+    display: flex;
+    gap: 6px;
+    align-items: stretch;
+  }
+  .quick-row > input, .quick-row > select { flex: 1; min-width: 0; }
+
+  .acao-penal-mini {
+    margin-top: 6px;
+    padding: 6px 8px;
+    border-radius: 2px;
+    font-size: 10.5px;
+    line-height: 1.35;
+    font-weight: 600;
     display: none;
+  }
+  .acao-penal-mini.incond { display: block; background: rgba(16,185,129,0.14); border: 1px solid #10b981; color: #a7f3d0; }
+  .acao-penal-mini.cond { display: block; background: rgba(245,158,11,0.16); border: 1px solid #f59e0b; color: #fde68a; }
+  .acao-penal-mini.privada { display: block; background: rgba(59,130,246,0.16); border: 1px solid #3b82f6; color: #bfdbfe; }
+
+  .piece-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .piece-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 8px;
+    border-radius: 2px;
+    background: rgba(10, 16, 31, 0.55);
+    border: 1px solid transparent;
+    transition: all 0.15s;
+  }
+  .piece-item:hover {
+    background: var(--bg-panel-hover);
+    border-color: var(--pm-gold);
+  }
+  .piece-item.excluded { opacity: 0.45; }
+  .piece-item input[type="checkbox"] {
+    accent-color: var(--pm-gold);
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .piece-link {
+    color: var(--text-ui);
+    text-decoration: none;
+    font-size: 11.5px;
+    font-weight: 600;
+    line-height: 1.25;
+    flex: 1;
+    cursor: pointer;
+  }
+  .piece-num {
+    color: var(--pm-gold);
+    font-weight: 800;
+    margin-right: 5px;
+  }
+
+  .sidebar-hint {
+    margin-top: 12px;
+    padding: 9px;
+    background: rgba(197, 160, 89, 0.1);
+    border: 1px solid rgba(197, 160, 89, 0.35);
+    border-radius: 2px;
+    font-size: 10.5px;
+    color: #e2e8f0;
+    line-height: 1.45;
+  }
+
+  .status-toast {
+    position: fixed;
+    bottom: 18px;
+    right: 18px;
+    background: #065f46;
+    color: #ecfdf5;
+    border: 1px solid #10b981;
+    padding: 9px 14px;
+    border-radius: 2px;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.45);
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+    transition: all 0.25s ease;
+    z-index: 250;
+  }
+  .status-toast.show { opacity: 1; transform: translateY(0); }
+
+  /* ===== WORKSPACE & A4 SHEETS ===== */
+  .workspace {
+    flex: 1;
+    padding: 20px 16px 60px;
+    overflow-x: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    background: #111827;
+  }
+
+  .sheet-wrapper {
+    width: 100%;
+    max-width: 210mm;
+  }
+  .sheet-wrapper.excluded-print .sheet {
+    opacity: 0.42;
+    filter: grayscale(0.4);
+  }
+
+  .sheet-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    padding: 0 2px;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .sheet-bar-title {
+    font-size: 11.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #cbd5e1;
+    display: flex;
     align-items: center;
     gap: 8px;
   }
-  .acao-penal-banner.incond { background: #ecfdf5; border: 1px solid #10b981; color: #065f46; display: flex; }
-  .acao-penal-banner.cond { background: #fffbeb; border: 1px solid #f59e0b; color: #92400e; display: flex; }
-  .acao-penal-banner.privada { background: #eff6ff; border: 1px solid #3b82f6; color: #1e40af; display: flex; }
-
-  /* Grid de Formulários */
-  fieldset {
-    border: 1px solid var(--border);
+  .sheet-bar-badge {
+    font-size: 10px;
+    padding: 2px 7px;
     border-radius: 2px;
-    margin-bottom: 16px;
-    padding: 14px;
-    background: #fff;
+    background: var(--pm-navy);
+    border: 1px solid var(--pm-gold);
+    color: var(--pm-gold);
   }
-  legend {
-    font-weight: 800;
-    color: var(--sys-dark);
-    padding: 2px 10px;
+  .sheet-wrapper.excluded-print .sheet-bar-badge {
+    background: #334155;
+    border-color: #475569;
+    color: #cbd5e1;
+  }
+
+  /* Barra auxiliar de Infração dentro da Peça 02 (oculta na impressão) */
+  .infracao-bar-doc {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-left: 4px solid var(--pm-gold);
+    padding: 7px 10px;
+    margin-bottom: 8px;
+    font-family: 'Open Sans', Arial, sans-serif;
     font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    background: #f1f5f9;
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--pmmt-gold);
-    border-radius: 2px;
+    color: #1e293b;
   }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: 10px;
+  .infracao-bar-doc .row {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
   }
-  .col-12 { grid-column: span 12; }
-  .col-9 { grid-column: span 9; }
-  .col-8 { grid-column: span 8; }
-  .col-6 { grid-column: span 6; }
-  .col-5 { grid-column: span 5; }
-  .col-4 { grid-column: span 4; }
-  .col-3 { grid-column: span 3; }
-  .col-2 { grid-column: span 2; }
-
-  @media (max-width: 768px) {
-    .col-9, .col-8, .col-6, .col-5, .col-4, .col-3, .col-2 { grid-column: span 12; }
-  }
-
-  label { display: block; font-size: 10px; font-weight: 800; color: var(--muted); margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.04em; }
-  input[type="text"], input[type="date"], input[type="time"], input[type="email"], select, textarea {
-    width: 100%;
-    padding: 7px 9px;
+  .infracao-bar-doc select {
+    flex: 1;
+    min-width: 220px;
+    padding: 4px 7px;
     border: 1px solid #94a3b8;
     border-radius: 2px;
-    font-size: 12.5px;
+    font-size: 11.5px;
     font-weight: 600;
-    color: var(--text);
     background: #fff;
+    color: #0f172a;
   }
-  input:focus, select:focus, textarea:focus {
-    outline: none;
-    border-color: var(--pmmt-blue);
-    box-shadow: 0 0 0 2px rgba(11, 28, 61, 0.14);
-  }
-  textarea { resize: vertical; min-height: 85px; line-height: 1.45; font-weight: 500; }
-
-  .legal-text { line-height: 1.75; text-align: justify; margin: 12px 0; font-size: 13px; }
-  .inline-input {
-    display: inline-block !important;
-    width: auto !important;
-    min-width: 140px;
-    padding: 3px 6px !important;
-    margin: 0 4px;
-    border: none !important;
-    border-bottom: 1px solid #000 !important;
-    border-radius: 0 !important;
-    background: #f8fafc !important;
-  }
-
-  .sig-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
-    margin-top: 28px;
-    text-align: center;
-  }
-  .sig-box { border-top: 1px solid #000; padding-top: 6px; font-size: 11.5px; font-weight: 600; }
-
-  .official-footer {
-    margin-top: 24px;
-    padding-top: 8px;
-    border-top: 1px solid #000;
-    text-align: center;
+  .infracao-bar-doc .acao-doc-msg {
+    margin-top: 5px;
     font-size: 10.5px;
-    font-weight: 600;
-    color: var(--muted);
+    font-weight: 700;
+    color: #0f172a;
+    display: none;
   }
 
-  /* Modais (Histórico BD & JSON) */
+  /* ===== OFFICIAL DOCUMENT SHEET (PRINT-FIDELITY) ===== */
+  .sheet {
+    background: #ffffff;
+    color: #000000;
+    width: 100%;
+    min-height: 275mm;
+    padding: 14mm 16mm 14mm 16mm;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+    border-radius: 2px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10pt;
+    line-height: 1.38;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sheet-body { flex: 1; }
+
+  .doc-header {
+    text-align: center;
+    margin-bottom: 10px;
+    line-height: 1.3;
+  }
+  .doc-header .h-l1 { font-size: 11pt; font-weight: 700; }
+  .doc-header .h-l2 { font-size: 11pt; font-weight: 700; }
+  .doc-header .h-l3 { font-size: 9.5pt; font-weight: 700; }
+  .doc-header .h-l4 { font-size: 10pt; font-weight: 700; margin-top: 2px; }
+
+  .sec-title {
+    color: #002060;
+    font-size: 10.5pt;
+    font-weight: 700;
+    margin: 12px 0 6px 0;
+    text-transform: uppercase;
+  }
+  .sub-title {
+    font-size: 10pt;
+    font-weight: 700;
+    margin: 9px 0 4px 0;
+  }
+
+  .doc-p {
+    text-align: justify;
+    margin: 0 0 8px 0;
+  }
+  .doc-p.left { text-align: left; }
+
+  .doc-footer {
+    margin-top: 18px;
+    padding-top: 6px;
+    border-top: 1px solid #d1d5db;
+    text-align: center;
+    font-size: 8pt;
+    color: #555555;
+  }
+
+  .sig-block {
+    text-align: center;
+    margin-top: 28px;
+    margin-bottom: 8px;
+    line-height: 1.45;
+  }
+  .sig-line {
+    display: inline-block;
+    width: 310px;
+    max-width: 90%;
+    border-bottom: 1px solid #000;
+    margin-bottom: 3px;
+  }
+
+  /* ===== OFFICIAL TABLES ===== */
+  .doc-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: -1px;
+    table-layout: fixed;
+  }
+  .doc-table.spaced {
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+  .doc-table td, .doc-table th {
+    border: 1px solid #000000;
+    padding: 3.5px 5px;
+    vertical-align: top;
+    font-size: 8.5pt;
+    line-height: 1.3;
+    word-wrap: break-word;
+  }
+  .doc-table.std td, .doc-table.std th {
+    font-size: 9.5pt;
+    padding: 5px 6px;
+  }
+  .doc-table th {
+    background: #eaeaea;
+    font-weight: 700;
+    text-align: left;
+  }
+  .doc-table .sig-row td {
+    height: 36px;
+    vertical-align: middle;
+  }
+  .cell-label {
+    font-weight: 700;
+    margin-right: 3px;
+    white-space: nowrap;
+  }
+  .cell-flex {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    flex-wrap: nowrap;
+  }
+  .cell-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  /* ===== FORM CONTROLS INSIDE DOCUMENT ===== */
+  .f-in, .f-sel, .f-ta {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: inherit;
+    color: #000000;
+    background: #eff6ff;
+    border: none;
+    border-bottom: 1px dashed #60a5fa;
+    border-radius: 2px;
+    padding: 1px 4px;
+    transition: background 0.12s, border-color 0.12s;
+  }
+  .f-in:focus, .f-sel:focus, .f-ta:focus {
+    outline: none;
+    background: #dbeafe;
+    border-bottom: 1.5px solid #1d4ed8;
+  }
+  .f-in::placeholder, .f-ta::placeholder {
+    color: #64748b;
+    font-style: italic;
+    font-size: 0.92em;
+  }
+
+  .f-cell {
+    width: 100%;
+    flex: 1;
+    min-width: 20px;
+    background: #f8fafc;
+    border-bottom: 1px dotted #94a3b8;
+  }
+  .f-cell:focus {
+    background: #dbeafe;
+    border-bottom: 1px solid #1d4ed8;
+  }
+
+  .f-inline {
+    display: inline-block;
+    vertical-align: baseline;
+  }
+  .w-xs  { width: 42px; text-align: center; }
+  .w-sm  { width: 78px; text-align: center; }
+  .w-md  { width: 130px; }
+  .w-lg  { width: 220px; }
+  .w-xl  { width: 320px; max-width: 100%; }
+  .w-full { width: 100%; display: block; }
+
+  .f-ta {
+    width: 100%;
+    resize: vertical;
+    min-height: 48px;
+    line-height: 1.38;
+    display: block;
+    margin-top: 3px;
+    overflow: hidden;
+  }
+  .f-ta.tall { min-height: 76px; }
+  .f-ta.sm { min-height: 30px; }
+
+  .f-sel {
+    cursor: pointer;
+    padding-right: 2px;
+  }
+
+  .chk-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-right: 8px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .chk-wrap input[type="checkbox"] {
+    width: 13px;
+    height: 13px;
+    accent-color: #002060;
+    cursor: pointer;
+    margin: 0;
+  }
+
+  .capa-line {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+  .capa-line .lbl {
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .quesitos {
+    margin: 8px 0 10px 0;
+    padding-left: 18px;
+  }
+  .quesitos li { margin-bottom: 3px; }
+
+  .print-mirror {
+    display: none;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  /* ===== MODAL HISTÓRICO SUPABASE ===== */
   .modal {
     display: none;
     position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(10, 16, 31, 0.85);
-    z-index: 1000;
+    inset: 0;
+    background: rgba(10, 16, 31, 0.86);
+    z-index: 300;
     justify-content: center;
     align-items: center;
     padding: 16px;
   }
   .modal-content {
     background: #f8fafc;
+    color: #1e293b;
     border: 1px solid #64748b;
     border-radius: 2px;
     width: 100%;
-    max-width: 920px;
+    max-width: 940px;
     max-height: 88vh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.45);
+    box-shadow: 0 20px 45px rgba(0,0,0,0.55);
   }
   .modal-header {
-    background: var(--sys-header);
+    background: var(--bg-header);
     color: #fff;
-    padding: 14px 18px;
-    border-bottom: 2px solid var(--pmmt-gold);
+    padding: 13px 16px;
+    border-bottom: 2px solid var(--pm-gold);
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 10px;
   }
-  .modal-header h3 { margin: 0; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; }
-  .modal-header h3 i { color: var(--pmmt-gold); margin-right: 6px; }
-  .modal-inner { padding: 16px; display: flex; flex-direction: column; overflow: hidden; flex: 1; }
-  .modal-body { overflow-y: auto; flex: 1; margin-top: 12px; background: #fff; border: 1px solid var(--border); }
-
-  table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  th { background: #e2e8f0; color: var(--sys-dark); text-align: left; padding: 8px 10px; font-size: 10px; font-weight: 800; text-transform: uppercase; border-bottom: 1px solid var(--border); }
-  td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; font-weight: 600; }
-  tr:hover td { background: #f8fafc; }
-  .st-badge { padding: 2px 8px; border-radius: 2px; font-size: 9.5px; font-weight: 800; text-transform: uppercase; }
+  .modal-header h3 {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+  }
+  .modal-header h3 i { color: var(--pm-gold); margin-right: 6px; }
+  .modal-inner {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex: 1;
+    gap: 10px;
+  }
+  .modal-search {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #94a3b8;
+    border-radius: 2px;
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+  .modal-body {
+    overflow-y: auto;
+    flex: 1;
+    background: #fff;
+    border: 1px solid #cbd5e1;
+  }
+  .db-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .db-table th {
+    background: #e2e8f0;
+    color: #0a101f;
+    text-align: left;
+    padding: 8px 10px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    border-bottom: 1px solid #cbd5e1;
+    position: sticky;
+    top: 0;
+  }
+  .db-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #e2e8f0;
+    font-weight: 600;
+  }
+  .db-table tr:hover td { background: #f8fafc; }
+  .st-badge {
+    padding: 2px 7px;
+    border-radius: 2px;
+    font-size: 9.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
   .st-RASCUNHO { background: #fef3c7; color: #92400e; border: 1px solid #f59e0b; }
   .st-FINALIZADO { background: #d1fae5; color: #065f46; border: 1px solid #10b981; }
   .st-REMETIDO { background: #dbeafe; color: #1e40af; border: 1px solid #3b82f6; }
 
-  pre {
-    background: var(--sys-dark);
-    color: #6ee7b7;
-    padding: 14px;
-    margin: 0;
-    overflow-x: auto;
-    font-size: 11.5px;
-    font-family: Consolas, monospace;
+  /* ===== MOBILE RESPONSIVE ===== */
+  .mobile-menu-btn { display: none; }
+  @media (max-width: 960px) {
+    .mobile-menu-btn { display: inline-flex; }
+    .sidebar {
+      position: fixed;
+      left: -320px;
+      top: 56px;
+      z-index: 150;
+      transition: left 0.2s ease;
+      box-shadow: 6px 0 24px rgba(0,0,0,0.5);
+    }
+    .sidebar.open { left: 0; }
+    .sheet {
+      padding: 10mm 8mm;
+      min-height: auto;
+    }
+  }
+
+  /* ===== PRINT STYLES (CRISP OFFICIAL A4) ===== */
+  @page {
+    size: A4 portrait;
+    margin: 12mm 14mm 12mm 14mm;
   }
 
   @media print {
-    .topbar, .context-bar, .tabs, .no-print, .infracao-picker-box { display: none !important; }
-    body { background: #fff; }
-    .container { margin: 0; padding: 0; max-width: 100%; }
-    .doc-section { border: none; box-shadow: none; padding: 0; }
-    body.print-all .doc-section { display: block !important; page-break-after: always; }
-    body.print-all .doc-section:last-of-type { page-break-after: auto; }
-    legend { background: transparent; border: none; padding-left: 0; }
-    input, textarea, select { border: 1px solid #ccc; background: transparent !important; }
+    body {
+      background: #ffffff !important;
+      color: #000000 !important;
+      display: block !important;
+    }
+    .no-print, .topbar, .sidebar, .sheet-bar, .status-toast, .modal, .infracao-bar-doc {
+      display: none !important;
+    }
+    .app-layout, .workspace {
+      display: block !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      overflow: visible !important;
+      background: #ffffff !important;
+    }
+    .sheet-wrapper {
+      max-width: none !important;
+      width: 100% !important;
+      margin: 0 !important;
+      page-break-after: always;
+      break-after: page;
+    }
+    .sheet-wrapper:last-of-type {
+      page-break-after: auto;
+      break-after: auto;
+    }
+    .sheet-wrapper.excluded-print {
+      display: none !important;
+    }
+    .sheet {
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      padding: 0 !important;
+      min-height: auto !important;
+      opacity: 1 !important;
+      filter: none !important;
+      display: block !important;
+    }
+    .f-in, .f-sel, .f-ta {
+      background: transparent !important;
+      border: none !important;
+      padding: 0 1px !important;
+      appearance: none !important;
+      -webkit-appearance: none !important;
+      color: #000000 !important;
+    }
+    .f-in::placeholder, .f-ta::placeholder {
+      color: transparent !important;
+    }
+    .f-sel.is-empty {
+      color: transparent !important;
+    }
+    .f-ta {
+      display: none !important;
+    }
+    .print-mirror {
+      display: block !important;
+      min-height: 16px;
+    }
+    .print-mirror.inline-mirror {
+      display: inline !important;
+    }
+    .doc-table th {
+      background: #eaeaea !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .sec-title {
+      color: #002060 !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .doc-table tr {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    .sig-block {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
   }
 </style>
 </head>
 <body>
 
-<!-- TOPBAR -->
-<div class="topbar">
-  <div class="topbar-brand">
-    <div class="brand-icon"><i class="fa-solid fa-file-signature"></i></div>
+<!-- ===== TOP NAVIGATION BAR ===== -->
+<header class="topbar no-print">
+  <div class="brand">
+    <button class="btn btn-sm mobile-menu-btn" id="btnToggleSidebar" type="button"><i class="fa-solid fa-bars"></i> Peças</button>
+    <div class="brand-badge"><i class="fa-solid fa-shield-halved"></i> 6º BPM • PMMT</div>
     <div>
-      <h1>Módulo TCO <span>| 6º BPM</span></h1>
-      <small>6º Comando Regional • 5º Pelotão — Cáceres/MT</small>
+      <div class="brand-title">TCO Digital – 5º Pelotão / Cáceres-MT</div>
+      <div class="brand-sub">10 Peças Oficiais A4 • Integrado ao Portal e Supabase</div>
     </div>
     <span id="statusConexao" class="status-pill"><i class="fa-solid fa-circle-notch fa-spin"></i> Conectando...</span>
   </div>
-  <div class="actions">
-    <button type="button" class="btn-save" id="btnSalvarBD" onclick="salvarTCONoBanco()">
-      <i class="fa-solid fa-cloud-arrow-up"></i> Salvar
+
+  <div class="toolbar">
+    <label class="sync-pill" title="Replica automaticamente Nº do TCO, Natureza, Autor, Vítima, Testemunha, Datas e Comandante em todas as peças">
+      <input type="checkbox" id="toggleAutoSync" checked>
+      <span>Auto-Sync</span>
+    </label>
+    <button class="btn btn-success" id="btnSalvarBD" type="button" onclick="salvarTCONoBanco()">
+      <i class="fa-solid fa-cloud-arrow-up"></i> Salvar no Banco
     </button>
-    <button type="button" class="btn-list" onclick="abrirHistoricoTCO()">
+    <button class="btn btn-gold" id="btnAbrirHistorico" type="button" onclick="abrirHistoricoTCO()">
       <i class="fa-solid fa-database"></i> TCOs (<span id="qtdSalvos">0</span>)
     </button>
-    <button type="button" class="btn-new" onclick="novoTCO()">
-      <i class="fa-solid fa-plus"></i> Novo
+    <button class="btn" id="btnNovoTCO" type="button" onclick="novoTCO()">
+      <i class="fa-solid fa-file-circle-plus"></i> Novo
     </button>
-    <button type="button" class="btn-print" onclick="imprimirAbaAtual()">
-      <i class="fa-solid fa-print"></i> Aba
+    <button class="btn" id="btnFillToday" type="button" title="Preenche as datas de hoje em todo o formulário">
+      <i class="fa-regular fa-calendar-check"></i> Hoje
     </button>
-    <button type="button" class="btn-print-all" onclick="imprimirTCOCompleto()">
-      <i class="fa-solid fa-copy"></i> TCO Completo
+    <button class="btn" id="btnExportJson" type="button" title="Salvar rascunho em arquivo JSON">
+      <i class="fa-solid fa-download"></i> JSON
     </button>
-    <button type="button" class="btn-json" onclick="exportarJSON()" title="Visualizar JSON Estruturado">
-      <i class="fa-solid fa-code"></i> JSON
+    <button class="btn" id="btnImportJson" type="button" title="Carregar rascunho JSON salvo">
+      <i class="fa-solid fa-upload"></i> Abrir
     </button>
-  </div>
-</div>
-
-<!-- ABAS ESTILO MENU HORIZONTAL DO PORTAL -->
-<div class="tabs no-print">
-  <button type="button" class="tab-btn active" onclick="openTab(event, 'tab-tco')">1. BO-TC & Autuação</button>
-  <button type="button" class="tab-btn" onclick="openTab(event, 'tab-compromisso')">2. Compromisso</button>
-  <button type="button" class="tab-btn" onclick="openTab(event, 'tab-vitima')">3. Manifestação Vítima</button>
-  <button type="button" class="tab-btn" onclick="openTab(event, 'tab-droga')">4. Constatação Droga</button>
-  <button type="button" class="tab-btn" onclick="openTab(event, 'tab-apreensao')">5. Apreensão & Depósito</button>
-  <button type="button" class="tab-btn" onclick="openTab(event, 'tab-pericia')">6. Perícias (POLITEC)</button>
-  <button type="button" class="tab-btn" onclick="openTab(event, 'tab-encerramento')">7. Encerramento</button>
-</div>
-
-<!-- BARRA DE INTEGRAÇÃO (ALUNO / STATUS / MODO EDIÇÃO) -->
-<div class="context-bar no-print">
-  <div class="context-group">
-    <span id="indicadorRegistro" class="badge-edit novo">
-      <i class="fa-solid fa-file-circle-plus"></i> Novo Registro
-    </span>
-
-    <label for="selectAlunoResponsavel"><i class="fa-solid fa-user-shield"></i> Efetivo:</label>
-    <select id="selectAlunoResponsavel" onchange="preencherGuarnicaoPorAluno()">
-      <option value="">Carregando efetivo...</option>
-    </select>
-
-    <label for="selectStatusTCO"><i class="fa-solid fa-flag"></i> Status:</label>
-    <select id="selectStatusTCO">
-      <option value="RASCUNHO">Rascunho</option>
-      <option value="FINALIZADO">Finalizado</option>
-      <option value="REMETIDO">Remetido ao PJe/JECRIM</option>
-    </select>
-  </div>
-  <div class="context-group">
-    <button type="button" class="btn-clear" style="padding:5px 10px; font-size:10px;" onclick="limparFormulario()">
-      <i class="fa-solid fa-eraser"></i> Limpar Tela
+    <input type="file" id="fileImportJson" accept=".json" style="display:none">
+    <button class="btn btn-danger" id="btnClearAll" type="button" title="Limpar todos os campos">
+      <i class="fa-solid fa-eraser"></i> Limpar
+    </button>
+    <button class="btn btn-primary" id="btnPrint" type="button">
+      <i class="fa-solid fa-print"></i> Imprimir / PDF
     </button>
   </div>
-</div>
+</header>
 
-<form id="tcoForm" class="container">
-
-  <!-- ABA 1: AUTUAÇÃO E TCO PRINCIPAL -->
-  <div id="tab-tco" class="doc-section active">
-    <div class="official-header">
-      <h2>ESTADO DE MATO GROSSO • POLÍCIA MILITAR</h2>
-      <h3>6º COMANDO REGIONAL — 6º BATALHÃO DE POLÍCIA MILITAR (CÁCERES/MT)</h3>
+<div class="app-layout">
+  <!-- ===== LEFT SIDEBAR ===== -->
+  <aside class="sidebar no-print" id="sidebar">
+    <div id="indicadorRegistro" class="record-indicator">
+      <span><i class="fa-solid fa-file-circle-plus"></i> Novo Registro</span>
+      <span>BD</span>
     </div>
 
-    <div class="ref-box">
-      <span>TERMO CIRCUNSTANCIADO DE OCORRÊNCIA (BO-TC)</span>
-      <div class="num-tco-group">
-        <span>Nº</span>
-        <input type="text" id="tco_numero" name="tco_numero" data-db="tco.numero" class="inline-input" placeholder="001/6ºBPM/2026" oninput="syncNumeroTCO(this.value)">
-        <button type="button" id="btnGerarNumTCO" class="btn-new no-print" style="padding:5px 9px; font-size:10px;" onclick="gerarProximoNumeroTCO()" title="Consultar banco e gerar próximo número sequencial">
-          <i class="fa-solid fa-wand-magic-sparkles" style="color:var(--pmmt-gold);"></i> Gerar Nº
+    <div class="sidebar-section-title">
+      <span>Integração Portal & Banco</span>
+    </div>
+    <div class="quick-box">
+      <label for="selectAlunoResponsavel"><i class="fa-solid fa-user-shield"></i> Responsável (Efetivo 5º Pel)</label>
+      <select id="selectAlunoResponsavel" onchange="preencherGuarnicaoPorAluno()">
+        <option value="">Carregando efetivo...</option>
+      </select>
+
+      <label for="selectStatusTCO"><i class="fa-solid fa-flag"></i> Status do Registro</label>
+      <select id="selectStatusTCO">
+        <option value="RASCUNHO">Rascunho</option>
+        <option value="FINALIZADO">Finalizado</option>
+        <option value="REMETIDO">Remetido ao PJe/JECRIM</option>
+      </select>
+
+      <label for="q_tco"><i class="fa-solid fa-hashtag"></i> Nº do TCO (/6ºBPM/2026)</label>
+      <div class="quick-row">
+        <input id="q_tco" type="text" data-sync="tco_num" placeholder="Ex.: 001">
+        <button class="btn btn-sm btn-gold" id="btnGerarNumTCO" type="button" onclick="gerarProximoNumeroTCO()" title="Consultar banco e gerar próximo número sequencial">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Gerar
         </button>
       </div>
+
+      <label for="selectInfracaoSidebar"><i class="fa-solid fa-scale-balanced"></i> Crime / Infração Cabível (BD)</label>
+      <div class="quick-row">
+        <select id="selectInfracaoSidebar" onchange="aplicarInfracaoSelecionada(this.value)">
+          <option value="">Carregando catálogo TCO...</option>
+        </select>
+        <button class="btn btn-sm" type="button" onclick="cadastrarNovaInfracaoTCO()" title="Cadastrar nova infração no banco">
+          <i class="fa-solid fa-plus"></i>
+        </button>
+      </div>
+      <div id="bannerAcaoPenalSidebar" class="acao-penal-mini"></div>
+
+      <label for="q_nat">Natureza da Ocorrência</label>
+      <input id="q_nat" type="text" list="datalistNaturezas" data-sync="natureza" placeholder="Ex.: Lesão Corporal Leve">
+
+      <label for="q_tip">Tipificação Legal</label>
+      <input id="q_tip" type="text" list="datalistTipificacoes" data-sync="tipificacao" placeholder="Ex.: Art. 129, caput, do CP">
+
+      <label for="q_autor">Autor(a) do Fato</label>
+      <input id="q_autor" type="text" data-sync="autor_nome" placeholder="Nome completo">
+
+      <label for="q_vitima">Vítima</label>
+      <input id="q_vitima" type="text" data-sync="vitima_nome" placeholder="Nome completo">
+
+      <label for="q_cmt">Comandante GUPM (Nome – Posto/Grad)</label>
+      <input id="q_cmt" type="text" data-sync="cmt_nome_posto" placeholder="Ex.: João Silva – 3º Sgt PM">
+
+      <label for="q_cmt_rg">RG PMMT (Comandante GUPM)</label>
+      <input id="q_cmt_rg" type="text" data-sync="cmt_rg" placeholder="Ex.: 884512">
     </div>
 
-    <fieldset>
-      <legend>Termo de Autuação</legend>
-      <p class="legal-text">
-        Aos <input type="text" name="autuacao_dia" data-db="autuacao.dia" class="inline-input" style="min-width:45px" placeholder="DD"> dias do mês de
-        <input type="text" name="autuacao_mes" data-db="autuacao.mes" class="inline-input" style="min-width:110px" placeholder="Mês"> do ano de
-        <input type="text" name="autuacao_ano" data-db="autuacao.ano" class="inline-input" style="min-width:65px" value="2026">, nesta cidade de
-        <input type="text" name="autuacao_cidade" data-db="autuacao.cidade" class="inline-input" value="Cáceres">, Estado de Mato Grosso, no Quartel do
-        <input type="text" name="autuacao_quartel" data-db="autuacao.quartel" class="inline-input" style="min-width:260px" value="6º Batalhão de Polícia Militar">, autuo as peças que adiante se seguem, do que para constar, lavrei este Termo. Eu,
-        <input type="text" id="autuacao_escrevente" name="autuacao_escrevente" data-db="guarnicao.escrevente" class="inline-input" style="min-width:250px" placeholder="Grad/RG/Nome completo">, escrevente, que o lavrei e assino.
-      </p>
-    </fieldset>
-
-    <fieldset>
-      <legend>1. Dados Gerais da Ocorrência</legend>
-
-      <!-- SELETOR INTEGRADO AO BANCO (tco_infracoes) -->
-      <div class="infracao-picker-box no-print">
-        <div class="infracao-picker-row">
-          <div>
-            <label for="selectInfracaoTCO"><i class="fa-solid fa-scale-balanced" style="color:var(--pmmt-gold); margin-right:4px;"></i> Catálogo de Crimes / Infrações Cabíveis no TCO (Banco de Dados)</label>
-            <select id="selectInfracaoTCO" onchange="aplicarInfracaoSelecionada()">
-              <option value="">Carregando infrações TCO do banco...</option>
-            </select>
-          </div>
-          <button type="button" class="btn-new" style="height:34px;" onclick="cadastrarNovaInfracaoTCO()" title="Adicionar nova infração ao banco">
-            <i class="fa-solid fa-plus"></i> Nova Infração
-          </button>
-        </div>
-        <div id="bannerAcaoPenal" class="acao-penal-banner"></div>
-      </div>
-
-      <div class="grid">
-        <div class="col-6">
-          <label>Natureza da Ocorrência *</label>
-          <input type="text" id="tco_natureza" name="tco_natureza" list="datalistNaturezas" data-db="ocorrencia.natureza" placeholder="Selecione acima ou digite a natureza..." oninput="aoDigitarNatureza(this.value)">
-          <datalist id="datalistNaturezas"></datalist>
-        </div>
-        <div class="col-6">
-          <label>Tipificação Legal *</label>
-          <input type="text" id="tco_tipificacao" name="tco_tipificacao" list="datalistTipificacoes" data-db="ocorrencia.tipificacao_legal" placeholder="Preenchido automaticamente ou edite livremente..." oninput="syncCampo('sync-tipificacao', this.value)">
-          <datalist id="datalistTipificacoes"></datalist>
-        </div>
-        <div class="col-3">
-          <label>Data do Fato *</label>
-          <input type="date" id="tco_data_fato" name="tco_data_fato" data-db="ocorrencia.data_fato" oninput="syncCampo('sync-data-fato', this.value)">
-        </div>
-        <div class="col-3">
-          <label>Hora do Fato *</label>
-          <input type="time" id="tco_hora_fato" name="tco_hora_fato" data-db="ocorrencia.hora_fato">
-        </div>
-        <div class="col-3">
-          <label>Data do Registro *</label>
-          <input type="date" id="tco_data_registro" name="tco_data_registro" data-db="ocorrencia.data_registro">
-        </div>
-        <div class="col-3">
-          <label>Comunicante</label>
-          <input type="text" name="tco_comunicante" data-db="ocorrencia.comunicante" placeholder="Nome / CIOSP 190">
-        </div>
-        <div class="col-6">
-          <label>Endereço (Logradouro, Nº e Bairro) *</label>
-          <input type="text" name="tco_endereco" data-db="ocorrencia.endereco">
-        </div>
-        <div class="col-2">
-          <label>CEP *</label>
-          <input type="text" name="tco_cep" data-db="ocorrencia.cep" placeholder="78210-000">
-        </div>
-        <div class="col-4">
-          <label>Município / UF *</label>
-          <input type="text" name="tco_municipio" data-db="ocorrencia.municipio_uf" value="Cáceres/MT">
-        </div>
-        <div class="col-6">
-          <label>Local do Fato *</label>
-          <input type="text" name="tco_local_tipo" data-db="ocorrencia.local_tipo" placeholder="Ex: Via pública / Residência / Comércio">
-        </div>
-        <div class="col-6">
-          <label>Ponto de Referência / Coordenadas</label>
-          <input type="text" name="tco_referencia" data-db="ocorrencia.ponto_referencia">
-        </div>
-      </div>
-    </fieldset>
-
-    <!-- QUALIFICAÇÃO VÍTIMA -->
-    <fieldset>
-      <legend>2.a) Qualificação da Vítima</legend>
-      <div class="grid">
-        <div class="col-6"><label>Nome Civil *</label><input type="text" id="vitima_nome" name="vitima_nome" data-db="vitima.nome_civil" oninput="syncCampo('sync-vitima-nome', this.value)"></div>
-        <div class="col-6"><label>Nome Social / Apelido</label><input type="text" name="vitima_nome_social" data-db="vitima.nome_social"></div>
-        <div class="col-4"><label>CPF ou Passaporte *</label><input type="text" name="vitima_cpf" data-db="vitima.cpf"></div>
-        <div class="col-3"><label>RG / CNH Nº</label><input type="text" name="vitima_rg" data-db="vitima.rg"></div>
-        <div class="col-3"><label>Órgão Expedidor / UF</label><input type="text" name="vitima_rg_orgao" data-db="vitima.rg_orgao" placeholder="SSP/MT"></div>
-        <div class="col-2"><label>Data Expedição</label><input type="date" name="vitima_rg_data" data-db="vitima.rg_data"></div>
-        <div class="col-6"><label>Filiação (Pai e Mãe)</label><input type="text" name="vitima_filiacao" data-db="vitima.filiacao"></div>
-        <div class="col-3"><label>Data de Nascimento</label><input type="date" name="vitima_nascimento" data-db="vitima.data_nascimento"></div>
-        <div class="col-3"><label>Sexo</label><select name="vitima_sexo" data-db="vitima.sexo"><option value="">Selecione</option><option value="M">Masculino</option><option value="F">Feminino</option></select></div>
-        <div class="col-6"><label>Endereço Residencial *</label><input type="text" name="vitima_endereco" data-db="vitima.endereco"></div>
-        <div class="col-4"><label>Município / UF</label><input type="text" name="vitima_municipio" data-db="vitima.municipio_uf" value="Cáceres/MT"></div>
-        <div class="col-2"><label>CEP *</label><input type="text" name="vitima_cep" data-db="vitima.cep"></div>
-        <div class="col-4"><label>Ponto de Referência</label><input type="text" name="vitima_ref" data-db="vitima.ponto_referencia"></div>
-        <div class="col-4"><label>Telefone(s) Pessoal(is) *</label><input type="text" name="vitima_tel" data-db="vitima.telefone"></div>
-        <div class="col-4"><label>E-mail Pessoal *</label><input type="email" name="vitima_email" data-db="vitima.email"></div>
-        <div class="col-3"><label>Estado Civil</label><input type="text" name="vitima_estado_civil" data-db="vitima.estado_civil"></div>
-        <div class="col-3"><label>Nacionalidade *</label><input type="text" name="vitima_nacionalidade" data-db="vitima.nacionalidade" value="Brasileira"></div>
-        <div class="col-3"><label>Naturalidade / UF *</label><input type="text" name="vitima_naturalidade" data-db="vitima.naturalidade"></div>
-        <div class="col-3"><label>Profissão</label><input type="text" name="vitima_profissao" data-db="vitima.profissao"></div>
-        <div class="col-4"><label>Local de Trabalho</label><input type="text" name="vitima_trabalho_local" data-db="vitima.trabalho_local"></div>
-        <div class="col-5"><label>Endereço Trabalho</label><input type="text" name="vitima_trabalho_end" data-db="vitima.trabalho_endereco"></div>
-        <div class="col-3"><label>Telefone Comercial</label><input type="text" name="vitima_trabalho_tel" data-db="vitima.trabalho_telefone"></div>
-        <div class="col-12"><label>Condições Físicas (Lesões aparentes / hematomas)</label><input type="text" name="vitima_condicoes" data-db="vitima.condicoes_fisicas" value="Sem lesões corporais aparentes."></div>
-      </div>
-    </fieldset>
-
-    <!-- QUALIFICAÇÃO TESTEMUNHA -->
-    <fieldset>
-      <legend>2.b) Qualificação da Testemunha</legend>
-      <div class="grid">
-        <div class="col-6"><label>Nome Civil</label><input type="text" name="testemunha_nome" data-db="testemunha.nome_civil"></div>
-        <div class="col-3"><label>CPF</label><input type="text" name="testemunha_cpf" data-db="testemunha.cpf"></div>
-        <div class="col-3"><label>RG / Órgão</label><input type="text" name="testemunha_rg" data-db="testemunha.rg"></div>
-        <div class="col-6"><label>Filiação</label><input type="text" name="testemunha_filiacao" data-db="testemunha.filiacao"></div>
-        <div class="col-3"><label>Data Nascimento</label><input type="date" name="testemunha_nascimento" data-db="testemunha.data_nascimento"></div>
-        <div class="col-3"><label>Telefone</label><input type="text" name="testemunha_tel" data-db="testemunha.telefone"></div>
-        <div class="col-8"><label>Endereço Completo</label><input type="text" name="testemunha_endereco" data-db="testemunha.endereco"></div>
-        <div class="col-4"><label>Profissão</label><input type="text" name="testemunha_profissao" data-db="testemunha.profissao"></div>
-      </div>
-    </fieldset>
-
-    <!-- QUALIFICAÇÃO AUTOR DO FATO -->
-    <fieldset>
-      <legend>2.c) Qualificação do Autor do Fato</legend>
-      <div class="grid">
-        <div class="col-6"><label>Nome Civil *</label><input type="text" id="autor_nome" name="autor_nome" data-db="autor.nome_civil" oninput="syncCampo('sync-autor-nome', this.value)"></div>
-        <div class="col-6"><label>Nome Social / Apelido</label><input type="text" name="autor_nome_social" data-db="autor.nome_social"></div>
-        <div class="col-4"><label>CPF ou Passaporte *</label><input type="text" id="autor_cpf" name="autor_cpf" data-db="autor.cpf" oninput="syncCampo('sync-autor-cpf', this.value)"></div>
-        <div class="col-3"><label>RG / CNH Nº</label><input type="text" id="autor_rg" name="autor_rg" data-db="autor.rg" oninput="syncCampo('sync-autor-rg', this.value)"></div>
-        <div class="col-3"><label>Órgão Expedidor / UF</label><input type="text" name="autor_rg_orgao" data-db="autor.rg_orgao" placeholder="SSP/MT"></div>
-        <div class="col-2"><label>Data Expedição</label><input type="date" name="autor_rg_data" data-db="autor.rg_data"></div>
-        <div class="col-6"><label>Filiação (Pai e Mãe)</label><input type="text" id="autor_filiacao" name="autor_filiacao" data-db="autor.filiacao" oninput="syncCampo('sync-autor-filiacao', this.value)"></div>
-        <div class="col-3"><label>Data de Nascimento</label><input type="date" name="autor_nascimento" data-db="autor.data_nascimento"></div>
-        <div class="col-3"><label>Sexo</label><select name="autor_sexo" data-db="autor.sexo"><option value="">Selecione</option><option value="M">Masculino</option><option value="F">Feminino</option></select></div>
-        <div class="col-6"><label>Endereço Residencial *</label><input type="text" id="autor_endereco" name="autor_endereco" data-db="autor.endereco" oninput="syncCampo('sync-autor-end', this.value)"></div>
-        <div class="col-4"><label>Município / UF</label><input type="text" name="autor_municipio" data-db="autor.municipio_uf" value="Cáceres/MT"></div>
-        <div class="col-2"><label>CEP *</label><input type="text" id="autor_cep" name="autor_cep" data-db="autor.cep" oninput="syncCampo('sync-autor-cep', this.value)"></div>
-        <div class="col-4"><label>Ponto de Referência</label><input type="text" name="autor_ref" data-db="autor.ponto_referencia"></div>
-        <div class="col-4"><label>Telefone(s) Pessoal(is) *</label><input type="text" id="autor_tel" name="autor_tel" data-db="autor.telefone" oninput="syncCampo('sync-autor-tel', this.value)"></div>
-        <div class="col-4"><label>E-mail Pessoal *</label><input type="email" name="autor_email" data-db="autor.email"></div>
-        <div class="col-3"><label>Estado Civil</label><input type="text" name="autor_estado_civil" data-db="autor.estado_civil"></div>
-        <div class="col-3"><label>Nacionalidade *</label><input type="text" name="autor_nacionalidade" data-db="autor.nacionalidade" value="Brasileira"></div>
-        <div class="col-3"><label>Naturalidade / UF *</label><input type="text" id="autor_naturalidade" name="autor_naturalidade" data-db="autor.naturalidade" oninput="syncCampo('sync-autor-nat', this.value)"></div>
-        <div class="col-3"><label>Profissão</label><input type="text" name="autor_profissao" data-db="autor.profissao"></div>
-        <div class="col-12"><label>Condições Físicas (Lesões aparentes / hematomas)</label><input type="text" name="autor_condicoes" data-db="autor.condicoes_fisicas" value="Sem lesões corporais aparentes."></div>
-      </div>
-    </fieldset>
-
-    <!-- HISTÓRICO -->
-    <fieldset>
-      <legend>3. Histórico da Ocorrência</legend>
-      <div class="grid">
-        <div class="col-12">
-          <label>Relato do Policial (Acionamento, constatação no local e condução)</label>
-          <textarea name="historico_policial" data-db="historico.relato_policial" placeholder="Às ___h do dia ___/___/2026, fomos solicitados pelo CIOSP/190..."></textarea>
-        </div>
-        <div class="col-12">
-          <label>Relato da Vítima (Iniciar respostas com "Que...")</label>
-          <textarea name="historico_vitima" data-db="historico.relato_vitima" placeholder="Relatou a vítima que... Lido e achado conforme. Nada mais disse e nem lhe foi perguntado(a)."></textarea>
-        </div>
-        <div class="col-12">
-          <label>Relato da Testemunha (Compromissada na forma da lei; iniciar com "Que...")</label>
-          <textarea name="historico_testemunha" data-db="historico.relato_testemunha" placeholder="A testemunha compromissada na forma da lei, aos costumes respondeu negativamente, declarou que..."></textarea>
-        </div>
-        <div class="col-12">
-          <label>Relato do Autor(a) do Fato (Cientificado dos direitos constitucionais; iniciar com "Que...")</label>
-          <textarea name="historico_autor" data-db="historico.relato_autor" placeholder="O autor dos fatos, cientificado de seus direitos constitucionais, inclusive o de permanecer calado, declarou que..."></textarea>
-        </div>
-        <div class="col-12">
-          <label>Conclusão do Policial</label>
-          <textarea name="historico_conclusao" data-db="historico.conclusao_policial" placeholder="Diante das circunstâncias e de tudo o que foi relatado, resta acrescentar que o autor infringiu o artigo..."></textarea>
-        </div>
-      </div>
-    </fieldset>
-
-    <!-- PROVIDÊNCIAS E GUARNIÇÃO -->
-    <fieldset>
-      <legend>4. Providências Adotadas & 5. Identificação da Guarnição</legend>
-      <div class="grid">
-        <div class="col-12"><label>Providências Adotadas</label><input type="text" name="providencias" data-db="ocorrencia.providencias"></div>
-        <div class="col-6"><label>Documentos / Anexos Produzidos</label><input type="text" name="anexos_lista" data-db="ocorrencia.documentos_anexos" value="Termo de Compromisso, Termo de Manifestação da Vítima, Termo de Encerramento."></div>
-        <div class="col-6"><label>Descrição de Objetos / Documentos Apreendidos</label><input type="text" name="objetos_lista" data-db="ocorrencia.objetos_apreendidos" value="Não houve."></div>
-
-        <div class="col-3"><label>Comandante GUPM (Posto/Grad)</label><input type="text" id="gu_cmt_posto" name="gu_cmt_posto" data-db="guarnicao.cmt_posto" placeholder="3º Sgt PM"></div>
-        <div class="col-6"><label>Nome Completo</label><input type="text" id="gu_cmt_nome" name="gu_cmt_nome" data-db="guarnicao.cmt_nome" oninput="syncCampo('sync-cmt-nome', this.value)"></div>
-        <div class="col-3"><label>RG PMMT</label><input type="text" id="gu_cmt_rg" name="gu_cmt_rg" data-db="guarnicao.cmt_rg" oninput="syncCampo('sync-cmt-rg', this.value)"></div>
-
-        <div class="col-3"><label>Auxiliar GUPM (Posto/Grad)</label><input type="text" id="gu_aux_posto" name="gu_aux_posto" data-db="guarnicao.aux_posto" placeholder="AL SD PM"></div>
-        <div class="col-6"><label>Nome Completo</label><input type="text" id="gu_aux_nome" name="gu_aux_nome" data-db="guarnicao.aux_nome"></div>
-        <div class="col-3"><label>RG PMMT</label><input type="text" id="gu_aux_rg" name="gu_aux_rg" data-db="guarnicao.aux_rg"></div>
-      </div>
-    </fieldset>
-  </div>
-
-  <!-- ABA 2: TERMO DE COMPROMISSO DE COMPARECIMENTO -->
-  <div id="tab-compromisso" class="doc-section">
-    <div class="official-header">
-      <h2>ESTADO DE MATO GROSSO • POLÍCIA MILITAR</h2>
-      <h3>6º COMANDO REGIONAL — 6º BATALHÃO DE POLÍCIA MILITAR (CÁCERES/MT)</h3>
-    </div>
-    <div class="ref-box">
-      <span>TERMO DE COMPROMISSO DE COMPARECIMENTO</span>
-      <span>Ref. TCO Nº: <strong class="sync-tco-num">___/6ºBPM/2026</strong></span>
-    </div>
-
-    <p class="legal-text">
-      Por este instrumento, eu <input type="text" name="comp_autor" data-db="compromisso.autor_nome" class="inline-input sync-autor-nome" style="min-width:280px" placeholder="Nome do autor do fato">, assumo, nos termos do parágrafo único do Art. 69 da Lei nº 9.099/95, o compromisso de comparecer no Juizado Especial Criminal, em virtude dos fatos registrados no Termo Circunstanciado de Ocorrência acima referenciado, conforme notificado abaixo.
-    </p>
-    <p class="legal-text">
-      Fico ciente de que a concordância em comparecer ao Juizado Especial Criminal, não implica confissão de qualquer natureza, admissão de culpa ou anuência às declarações da parte contrária e o não comparecimento no dia e hora ajustados neste termo sujeitará às medidas previstas na Lei nº 9.099/95.
-    </p>
-    <p class="legal-text">
-      Fico ciente também que deverei comparecer acompanhado de advogado e que na ausência deste será nomeado um defensor público.
-    </p>
-    <p class="legal-text">
-      Notifico Vossa Senhoria para comparecer no Fórum da Comarca de <input type="text" name="comp_comarca" data-db="compromisso.comarca" class="inline-input" value="Cáceres">, sito a <input type="text" name="comp_endereco_forum" data-db="compromisso.endereco_forum" class="inline-input" style="min-width:260px" value="Rua Coronel José Dulce, s/n, Centro"> na Secretaria do Juizado Especial Criminal:
-      <br>No dia <input type="text" name="comp_dia" data-db="compromisso.audiencia_dia" class="inline-input" style="min-width:45px" placeholder="DD"> do mês de <input type="text" name="comp_mes" data-db="compromisso.audiencia_mes" class="inline-input" style="min-width:110px" placeholder="Mês"> do ano de <input type="text" name="comp_ano" data-db="compromisso.audiencia_ano" class="inline-input" style="min-width:65px" value="2026">, às <input type="time" name="comp_hora" data-db="compromisso.audiencia_hora" class="inline-input" style="min-width:95px">.
-    </p>
-
-    <div class="sig-grid">
-      <div class="sig-box">Assinatura do Autor do Fato</div>
-      <div class="sig-box">Policial Militar Responsável (Posto/Grad, RG e Nome)</div>
-    </div>
-  </div>
-
-  <!-- ABA 3: TERMO DE MANIFESTAÇÃO DA VÍTIMA -->
-  <div id="tab-vitima" class="doc-section">
-    <div class="official-header">
-      <h2>ESTADO DE MATO GROSSO • POLÍCIA MILITAR</h2>
-      <h3>6º COMANDO REGIONAL — 6º BATALHÃO DE POLÍCIA MILITAR (CÁCERES/MT)</h3>
-    </div>
-    <div class="ref-box">
-      <span>TERMO DE MANIFESTAÇÃO DA VÍTIMA</span>
-      <span>Ref. TCO Nº: <strong class="sync-tco-num">___/6ºBPM/2026</strong></span>
-    </div>
-
-    <p class="legal-text">
-      Eu, <input type="text" name="manif_vitima_nome" data-db="manifestacao.vitima_nome" class="inline-input sync-vitima-nome" style="min-width:280px" placeholder="Nome da vítima">, por este instrumento, manifesto o meu interesse:
-    </p>
-
-    <fieldset>
-      <legend>Opção da Vítima (Ação Penal Pública Condicionada / Privada)</legend>
-      <div style="margin-bottom:12px;">
-        <label style="display:flex; align-items:flex-start; gap:8px; text-transform:none; font-size:13px; color:#000; font-weight:normal; letter-spacing:0;">
-          <input type="radio" name="manif_opcao" data-db="manifestacao.opcao" value="REPRESENTAR" style="width:auto; margin-top:3px;">
-          <span><strong>Em exercer o direito de representação ou queixa contra o autor do fato.</strong> (Fica cientificada que em caso de queixa-crime, a vítima deverá constituir advogado).</span>
-        </label>
-      </div>
+    <div class="sidebar-section-title">
+      <span>Peças para Impressão</span>
       <div>
-        <label style="display:flex; align-items:flex-start; gap:8px; text-transform:none; font-size:13px; color:#000; font-weight:normal; letter-spacing:0;">
-          <input type="radio" name="manif_opcao" data-db="manifestacao.opcao" value="DECIDIR_POSTERIORMENTE" style="width:auto; margin-top:3px;">
-          <span><strong>Em decidir posteriormente</strong>, estando ciente, para os fins previstos no art. 103 do Código Penal e art. 38 Código de Processo Penal que devo exercer o direito de representação ou de queixa, no prazo de 06 (seis) meses, a contar desta data, sendo certo que meu silêncio acarretará a extinção de punibilidade, na forma do art. 107, inc. IV, do Código Penal.</span>
-        </label>
+        <button class="btn btn-sm" id="btnSelectAll" type="button" style="padding:2px 6px;font-size:9.5px;">Todas</button>
+        <button class="btn btn-sm" id="btnSelectBasic" type="button" style="padding:2px 6px;font-size:9.5px;">Básico</button>
       </div>
-    </fieldset>
-
-    <p class="legal-text">
-      Notifico Vossa Senhoria para comparecer no Fórum da Comarca de <input type="text" name="manif_comarca" data-db="manifestacao.comarca" class="inline-input" value="Cáceres">, sito a <input type="text" name="manif_forum" data-db="manifestacao.endereco_forum" class="inline-input" style="min-width:260px" value="Rua Coronel José Dulce, s/n, Centro"> na Secretaria do Juizado Especial Criminal:
-      <br>No dia <input type="text" name="manif_dia" data-db="manifestacao.audiencia_dia" class="inline-input" style="min-width:45px" placeholder="DD"> do mês de <input type="text" name="manif_mes" data-db="manifestacao.audiencia_mes" class="inline-input" style="min-width:110px" placeholder="Mês"> do ano de <input type="text" name="manif_ano" data-db="manifestacao.audiencia_ano" class="inline-input" style="min-width:65px" value="2026">, às <input type="time" name="manif_hora" data-db="manifestacao.audiencia_hora" class="inline-input" style="min-width:95px">.
-    </p>
-
-    <div class="sig-grid">
-      <div class="sig-box">Assinatura da Vítima</div>
-      <div class="sig-box">Policial Militar Responsável</div>
-    </div>
-  </div>
-
-  <!-- ABA 4: CONSTATAÇÃO PRELIMINAR DE DROGA -->
-  <div id="tab-droga" class="doc-section">
-    <div class="official-header">
-      <h2>ESTADO DE MATO GROSSO • POLÍCIA MILITAR</h2>
-      <h3>6º COMANDO REGIONAL — 6º BATALHÃO DE POLÍCIA MILITAR (CÁCERES/MT)</h3>
-    </div>
-    <div class="ref-box">
-      <span>TERMO DE CONSTATAÇÃO PRELIMINAR DE DROGA</span>
-      <span>Ref. TCO Nº: <strong class="sync-tco-num">___/6ºBPM/2026</strong></span>
     </div>
 
-    <p class="legal-text">
-      Em razão da lavratura deste Termo Circunstanciado de Ocorrência, pelo(s) delito(s) tipificado(s): <input type="text" name="droga_tipificacao" data-db="droga.tipificacao" class="inline-input" style="min-width:260px" value="Art. 28 da Lei nº 11.343/2006">, foi apreendido o material descrito abaixo, em poder do autor <input type="text" name="droga_autor" data-db="droga.autor_nome" class="inline-input sync-autor-nome" style="min-width:240px">, já qualificado no TCO-PM.
-    </p>
-    <p class="legal-text">
-      Após ciência das implicações legais do encargo assumido, firmou-se o compromisso legal de proceder à análise dos seguintes materiais:
-    </p>
-    <fieldset>
-      <legend>Substâncias Submetidas à Inspeção Visual e Olfativa</legend>
-      <div class="grid">
-        <div class="col-3"><label>Qtd. Porções (Vegetal)</label><input type="text" name="droga_veg_qtd" data-db="droga.vegetal_qtd" placeholder="Ex: 02 porções"></div>
-        <div class="col-9"><label>Descrição Vegetal (Cor, odor, peso aprox. e substância semelhante)</label><input type="text" name="droga_veg_desc" data-db="droga.vegetal_descricao" placeholder="Substância vegetal esverdeada, odor típico, semelhante a Maconha (Cannabis sativa), peso aprox. 10g"></div>
-        <div class="col-3"><label>Qtd. Porções (Química)</label><input type="text" name="droga_quim_qtd" data-db="droga.quimica_qtd" placeholder="Ex: 01 porção"></div>
-        <div class="col-9"><label>Descrição Química (Cor, odor, peso aprox. e substância semelhante)</label><input type="text" name="droga_quim_desc" data-db="droga.quimica_descricao" placeholder="Substância química em pó esbranquiçado, odor típico, semelhante a Cocaína, peso aprox. 1,5g"></div>
-      </div>
-    </fieldset>
-    <p class="legal-text">
-      O presente relatório tem por objetivo avaliar se a(s) substância(s) em questão se tratam de entorpecente(s), psicotrópica(s), precursora(s) ou outras sob controle especial da Portaria 344/1998 SVS/MS. Para verificação do exposto acima, foi realizada inspeção visual e olfativa do material.
-      <br>Cáceres/MT, <input type="date" name="droga_data" data-db="droga.data" class="inline-input">.
-    </p>
+    <ul class="piece-list" id="pieceList">
+      <li class="piece-item"><input type="checkbox" data-piece="p1" checked><a class="piece-link" href="#p1"><span class="piece-num">01</span>Capa e Autuação</a></li>
+      <li class="piece-item"><input type="checkbox" data-piece="p2" checked><a class="piece-link" href="#p2"><span class="piece-num">02</span>TCO Principal</a></li>
+      <li class="piece-item"><input type="checkbox" data-piece="p3" checked><a class="piece-link" href="#p3"><span class="piece-num">03</span>Termo de Compromisso</a></li>
+      <li class="piece-item"><input type="checkbox" data-piece="p4" checked><a class="piece-link" href="#p4"><span class="piece-num">04</span>Manifestação da Vítima</a></li>
+      <li class="piece-item"><input type="checkbox" data-piece="p5" checked><a class="piece-link" href="#p5"><span class="piece-num">05</span>Constatação Preliminar Droga</a></li>
+      <li class="piece-item"><input type="checkbox" data-piece="p6" checked><a class="piece-link" href="#p6"><span class="piece-num">06</span>Termo de Apreensão</a></li>
+      <li class="piece-item"><input type="checkbox" data-piece="p7" checked><a class="piece-link" href="#p7"><span class="piece-num">07</span>Termo de Depósito</a></li>
+      <li class="piece-item"><input type="checkbox" data-piece="p8" checked><a class="piece-link" href="#p8"><span class="piece-num">08</span>Req. Exame Lesão Corporal</a></li>
+      <li class="piece-item"><input type="checkbox" data-piece="p9" checked><a class="piece-link" href="#p9"><span class="piece-num">09</span>Req. Exame Drogas de Abuso</a></li>
+      <li class="piece-item"><input type="checkbox" data-piece="p10" checked><a class="piece-link" href="#p10"><span class="piece-num">10</span>Encerramento e Remessa</a></li>
+    </ul>
 
-    <div class="sig-grid">
-      <div class="sig-box">Testemunha / Pessoa Idônea (Nome e Assinatura)</div>
-      <div class="sig-box">Policial Militar (Posto/Grad, RG e Nome)</div>
+    <div class="sidebar-hint">
+      <strong>Dica:</strong> Desmarque as peças que não se aplicam antes de clicar em <em>Imprimir / PDF</em>. Use <strong>Salvar no Banco</strong> para persistir no Supabase.
     </div>
-  </div>
+  </aside>
 
-  <!-- ABA 5: TERMO DE APREENSÃO E TERMO DE DEPÓSITO -->
-  <div id="tab-apreensao" class="doc-section">
-    <div class="official-header">
-      <h2>ESTADO DE MATO GROSSO • POLÍCIA MILITAR</h2>
-      <h3>6º COMANDO REGIONAL — 6º BATALHÃO DE POLÍCIA MILITAR (CÁCERES/MT)</h3>
-    </div>
-    <div class="ref-box">
-      <span>TERMO DE APREENSÃO E TERMO DE DEPÓSITO</span>
-      <span>Ref. TCO Nº: <strong class="sync-tco-num">___/6ºBPM/2026</strong></span>
-    </div>
+  <!-- DATALISTS ALIMENTADOS PELO BANCO (tco_infracoes) -->
+  <datalist id="datalistNaturezas"></datalist>
+  <datalist id="datalistTipificacoes"></datalist>
 
-    <fieldset>
-      <legend>Termo de Apreensão (Art. 6º, II do CPP e Art. 92 da Lei 9.099/95)</legend>
-      <div class="grid">
-        <div class="col-3"><label>Data</label><input type="date" name="apr_data" data-db="apreensao.data"></div>
-        <div class="col-3"><label>Hora</label><input type="time" name="apr_hora" data-db="apreensao.hora"></div>
-        <div class="col-6"><label>Local da Apreensão</label><input type="text" name="apr_local" data-db="apreensao.local"></div>
-        <div class="col-6"><label>Nome / Razão Social do Proprietário</label><input type="text" name="apr_prop" data-db="apreensao.proprietario_nome" class="sync-autor-nome"></div>
-        <div class="col-3"><label>RG</label><input type="text" name="apr_rg" data-db="apreensao.proprietario_rg" class="sync-autor-rg"></div>
-        <div class="col-3"><label>CPF / CNPJ</label><input type="text" name="apr_cpf" data-db="apreensao.proprietario_cpf" class="sync-autor-cpf"></div>
-        <div class="col-6"><label>Filiação (Pai e Mãe)</label><input type="text" name="apr_filiacao" data-db="apreensao.proprietario_filiacao" class="sync-autor-filiacao"></div>
-        <div class="col-3"><label>Naturalidade</label><input type="text" name="apr_nat" data-db="apreensao.proprietario_naturalidade" class="sync-autor-nat"></div>
-        <div class="col-3"><label>Telefone</label><input type="text" name="apr_tel" data-db="apreensao.proprietario_telefone" class="sync-autor-tel"></div>
-        <div class="col-8"><label>Endereço Completo</label><input type="text" name="apr_end" data-db="apreensao.proprietario_endereco" class="sync-autor-end"></div>
-        <div class="col-4"><label>CEP</label><input type="text" name="apr_cep" data-db="apreensao.proprietario_cep" class="sync-autor-cep"></div>
-        <div class="col-12">
-          <label>Fundamentação Legal da Apreensão</label>
-          <select name="apr_base_legal" data-db="apreensao.base_legal">
-            <option value="CPP_9099">O presente Termo de Apreensão foi lavrado com base no art. 6º, II, DO CPP, E art. 92 da Lei 9.099/1995.</option>
-            <option value="AMBIENTAL">O presente Termo de Apreensão foi lavrado com base no art. 25, caput da Lei 9.605/98, c/c Artigo 101, I do Decreto nº 6514/08 (Crimes Ambientais).</option>
-          </select>
-        </div>
-        <div class="col-12">
-          <label>Descrição Detalhada dos Bens Apreendidos</label>
-          <textarea name="apr_bens" data-db="apreensao.descricao_bens" placeholder="Discriminar quantidade, marca, modelo, número de série e estado de conservação..."></textarea>
+  <!-- ===== MAIN DOCUMENT WORKSPACE ===== -->
+  <main class="workspace" id="tcoForm">
+
+    <!-- ==================== PEÇA 01: CAPA E AUTUAÇÃO ==================== -->
+    <section class="sheet-wrapper" id="p1">
+      <div class="sheet-bar no-print">
+        <div class="sheet-bar-title">
+          <span>Peça 01 – Capa e Autuação</span>
+          <span class="sheet-bar-badge" data-badge="p1">Incluída na impressão</span>
         </div>
       </div>
-    </fieldset>
+      <div class="sheet">
+        <div class="sheet-body">
+          <div class="doc-header">
+            <div class="h-l1">ESTADO DE MATO GROSSO</div>
+            <div class="h-l2">POLÍCIA MILITAR</div>
+            <div class="h-l3">6º COMANDO REGIONAL – 6º BATALHÃO DE POLÍCIA MILITAR (CÁCERES/MT)</div>
+            <div class="h-l4">
+              TERMO CIRCUNSTANCIADO DE OCORRÊNCIA Nº
+              <input class="f-in f-inline w-sm" name="p1_tco" data-sync="tco_num" placeholder="____" style="font-weight:700;">/6ºBPM/2026
+            </div>
+          </div>
 
-    <fieldset>
-      <legend>Termo de Depósito (Quando houver Fiel Depositário autorizado pelo Oficial Gestor)</legend>
-      <p style="font-size:12px; margin-top:0;">Nomeio como fiel depositário, ficando ciente de que não poderá vender, usufruir, emprestar os bens mencionados, conforme os artigos 647 e 648 do Código Civil.</p>
-      <div class="grid">
-        <div class="col-6"><label>Nome / Razão Social do Fiel Depositário</label><input type="text" name="dep_nome" data-db="deposito.depositario_nome"></div>
-        <div class="col-3"><label>CPF / CNPJ</label><input type="text" name="dep_cpf" data-db="deposito.depositario_cpf"></div>
-        <div class="col-3"><label>Telefone</label><input type="text" name="dep_tel" data-db="deposito.depositario_telefone"></div>
-        <div class="col-6"><label>Filiação (Pai e Mãe)</label><input type="text" name="dep_filiacao" data-db="deposito.depositario_filiacao"></div>
-        <div class="col-6"><label>Endereço do Fiel Depositário</label><input type="text" name="dep_end" data-db="deposito.depositario_endereco"></div>
-        <div class="col-6"><label>Local do Depósito do Bem</label><input type="text" name="dep_local_bem" data-db="deposito.local_guarda"></div>
-        <div class="col-3"><label>Data Recebimento</label><input type="date" name="dep_data" data-db="deposito.data"></div>
-        <div class="col-3"><label>Hora</label><input type="time" name="dep_hora" data-db="deposito.hora"></div>
-        <div class="col-12"><label>Descrição do Bem Depositado</label><textarea name="dep_bens" data-db="deposito.descricao_bem"></textarea></div>
+          <div style="margin: 18px 0 14px 0;">
+            <div class="capa-line">
+              <span class="lbl">Natureza:</span>
+              <input class="f-in f-cell" name="p1_natureza" list="datalistNaturezas" data-sync="natureza" placeholder="Digite ou selecione a natureza da ocorrência">
+            </div>
+            <div class="capa-line">
+              <span class="lbl">Autor(a) do fato:</span>
+              <input class="f-in f-cell" name="p1_autor" data-sync="autor_nome" placeholder="Nome completo do(a) autor(a) do fato">
+            </div>
+            <div class="capa-line">
+              <span class="lbl">Vítima:</span>
+              <input class="f-in f-cell" name="p1_vitima" data-sync="vitima_nome" placeholder="Nome completo da vítima">
+            </div>
+          </div>
+
+          <div class="sec-title">AUTUAÇÃO</div>
+          <p class="doc-p">
+            Aos <input class="f-in f-inline w-xs" name="p1_dia" data-sync="ext_dia" placeholder="00">
+            dias do mês de
+            <select class="f-sel f-inline" name="p1_mes" data-sync="ext_mes" data-list="meses"></select>
+            do ano de 2026, nesta cidade de Cáceres, Estado de Mato Grosso, no Quartel do 6º Batalhão de Polícia Militar (Av. Getúlio Vargas, s/n, Centro), autuo as peças que adiante se seguem, do que para constar, lavrei este Termo. Eu,
+            <input class="f-in f-inline w-xl" name="p1_escrevente" data-sync="pm_identificacao" placeholder="Posto/Grad, RG PMMT e Nome completo">,
+            escrevente, que o lavrei e assino.
+          </p>
+
+          <div class="sig-block" style="margin-top: 70px;">
+            <div class="sig-line"></div><br>
+            <input class="f-in f-inline w-lg" name="p1_cmt_nome" data-sync="cmt_nome_posto" placeholder="Nome – Posto/Grad PM" style="text-align:center;"><br>
+            RG nº <input class="f-in f-inline w-sm" name="p1_cmt_rg" data-sync="cmt_rg" placeholder="000000"> PMMT<br>
+            Comandante de GUPM
+          </div>
+        </div>
+        <div class="doc-footer">6º Batalhão de Polícia Militar – Av. Getúlio Vargas, s/n, Centro, Cáceres/MT – CEP 78210-000</div>
       </div>
-    </fieldset>
+    </section>
 
-    <div class="sig-grid">
-      <div class="sig-box">Autor do Fato / Fiel Depositário</div>
-      <div class="sig-box">Policial Militar Responsável</div>
-    </div>
-  </div>
-
-  <!-- ABA 6: REQUISIÇÕES PERICIAIS POLITEC -->
-  <div id="tab-pericia" class="doc-section">
-    <div class="official-header">
-      <h2>ESTADO DE MATO GROSSO • POLÍCIA MILITAR</h2>
-      <h3>6º COMANDO REGIONAL — 6º BATALHÃO DE POLÍCIA MILITAR (CÁCERES/MT)</h3>
-    </div>
-    <div class="ref-box">
-      <span>REQUISIÇÕES PERICIAIS (POLITEC — CÁCERES/MT)</span>
-      <span>Ref. TCO Nº: <strong class="sync-tco-num">___/6ºBPM/2026</strong></span>
-    </div>
-
-    <fieldset>
-      <legend>A) Requisição de Exame de Lesão Corporal (Art. 158 CPP e Art. 69 Lei 9.099/95)</legend>
-      <p class="legal-text">
-        Requisito a POLITEC - Perícia Oficial e Identificação Técnica, a realização de exame de corpo de delito no(a) Sr.(a) <input type="text" name="per_lesao_paciente" data-db="pericia_lesao.paciente_nome" class="inline-input sync-vitima-nome" style="min-width:240px"> (Vítima / Autor do fato), por ter relatado que: <input type="text" name="per_lesao_relato" data-db="pericia_lesao.relato_lesao" class="inline-input" style="min-width:340px" placeholder="breve relato de como, com o que e onde foi lesionado(a)">, de natureza <input type="text" name="per_lesao_nat" data-db="pericia_lesao.natureza" class="inline-input sync-natureza" style="min-width:180px">, ocorrido na data <input type="date" name="per_lesao_data" data-db="pericia_lesao.data_fato" class="inline-input sync-data-fato">, respondendo aos quesitos oficiais (1 a 7 do Manual TCO/PMMT).
-      </p>
-    </fieldset>
-
-    <fieldset>
-      <legend>B) Requisição de Exame em Drogas de Abuso (Art. 48, §2º e Art. 50, §1º Lei 11.343/06)</legend>
-      <p class="legal-text">
-        Requisito a POLITEC - Perícia Oficial e Identificação Técnica, a realização de exame químico definitivo na substância análoga a entorpecente apensada, encontrada em posse do(a) Sr.(a) <input type="text" name="per_droga_autor" data-db="pericia_droga.autor_nome" class="inline-input sync-autor-nome" style="min-width:240px">, de natureza Porte de Drogas para Consumo Pessoal, ocorrido na data <input type="date" name="per_droga_data" data-db="pericia_droga.data_fato" class="inline-input sync-data-fato">.
-      </p>
-      <div class="grid">
-        <div class="col-12">
-          <label>Descrição do Material Apensado e Lacre</label>
-          <input type="text" name="per_droga_apenso" data-db="pericia_droga.apenso_lacre" placeholder="Ex: 01 envelope lacrado (Lacre nº 0000), contendo XX porções de substância análoga a...">
+    <!-- ==================== PEÇA 02: TCO PRINCIPAL ==================== -->
+    <section class="sheet-wrapper" id="p2">
+      <div class="sheet-bar no-print">
+        <div class="sheet-bar-title">
+          <span>Peça 02 – Termo Circunstanciado de Ocorrência (Principal)</span>
+          <span class="sheet-bar-badge" data-badge="p2">Incluída na impressão</span>
         </div>
       </div>
-    </fieldset>
+      <div class="sheet">
+        <div class="sheet-body">
+          <div class="doc-header">
+            <div class="h-l1">ESTADO DE MATO GROSSO</div>
+            <div class="h-l2">POLÍCIA MILITAR</div>
+            <div class="h-l3">6º COMANDO REGIONAL – 6º BATALHÃO DE POLÍCIA MILITAR (CÁCERES/MT)</div>
+            <div class="h-l4">
+              TERMO CIRCUNSTANCIADO DE OCORRÊNCIA Nº
+              <input class="f-in f-inline w-sm" name="p2_tco" data-sync="tco_num" placeholder="____" style="font-weight:700;">/6ºBPM/2026
+            </div>
+          </div>
 
-    <div class="sig-grid">
-      <div class="sig-box">Comandante da GUPM (Assinatura e RG PMMT)</div>
-      <div class="sig-box">Recebimento POLITEC / Periciando</div>
-    </div>
-  </div>
+          <div class="sec-title">1. DADOS GERAIS</div>
 
-  <!-- ABA 7: TERMO DE ENCERRAMENTO E REMESSA -->
-  <div id="tab-encerramento" class="doc-section">
-    <div class="official-header">
-      <h2>ESTADO DE MATO GROSSO • POLÍCIA MILITAR</h2>
-      <h3>6º COMANDO REGIONAL — 6º BATALHÃO DE POLÍCIA MILITAR (CÁCERES/MT)</h3>
-    </div>
-    <div class="ref-box">
-      <span>TERMO DE ENCERRAMENTO E REMESSA</span>
-      <span>Ref. TCO Nº: <strong class="sync-tco-num">___/6ºBPM/2026</strong></span>
-    </div>
+          <!-- ATALHO DO CATÁLOGO DE CRIMES TCO (OCULTO NA IMPRESSÃO) -->
+          <div class="infracao-bar-doc no-print">
+            <div class="row">
+              <strong><i class="fa-solid fa-scale-balanced" style="color:#C5A059;"></i> Catálogo TCO (BD):</strong>
+              <select id="selectInfracaoDoc" onchange="aplicarInfracaoSelecionada(this.value)">
+                <option value="">Carregando infrações cabíveis...</option>
+              </select>
+              <button type="button" class="btn btn-sm" style="background:#0B1C3D;color:#fff;border-color:#0B1C3D;" onclick="cadastrarNovaInfracaoTCO()">
+                <i class="fa-solid fa-plus"></i> Nova
+              </button>
+            </div>
+            <div id="acaoDocMsg" class="acao-doc-msg"></div>
+          </div>
 
-    <p class="legal-text">
-      Aos <input type="text" name="enc_dia" data-db="encerramento.dia" class="inline-input" style="min-width:45px" placeholder="DD"> dias do mês de <input type="text" name="enc_mes" data-db="encerramento.mes" class="inline-input" style="min-width:110px" placeholder="Mês"> do ano de <input type="text" name="enc_ano" data-db="encerramento.ano" class="inline-input" style="min-width:65px" value="2026">, por determinação da Autoridade Policial Militar, dou por encerrado a lavratura do presente Termo Circunstanciado de Ocorrência nº <strong class="sync-tco-num">___/6ºBPM/2026</strong>, em desfavor do senhor <input type="text" name="enc_autor" data-db="encerramento.autor_nome" class="inline-input sync-autor-nome" style="min-width:260px">, para as providências de remessa dos autos para apreciação do Núcleo de Resoluções de Conflitos e Justiça Restaurativa, da Vara do Juizado Especial da Comarca de <input type="text" name="enc_comarca" data-db="encerramento.comarca" class="inline-input" value="Cáceres-MT">, a quem compete deliberar sobre o suposto delito.
-    </p>
-    <p class="legal-text">
-      Quartel em <strong>Cáceres-MT</strong>, <input type="text" name="enc_data_extenso" data-db="encerramento.data_extenso" class="inline-input" style="min-width:220px" placeholder="DD de mês de 2026">.
-    </p>
+          <table class="doc-table">
+            <tr>
+              <td style="width:50%"><div class="cell-flex"><span class="cell-label">NATUREZA DA OCORRÊNCIA:</span><input class="f-in f-cell" name="dg_natureza" list="datalistNaturezas" data-sync="natureza" placeholder="Ex.: Ameaça"></div></td>
+              <td style="width:50%"><div class="cell-flex"><span class="cell-label">TIPIFICAÇÃO LEGAL:</span><input class="f-in f-cell" name="dg_tipificacao" list="datalistTipificacoes" data-sync="tipificacao" placeholder="Ex.: Art. 147 do CP"></div></td>
+            </tr>
+          </table>
+          <table class="doc-table">
+            <tr>
+              <td style="width:33.3%"><div class="cell-flex"><span class="cell-label">DATA DO FATO:*</span><input class="f-in f-cell" name="dg_data_fato" data-sync="data_fato" placeholder="dd/mm/2026"></div></td>
+              <td style="width:33.3%"><div class="cell-flex"><span class="cell-label">DATA DO REGISTRO:</span><input class="f-in f-cell" name="dg_data_reg" data-sync="data_registro" placeholder="dd/mm/2026"></div></td>
+              <td style="width:33.4%"><div class="cell-flex"><span class="cell-label">HORA DO FATO:</span><input class="f-in f-cell" name="dg_hora_fato" data-sync="hora_fato" placeholder="00h00"></div></td>
+            </tr>
+          </table>
+          <table class="doc-table">
+            <tr>
+              <td style="width:65%"><div class="cell-flex"><span class="cell-label">ENDEREÇO:</span><input class="f-in f-cell" name="dg_endereco" data-sync="endereco_fato" placeholder="Rua, nº, bairro"></div></td>
+              <td style="width:35%"><div class="cell-flex"><span class="cell-label">CEP:</span><input class="f-in f-cell" name="dg_cep" value="78210-"></div></td>
+            </tr>
+          </table>
+          <table class="doc-table">
+            <tr>
+              <td style="width:45%"><div class="cell-flex"><span class="cell-label">MUNICÍPIO/UF:*</span><input class="f-in f-cell" name="dg_mun_uf" value="Cáceres/MT"></div></td>
+              <td style="width:55%"><div class="cell-flex"><span class="cell-label">PONTO DE REFERÊNCIA:</span><input class="f-in f-cell" name="dg_ref" placeholder="Ponto de referência"></div></td>
+            </tr>
+          </table>
+          <table class="doc-table">
+            <tr>
+              <td style="width:50%"><div class="cell-flex"><span class="cell-label">LOCAL DO FATO:*</span><input class="f-in f-cell" name="dg_local" data-sync="local_fato" placeholder="Ex.: Via pública, residência"></div></td>
+              <td style="width:50%"><div class="cell-flex"><span class="cell-label">COMUNICANTE:</span><input class="f-in f-cell" name="dg_comunicante" placeholder="Nome ou CIOSP/190"></div></td>
+            </tr>
+          </table>
 
-    <div class="sig-grid">
-      <div class="sig-box">
-        <strong class="sync-cmt-nome">Comandante de GUPM</strong><br>
-        RG nº <span class="sync-cmt-rg">_________</span> PMMT
+          <div class="sec-title">2. ENVOLVIDOS</div>
+
+          <!-- a) VÍTIMA -->
+          <div class="sub-title">a) VÍTIMA</div>
+          <div id="block_vitima"></div>
+
+          <!-- b) TESTEMUNHA -->
+          <div class="sub-title">b) TESTEMUNHA</div>
+          <div id="block_testemunha"></div>
+
+          <!-- c) AUTOR DO FATO -->
+          <div class="sub-title">c) AUTOR DO FATO</div>
+          <div id="block_autor"></div>
+
+          <!-- 3. HISTÓRICO -->
+          <div class="sec-title">3. HISTÓRICO</div>
+
+          <div class="sub-title">RELATO DO POLICIAL</div>
+          <p class="doc-p">
+            Às <input class="f-in f-inline w-sm" name="rel_pm_hora" data-sync="hora_fato" placeholder="00h00">
+            do dia <input class="f-in f-inline w-md" name="rel_pm_data" data-sync="data_fato" placeholder="dd/mm/2026">,
+            fomos solicitados por <input class="f-in f-inline w-lg" name="rel_pm_sol" placeholder="CIOSP/190 ou solicitante">
+            / deparamos com <input class="f-in f-inline w-lg" name="rel_pm_dep" placeholder="situação / envolvido">,
+            informando que
+            <textarea class="f-ta" name="rel_pm_fatos" placeholder="Descreva detalhadamente os fatos constatados pela guarnição..."></textarea>
+            Em decorrência do fato, dei voz de prisão a
+            <input class="f-in f-inline w-lg" name="rel_pm_conduzido" data-sync="autor_nome" placeholder="nome do(a) autor(a) do fato">,
+            conduzindo os envolvidos para o 6º BPM para adoção das providências legais e lavratura do presente Termo Circunstanciado de Ocorrência.
+          </p>
+
+          <div class="sub-title">RELATO DA VÍTIMA</div>
+          <p class="doc-p">
+            Relatou a vítima <input class="f-in f-inline w-lg" name="rel_vit_nome" data-sync="vitima_nome" placeholder="nome da vítima"> Que
+            <textarea class="f-ta" name="rel_vit_txt" placeholder="Digite o relato completo da vítima..."></textarea>
+            Lido e achado conforme. Nada mais disse e nem lhe foi perguntado(a).
+          </p>
+          <div class="sig-block" style="margin-top:20px;">
+            <div class="sig-line"></div><br>Assinatura / Nome da Vítima
+          </div>
+
+          <div class="sub-title">RELATO DA TESTEMUNHA</div>
+          <p class="doc-p">
+            A testemunha <input class="f-in f-inline w-lg" name="rel_test_nome" data-sync="testemunha_nome" placeholder="nome da testemunha">,
+            compromissada na forma da lei, aos costumes respondeu negativamente, declarou Que
+            <textarea class="f-ta" name="rel_test_txt" placeholder="Digite o relato completo da testemunha..."></textarea>
+            Lido e achado conforme. Nada mais disse e nem lhe foi perguntado(a).
+          </p>
+          <div class="sig-block" style="margin-top:20px;">
+            <div class="sig-line"></div><br>Assinatura / Nome da Testemunha
+          </div>
+
+          <div class="sub-title">RELATO DO AUTOR(A) DO FATO</div>
+          <p class="doc-p">
+            O autor dos fatos <input class="f-in f-inline w-lg" name="rel_aut_nome" data-sync="autor_nome" placeholder="nome do(a) autor(a) do fato">,
+            cientificado de seus direitos constitucionais, inclusive o de permanecer calado, declarou Que
+            <textarea class="f-ta" name="rel_aut_txt" placeholder="Digite a versão do(a) autor(a) ou registre o exercício do direito ao silêncio..."></textarea>
+            Lido e achado conforme. Nada mais disse e nem lhe foi perguntado(a).
+          </p>
+          <div class="sig-block" style="margin-top:20px;">
+            <div class="sig-line"></div><br>Assinatura / Nome do Autor do Fato
+          </div>
+
+          <div class="sub-title">CONCLUSÃO DO POLICIAL</div>
+          <p class="doc-p">
+            Diante das circunstâncias e de tudo o que foi relatado, resta acrescentar que o autor infringiu o artigo n.º
+            <input class="f-in f-inline w-sm" name="conc_art" placeholder="nº art.">
+            da Lei <input class="f-in f-inline w-md" name="conc_lei" placeholder="nº da Lei">,
+            de <input class="f-in f-inline w-md" name="conc_data_lei" placeholder="dd/mm/aaaa"> –
+            <input class="f-in f-inline w-lg" name="conc_delito" data-sync="natureza" placeholder="descrição do delito">.
+            Nada mais havendo a tratar, deu-se por findo o presente termo circunstanciado de ocorrência que vai devidamente assinado por uma testemunha (se houver), pelo autor e por mim, condutor da ocorrência, que o digitei.<br>
+            E pelo fato do autor ter se comprometido a comparecer ao Juizado Especial Criminal da Comarca de Cáceres/MT, este foi liberado
+            <label class="chk-wrap"><input type="checkbox" name="conc_sem_lesao"> sem</label> /
+            <label class="chk-wrap"><input type="checkbox" name="conc_com_lesao"> com</label>
+            lesões corporais, após a assinatura do termo de compromisso.
+          </p>
+          <div class="sig-block" style="margin-top:20px;">
+            <div class="sig-line"></div><br>Assinatura / Visto do Autor do Fato
+          </div>
+
+          <!-- 4. PROVIDÊNCIAS ADOTADAS -->
+          <div class="sec-title">4. PROVIDÊNCIAS ADOTADAS</div>
+          <table class="doc-table std">
+            <tr>
+              <td>
+                <div class="cell-stack">
+                  <span class="cell-label">PROVIDÊNCIAS:</span>
+                  <textarea class="f-ta sm" name="prov_texto" placeholder="Descreva as providências adotadas pela guarnição..."></textarea>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span class="cell-label">DOCUMENTOS/ANEXOS:</span>
+                <label class="chk-wrap"><input type="checkbox" name="anx_comp"> Termo de Compromisso</label>
+                <label class="chk-wrap"><input type="checkbox" name="anx_manif"> Manifestação da Vítima</label>
+                <label class="chk-wrap"><input type="checkbox" name="anx_apr"> Apreensão/Depósito</label>
+                <label class="chk-wrap"><input type="checkbox" name="anx_per"> Req. Pericial</label>
+                <label class="chk-wrap"><input type="checkbox" name="anx_out"> Outros:</label>
+                <input class="f-in f-inline w-md" name="anx_out_txt" placeholder="especificar">
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="cell-stack">
+                  <span class="cell-label">OBJETOS/DOC. APREENDIDOS:</span>
+                  <textarea class="f-ta sm" name="prov_objetos" placeholder="Liste os objetos/documentos apreendidos ou informe 'Nada apreendido'"></textarea>
+                </div>
+              </td>
+            </tr>
+          </table>
+
+          <!-- 5. IDENTIFICAÇÃO DA GUARNIÇÃO -->
+          <div class="sec-title" style="display:flex;justify-content:space-between;align-items:center;">
+            <span>5. IDENTIFICAÇÃO DA GUARNIÇÃO</span>
+            <button class="btn btn-sm no-print" id="btnAddGuRow" type="button" style="font-size:10px;padding:3px 8px;">+ Adicionar Policial</button>
+          </div>
+          <table class="doc-table std" id="tblGuarnicao">
+            <thead>
+              <tr>
+                <th style="width:22%">Posto/Graduação</th>
+                <th style="width:36%">Nome Completo</th>
+                <th style="width:17%">RG PMMT</th>
+                <th style="width:25%">Assinatura</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="sig-row">
+                <td><select class="f-sel f-cell" name="gu_posto_1" data-list="postos"></select></td>
+                <td><input class="f-in f-cell" name="gu_nome_1" placeholder="Nome completo"></td>
+                <td><input class="f-in f-cell" name="gu_rg_1" placeholder="RG PMMT"></td>
+                <td></td>
+              </tr>
+              <tr class="sig-row">
+                <td><select class="f-sel f-cell" name="gu_posto_2" data-list="postos"></select></td>
+                <td><input class="f-in f-cell" name="gu_nome_2" placeholder="Nome completo"></td>
+                <td><input class="f-in f-cell" name="gu_rg_2" placeholder="RG PMMT"></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="doc-footer">6º Batalhão de Polícia Militar – Av. Getúlio Vargas, s/n, Centro, Cáceres/MT – CEP 78210-000</div>
       </div>
-      <div class="sig-box">
-        <strong>Oficial Gestor de TCO — 6º BPM</strong><br>
-        Conferência e Remessa ao PJe/TJMT
-      </div>
-    </div>
-  </div>
+    </section>
 
-  <div class="official-footer">
-    6º Comando Regional • 6º Batalhão de Polícia Militar — Av. Getúlio Vargas, s/n, Centro, Cáceres/MT — CEP 78210-000
-  </div>
-</form>
+    <!-- ==================== PEÇA 03: TERMO DE COMPROMISSO ==================== -->
+    <section class="sheet-wrapper" id="p3">
+      <div class="sheet-bar no-print">
+        <div class="sheet-bar-title">
+          <span>Peça 03 – Termo de Compromisso de Comparecimento</span>
+          <span class="sheet-bar-badge" data-badge="p3">Incluída na impressão</span>
+        </div>
+      </div>
+      <div class="sheet">
+        <div class="sheet-body">
+          <div class="doc-header">
+            <div class="h-l1">ESTADO DE MATO GROSSO</div>
+            <div class="h-l2">POLÍCIA MILITAR</div>
+            <div class="h-l3">6º COMANDO REGIONAL – 6º BATALHÃO DE POLÍCIA MILITAR (CÁCERES/MT)</div>
+            <div class="h-l4">
+              Referência: Termo Circunstanciado de Ocorrência nº
+              <input class="f-in f-inline w-sm" name="p3_tco" data-sync="tco_num" placeholder="____" style="font-weight:700;">/6ºBPM/2026
+            </div>
+          </div>
+
+          <div class="sec-title">TERMO DE COMPROMISSO DE COMPARECIMENTO</div>
+          <p class="doc-p">
+            Por este instrumento, eu <input class="f-in f-inline w-xl" name="p3_autor" data-sync="autor_nome" placeholder="nome do autor do fato">,
+            assumo, nos termos do parágrafo único do Art. 69 da Lei nº 9.099/95, o compromisso de comparecer no Juizado Especial Criminal, em virtude dos fatos registrados no Termo Circunstanciado de Ocorrência acima referenciado, conforme notificado abaixo.
+          </p>
+          <p class="doc-p">
+            Fico ciente de que a concordância em comparecer ao Juizado Especial Criminal, não implica confissão de qualquer natureza, admissão de culpa ou anuência às declarações da parte contrária e o não comparecimento no dia e hora ajustados neste termo sujeitará às medidas previstas na Lei nº 9.099/95.
+          </p>
+          <p class="doc-p">
+            Fico ciente também que deverei comparecer acompanhado de advogado e que na ausência deste será nomeado um defensor público.
+          </p>
+          <p class="doc-p">
+            Notifico Vossa Senhoria para comparecer no Fórum da Comarca de Cáceres/MT, sito a Rua Coronel José Dulce, s/n, Centro, na Secretaria do Juizado Especial Criminal:<br>
+            No dia <input class="f-in f-inline w-xs" name="p3_aud_dia" data-sync="aud_dia" placeholder="00">
+            do mês de <select class="f-sel f-inline" name="p3_aud_mes" data-sync="aud_mes" data-list="meses"></select>
+            do ano de 2026, às <input class="f-in f-inline w-sm" name="p3_aud_hora" data-sync="aud_hora" placeholder="00h00">
+            (ou conforme intimação posterior do Juízo).
+          </p>
+
+          <div class="sig-block" style="margin-top:55px;margin-bottom:28px;">
+            <div class="sig-line"></div><br>
+            Assinatura e Nome do Autor do Fato
+          </div>
+
+          <table class="doc-table std spaced">
+            <tr>
+              <th style="width:55%">Posto/Graduação, RG PMMT e Nome do Policial Militar</th>
+              <th style="width:45%">Assinatura do Policial Militar</th>
+            </tr>
+            <tr class="sig-row">
+              <td><input class="f-in f-cell" name="p3_pm" data-sync="pm_identificacao" placeholder="Posto/Grad, RG PMMT e Nome completo"></td>
+              <td></td>
+            </tr>
+          </table>
+        </div>
+        <div class="doc-footer">6º Batalhão de Polícia Militar – Av. Getúlio Vargas, s/n, Centro, Cáceres/MT – CEP 78210-000</div>
+      </div>
+    </section>
+
+    <!-- ==================== PEÇA 04: MANIFESTAÇÃO DA VÍTIMA ==================== -->
+    <section class="sheet-wrapper" id="p4">
+      <div class="sheet-bar no-print">
+        <div class="sheet-bar-title">
+          <span>Peça 04 – Termo de Manifestação da Vítima</span>
+          <span class="sheet-bar-badge" data-badge="p4">Incluída na impressão</span>
+        </div>
+      </div>
+      <div class="sheet">
+        <div class="sheet-body">
+          <div class="doc-header">
+            <div class="h-l1">ESTADO DE MATO GROSSO</div>
+            <div class="h-l2">POLÍCIA MILITAR</div>
+            <div class="h-l3">6º COMANDO REGIONAL – 6º BATALHÃO DE POLÍCIA MILITAR (CÁCERES/MT)</div>
+            <div class="h-l4">
+              Referência: Termo Circunstanciado de Ocorrência nº
+              <input class="f-in f-inline w-sm" name="p4_tco" data-sync="tco_num" placeholder="____" style="font-weight:700;">/6ºBPM/2026
+            </div>
+          </div>
+
+          <div class="sec-title">TERMO DE MANIFESTAÇÃO DA VÍTIMA</div>
+          <p class="doc-p left">
+            Eu, <input class="f-in f-inline w-xl" name="p4_vitima" data-sync="vitima_nome" placeholder="nome da vítima">,
+            por este instrumento, manifesto o meu interesse:
+          </p>
+
+          <table class="doc-table std spaced">
+            <tr>
+              <td style="width:10%;text-align:center;vertical-align:middle;">
+                <input type="checkbox" name="p4_opt_rep" style="width:16px;height:16px;accent-color:#002060;cursor:pointer;">
+              </td>
+              <td style="width:90%;text-align:justify;">
+                Em exercer o direito de representação ou queixa contra o autor do fato. (Fica cientificada que em caso de queixa-crime, a vítima deverá constituir advogado).
+              </td>
+            </tr>
+            <tr>
+              <td style="width:10%;text-align:center;vertical-align:middle;">
+                <input type="checkbox" name="p4_opt_post" style="width:16px;height:16px;accent-color:#002060;cursor:pointer;">
+              </td>
+              <td style="width:90%;text-align:justify;">
+                Em decidir posteriormente, estando ciente, para os fins previstos no art. 103 do Código Penal e art. 38 Código de Processo Penal que devo exercer o direito de representação ou de queixa, no prazo de 06 (seis) meses, a contar desta data, sendo certo que meu silêncio, acarretará a extinção de punibilidade, na forma do art. 107, inc. IV, do Código Penal.
+              </td>
+            </tr>
+          </table>
+
+          <p class="doc-p left" style="margin-top:14px;">
+            Notifico Vossa Senhoria para comparecer no Fórum da Comarca de Cáceres/MT, sito a Rua Coronel José Dulce, s/n, Centro, na Secretaria do Juizado Especial Criminal:<br>
+            No dia <input class="f-in f-inline w-xs" name="p4_aud_dia" data-sync="aud_dia" placeholder="00">
+            do mês de <select class="f-sel f-inline" name="p4_aud_mes" data-sync="aud_mes" data-list="meses"></select>
+            do ano de 2026, às <input class="f-in f-inline w-sm" name="p4_aud_hora" data-sync="aud_hora" placeholder="00h00">.
+          </p>
+
+          <div class="sig-block" style="margin-top:60px;">
+            <div class="sig-line"></div><br>
+            Assinatura e Nome da Vítima
+          </div>
+        </div>
+        <div class="doc-footer">6º Batalhão de Polícia Militar – Av. Getúlio Vargas, s/n, Centro, Cáceres/MT – CEP 78210-000</div>
+      </div>
+    </section>
+
+    <!-- ==================== PEÇA 05: CONSTATAÇÃO PRELIMINAR DE DROGA ==================== -->
+    <section class="sheet-wrapper" id="p5">
+      <div class="sheet-bar no-print">
+        <div class="sheet-bar-title">
+          <span>Peça 05 – Termo de Constatação Preliminar de Droga</span>
+          <span class="sheet-bar-badge" data-badge="p5">Incluída na impressão</span>
+        </div>
+      </div>
+      <div class="sheet">
+        <div class="sheet-body">
+          <div class="doc-header">
+            <div class="h-l1">ESTADO DE MATO GROSSO</div>
+            <div class="h-l2">POLÍCIA MILITAR</div>
+            <div class="h-l3">6º COMANDO REGIONAL – 6º BATALHÃO DE POLÍCIA MILITAR (CÁCERES/MT)</div>
+            <div class="h-l4">
+              Referência: Termo Circunstanciado de Ocorrência nº
+              <input class="f-in f-inline w-sm" name="p5_tco" data-sync="tco_num" placeholder="____" style="font-weight:700;">/6ºBPM/2026
+            </div>
+          </div>
+
+          <div class="sec-title">TERMO DE CONSTATAÇÃO PRELIMINAR DE DROGA</div>
+          <p class="doc-p">
+            Em razão da lavratura deste Termo Circunstanciado de Ocorrência, pelo(s) delito(s) tipificado(s):
+            <input class="f-in f-inline w-lg" name="p5_delito" data-sync="tipificacao" placeholder="Ex.: Art. 28 da Lei 11.343/06">,
+            foi apreendido o material descrito abaixo, em poder do autor
+            <input class="f-in f-inline w-xl" name="p5_autor" data-sync="autor_nome" placeholder="nome do autor do fato">,
+            já qualificado no TCO-PM.
+          </p>
+          <p class="doc-p">
+            Após ciência das implicações legais do encargo assumido, firmou-se o compromisso legal de proceder à análise dos seguintes materiais:<br>
+            – <input class="f-in f-inline w-xs" name="p5_veg_qtd" placeholder="00"> (porção/ões) de substância vegetal, cor
+            <input class="f-in f-inline w-md" name="p5_veg_cor" placeholder="esverdeada">, odor típico, semelhante ao entorpecente conhecido como
+            <input class="f-in f-inline w-md" name="p5_veg_tipo" placeholder="maconha">, pesando aproximadamente
+            <input class="f-in f-inline w-xs" name="p5_veg_peso" placeholder="0,0"> g;<br>
+            – <input class="f-in f-inline w-xs" name="p5_quim_qtd" placeholder="00"> (porção/ões) de substância química, cor
+            <input class="f-in f-inline w-md" name="p5_quim_cor" placeholder="esbranquiçada">, odor típico, semelhante ao entorpecente conhecido como
+            <input class="f-in f-inline w-md" name="p5_quim_tipo" placeholder="cocaína / pasta base">, pesando aproximadamente
+            <input class="f-in f-inline w-xs" name="p5_quim_peso" placeholder="0,0"> g.
+          </p>
+          <p class="doc-p">
+            O presente relatório tem por objetivo avaliar se a(s) substância(s) em questão se tratam de entorpecente(s), psicotrópica(s), precursora(s) ou outras sob controle especial da Portaria 344/1998 SVS/MS.<br>
+            Para verificação do exposto acima, foi realizada inspeção visual e olfativa do material.
+          </p>
+          <p class="doc-p left" style="margin-top:14px;">
+            Cáceres/MT, <input class="f-in f-inline w-xs" name="p5_dia" data-sync="ext_dia" placeholder="00">
+            de <select class="f-sel f-inline" name="p5_mes" data-sync="ext_mes" data-list="meses"></select>
+            de 2026.
+          </p>
+
+          <table class="doc-table std spaced" style="margin-top:20px;">
+            <tr>
+              <th style="width:55%">TESTEMUNHA – NOME</th>
+              <th style="width:45%">ASSINATURA</th>
+            </tr>
+            <tr class="sig-row">
+              <td><input class="f-in f-cell" name="p5_testemunha" data-sync="testemunha_nome" placeholder="Nome completo da testemunha"></td>
+              <td></td>
+            </tr>
+            <tr>
+              <th>POLICIAL MILITAR (Posto/Grad, RG PMMT e Nome)</th>
+              <th>ASSINATURA</th>
+            </tr>
+            <tr class="sig-row">
+              <td><input class="f-in f-cell" name="p5_pm" data-sync="pm_identificacao" placeholder="Posto/Grad, RG PMMT e Nome completo"></td>
+              <td></td>
+            </tr>
+          </table>
+        </div>
+        <div class="doc-footer">6º Batalhão de Polícia Militar – Av. Getúlio Vargas, s/n, Centro, Cáceres/MT – CEP 78210-000</div>
+      </div>
+    </section>
+
+    <!-- ==================== PEÇA 06: TERMO DE APREENSÃO ==================== -->
+    <section class="sheet-wrapper" id="p6">
+      <div class="sheet-bar no-print">
+        <div class="sheet-bar-title">
+          <span>Peça 06 – Termo de Apreensão</span>
+          <span class="sheet-bar-badge" data-badge="p6">Incluída na impressão</span>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-sm" type="button" onclick="copyPersonTo('autor','apr')"><i class="fa-solid fa-copy"></i> Puxar Autor</button>
+          <button class="btn btn-sm" type="button" onclick="copyPersonTo('vitima','apr')"><i class="fa-solid fa-copy"></i> Puxar Vítima</button>
+        </div>
+      </div>
+      <div class="sheet">
+        <div class="sheet-body">
+          <div class="doc-header">
+            <div class="h-l1">ESTADO DE MATO GROSSO</div>
+            <div class="h-l2">POLÍCIA MILITAR</div>
+            <div class="h-l3">6º COMANDO REGIONAL – 6º BATALHÃO DE POLÍCIA MILITAR (CÁCERES/MT)</div>
+            <div class="h-l4">
+              Referência: Termo Circunstanciado de Ocorrência nº
+              <input class="f-in f-inline w-sm" name="p6_tco" data-sync="tco_num" placeholder="____" style="font-weight:700;">/6ºBPM/2026
+            </div>
+          </div>
+
+          <div class="sec-title">TERMO DE APREENSÃO</div>
+          <table class="doc-table std">
+            <tr>
+              <td style="width:30%"><div class="cell-flex"><span class="cell-label">DATA:</span><input class="f-in f-cell" name="apr_data" data-sync="data_fato" placeholder="dd/mm/2026"></div></td>
+              <td style="width:25%"><div class="cell-flex"><span class="cell-label">HORA:</span><input class="f-in f-cell" name="apr_hora" data-sync="hora_fato" placeholder="00h00"></div></td>
+              <td style="width:45%"><div class="cell-flex"><span class="cell-label">LOCAL:</span><input class="f-in f-cell" name="apr_local" data-sync="local_fato" placeholder="Local da apreensão"></div></td>
+            </tr>
+          </table>
+          <table class="doc-table std">
+            <tr>
+              <td><div class="cell-flex"><span class="cell-label">NOME OU RAZÃO SOCIAL DO PROPRIETÁRIO:</span><input class="f-in f-cell" name="apr_nome" placeholder="Nome completo ou razão social"></div></td>
+            </tr>
+          </table>
+          <table class="doc-table std">
+            <tr>
+              <td style="width:50%"><div class="cell-flex"><span class="cell-label">FILIAÇÃO PAI:</span><input class="f-in f-cell" name="apr_pai" placeholder="Nome do pai"></div></td>
+              <td style="width:50%"><div class="cell-flex"><span class="cell-label">FILIAÇÃO MÃE:</span><input class="f-in f-cell" name="apr_mae" placeholder="Nome da mãe"></div></td>
+            </tr>
+          </table>
+          <table class="doc-table std">
+            <tr>
+              <td style="width:36%"><div class="cell-flex"><span class="cell-label">NATURALIDADE:</span><input class="f-in f-cell" name="apr_nat" placeholder="Cidade/UF"></div></td>
+              <td style="width:30%"><div class="cell-flex"><span class="cell-label">RG:</span><input class="f-in f-cell" name="apr_rg" placeholder="Número RG"></div></td>
+              <td style="width:34%"><div class="cell-flex"><span class="cell-label">CPF/CNPJ:</span><input class="f-in f-cell" name="apr_cpf" placeholder="000.000.000-00"></div></td>
+            </tr>
+          </table>
+          <table class="doc-table std">
+            <tr>
+              <td style="width:65%"><div class="cell-flex"><span class="cell-label">ENDEREÇO:</span><input class="f-in f-cell" name="apr_end" placeholder="Logradouro, nº"></div></td>
+              <td style="width:35%"><div class="cell-flex"><span class="cell-label">BAIRRO:</span><input class="f-in f-cell" name="apr_bairro" placeholder="Bairro"></div></td>
+            </tr>
+          </table>
+          <table class="doc-table std">
+            <tr>
+              <td style="width:30%"><div class="cell-flex"><span class="cell-label">MUNICÍPIO:</span><input class="f-in f-cell" name="apr_mun" value="Cáceres"></div></td>
+              <td style="width:14%"><div class="cell-flex"><span class="cell-label">UF:</span><select class="f-sel f-cell" name="apr_uf" data-list="ufs" data-default="MT"></select></div></td>
+              <td style="width:26%"><div class="cell-flex"><span class="cell-label">CEP:</span><input class="f-in f-cell" name="apr_cep" value="78210-"></div></td>
+              <td style="width:30%"><div class="cell-flex"><span class="cell-label">TELEFONE:</span><input class="f-in f-cell" name="apr_tel" placeholder="(65) 99999-9999"></div></td>
+            </tr>
+          </table>
+          <table class="doc-table std">
+            <tr>
+              <td>
+                <div class="cell-stack">
+                  <span class="cell-label">FICA APREENDIDO O ABAIXO DESCRITO:</span>
+                  <textarea class="f-ta tall" name="apr_desc" placeholder="Descreva detalhadamente os objetos/bens apreendidos (quantidade, marca, modelo, número de série, estado de conservação)..."></textarea>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td style="text-align:justify;">
+                <span class="cell-label">BASE LEGAL:</span> O presente Termo de Apreensão foi lavrado com base no art. 6º, II, DO CPP, E art. 92 da Lei 9.099/1995. (Obs.: Para crimes ambientais, usar art. 25, caput da Lei 9.605/98 c/c Art. 101, I do Dec. 6514/08).
+              </td>
+            </tr>
+          </table>
+
+          <div class="sig-block" style="margin-top:42px;margin-bottom:24px;">
+            <div class="sig-line"></div><br>
+            Assinatura e Nome do Autor do Fato / Proprietário
+          </div>
+
+          <table class="doc-table std spaced">
+            <tr>
+              <th style="width:55%">Posto/Graduação, RG PMMT e Nome do Policial Militar</th>
+              <th style="width:45%">Assinatura do Policial Militar</th>
+            </tr>
+            <tr class="sig-row">
+              <td><input class="f-in f-cell" name="p6_pm" data-sync="pm_identificacao" placeholder="Posto/Grad, RG PMMT e Nome completo"></td>
+              <td></td>
+            </tr>
+          </table>
+        </div>
+        <div class="doc-footer">6º Batalhão de Polícia Militar – Av. Getúlio Vargas, s/n, Centro, Cáceres/MT – CEP 78210-000</div>
+      </div>
+    </section>
+
+    <!-- ==================== PEÇA 07: TERMO DE DEPÓSITO ==================== -->
+    <section class="sheet-wrapper" id="p7">
+      <div class="sheet-bar no-print">
+        <div class="sheet-bar-title">
+          <span>Peça 07 – Termo de Depósito</span>
+          <span class="sheet-bar-badge" data-badge="p7">Incluída na impressão</span>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-sm" type="button" onclick="copyPersonTo('autor','dep')"><i class="fa-solid fa-copy"></i> Puxar Autor</button>
+          <button class="btn btn-sm" type="button" onclick="copyPersonTo('vitima','dep')"><i class="fa-solid fa-copy"></i> Puxar Vítima</button>
+        </div>
+      </div>
+      <div class="sheet">
+        <div class="sheet-body">
+          <div class="doc-header">
+            <div class="h-l1">ESTADO DE MATO GROSSO</div>
+            <div class="h-l2">POLÍCIA MILITAR</div>
+            <div class="h-l3">6º COMANDO REGIONAL – 6º BATALHÃO DE POLÍCIA MILITAR (CÁCERES/MT)</div>
+            <div class="h-l4">
+              Referência: Termo Circunstanciado de Ocorrência nº
+              <input class="f-in f-inline w-sm" name="p7_tco" data-sync="tco_num" placeholder="____" style="font-weight:700;">/6ºBPM/2026
+            </div>
+          </div>
+
+          <div class="sec-title">TERMO DE DEPÓSITO</div>
+          <table class="doc-table std">
+            <tr>
+              <td style="text-align:justify;">
+                <span class="cell-label">COMPROMISSO:</span> Nomeio como fiel depositário, ficando ciente de que não poderá vender, usufruir, emprestar os bens mencionados, conforme os artigos 647 e 648 do CC.
+              </td>
+            </tr>
+          </table>
+          <table class="doc-table std">
+            <tr>
+              <td style="width:65%"><div class="cell-flex"><span class="cell-label">NOME OU RAZÃO SOCIAL:</span><input class="f-in f-cell" name="dep_nome" placeholder="Nome completo ou razão social"></div></td>
+              <td style="width:35%"><div class="cell-flex"><span class="cell-label">CPF/CNPJ:</span><input class="f-in f-cell" name="dep_cpf" placeholder="000.000.000-00"></div></td>
+            </tr>
+          </table>
+          <table class="doc-table std">
+            <tr>
+              <td style="width:50%"><div class="cell-flex"><span class="cell-label">FILIAÇÃO PAI:</span><input class="f-in f-cell" name="dep_pai" placeholder="Nome do pai"></div></td>
+              <td style="width:50%"><div class="cell-flex"><span class="cell-label">FILIAÇÃO MÃE:</span><input class="f-in f-cell" name="dep_mae" placeholder="Nome da mãe"></div></td>
+            </tr>
+          </table>
+          <table class="doc-table std">
+            <tr>
+              <td style="width:65%"><div class="cell-flex"><span class="cell-label">ENDEREÇO:</span><input class="f-in f-cell" name="dep_end" placeholder="Logradouro, nº"></div></td>
+              <td style="width:35%"><div class="cell-flex"><span class="cell-label">BAIRRO:</span><input class="f-in f-cell" name="dep_bairro" placeholder="Bairro"></div></td>
+            </tr>
+          </table>
+          <table class="doc-table std">
+            <tr>
+              <td style="width:30%"><div class="cell-flex"><span class="cell-label">MUNICÍPIO:</span><input class="f-in f-cell" name="dep_mun" value="Cáceres"></div></td>
+              <td style="width:14%"><div class="cell-flex"><span class="cell-label">UF:</span><select class="f-sel f-cell" name="dep_uf" data-list="ufs" data-default="MT"></select></div></td>
+              <td style="width:26%"><div class="cell-flex"><span class="cell-label">CEP:</span><input class="f-in f-cell" name="dep_cep" value="78210-"></div></td>
+              <td style="width:30%"><div class="cell-flex"><span class="cell-label">TELEFONE:</span><input class="f-in f-cell" name="dep_tel" placeholder="(65) 99999-9999"></div></td>
+            </tr>
+          </table>
+          <table class="doc-table std">
+            <tr>
+              <td style="width:45%"><div class="cell-flex"><span class="cell-label">LOCAL DO DEPÓSITO:</span><input class="f-in f-cell" name="dep_local" placeholder="Endereço/local do depósito"></div></td>
+              <td style="width:30%"><div class="cell-flex"><span class="cell-label">DATA:</span><input class="f-in f-cell" name="dep_data" data-sync="data_registro" placeholder="dd/mm/2026"></div></td>
+              <td style="width:25%"><div class="cell-flex"><span class="cell-label">HORA:</span><input class="f-in f-cell" name="dep_hora" placeholder="00h00"></div></td>
+            </tr>
+          </table>
+          <table class="doc-table std">
+            <tr>
+              <td>
+                <div class="cell-stack">
+                  <span class="cell-label">DESCRIÇÃO DO BEM:</span>
+                  <textarea class="f-ta tall" name="dep_desc" placeholder="Descreva detalhadamente o(s) bem(ns) entregue(s) em depósito..."></textarea>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><div class="cell-flex"><span class="cell-label">RECEBI OS BENS DEPOSITADOS EM:</span><input class="f-in f-cell" name="dep_rec_data" data-sync="data_registro" placeholder="dd/mm/2026"></div></td>
+            </tr>
+          </table>
+
+          <div class="sig-block" style="margin-top:34px;margin-bottom:18px;">
+            <div class="sig-line"></div><br>
+            Assinatura e Nome do Fiel Depositário
+          </div>
+
+          <table class="doc-table std spaced">
+            <tr>
+              <th style="width:55%">TESTEMUNHA – NOME</th>
+              <th style="width:45%">ASSINATURA</th>
+            </tr>
+            <tr class="sig-row">
+              <td><input class="f-in f-cell" name="p7_testemunha" data-sync="testemunha_nome" placeholder="Nome completo da testemunha"></td>
+              <td></td>
+            </tr>
+            <tr>
+              <th>POLICIAL MILITAR (Posto/Grad, RG PMMT e Nome)</th>
+              <th>ASSINATURA</th>
+            </tr>
+            <tr class="sig-row">
+              <td><input class="f-in f-cell" name="p7_pm" data-sync="pm_identificacao" placeholder="Posto/Grad, RG PMMT e Nome completo"></td>
+              <td></td>
+            </tr>
+          </table>
+        </div>
+        <div class="doc-footer">6º Batalhão de Polícia Militar – Av. Getúlio Vargas, s/n, Centro, Cáceres/MT – CEP 78210-000</div>
+      </div>
+    </section>
+
+    <!-- ==================== PEÇA 08: REQUISIÇÃO EXAME LESÃO CORPORAL ==================== -->
+    <section class="sheet-wrapper" id="p8">
+      <div class="sheet-bar no-print">
+        <div class="sheet-bar-title">
+          <span>Peça 08 – Requisição de Exame de Lesão Corporal (POLITEC)</span>
+          <span class="sheet-bar-badge" data-badge="p8">Incluída na impressão</span>
+        </div>
+      </div>
+      <div class="sheet">
+        <div class="sheet-body">
+          <div class="doc-header">
+            <div class="h-l1">ESTADO DE MATO GROSSO</div>
+            <div class="h-l2">POLÍCIA MILITAR</div>
+            <div class="h-l3">6º COMANDO REGIONAL – 6º BATALHÃO DE POLÍCIA MILITAR (CÁCERES/MT)</div>
+            <div class="h-l4">
+              Referência: Termo Circunstanciado de Ocorrência nº
+              <input class="f-in f-inline w-sm" name="p8_tco" data-sync="tco_num" placeholder="____" style="font-weight:700;">/6ºBPM/2026
+            </div>
+          </div>
+
+          <div class="sec-title">REQUISIÇÃO DE EXAME DE LESÃO CORPORAL</div>
+          <p class="doc-p">
+            Requisito a POLITEC - Perícia Oficial e Identificação Técnica, nos termos dos artigos 158 e seguintes do Código de Processo Penal e artigo 69 Caput da Lei n.º 9.099/1995, a realização de exame de corpo de delito no(a) Sr.(a)
+            <input class="f-in f-inline w-xl" name="p8_periciando" id="p8_periciando" placeholder="nome completo do(a) examinado(a)">,
+            – <label class="chk-wrap"><input type="checkbox" name="p8_chk_vit" id="p8_chk_vit"> vítima</label> /
+            <label class="chk-wrap"><input type="checkbox" name="p8_chk_aut" id="p8_chk_aut"> autor do fato</label>
+            – qualificado no Termo Circunstanciado de Ocorrência nº
+            <input class="f-in f-inline w-sm" name="p8_tco_body" data-sync="tco_num" placeholder="____">/6ºBPM/2026,
+            por ter relatado que:
+            <textarea class="f-ta sm" name="p8_relato" placeholder="Resumo do relato de agressão/lesão sofrida..."></textarea>
+            de natureza <input class="f-in f-inline w-lg" name="p8_natureza" data-sync="natureza" placeholder="Ex.: Lesão Corporal Leve">,
+            ocorrido na data <input class="f-in f-inline w-md" name="p8_data_fato" data-sync="data_fato" placeholder="dd/mm/2026">,
+            respondendo para tal os seguintes quesitos:
+          </p>
+
+          <ol class="quesitos">
+            <li>Há ofensa à integridade corporal do paciente?</li>
+            <li>Qual o instrumento ou meio que produziu a ofensa?</li>
+            <li>Foi produzido por meio de fogo, veneno, explosivo, asfixia, tortura ou outro meio insidioso ou cruel?</li>
+            <li>Resultou incapacidade para as ocupações habituais por mais de 30 (trinta) dias?</li>
+            <li>Houve perigo de vida?</li>
+            <li>Resultou debilidade permanente, perda ou inutilização de membro, sentido, ação ou função?</li>
+            <li>Resultou incapacidade para trabalho, enfermidade incurável ou deformidade permanente?</li>
+          </ol>
+
+          <p class="doc-p left">
+            Cáceres-MT, <input class="f-in f-inline w-xs" name="p8_dia" data-sync="ext_dia" placeholder="00">
+            de <select class="f-sel f-inline" name="p8_mes" data-sync="ext_mes" data-list="meses"></select>
+            de 2026.
+          </p>
+
+          <div class="sig-block" style="margin-top:42px;margin-bottom:22px;">
+            <div class="sig-line"></div><br>
+            Assinatura Comandante da GUPM<br>
+            <input class="f-in f-inline w-lg" name="p8_cmt_nome" data-sync="cmt_nome_posto" placeholder="Nome – Posto/Grad PM" style="text-align:center;">
+            – RG nº <input class="f-in f-inline w-sm" name="p8_cmt_rg" data-sync="cmt_rg" placeholder="000000"> PMMT
+          </div>
+
+          <table class="doc-table std spaced">
+            <tr>
+              <th style="width:22%">Data</th>
+              <th style="width:45%">Nome da Vítima / Autor do Fato</th>
+              <th style="width:33%">Assinatura</th>
+            </tr>
+            <tr class="sig-row">
+              <td><input class="f-in f-cell" name="p8_rec_data" data-sync="data_registro" placeholder="dd/mm/2026"></td>
+              <td><input class="f-in f-cell" name="p8_rec_nome" id="p8_rec_nome" placeholder="Nome completo"></td>
+              <td></td>
+            </tr>
+          </table>
+        </div>
+        <div class="doc-footer">6º Batalhão de Polícia Militar – Av. Getúlio Vargas, s/n, Centro, Cáceres/MT – CEP 78210-000</div>
+      </div>
+    </section>
+
+    <!-- ==================== PEÇA 09: REQUISIÇÃO EXAME DROGAS ==================== -->
+    <section class="sheet-wrapper" id="p9">
+      <div class="sheet-bar no-print">
+        <div class="sheet-bar-title">
+          <span>Peça 09 – Requisição de Exame em Drogas de Abuso (POLITEC)</span>
+          <span class="sheet-bar-badge" data-badge="p9">Incluída na impressão</span>
+        </div>
+      </div>
+      <div class="sheet">
+        <div class="sheet-body">
+          <div class="doc-header">
+            <div class="h-l1">ESTADO DE MATO GROSSO</div>
+            <div class="h-l2">POLÍCIA MILITAR</div>
+            <div class="h-l3">6º COMANDO REGIONAL – 6º BATALHÃO DE POLÍCIA MILITAR (CÁCERES/MT)</div>
+            <div class="h-l4">
+              Referência: Termo Circunstanciado de Ocorrência nº
+              <input class="f-in f-inline w-sm" name="p9_tco" data-sync="tco_num" placeholder="____" style="font-weight:700;">/6ºBPM/2026
+            </div>
+          </div>
+
+          <div class="sec-title">REQUISIÇÃO DE EXAME EM DROGAS DE ABUSO</div>
+          <p class="doc-p">
+            Requisito a POLITEC - Perícia Oficial e Identificação Técnica, nos termos dos artigos 159 e seguintes do Código de Processo Penal, combinado com o Artigo 69, Caput da Lei 9.099/95, combinado com Artigo 48, § 2º e Artigo 50, § 1º da Lei 11.343/06, solicito a realização de exame químico na substância análoga a entorpecente apensada, encontrada em posse do(a) Sr.(a)
+            <input class="f-in f-inline w-xl" name="p9_autor" data-sync="autor_nome" placeholder="nome do autor do fato">,
+            – autor do fato – qualificado no Termo Circunstanciado de Ocorrência nº
+            <input class="f-in f-inline w-sm" name="p9_tco_body" data-sync="tco_num" placeholder="____">/6ºBPM/2026,
+            de natureza Porte Ilegal de Drogas, ocorrido na data
+            <input class="f-in f-inline w-md" name="p9_data_fato" data-sync="data_fato" placeholder="dd/mm/2026">.
+          </p>
+          <p class="doc-p">
+            <strong>Apenso:</strong> 01 (um) saco plástico/envelope (Lacre nº
+            <input class="f-in f-inline w-md" name="p9_lacre" placeholder="000000">), contendo
+            <input class="f-in f-inline w-xs" name="p9_qtd" placeholder="00"> porções/trouxinhas de substância análoga ao entorpecente conhecido como
+            <input class="f-in f-inline w-lg" name="p9_tipo" placeholder="maconha / cocaína / outro">.
+          </p>
+          <p class="doc-p">
+            Para tanto, solicito a Vossa Senhoria, que seja confeccionado o respectivo Laudo definitivo, devendo os peritos responderem aos quesitos oficiais, conforme abaixo:
+          </p>
+          <ol class="quesitos">
+            <li>Qual a natureza e característica das substâncias enviadas a exame?</li>
+            <li>Podem as mesmas causar dependência física ou psíquica?</li>
+            <li>Qual o peso das substâncias enviadas a exame?</li>
+          </ol>
+
+          <p class="doc-p left">
+            Cáceres-MT, <input class="f-in f-inline w-xs" name="p9_dia" data-sync="ext_dia" placeholder="00">
+            de <select class="f-sel f-inline" name="p9_mes" data-sync="ext_mes" data-list="meses"></select>
+            de 2026.
+          </p>
+
+          <div class="sig-block" style="margin-top:46px;margin-bottom:24px;">
+            <div class="sig-line"></div><br>
+            Assinatura Comandante da GUPM<br>
+            <input class="f-in f-inline w-lg" name="p9_cmt_nome" data-sync="cmt_nome_posto" placeholder="Nome – Posto/Grad PM" style="text-align:center;">
+            – RG nº <input class="f-in f-inline w-sm" name="p9_cmt_rg" data-sync="cmt_rg" placeholder="000000"> PMMT
+          </div>
+
+          <table class="doc-table std spaced">
+            <tr>
+              <th style="width:22%">Data</th>
+              <th style="width:45%">POLITEC (Recebedor)</th>
+              <th style="width:33%">Assinatura</th>
+            </tr>
+            <tr class="sig-row">
+              <td><input class="f-in f-cell" name="p9_rec_data" data-sync="data_registro" placeholder="dd/mm/2026"></td>
+              <td><input class="f-in f-cell" name="p9_rec_nome" placeholder="Nome / Matrícula POLITEC"></td>
+              <td></td>
+            </tr>
+          </table>
+        </div>
+        <div class="doc-footer">6º Batalhão de Polícia Militar – Av. Getúlio Vargas, s/n, Centro, Cáceres/MT – CEP 78210-000</div>
+      </div>
+    </section>
+
+    <!-- ==================== PEÇA 10: TERMO DE ENCERRAMENTO E REMESSA ==================== -->
+    <section class="sheet-wrapper" id="p10">
+      <div class="sheet-bar no-print">
+        <div class="sheet-bar-title">
+          <span>Peça 10 – Termo de Encerramento e Remessa</span>
+          <span class="sheet-bar-badge" data-badge="p10">Incluída na impressão</span>
+        </div>
+      </div>
+      <div class="sheet">
+        <div class="sheet-body">
+          <div class="doc-header">
+            <div class="h-l1">ESTADO DE MATO GROSSO</div>
+            <div class="h-l2">POLÍCIA MILITAR</div>
+            <div class="h-l3">6º COMANDO REGIONAL – 6º BATALHÃO DE POLÍCIA MILITAR (CÁCERES/MT)</div>
+            <div class="h-l4">
+              Referência: Termo Circunstanciado de Ocorrência nº
+              <input class="f-in f-inline w-sm" name="p10_tco" data-sync="tco_num" placeholder="____" style="font-weight:700;">/6ºBPM/2026
+            </div>
+          </div>
+
+          <div class="sec-title">TERMO DE ENCERRAMENTO E REMESSA</div>
+          <p class="doc-p">
+            Aos <input class="f-in f-inline w-xs" name="p10_dia" data-sync="ext_dia" placeholder="00">
+            dias do mês de <select class="f-sel f-inline" name="p10_mes" data-sync="ext_mes" data-list="meses"></select>
+            do ano de 2026, por determinação da Autoridade Policial Militar, dou por encerrada a lavratura do presente Termo Circunstanciado de Ocorrência nº
+            <input class="f-in f-inline w-sm" name="p10_tco_body" data-sync="tco_num" placeholder="____">/6ºBPM/2026,
+            em desfavor do senhor(a)
+            <input class="f-in f-inline w-xl" name="p10_autor" data-sync="autor_nome" placeholder="nome do autor do fato">,
+            para as providências de remessa dos autos para apreciação do Núcleo de Resoluções de Conflitos e Justiça Restaurativa, da Vara do Juizado Especial da Comarca de Cáceres-MT, a quem compete deliberar sobre o suposto delito.
+          </p>
+          <p class="doc-p left" style="margin-top:16px;">
+            Quartel em Cáceres-MT, <input class="f-in f-inline w-xs" name="p10_ass_dia" data-sync="ext_dia" placeholder="00">
+            de <select class="f-sel f-inline" name="p10_ass_mes" data-sync="ext_mes" data-list="meses"></select>
+            de 2026.
+          </p>
+
+          <div class="sig-block" style="margin-top:75px;">
+            <div class="sig-line"></div><br>
+            <input class="f-in f-inline w-lg" name="p10_cmt_nome" data-sync="cmt_nome_posto" placeholder="Nome – Posto/Grad PM" style="text-align:center;"><br>
+            RG nº <input class="f-in f-inline w-sm" name="p10_cmt_rg" data-sync="cmt_rg" placeholder="000000"> PMMT<br>
+            Comandante de GUPM
+          </div>
+        </div>
+        <div class="doc-footer">6º Batalhão de Polícia Militar – Av. Getúlio Vargas, s/n, Centro, Cáceres/MT – CEP 78210-000</div>
+      </div>
+    </section>
+
+  </main>
+</div>
 
 <!-- MODAL: HISTÓRICO DE TCOs SALVOS NO SUPABASE -->
 <div id="historicoModal" class="modal no-print">
   <div class="modal-content">
     <div class="modal-header">
-      <h3><i class="fa-solid fa-folder-open"></i> TCOs Registrados no Banco de Dados</h3>
+      <h3><i class="fa-solid fa-folder-open"></i> TCOs Registrados no Banco de Dados (Supabase)</h3>
       <div style="display:flex; gap:6px;">
-        <button type="button" class="btn-new" onclick="carregarListaTCOs()"><i class="fa-solid fa-arrows-rotate"></i> Atualizar</button>
-        <button type="button" class="btn-clear" onclick="fecharModal('historicoModal')"><i class="fa-solid fa-xmark"></i> Fechar</button>
+        <button type="button" class="btn btn-sm" onclick="carregarListaTCOs()"><i class="fa-solid fa-arrows-rotate"></i> Atualizar</button>
+        <button type="button" class="btn btn-sm btn-danger" onclick="fecharHistoricoTCO()"><i class="fa-solid fa-xmark"></i> Fechar</button>
       </div>
     </div>
-
     <div class="modal-inner">
-      <input type="text" id="buscaHistorico" onkeyup="filtrarHistorico()" placeholder="Pesquisar por Nº TCO, Natureza, Autor, Vítima ou Status...">
+      <input type="text" id="buscaHistorico" class="modal-search" onkeyup="filtrarHistorico()" placeholder="Pesquisar por Nº TCO, Natureza, Autor, Vítima ou Status...">
       <div class="modal-body">
-        <table>
+        <table class="db-table">
           <thead>
             <tr>
               <th>Nº TCO</th>
@@ -945,7 +1912,7 @@
             </tr>
           </thead>
           <tbody id="tabelaHistoricoBody">
-            <tr><td colspan="6" style="text-align:center; padding:20px; color:var(--muted);">Carregando registros...</td></tr>
+            <tr><td colspan="6" style="text-align:center; padding:20px; color:#64748b;">Carregando registros...</td></tr>
           </tbody>
         </table>
       </div>
@@ -953,25 +1920,10 @@
   </div>
 </div>
 
-<!-- MODAL: PAYLOAD JSON -->
-<div id="jsonModal" class="modal no-print">
-  <div class="modal-content" style="max-width:750px;">
-    <div class="modal-header">
-      <h3><i class="fa-solid fa-code"></i> Payload JSON Estruturado (Banco de Dados)</h3>
-      <button type="button" class="btn-clear" onclick="fecharModal('jsonModal')"><i class="fa-solid fa-xmark"></i> Fechar</button>
-    </div>
-    <div class="modal-inner">
-      <div class="modal-body" style="margin-top:0;">
-        <pre id="jsonOutput"></pre>
-      </div>
-      <div style="margin-top:12px; text-align:right;">
-        <button type="button" class="btn-save" onclick="copiarJSON()"><i class="fa-solid fa-copy"></i> Copiar JSON</button>
-      </div>
-    </div>
-  </div>
-</div>
+<div class="status-toast" id="toast">Salvo automaticamente</div>
 
 <script>
+(function () {
   // ==========================================================
   // CONFIGURAÇÃO SUPABASE (INTEGRADA AO PORTAL 5º PELOTÃO)
   // ==========================================================
@@ -979,22 +1931,257 @@
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
   const dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+  const STORAGE_KEY = 'tco_6bpm_caceres_v2_portal';
   let tcoAtualId = null;
   let listaAlunos = [];
   let listaInfracoes = [];
   let listaTCOs = [];
 
-  document.addEventListener('DOMContentLoaded', async () => {
-    definirDatasPadrao();
-    await inicializarConexao();
-  });
+  const LISTS = {
+    meses: ['', 'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'],
+    ufs: ['', 'MT', 'AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MG', 'MS', 'PA', 'PB', 'PE', 'PI', 'PR', 'RJ', 'RN', 'RO', 'RR', 'RS', 'SC', 'SE', 'SP', 'TO'],
+    sexos: ['', 'Masculino', 'Feminino', 'Não informado'],
+    estados_civis: ['', 'Solteiro(a)', 'Casado(a)', 'União Estável', 'Divorciado(a)', 'Separado(a)', 'Viúvo(a)'],
+    postos: ['', 'Al Sd PM', 'Sd PM', 'Cb PM', '3º Sgt PM', '2º Sgt PM', '1º Sgt PM', 'Subten PM', 'Asp Of PM', '2º Ten PM', '1º Ten PM', 'Cap PM', 'Maj PM', 'Ten Cel PM', 'Cel PM']
+  };
 
-  function definirDatasPadrao() {
-    const hoje = new Date().toISOString().split('T')[0];
-    const reg = document.getElementById('tco_data_registro');
-    if (reg && !reg.value) reg.value = hoje;
+  // ==========================================================
+  // MONTAGEM DOS BLOCOS DE ENVOLVIDOS (VÍTIMA, TESTEMUNHA, AUTOR)
+  // ==========================================================
+  function renderEnvolvidoBlock(containerId, prefix, syncNome, includeCondicoes) {
+    const condRow = includeCondicoes ? `
+      <table class="doc-table">
+        <tr>
+          <td>
+            <div class="cell-stack">
+              <span class="cell-label">CONDIÇÕES FÍSICAS:</span>
+              <textarea class="f-ta sm" name="${prefix}_condicoes" placeholder="Descrever lesões aparentes/hematomas ou 'Sem lesões aparentes'"></textarea>
+            </div>
+          </td>
+        </tr>
+      </table>` : '';
+
+    document.getElementById(containerId).innerHTML = `
+      <table class="doc-table">
+        <tr>
+          <td style="width:60%"><div class="cell-flex"><span class="cell-label">NOME CIVIL:*</span><input class="f-in f-cell" name="${prefix}_nome" data-sync="${syncNome}" placeholder="Nome completo"></div></td>
+          <td style="width:40%"><div class="cell-flex"><span class="cell-label">NOME SOCIAL/APELIDO:</span><input class="f-in f-cell" name="${prefix}_apelido" placeholder="Se houver"></div></td>
+        </tr>
+      </table>
+      <table class="doc-table">
+        <tr>
+          <td style="width:28%"><div class="cell-flex"><span class="cell-label">CPF OU PASSAPORTE:*</span><input class="f-in f-cell" name="${prefix}_cpf" placeholder="000.000.000-00"></div></td>
+          <td style="width:24%"><div class="cell-flex"><span class="cell-label">RG/CNH Nº:</span><input class="f-in f-cell" name="${prefix}_rg" placeholder="Número"></div></td>
+          <td style="width:24%"><div class="cell-flex"><span class="cell-label">ÓRGÃO EXP./UF:</span><input class="f-in f-cell" name="${prefix}_orgao" placeholder="SSP/MT"></div></td>
+          <td style="width:24%"><div class="cell-flex"><span class="cell-label">DATA EXP.:</span><input class="f-in f-cell" name="${prefix}_dtexp" placeholder="dd/mm/aaaa"></div></td>
+        </tr>
+      </table>
+      <table class="doc-table">
+        <tr>
+          <td><div class="cell-flex"><span class="cell-label">FILIAÇÃO (PAI E MÃE):</span><input class="f-in f-cell" name="${prefix}_filiacao" placeholder="Nome do pai / Nome da mãe"></div></td>
+        </tr>
+      </table>
+      <table class="doc-table">
+        <tr>
+          <td style="width:72%"><div class="cell-flex"><span class="cell-label">ENDEREÇO:*</span><input class="f-in f-cell" name="${prefix}_end" placeholder="Logradouro, nº, bairro"></div></td>
+          <td style="width:28%"><div class="cell-flex"><span class="cell-label">CEP:*</span><input class="f-in f-cell" name="${prefix}_cep" placeholder="78210-000"></div></td>
+        </tr>
+      </table>
+      <table class="doc-table">
+        <tr>
+          <td style="width:34%"><div class="cell-flex"><span class="cell-label">MUNICÍPIO:</span><input class="f-in f-cell" name="${prefix}_mun" placeholder="Cáceres"></div></td>
+          <td style="width:16%"><div class="cell-flex"><span class="cell-label">UF:</span><select class="f-sel f-cell" name="${prefix}_uf" data-list="ufs"></select></div></td>
+          <td style="width:50%"><div class="cell-flex"><span class="cell-label">PONTO DE REFERÊNCIA:</span><input class="f-in f-cell" name="${prefix}_ref" placeholder="Referência"></div></td>
+        </tr>
+      </table>
+      <table class="doc-table">
+        <tr>
+          <td style="width:45%"><div class="cell-flex"><span class="cell-label">TELEFONE(S) PESSOAL(IS):*</span><input class="f-in f-cell" name="${prefix}_tel" placeholder="(65) 99999-9999"></div></td>
+          <td style="width:55%"><div class="cell-flex"><span class="cell-label">E-MAIL PESSOAL:*</span><input class="f-in f-cell" name="${prefix}_email" placeholder="email@exemplo.com"></div></td>
+        </tr>
+      </table>
+      <table class="doc-table">
+        <tr>
+          <td style="width:32%"><div class="cell-flex"><span class="cell-label">ESTADO CIVIL:</span><select class="f-sel f-cell" name="${prefix}_ecivil" data-list="estados_civis"></select></div></td>
+          <td style="width:32%"><div class="cell-flex"><span class="cell-label">NACIONALIDADE:*</span><input class="f-in f-cell" name="${prefix}_nac" placeholder="Brasileira"></div></td>
+          <td style="width:36%"><div class="cell-flex"><span class="cell-label">NATURALIDADE/UF:*</span><input class="f-in f-cell" name="${prefix}_nat" placeholder="Cidade/UF"></div></td>
+        </tr>
+      </table>
+      <table class="doc-table">
+        <tr>
+          <td style="width:33%"><div class="cell-flex"><span class="cell-label">DATA DE NASCIMENTO:</span><input class="f-in f-cell" name="${prefix}_nasc" placeholder="dd/mm/aaaa"></div></td>
+          <td style="width:27%"><div class="cell-flex"><span class="cell-label">SEXO:</span><select class="f-sel f-cell" name="${prefix}_sexo" data-list="sexos"></select></div></td>
+          <td style="width:40%"><div class="cell-flex"><span class="cell-label">ATIVIDADE (PROFISSÃO):</span><input class="f-in f-cell" name="${prefix}_prof" placeholder="Profissão"></div></td>
+        </tr>
+      </table>
+      <table class="doc-table">
+        <tr>
+          <td style="width:58%"><div class="cell-flex"><span class="cell-label">LOCAL DE TRABALHO:</span><input class="f-in f-cell" name="${prefix}_trab_loc" placeholder="Empresa / Órgão"></div></td>
+          <td style="width:42%"><div class="cell-flex"><span class="cell-label">TELEFONE(S) COMERCIAL:</span><input class="f-in f-cell" name="${prefix}_trab_tel" placeholder="(65) 0000-0000"></div></td>
+        </tr>
+      </table>
+      <table class="doc-table">
+        <tr>
+          <td style="width:58%"><div class="cell-flex"><span class="cell-label">ENDEREÇO TRABALHO:</span><input class="f-in f-cell" name="${prefix}_trab_end" placeholder="Logradouro, nº, bairro"></div></td>
+          <td style="width:42%"><div class="cell-flex"><span class="cell-label">MUNICÍPIO/UF/CEP:</span><input class="f-in f-cell" name="${prefix}_trab_mun" placeholder="Cidade/UF – CEP"></div></td>
+        </tr>
+      </table>
+      <table class="doc-table">
+        <tr>
+          <td><div class="cell-flex"><span class="cell-label">PONTO DE REFERÊNCIA (TRABALHO):</span><input class="f-in f-cell" name="${prefix}_trab_ref" placeholder="Referência do trabalho"></div></td>
+        </tr>
+      </table>
+      ${condRow}
+    `;
   }
 
+  renderEnvolvidoBlock('block_vitima', 'vit', 'vitima_nome', true);
+  renderEnvolvidoBlock('block_testemunha', 'test', 'testemunha_nome', false);
+  renderEnvolvidoBlock('block_autor', 'aut', 'autor_nome', true);
+
+  function populateSelect(sel) {
+    const listKey = sel.dataset.list;
+    if (!listKey || !LISTS[listKey]) return;
+    sel.innerHTML = '';
+    LISTS[listKey].forEach(opt => {
+      const o = document.createElement('option');
+      o.value = opt;
+      o.textContent = opt || '— selecionar —';
+      sel.appendChild(o);
+    });
+    if (sel.dataset.default) sel.value = sel.dataset.default;
+    updateSelectEmptyClass(sel);
+  }
+
+  function updateSelectEmptyClass(sel) {
+    sel.classList.toggle('is-empty', !sel.value);
+  }
+
+  document.querySelectorAll('select[data-list]').forEach(populateSelect);
+
+  // Toast helper
+  let toastTimer = null;
+  function showToast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 2400);
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function converterDataParaISO(str) {
+    if (!str) return null;
+    const limpo = str.trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(limpo)) return limpo;
+    const m = limpo.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (!m) return null;
+    const dd = m[1].padStart(2, '0');
+    const mm = m[2].padStart(2, '0');
+    const yyyy = m[3];
+    return `${yyyy}-${mm}-${dd}`;
+  }
+
+  function converterISOParaBR(iso) {
+    if (!iso) return '';
+    const m = String(iso).slice(0, 10).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    return m ? `${m[3]}/${m[2]}/${m[1]}` : iso;
+  }
+
+  function extrairSeqTCO(numeroCompleto) {
+    const raw = (numeroCompleto || '').trim();
+    const match = raw.match(/^([^/]+)\s*\/.*$/);
+    return match ? match[1].trim() : raw;
+  }
+
+  function formatarNumeroTCOCompleto(valor) {
+    const raw = (valor || '').trim();
+    if (!raw) return '';
+    if (raw.includes('/')) return raw;
+    const ano = new Date().getFullYear();
+    return `${raw}/6ºBPM/${ano}`;
+  }
+
+  // Auto-grow textareas + print mirrors
+  function initTextarea(ta) {
+    let mirror = ta.nextElementSibling;
+    if (!mirror || !mirror.classList.contains('print-mirror')) {
+      mirror = document.createElement('div');
+      mirror.className = 'print-mirror';
+      ta.insertAdjacentElement('afterend', mirror);
+    }
+    const syncTa = () => {
+      ta.style.height = 'auto';
+      ta.style.height = Math.max(ta.scrollHeight, 32) + 'px';
+      mirror.textContent = ta.value;
+    };
+    ta.addEventListener('input', syncTa);
+    syncTa();
+  }
+  document.querySelectorAll('textarea.f-ta').forEach(initTextarea);
+
+  // ==========================================================
+  // SINCRONIZAÇÃO ENTRE CAMPOS DAS 10 PEÇAS
+  // ==========================================================
+  function syncByKey(syncKey, val, excludeEl = null) {
+    document.querySelectorAll(`[data-sync="${syncKey}"]`).forEach(el => {
+      if (el !== excludeEl) {
+        el.value = val;
+        if (el.tagName === 'SELECT') updateSelectEmptyClass(el);
+      }
+    });
+  }
+
+  function syncField(sourceEl) {
+    const syncKey = sourceEl.dataset.sync;
+    if (!syncKey || !document.getElementById('toggleAutoSync').checked) return;
+    const val = sourceEl.value;
+    syncByKey(syncKey, val, sourceEl);
+
+    if (syncKey === 'natureza') {
+      const match = listaInfracoes.find(i => i.natureza.toLowerCase() === val.trim().toLowerCase());
+      if (match) {
+        document.getElementById('selectInfracaoSidebar').value = match.id;
+        document.getElementById('selectInfracaoDoc').value = match.id;
+        syncByKey('tipificacao', match.tipificacao_legal);
+        exibirAcaoPenal(match.acao_penal);
+      }
+    }
+
+    if ((syncKey === 'cmt_nome_posto' || syncKey === 'cmt_rg') && !window._pmManualEdit) {
+      const cmtNome = document.getElementById('q_cmt').value.trim();
+      const cmtRg = document.getElementById('q_cmt_rg').value.trim();
+      if (cmtNome || cmtRg) {
+        const combined = [cmtNome, cmtRg ? `RG ${cmtRg} PMMT` : ''].filter(Boolean).join(' – ');
+        syncByKey('pm_identificacao', combined);
+      }
+    }
+
+    if (syncKey === 'data_registro') {
+      const m = val.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+      if (m) {
+        const dia = m[1].padStart(2, '0');
+        const mesIdx = parseInt(m[2], 10);
+        if (mesIdx >= 1 && mesIdx <= 12) {
+          const mesNome = LISTS.meses[mesIdx];
+          syncByKey('ext_dia', dia);
+          syncByKey('ext_mes', mesNome);
+        }
+      }
+    }
+  }
+
+  // ==========================================================
+  // CONEXÃO E CARREGAMENTO INICIAL SUPABASE
+  // ==========================================================
   async function inicializarConexao() {
     const badge = document.getElementById('statusConexao');
     try {
@@ -1012,84 +2199,7 @@
     }
   }
 
-  // ==========================================================
-  // GERAÇÃO AUTOMÁTICA DO PRÓXIMO NÚMERO SEQUENCIAL DO TCO
-  // ==========================================================
-  async function gerarProximoNumeroTCO(pularConfirmacao = false) {
-    const inputNum = document.getElementById('tco_numero');
-    const btn = document.getElementById('btnGerarNumTCO');
-
-    if (!pularConfirmacao && tcoAtualId && inputNum.value.trim()) {
-      const conf = await Swal.fire({
-        title: 'Alterar número do TCO?',
-        text: `Este registro já está salvo com o nº ${inputNum.value}. Deseja substituir pelo próximo número sequencial do banco?`,
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#0B1C3D',
-        cancelButtonColor: '#64748b',
-        confirmButtonText: 'Sim, gerar novo nº',
-        cancelButtonText: 'Manter atual'
-      });
-      if (!conf.isConfirmed) return null;
-    }
-
-    const htmlOriginal = btn ? btn.innerHTML : '';
-    if (btn) {
-      btn.disabled = true;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Buscando...';
-    }
-
-    try {
-      const anoAtual = new Date().getFullYear();
-      const { data, error } = await dbClient
-        .from('tco_registros')
-        .select('numero_tco');
-
-      if (error) throw error;
-
-      let maiorSeq = 0;
-      (data || []).forEach(r => {
-        const raw = (r.numero_tco || '').trim();
-        // Extrai sequência numérica inicial e ano final (ex: 014/6ºBPM/2026)
-        const match = raw.match(/^(\d+)\s*\/.*?\/\s*(\d{4})$/);
-        if (match && parseInt(match[2], 10) === anoAtual) {
-          const seq = parseInt(match[1], 10);
-          if (seq > maiorSeq) maiorSeq = seq;
-        }
-      });
-
-      const proximoSeq = String(maiorSeq + 1).padStart(3, '0');
-      const novoNumero = `${proximoSeq}/6ºBPM/${anoAtual}`;
-
-      inputNum.value = novoNumero;
-      syncNumeroTCO(novoNumero);
-
-      if (!pularConfirmacao) {
-        Swal.fire({
-          toast: true,
-          position: 'top-end',
-          icon: 'success',
-          title: `Número gerado: ${novoNumero}`,
-          showConfirmButton: false,
-          timer: 2000
-        });
-      }
-      return novoNumero;
-    } catch (err) {
-      console.error('Erro ao gerar número sequencial:', err);
-      Swal.fire('Erro', 'Não foi possível consultar a sequência no banco de dados.', 'error');
-      return null;
-    } finally {
-      if (btn) {
-        btn.disabled = false;
-        btn.innerHTML = htmlOriginal;
-      }
-    }
-  }
-
-  // ==========================================================
-  // INTEGRAÇÃO COM EFETIVO (alunos_pelotao)
-  // ==========================================================
+  // 1. EFETIVO (alunos_pelotao)
   async function carregarEfetivo() {
     const select = document.getElementById('selectAlunoResponsavel');
     const { data, error } = await dbClient
@@ -1111,29 +2221,37 @@
     });
   }
 
-  function preencherGuarnicaoPorAluno() {
+  window.preencherGuarnicaoPorAluno = function () {
     const id = document.getElementById('selectAlunoResponsavel').value;
     if (!id) return;
     const aluno = listaAlunos.find(a => a.id == id);
     if (!aluno) return;
 
     const nomeCompleto = aluno.nome || aluno.qra || '';
-    const escrevente = document.getElementById('autuacao_escrevente');
-    const auxPosto = document.getElementById('gu_aux_posto');
-    const auxNome = document.getElementById('gu_aux_nome');
-    const auxRg = document.getElementById('gu_aux_rg');
+    const guPosto2 = document.querySelector('[name="gu_posto_2"]');
+    const guNome2 = document.querySelector('[name="gu_nome_2"]');
+    const guRg2 = document.querySelector('[name="gu_rg_2"]');
 
-    if (escrevente && !escrevente.value) escrevente.value = `AL SD PM ${nomeCompleto}`;
-    if (auxPosto && !auxPosto.value) auxPosto.value = 'AL SD PM';
-    if (auxNome && !auxNome.value) auxNome.value = nomeCompleto;
-    if (auxRg && !auxRg.value && aluno.matricula) auxRg.value = aluno.matricula;
-  }
+    if (guPosto2 && !guPosto2.value) {
+      guPosto2.value = 'Al Sd PM';
+      updateSelectEmptyClass(guPosto2);
+    }
+    if (guNome2 && !guNome2.value) guNome2.value = nomeCompleto;
+    if (guRg2 && !guRg2.value && aluno.matricula) guRg2.value = aluno.matricula;
 
-  // ==========================================================
-  // INTEGRAÇÃO COM CATÁLOGO DE INFRAÇÕES TCO (tco_infracoes)
-  // ==========================================================
+    const pmEsc = document.querySelector('[name="p1_escrevente"]');
+    if (pmEsc && !pmEsc.value) {
+      const ident = `Al Sd PM ${nomeCompleto}${aluno.matricula ? ' – RG ' + aluno.matricula + ' PMMT' : ''}`;
+      syncByKey('pm_identificacao', ident);
+    }
+    saveToStorage();
+    showToast(`Policial ${nomeCompleto} vinculado à guarnição.`);
+  };
+
+  // 2. CATÁLOGO DE INFRAÇÕES TCO (tco_infracoes)
   async function carregarInfracoesTCO() {
-    const select = document.getElementById('selectInfracaoTCO');
+    const selSide = document.getElementById('selectInfracaoSidebar');
+    const selDoc = document.getElementById('selectInfracaoDoc');
     const dlNat = document.getElementById('datalistNaturezas');
     const dlTip = document.getElementById('datalistTipificacoes');
 
@@ -1146,12 +2264,13 @@
 
     if (error) {
       console.error('Erro ao carregar tco_infracoes:', error);
-      select.innerHTML = '<option value="">Tabela tco_infracoes não encontrada (execute o SQL no Supabase)</option>';
+      const errOpt = '<option value="">Tabela tco_infracoes não encontrada</option>';
+      selSide.innerHTML = errOpt;
+      selDoc.innerHTML = errOpt;
       return;
     }
 
     listaInfracoes = data || [];
-    select.innerHTML = '<option value="">-- Selecione um crime / contravenção cabível no TCO --</option>';
     dlNat.innerHTML = '';
     dlTip.innerHTML = '';
 
@@ -1160,82 +2279,90 @@
       if (!porCategoria[item.categoria]) porCategoria[item.categoria] = [];
       porCategoria[item.categoria].push(item);
 
-      const optNat = document.createElement('option');
-      optNat.value = item.natureza;
-      dlNat.appendChild(optNat);
+      const oNat = document.createElement('option');
+      oNat.value = item.natureza;
+      dlNat.appendChild(oNat);
 
-      const optTip = document.createElement('option');
-      optTip.value = item.tipificacao_legal;
-      dlTip.appendChild(optTip);
+      const oTip = document.createElement('option');
+      oTip.value = item.tipificacao_legal;
+      dlTip.appendChild(oTip);
     });
 
-    Object.keys(porCategoria).forEach(cat => {
-      const group = document.createElement('optgroup');
-      group.label = cat.toUpperCase();
-      porCategoria[cat].forEach(inf => {
-        const opt = new Option(`${inf.natureza} — [${inf.tipificacao_legal}]`, inf.id);
-        group.appendChild(opt);
+    [selSide, selDoc].forEach(sel => {
+      sel.innerHTML = '<option value="">-- Selecione crime / contravenção TCO --</option>';
+      Object.keys(porCategoria).forEach(cat => {
+        const group = document.createElement('optgroup');
+        group.label = cat.toUpperCase();
+        porCategoria[cat].forEach(inf => {
+          group.appendChild(new Option(`${inf.natureza} — [${inf.tipificacao_legal}]`, inf.id));
+        });
+        sel.appendChild(group);
       });
-      select.appendChild(group);
     });
   }
 
-  function aplicarInfracaoSelecionada() {
-    const id = document.getElementById('selectInfracaoTCO').value;
-    const banner = document.getElementById('bannerAcaoPenal');
+  function exibirAcaoPenal(acaoPenal) {
+    const sideBanner = document.getElementById('bannerAcaoPenalSidebar');
+    const docMsg = document.getElementById('acaoDocMsg');
+
+    if (!acaoPenal) {
+      sideBanner.className = 'acao-penal-mini';
+      sideBanner.innerHTML = '';
+      docMsg.style.display = 'none';
+      docMsg.innerHTML = '';
+      return;
+    }
+
+    const lower = acaoPenal.toLowerCase();
+    let cls = 'incond';
+    let texto = `Ação Penal: ${acaoPenal} — Independe de representação da vítima.`;
+    let corDoc = '#065f46';
+
+    if (lower.includes('condicionada')) {
+      cls = 'cond';
+      texto = `Ação Penal: ${acaoPenal} — Obrigatório colher Peça 04 (Manifestação da Vítima).`;
+      corDoc = '#92400e';
+    } else if (lower.includes('privada')) {
+      cls = 'privada';
+      texto = `Ação Penal: ${acaoPenal} — Colher Peça 04 e orientar sobre prazo decadencial de 6 meses.`;
+      corDoc = '#1e40af';
+    }
+
+    sideBanner.className = `acao-penal-mini ${cls}`;
+    sideBanner.innerHTML = `<i class="fa-solid fa-circle-info"></i> ${escapeHtml(texto)}`;
+    docMsg.style.display = 'block';
+    docMsg.style.color = corDoc;
+    docMsg.innerHTML = `<i class="fa-solid fa-circle-info"></i> ${escapeHtml(texto)}`;
+  }
+
+  window.aplicarInfracaoSelecionada = function (id) {
+    document.getElementById('selectInfracaoSidebar').value = id || '';
+    document.getElementById('selectInfracaoDoc').value = id || '';
 
     if (!id) {
-      banner.className = 'acao-penal-banner';
-      banner.innerHTML = '';
+      exibirAcaoPenal('');
       return;
     }
 
     const inf = listaInfracoes.find(item => item.id == id);
     if (!inf) return;
 
-    const inputNat = document.getElementById('tco_natureza');
-    const inputTip = document.getElementById('tco_tipificacao');
+    syncByKey('natureza', inf.natureza);
+    syncByKey('tipificacao', inf.tipificacao_legal);
+    exibirAcaoPenal(inf.acao_penal);
 
-    inputNat.value = inf.natureza;
-    inputTip.value = inf.tipificacao_legal;
-
-    syncCampo('sync-natureza', inf.natureza);
-    syncCampo('sync-tipificacao', inf.tipificacao_legal);
-    exibirBannerAcaoPenal(inf.acao_penal);
-  }
-
-  function aoDigitarNatureza(valor) {
-    syncCampo('sync-natureza', valor);
-    const match = listaInfracoes.find(i => i.natureza.toLowerCase() === valor.trim().toLowerCase());
-    if (match) {
-      document.getElementById('selectInfracaoTCO').value = match.id;
-      document.getElementById('tco_tipificacao').value = match.tipificacao_legal;
-      syncCampo('sync-tipificacao', match.tipificacao_legal);
-      exibirBannerAcaoPenal(match.acao_penal);
+    // Tenta sugerir artigo na conclusão do policial se ainda estiver vazio
+    const artEl = document.querySelector('[name="conc_art"]');
+    if (artEl && !artEl.value) {
+      const mArt = inf.tipificacao_legal.match(/Art\.?\s*([\dºª°,\s§a-z]+)/i);
+      if (mArt) artEl.value = mArt[1].trim().replace(/,$/, '');
     }
-  }
 
-  function exibirBannerAcaoPenal(acaoPenal) {
-    const banner = document.getElementById('bannerAcaoPenal');
-    if (!acaoPenal) {
-      banner.className = 'acao-penal-banner';
-      banner.innerHTML = '';
-      return;
-    }
-    const lower = acaoPenal.toLowerCase();
-    if (lower.includes('condicionada')) {
-      banner.className = 'acao-penal-banner cond';
-      banner.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <span><strong>Ação Penal:</strong> ${escapeHtml(acaoPenal)} — Obrigatório colher a <strong>Aba 3 (Termo de Manifestação da Vítima)</strong>.</span>`;
-    } else if (lower.includes('privada')) {
-      banner.className = 'acao-penal-banner privada';
-      banner.innerHTML = `<i class="fa-solid fa-gavel"></i> <span><strong>Ação Penal:</strong> ${escapeHtml(acaoPenal)} — Colher a <strong>Aba 3</strong> e cientificar a vítima do prazo decadencial de 6 meses (Queixa-Crime).</span>`;
-    } else {
-      banner.className = 'acao-penal-banner incond';
-      banner.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span><strong>Ação Penal:</strong> ${escapeHtml(acaoPenal)} — Independe de representação da vítima para remessa ao JECRIM.</span>`;
-    }
-  }
+    saveToStorage();
+    showToast(`Infração aplicada: ${inf.natureza}`);
+  };
 
-  async function cadastrarNovaInfracaoTCO() {
+  window.cadastrarNovaInfracaoTCO = async function () {
     const { value: form } = await Swal.fire({
       title: 'Cadastrar Nova Infração TCO',
       html: `
@@ -1300,17 +2427,78 @@
     }
 
     await carregarInfracoesTCO();
-    if (data && data.id) {
-      document.getElementById('selectInfracaoTCO').value = data.id;
-      aplicarInfracaoSelecionada();
-    }
+    if (data && data.id) window.aplicarInfracaoSelecionada(data.id);
     Swal.fire({ icon: 'success', title: 'Infração cadastrada!', timer: 1500, showConfirmButton: false });
-  }
+  };
 
-  // ==========================================================
-  // CRUD SUPABASE (tco_registros)
-  // ==========================================================
-  async function carregarListaTCOs() {
+  // 3. GERAÇÃO AUTOMÁTICA DO PRÓXIMO NÚMERO SEQUENCIAL
+  window.gerarProximoNumeroTCO = async function (pularConfirmacao = false) {
+    const qTco = document.getElementById('q_tco');
+    const btn = document.getElementById('btnGerarNumTCO');
+
+    if (!pularConfirmacao && tcoAtualId && qTco.value.trim()) {
+      const conf = await Swal.fire({
+        title: 'Alterar número do TCO?',
+        text: `Este registro já está salvo com o nº ${formatarNumeroTCOCompleto(qTco.value)}. Deseja gerar o próximo número sequencial do banco?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#0B1C3D',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Sim, gerar novo',
+        cancelButtonText: 'Manter atual'
+      });
+      if (!conf.isConfirmed) return null;
+    }
+
+    const htmlOriginal = btn ? btn.innerHTML : '';
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+    }
+
+    try {
+      const anoAtual = new Date().getFullYear();
+      const { data, error } = await dbClient
+        .from('tco_registros')
+        .select('numero_tco');
+
+      if (error) throw error;
+
+      let maiorSeq = 0;
+      (data || []).forEach(r => {
+        const raw = (r.numero_tco || '').trim();
+        const matchFull = raw.match(/^(\d+)\s*\/.*?\/\s*(\d{4})$/);
+        if (matchFull && parseInt(matchFull[2], 10) === anoAtual) {
+          const seq = parseInt(matchFull[1], 10);
+          if (seq > maiorSeq) maiorSeq = seq;
+        } else if (/^\d+$/.test(raw)) {
+          const seq = parseInt(raw, 10);
+          if (seq > maiorSeq) maiorSeq = seq;
+        }
+      });
+
+      const proximoSeq = String(maiorSeq + 1).padStart(3, '0');
+      syncByKey('tco_num', proximoSeq);
+      saveToStorage();
+
+      if (!pularConfirmacao) {
+        showToast(`Número gerado: ${proximoSeq}/6ºBPM/${anoAtual}`);
+      }
+      return proximoSeq;
+    } catch (err) {
+      console.error('Erro ao gerar número:', err);
+      Swal.fire('Erro', 'Não foi possível consultar a sequência no banco de dados.', 'error');
+      return null;
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = htmlOriginal;
+      }
+    }
+  };
+
+  // 4. CRUD SUPABASE (tco_registros)
+  window.carregarListaTCOs = async function () {
     const { data, error } = await dbClient
       .from('tco_registros')
       .select('id, numero_tco, natureza, data_fato, autor_nome, vitima_nome, status, atualizado_em')
@@ -1319,24 +2507,24 @@
     if (error) {
       console.error('Erro ao buscar TCOs:', error);
       document.getElementById('tabelaHistoricoBody').innerHTML =
-        `<tr><td colspan="6" style="text-align:center; color:#dc2626; padding:16px;">Erro ao ler tabela <code>tco_registros</code>. Verifique se o SQL foi executado no Supabase.</td></tr>`;
+        `<tr><td colspan="6" style="text-align:center; color:#b91c1c; padding:16px;">Erro ao ler tabela <code>tco_registros</code>. Verifique se o SQL foi executado no Supabase.</td></tr>`;
       return;
     }
 
     listaTCOs = data || [];
     document.getElementById('qtdSalvos').textContent = listaTCOs.length;
     renderizarTabelaHistorico(listaTCOs);
-  }
+  };
 
   function renderizarTabelaHistorico(registros) {
     const tbody = document.getElementById('tabelaHistoricoBody');
     if (!registros.length) {
-      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:22px; color:var(--muted);">Nenhum TCO registrado no banco ainda.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:22px; color:#64748b;">Nenhum TCO registrado no banco ainda.</td></tr>';
       return;
     }
 
     tbody.innerHTML = registros.map(r => {
-      const dataFmt = r.data_fato ? r.data_fato.split('-').reverse().join('/') : '--/--/----';
+      const dataFmt = r.data_fato ? converterISOParaBR(r.data_fato) : '--/--/----';
       const st = r.status || 'RASCUNHO';
       return `
         <tr>
@@ -1346,10 +2534,10 @@
           <td>${escapeHtml(r.autor_nome || '-')}</td>
           <td><span class="st-badge st-${st}">${st}</span></td>
           <td style="text-align:right; white-space:nowrap;">
-            <button type="button" class="btn-print" style="padding:4px 8px; font-size:10px;" onclick="carregarTCOPorId(${r.id})">
+            <button type="button" class="btn btn-sm btn-primary" onclick="carregarTCOPorId(${r.id})">
               <i class="fa-solid fa-pen-to-square"></i> Abrir
             </button>
-            <button type="button" class="btn-clear" style="padding:4px 8px; font-size:10px;" onclick="excluirTCO(${r.id}, '${escapeHtml(r.numero_tco || '')}')">
+            <button type="button" class="btn btn-sm btn-danger" onclick="excluirTCO(${r.id}, '${escapeHtml(r.numero_tco || '')}')">
               <i class="fa-solid fa-trash"></i>
             </button>
           </td>
@@ -1358,7 +2546,7 @@
     }).join('');
   }
 
-  function filtrarHistorico() {
+  window.filtrarHistorico = function () {
     const termo = document.getElementById('buscaHistorico').value.toLowerCase();
     const filtrados = listaTCOs.filter(r =>
       (r.numero_tco && r.numero_tco.toLowerCase().includes(termo)) ||
@@ -1368,13 +2556,12 @@
       (r.status && r.status.toLowerCase().includes(termo))
     );
     renderizarTabelaHistorico(filtrados);
-  }
+  };
 
-  async function salvarTCONoBanco() {
-    let dados = gerarObjetoBancoDados();
-    let numTco = (dados.tco?.numero || '').trim();
+  window.salvarTCONoBanco = async function () {
+    let seqNum = document.getElementById('q_tco').value.trim();
 
-    if (!numTco) {
+    if (!seqNum) {
       const escolha = await Swal.fire({
         title: 'Número do TCO em branco',
         text: 'Deseja gerar automaticamente o próximo número sequencial do banco e salvar agora?',
@@ -1387,13 +2574,12 @@
       });
 
       if (!escolha.isConfirmed) {
-        document.getElementById('tco_numero').focus();
+        document.getElementById('q_tco').focus();
         return;
       }
 
-      numTco = await gerarProximoNumeroTCO(true);
-      if (!numTco) return;
-      dados = gerarObjetoBancoDados();
+      seqNum = await window.gerarProximoNumeroTCO(true);
+      if (!seqNum) return;
     }
 
     const btn = document.getElementById('btnSalvarBD');
@@ -1401,20 +2587,24 @@
     btn.disabled = true;
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
 
+    const state = collectState();
+    const numeroCompleto = formatarNumeroTCOCompleto(seqNum);
     const alunoIdVal = document.getElementById('selectAlunoResponsavel').value;
     const statusVal = document.getElementById('selectStatusTCO').value;
 
+    const getF = (n) => (document.querySelector(`[name="${n}"]`)?.value || '').trim();
+
     const registro = {
-      numero_tco: numTco,
-      natureza: dados.ocorrencia?.natureza || null,
-      tipificacao: dados.ocorrencia?.tipificacao_legal || null,
-      data_fato: dados.ocorrencia?.data_fato || null,
-      vitima_nome: dados.vitima?.nome_civil || null,
-      autor_nome: dados.autor?.nome_civil || null,
-      guarnicao_cmt: dados.guarnicao?.cmt_nome || null,
+      numero_tco: numeroCompleto,
+      natureza: getF('dg_natureza') || document.getElementById('q_nat').value.trim() || null,
+      tipificacao: getF('dg_tipificacao') || document.getElementById('q_tip').value.trim() || null,
+      data_fato: converterDataParaISO(getF('dg_data_fato')),
+      vitima_nome: getF('vit_nome') || document.getElementById('q_vitima').value.trim() || null,
+      autor_nome: getF('aut_nome') || document.getElementById('q_autor').value.trim() || null,
+      guarnicao_cmt: document.getElementById('q_cmt').value.trim() || getF('gu_nome_1') || null,
       aluno_id: alunoIdVal ? parseInt(alunoIdVal, 10) : null,
       status: statusVal,
-      dados_completos: dados,
+      dados_completos: state,
       atualizado_em: new Date().toISOString()
     };
 
@@ -1439,7 +2629,7 @@
 
       tcoAtualId = resultado.data.id;
       atualizarIndicadorEdicao(resultado.data.numero_tco);
-      await carregarListaTCOs();
+      await window.carregarListaTCOs();
 
       Swal.fire({
         icon: 'success',
@@ -1450,14 +2640,14 @@
       });
     } catch (err) {
       console.error('Erro ao salvar TCO:', err);
-      Swal.fire('Erro ao salvar', err.message || 'Verifique se a tabela tco_registros foi criada no Supabase.', 'error');
+      Swal.fire('Erro ao salvar', err.message || 'Verifique se a tabela tco_registros existe no Supabase.', 'error');
     } finally {
       btn.disabled = false;
       btn.innerHTML = htmlOriginal;
     }
-  }
+  };
 
-  async function carregarTCOPorId(id) {
+  window.carregarTCOPorId = async function (id) {
     const { data, error } = await dbClient
       .from('tco_registros')
       .select('*')
@@ -1469,29 +2659,52 @@
       return;
     }
 
-    document.getElementById('tcoForm').reset();
-    document.getElementById('selectInfracaoTCO').value = '';
-    exibirBannerAcaoPenal('');
-
+    resetarCamposTela();
     tcoAtualId = data.id;
     document.getElementById('selectAlunoResponsavel').value = data.aluno_id || '';
     document.getElementById('selectStatusTCO').value = data.status || 'RASCUNHO';
 
-    if (data.dados_completos) {
-      window.preencherTCOComDadosDoBanco(data.dados_completos);
-      const natSalva = data.dados_completos.ocorrencia?.natureza || '';
-      const match = listaInfracoes.find(i => i.natureza.toLowerCase() === natSalva.trim().toLowerCase());
-      if (match) {
-        document.getElementById('selectInfracaoTCO').value = match.id;
-        exibirBannerAcaoPenal(match.acao_penal);
-      }
+    const dc = data.dados_completos || {};
+    if (dc.fields) {
+      // Formato do novo template (10 peças)
+      applyState(dc);
+      const seq = extrairSeqTCO(dc.fields.__quick_q_tco || data.numero_tco);
+      syncByKey('tco_num', seq);
+    } else {
+      // Compatibilidade caso abra um TCO gravado na versão anterior (7 abas)
+      syncByKey('tco_num', extrairSeqTCO(data.numero_tco));
+      syncByKey('natureza', dc.ocorrencia?.natureza || data.natureza || '');
+      syncByKey('tipificacao', dc.ocorrencia?.tipificacao_legal || data.tipificacao || '');
+      syncByKey('data_fato', converterISOParaBR(dc.ocorrencia?.data_fato || data.data_fato));
+      syncByKey('data_registro', converterISOParaBR(dc.ocorrencia?.data_registro));
+      syncByKey('hora_fato', dc.ocorrencia?.hora_fato || '');
+      syncByKey('endereco_fato', dc.ocorrencia?.endereco || '');
+      syncByKey('local_fato', dc.ocorrencia?.local_tipo || '');
+      syncByKey('vitima_nome', dc.vitima?.nome_civil || data.vitima_nome || '');
+      syncByKey('autor_nome', dc.autor?.nome_civil || data.autor_nome || '');
+      syncByKey('testemunha_nome', dc.testemunha?.nome_civil || '');
+      syncByKey('cmt_nome_posto', dc.guarnicao?.cmt_nome || data.guarnicao_cmt || '');
+      syncByKey('cmt_rg', dc.guarnicao?.cmt_rg || '');
+    }
+
+    // Sincroniza o seletor de infrações com a natureza carregada
+    const natCarregada = document.getElementById('q_nat').value.trim().toLowerCase();
+    const matchInf = listaInfracoes.find(i => i.natureza.toLowerCase() === natCarregada);
+    if (matchInf) {
+      document.getElementById('selectInfracaoSidebar').value = matchInf.id;
+      document.getElementById('selectInfracaoDoc').value = matchInf.id;
+      exibirAcaoPenal(matchInf.acao_penal);
+    } else {
+      exibirAcaoPenal('');
     }
 
     atualizarIndicadorEdicao(data.numero_tco);
-    fecharModal('historicoModal');
-  }
+    saveToStorage();
+    window.fecharHistoricoTCO();
+    showToast(`TCO ${data.numero_tco} carregado!`);
+  };
 
-  async function excluirTCO(id, numero) {
+  window.excluirTCO = async function (id, numero) {
     const conf = await Swal.fire({
       title: `Excluir TCO ${numero}?`,
       text: 'Esta ação removerá o registro permanentemente do banco de dados.',
@@ -1511,147 +2724,356 @@
       return;
     }
 
-    if (tcoAtualId === id) novoTCO(true);
-    await carregarListaTCOs();
+    if (tcoAtualId === id) window.novoTCO(true);
+    await window.carregarListaTCOs();
     Swal.fire({ icon: 'success', title: 'Excluído!', timer: 1300, showConfirmButton: false });
-  }
+  };
 
   function atualizarIndicadorEdicao(numero) {
-    const badge = document.getElementById('indicadorRegistro');
+    const el = document.getElementById('indicadorRegistro');
     if (tcoAtualId) {
-      badge.className = 'badge-edit';
-      badge.innerHTML = `<i class="fa-solid fa-pen"></i> Editando #${tcoAtualId} (${escapeHtml(numero)})`;
+      el.className = 'record-indicator editing';
+      el.innerHTML = `<span><i class="fa-solid fa-pen"></i> Editando #${tcoAtualId}</span><span>${escapeHtml(numero)}</span>`;
     } else {
-      badge.className = 'badge-edit novo';
-      badge.innerHTML = '<i class="fa-solid fa-file-circle-plus"></i> Novo Registro';
+      el.className = 'record-indicator';
+      el.innerHTML = `<span><i class="fa-solid fa-file-circle-plus"></i> Novo Registro</span><span>BD</span>`;
     }
   }
 
-  function novoTCO(silencioso = false) {
-    if (!silencioso && !confirm('Iniciar um novo TCO em branco? Alterações não salvas serão perdidas.')) return;
+  function resetarCamposTela() {
+    window._pmManualEdit = false;
+    document.querySelectorAll('input[type="text"], textarea').forEach(el => {
+      if (el.name === 'dg_mun_uf') el.value = 'Cáceres/MT';
+      else if (el.name === 'dg_cep' || el.name === 'apr_cep' || el.name === 'dep_cep') el.value = '78210-';
+      else if (el.name === 'apr_mun' || el.name === 'dep_mun') el.value = 'Cáceres';
+      else el.value = '';
+      if (el.tagName === 'TEXTAREA') el.dispatchEvent(new Event('input'));
+    });
+    document.querySelectorAll('input[type="checkbox"]').forEach(el => {
+      if (el.id === 'toggleAutoSync' || el.dataset.piece) return;
+      el.checked = false;
+    });
+    document.querySelectorAll('select[data-list]').forEach(sel => {
+      sel.value = sel.dataset.default || '';
+      updateSelectEmptyClass(sel);
+    });
+    document.getElementById('selectInfracaoSidebar').value = '';
+    document.getElementById('selectInfracaoDoc').value = '';
+    exibirAcaoPenal('');
+  }
+
+  window.novoTCO = function (silencioso = false) {
+    if (!silencioso && !confirm('Iniciar um novo TCO em branco? Alterações não salvas no banco serão perdidas.')) return;
     tcoAtualId = null;
-    document.getElementById('tcoForm').reset();
-    document.getElementById('selectInfracaoTCO').value = '';
+    localStorage.removeItem(STORAGE_KEY);
+    resetarCamposTela();
     document.getElementById('selectStatusTCO').value = 'RASCUNHO';
-    exibirBannerAcaoPenal('');
-    definirDatasPadrao();
-    syncNumeroTCO('');
-    syncCampo('sync-cmt-nome', 'Comandante de GUPM');
-    syncCampo('sync-cmt-rg', '_________');
     atualizarIndicadorEdicao('');
-  }
+    showToast('Novo TCO iniciado!');
+  };
 
-  // ==========================================================
-  // CONTROLE DE ABAS, SINCRONIZAÇÃO E SERIALIZAÇÃO
-  // ==========================================================
-  function openTab(evt, tabId) {
-    document.querySelectorAll('.doc-section').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active');
-    evt.currentTarget.classList.add('active');
-  }
+  window.abrirHistoricoTCO = function () {
+    window.carregarListaTCOs();
+    document.getElementById('historicoModal').style.display = 'flex';
+  };
 
-  function syncNumeroTCO(valor) {
-    const texto = valor.trim() || '___/6ºBPM/2026';
-    document.querySelectorAll('.sync-tco-num').forEach(el => el.textContent = texto);
-  }
-
-  function syncCampo(classe, valor) {
-    document.querySelectorAll('.' + classe).forEach(el => {
-      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-        el.value = valor;
-      } else {
-        el.textContent = valor || '_________________';
-      }
-    });
-  }
-
-  function gerarObjetoBancoDados() {
-    const payload = {};
-    const elementos = document.querySelectorAll('#tcoForm [data-db]');
-    elementos.forEach(el => {
-      if (el.type === 'radio' && !el.checked) return;
-      const [tabela, coluna] = el.getAttribute('data-db').split('.');
-      if (!payload[tabela]) payload[tabela] = {};
-      payload[tabela][coluna] = el.value;
-    });
-    return payload;
-  }
-
-  window.preencherTCOComDadosDoBanco = function(dadosDB) {
-    document.querySelectorAll('#tcoForm [data-db]').forEach(el => {
-      const [tabela, coluna] = el.getAttribute('data-db').split('.');
-      if (dadosDB[tabela] && dadosDB[tabela][coluna] !== undefined) {
-        if (el.type === 'radio') {
-          el.checked = (el.value === dadosDB[tabela][coluna]);
-        } else {
-          el.value = dadosDB[tabela][coluna];
-        }
-      }
-    });
-
-    syncNumeroTCO(dadosDB.tco?.numero || '');
-    document.querySelectorAll('.sync-cmt-nome').forEach(el => {
-      if (el.tagName !== 'INPUT') el.textContent = dadosDB.guarnicao?.cmt_nome || 'Comandante de GUPM';
-    });
-    document.querySelectorAll('.sync-cmt-rg').forEach(el => {
-      if (el.tagName !== 'INPUT') el.textContent = dadosDB.guarnicao?.cmt_rg || '_________';
-    });
+  window.fecharHistoricoTCO = function () {
+    document.getElementById('historicoModal').style.display = 'none';
   };
 
   // ==========================================================
-  // IMPRESSÃO, MODAIS E UTILITÁRIOS
+  // UTILITÁRIOS DO FORMULÁRIO (COPIAR ENVOLVIDOS, PEÇAS, ETC.)
   // ==========================================================
-  function imprimirAbaAtual() {
-    document.body.classList.remove('print-all');
-    window.print();
+  window.copyPersonTo = function (who, targetPrefix) {
+    const src = who === 'autor' ? 'aut' : 'vit';
+    const getVal = name => {
+      const el = document.querySelector(`[name="${src}_${name}"]`);
+      return el ? el.value : '';
+    };
+    const setVal = (name, value) => {
+      const el = document.querySelector(`[name="${targetPrefix}_${name}"]`);
+      if (el && value) {
+        el.value = value;
+        if (el.tagName === 'SELECT') updateSelectEmptyClass(el);
+      }
+    };
+    setVal('nome', getVal('nome'));
+    setVal('cpf', getVal('cpf'));
+    setVal('rg', getVal('rg'));
+    setVal('nat', getVal('nat'));
+    setVal('end', getVal('end'));
+    setVal('mun', getVal('mun') || 'Cáceres');
+    setVal('uf', getVal('uf') || 'MT');
+    setVal('cep', getVal('cep'));
+    setVal('tel', getVal('tel'));
+    const fil = getVal('filiacao');
+    if (fil) {
+      const parts = fil.split(/\s*\/\s*|\s+e\s+/i);
+      if (parts.length >= 2) {
+        setVal('pai', parts[0].trim());
+        setVal('mae', parts.slice(1).join(' ').trim());
+      } else {
+        setVal('mae', fil.trim());
+      }
+    }
+    saveToStorage();
+    showToast(`Dados do(a) ${who === 'autor' ? 'Autor' : 'Vítima'} copiados!`);
+  };
+
+  ['p8_chk_vit', 'p8_chk_aut'].forEach(id => {
+    document.getElementById(id).addEventListener('change', function () {
+      if (!this.checked) return;
+      const otherId = id === 'p8_chk_vit' ? 'p8_chk_aut' : 'p8_chk_vit';
+      document.getElementById(otherId).checked = false;
+      const syncName = id === 'p8_chk_vit' ? 'vitima_nome' : 'autor_nome';
+      const srcEl = document.querySelector(`[data-sync="${syncName}"]`);
+      const target = document.getElementById('p8_periciando');
+      const recTarget = document.getElementById('p8_rec_nome');
+      if (srcEl && srcEl.value) {
+        target.value = srcEl.value;
+        recTarget.value = srcEl.value;
+        saveToStorage();
+      }
+    });
+  });
+
+  let guRowCount = 2;
+  function addGuarnicaoRow(idx) {
+    const tbody = document.querySelector('#tblGuarnicao tbody');
+    const tr = document.createElement('tr');
+    tr.className = 'sig-row';
+    tr.innerHTML = `
+      <td><select class="f-sel f-cell" name="gu_posto_${idx}" data-list="postos"></select></td>
+      <td><input class="f-in f-cell" name="gu_nome_${idx}" placeholder="Nome completo"></td>
+      <td><input class="f-in f-cell" name="gu_rg_${idx}" placeholder="RG PMMT"></td>
+      <td></td>
+    `;
+    tbody.appendChild(tr);
+    populateSelect(tr.querySelector('select'));
   }
 
-  function imprimirTCOCompleto() {
-    document.body.classList.add('print-all');
-    window.print();
-    setTimeout(() => document.body.classList.remove('print-all'), 500);
+  document.getElementById('btnAddGuRow').addEventListener('click', () => {
+    guRowCount++;
+    addGuarnicaoRow(guRowCount);
+    saveToStorage();
+  });
+
+  function updatePieceVisibility(pieceId, checked) {
+    const sec = document.getElementById(pieceId);
+    const badge = document.querySelector(`[data-badge="${pieceId}"]`);
+    const item = document.querySelector(`.piece-item input[data-piece="${pieceId}"]`)?.closest('.piece-item');
+    if (sec) sec.classList.toggle('excluded-print', !checked);
+    if (badge) badge.textContent = checked ? 'Incluída na impressão' : 'Omitida na impressão';
+    if (item) item.classList.toggle('excluded', !checked);
   }
 
-  function abrirHistoricoTCO() {
-    carregarListaTCOs();
-    document.getElementById('historicoModal').style.display = 'flex';
+  document.querySelectorAll('#pieceList input[type="checkbox"]').forEach(chk => {
+    chk.addEventListener('change', () => {
+      updatePieceVisibility(chk.dataset.piece, chk.checked);
+      saveToStorage();
+    });
+  });
+
+  document.getElementById('btnSelectAll').addEventListener('click', () => {
+    document.querySelectorAll('#pieceList input[type="checkbox"]').forEach(chk => {
+      chk.checked = true;
+      updatePieceVisibility(chk.dataset.piece, true);
+    });
+    saveToStorage();
+  });
+
+  document.getElementById('btnSelectBasic').addEventListener('click', () => {
+    const basic = new Set(['p1', 'p2', 'p3', 'p4', 'p10']);
+    document.querySelectorAll('#pieceList input[type="checkbox"]').forEach(chk => {
+      const on = basic.has(chk.dataset.piece);
+      chk.checked = on;
+      updatePieceVisibility(chk.dataset.piece, on);
+    });
+    saveToStorage();
+    showToast('Kit Básico selecionado (Peças 01, 02, 03, 04 e 10)');
+  });
+
+  document.getElementById('btnFillToday').addEventListener('click', () => {
+    const now = new Date();
+    const dd = String(now.getDate()).padStart(2, '0');
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const yyyy = now.getFullYear();
+    const dateStr = `${dd}/${mm}/${yyyy}`;
+    const mesNome = LISTS.meses[now.getMonth() + 1];
+    const hh = String(now.getHours()).padStart(2, '0');
+    const mi = String(now.getMinutes()).padStart(2, '0');
+
+    syncByKey('data_registro', dateStr);
+    document.querySelectorAll('[data-sync="data_fato"]').forEach(el => { if (!el.value) el.value = dateStr; });
+    document.querySelectorAll('[data-sync="hora_fato"]').forEach(el => { if (!el.value) el.value = `${hh}h${mi}`; });
+    syncByKey('ext_dia', dd);
+    syncByKey('ext_mes', mesNome);
+    saveToStorage();
+    showToast(`Data preenchida: ${dateStr}`);
+  });
+
+  // ==========================================================
+  // SERIALIZAÇÃO DE ESTADO (LOCALSTORAGE / JSON / SUPABASE)
+  // ==========================================================
+  function collectState() {
+    const data = { fields: {}, pieces: {}, guRowCount, meta: {} };
+    document.querySelectorAll('#tcoForm input[name], #tcoForm select[name], #tcoForm textarea[name]').forEach(el => {
+      data.fields[el.name] = el.type === 'checkbox' ? el.checked : el.value;
+    });
+    document.querySelectorAll('#pieceList input[data-piece]').forEach(chk => {
+      data.pieces[chk.dataset.piece] = chk.checked;
+    });
+    ['q_tco', 'q_nat', 'q_tip', 'q_autor', 'q_vitima', 'q_cmt', 'q_cmt_rg'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) data.fields['__quick_' + id] = el.value;
+    });
+    data.meta.aluno_id = document.getElementById('selectAlunoResponsavel').value || '';
+    data.meta.status = document.getElementById('selectStatusTCO').value || 'RASCUNHO';
+    return data;
   }
 
-  function fecharModal(id) {
-    document.getElementById(id).style.display = 'none';
-  }
-
-  function exportarJSON() {
-    const dados = gerarObjetoBancoDados();
-    document.getElementById('jsonOutput').textContent = JSON.stringify(dados, null, 2);
-    document.getElementById('jsonModal').style.display = 'flex';
-  }
-
-  function copiarJSON() {
-    const texto = document.getElementById('jsonOutput').textContent;
-    navigator.clipboard.writeText(texto);
-    Swal.fire({ icon: 'success', title: 'JSON copiado!', timer: 1200, showConfirmButton: false });
-  }
-
-  function limparFormulario() {
-    if (confirm('Deseja limpar todos os campos preenchidos na tela?')) {
-      document.getElementById('tcoForm').reset();
-      document.getElementById('selectInfracaoTCO').value = '';
-      exibirBannerAcaoPenal('');
-      definirDatasPadrao();
-      syncNumeroTCO('');
+  function applyState(data) {
+    if (!data || typeof data !== 'object') return;
+    if (data.guRowCount && data.guRowCount > guRowCount) {
+      for (let i = guRowCount + 1; i <= data.guRowCount; i++) {
+        addGuarnicaoRow(i);
+      }
+      guRowCount = data.guRowCount;
+    }
+    if (data.fields) {
+      Object.entries(data.fields).forEach(([k, v]) => {
+        if (k.startsWith('__quick_')) {
+          const el = document.getElementById(k.replace('__quick_', ''));
+          if (el) el.value = v || '';
+          return;
+        }
+        const el = document.querySelector(`[name="${CSS.escape(k)}"]`);
+        if (!el) return;
+        if (el.type === 'checkbox') {
+          el.checked = Boolean(v);
+        } else {
+          el.value = v ?? '';
+          if (el.tagName === 'SELECT') updateSelectEmptyClass(el);
+          if (el.tagName === 'TEXTAREA') el.dispatchEvent(new Event('input'));
+        }
+      });
+    }
+    if (data.pieces) {
+      Object.entries(data.pieces).forEach(([pid, checked]) => {
+        const chk = document.querySelector(`#pieceList input[data-piece="${pid}"]`);
+        if (chk) {
+          chk.checked = Boolean(checked);
+          updatePieceVisibility(pid, Boolean(checked));
+        }
+      });
     }
   }
 
-  function escapeHtml(str) {
-    return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
+  let saveTimer = null;
+  function saveToStorage() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(collectState()));
+      } catch (e) {}
+    }, 250);
   }
+
+  document.addEventListener('input', e => {
+    const el = e.target;
+    if (el.id === 'buscaHistorico') return;
+    if (el.matches('input, select, textarea')) {
+      if (el.dataset.sync === 'pm_identificacao') window._pmManualEdit = true;
+      if (el.tagName === 'SELECT') updateSelectEmptyClass(el);
+      syncField(el);
+      saveToStorage();
+    }
+  });
+
+  document.addEventListener('change', e => {
+    const el = e.target;
+    if (el.id === 'buscaHistorico' || el.id === 'fileImportJson') return;
+    if (el.matches('input[type="checkbox"], select')) {
+      if (el.tagName === 'SELECT') updateSelectEmptyClass(el);
+      syncField(el);
+      saveToStorage();
+    }
+  });
+
+  // Exportar / Importar JSON local
+  document.getElementById('btnExportJson').addEventListener('click', () => {
+    const state = collectState();
+    const num = (document.getElementById('q_tco').value || 'rascunho').replace(/[^a-zA-Z0-9_-]/g, '');
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `TCO_${num}_6BPM_2026.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    showToast('Rascunho JSON baixado!');
+  });
+
+  const fileInput = document.getElementById('fileImportJson');
+  document.getElementById('btnImportJson').addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(reader.result);
+        applyState(parsed);
+        saveToStorage();
+        showToast('Rascunho JSON carregado!');
+      } catch (err) {
+        Swal.fire('Arquivo inválido', 'O arquivo JSON selecionado não pôde ser lido.', 'error');
+      }
+      fileInput.value = '';
+    };
+    reader.readAsText(file);
+  });
+
+  document.getElementById('btnClearAll').addEventListener('click', () => {
+    if (!confirm('Deseja limpar todos os campos preenchidos na tela?')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    resetarCamposTela();
+    showToast('Campos limpos!');
+  });
+
+  // Impressão
+  function preparePrintMirrors() {
+    document.querySelectorAll('textarea.f-ta').forEach(ta => {
+      const mirror = ta.nextElementSibling;
+      if (mirror && mirror.classList.contains('print-mirror')) {
+        mirror.textContent = ta.value;
+      }
+    });
+  }
+  window.addEventListener('beforeprint', preparePrintMirrors);
+  document.getElementById('btnPrint').addEventListener('click', () => {
+    preparePrintMirrors();
+    window.print();
+  });
+
+  // Sidebar mobile
+  document.getElementById('btnToggleSidebar').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('open');
+  });
+  document.querySelectorAll('.piece-link').forEach(link => {
+    link.addEventListener('click', () => {
+      document.getElementById('sidebar').classList.remove('open');
+    });
+  });
+
+  // Inicialização
+  document.addEventListener('DOMContentLoaded', async () => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) applyState(JSON.parse(saved));
+    } catch (e) {}
+    await inicializarConexao();
+  });
+})();
 </script>
 </body>
 </html>
