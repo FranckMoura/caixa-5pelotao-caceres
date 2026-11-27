@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
   :root {
     --bg-app: #0a101f;
@@ -93,7 +94,7 @@
     border: 1px solid var(--border-ui);
     background: var(--bg-panel);
     color: var(--text-ui);
-    padding: 7px 11px;
+    padding: 7px 10px;
     border-radius: 2px;
     font-size: 11px;
     font-weight: 700;
@@ -106,8 +107,10 @@
     transition: all 0.15s ease;
   }
   .btn:hover { background: var(--bg-panel-hover); filter: brightness(1.08); }
+  .btn:disabled { opacity: 0.55; cursor: not-allowed; }
   .btn-primary { background: var(--pm-navy); border-color: #3b82f6; color: #fff; }
   .btn-primary:hover { background: var(--accent); }
+  .btn-success { background: var(--success); border-color: #10b981; color: #fff; }
   .btn-gold { background: var(--pm-gold); border-color: #b08b43; color: var(--bg-app); font-weight: 800; }
   .btn-danger { background: transparent; border-color: #7f1d1d; color: #fca5a5; }
   .btn-danger:hover { background: var(--danger); color: #fff; border-color: #ef4444; }
@@ -127,6 +130,28 @@
     top: 58px;
     height: calc(100vh - 58px);
     overflow-y: auto;
+  }
+
+  .record-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    padding: 6px 9px;
+    border-radius: 2px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid #0284c7;
+    color: #7dd3fc;
+  }
+  .record-indicator.editing {
+    background: rgba(245, 158, 11, 0.14);
+    border-color: #d97706;
+    color: #fcd34d;
   }
 
   .sidebar-section-title {
@@ -232,6 +257,12 @@
     outline: none;
     border-color: var(--pm-gold);
   }
+  .quick-row {
+    display: flex;
+    gap: 6px;
+    align-items: stretch;
+  }
+  .quick-row > input, .quick-row > select { flex: 1; min-width: 0; }
   .quick-grid-2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -308,7 +339,7 @@
     color: var(--pm-gold);
   }
 
-  /* ===== FOLHA OFICIAL A4 (FIDELIDADE DE IMPRESSÃO) ===== */
+  /* ===== FOLHA OFICIAL A4 ===== */
   .sheet {
     background: #ffffff;
     color: #000000;
@@ -380,7 +411,6 @@
     margin-bottom: 46px;
   }
 
-  /* Assinaturas Duplas (Troca de Serviço) */
   .sig-dual {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -411,15 +441,9 @@
     font-size: 11pt;
     line-height: 1.35;
   }
-  .sig-name {
-    font-weight: 700;
-    text-transform: uppercase;
-  }
-  .sig-role {
-    font-size: 9.5pt;
-  }
+  .sig-name { font-weight: 700; text-transform: uppercase; }
+  .sig-role { font-size: 9.5pt; }
 
-  /* Quadro de Despacho Opcional */
   .despacho-box {
     display: none;
     margin-top: 34px;
@@ -439,12 +463,7 @@
     padding-bottom: 4px;
     margin-bottom: 8px;
   }
-  .despacho-opts {
-    display: flex;
-    gap: 24px;
-    margin-bottom: 18px;
-    flex-wrap: wrap;
-  }
+  .despacho-opts { display: flex; gap: 24px; margin-bottom: 18px; flex-wrap: wrap; }
 
   .doc-footer {
     margin-top: 24px;
@@ -473,10 +492,7 @@
     background: #dbeafe;
     border-bottom: 1.5px solid #1d4ed8;
   }
-  .f-in::placeholder, .f-ta::placeholder {
-    color: #64748b;
-    font-style: italic;
-  }
+  .f-in::placeholder, .f-ta::placeholder { color: #64748b; font-style: italic; }
   .f-in.bold { font-weight: 700; }
   .f-in.upper { text-transform: uppercase; }
   .f-in.center { text-align: center; }
@@ -505,6 +521,75 @@
     text-align: justify;
     line-height: 1.65;
   }
+
+  /* ===== MODAL HISTÓRICO SUPABASE ===== */
+  .modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 16, 31, 0.86);
+    z-index: 300;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+  }
+  .modal-content {
+    background: #f8fafc;
+    color: #1e293b;
+    border: 1px solid #64748b;
+    border-radius: 2px;
+    width: 100%;
+    max-width: 960px;
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.55);
+  }
+  .modal-header {
+    background: var(--bg-header);
+    color: #fff;
+    padding: 13px 16px;
+    border-bottom: 2px solid var(--pm-gold);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+  .modal-header h3 { margin: 0; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; }
+  .modal-header h3 i { color: var(--pm-gold); margin-right: 6px; }
+  .modal-inner { padding: 14px; display: flex; flex-direction: column; overflow: hidden; flex: 1; gap: 10px; }
+  .modal-search {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #94a3b8;
+    border-radius: 2px;
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+  .modal-body { overflow-y: auto; flex: 1; background: #fff; border: 1px solid #cbd5e1; }
+  .db-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .db-table th {
+    background: #e2e8f0;
+    color: #0a101f;
+    text-align: left;
+    padding: 8px 10px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    border-bottom: 1px solid #cbd5e1;
+    position: sticky;
+    top: 0;
+  }
+  .db-table td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; font-weight: 600; }
+  .db-table tr:hover td { background: #f8fafc; }
+
+  .st-badge { padding: 2px 7px; border-radius: 2px; font-size: 9.5px; font-weight: 800; text-transform: uppercase; white-space: nowrap; }
+  .st-RASCUNHO { background: #fef3c7; color: #92400e; border: 1px solid #f59e0b; }
+  .st-ENVIADO { background: #dbeafe; color: #1e40af; border: 1px solid #3b82f6; }
+  .st-AUTORIZADO { background: #d1fae5; color: #065f46; border: 1px solid #10b981; }
+  .st-NEGADO { background: #fee2e2; color: #991b1b; border: 1px solid #ef4444; }
+  .mod-badge { background: #0B1C3D; color: #C5A059; padding: 2px 6px; border-radius: 2px; font-size: 9px; font-weight: 800; text-transform: uppercase; }
 
   .status-toast {
     position: fixed;
@@ -551,7 +636,7 @@
 
   @media print {
     body { background: #ffffff !important; color: #000000 !important; display: block !important; }
-    .no-print, .topbar, .sidebar, .sheet-bar, .status-toast { display: none !important; }
+    .no-print, .topbar, .sidebar, .sheet-bar, .status-toast, .modal { display: none !important; }
     .app-layout, .workspace { display: block !important; padding: 0 !important; margin: 0 !important; background: #ffffff !important; overflow: visible !important; }
     .doc-view { display: none !important; max-width: none !important; width: 100% !important; }
     .doc-view.active { display: block !important; }
@@ -577,31 +662,45 @@
     <div class="brand-badge"><i class="fa-solid fa-file-lines"></i> 5º PELOTÃO • PMMT</div>
     <div>
       <div class="brand-title">Central de Documentos Oficiais</div>
-      <div class="brand-sub">35º CFSD – Polo Cáceres/MT • Preenchimento em Folha A4</div>
+      <div class="brand-sub">35º CFSD – Polo Cáceres/MT • Integrado ao Supabase</div>
     </div>
     <span id="statusConexao" class="status-pill"><i class="fa-solid fa-circle-notch fa-spin"></i> Conectando...</span>
   </div>
 
   <div class="toolbar">
-    <button class="btn" type="button" onclick="preencherDataHoje()" title="Atualiza a data de emissão para hoje">
-      <i class="fa-regular fa-calendar-check"></i> Data Hoje
+    <button class="btn btn-success" id="btnSalvarBD" type="button" onclick="salvarDocumentoNoBanco()">
+      <i class="fa-solid fa-cloud-arrow-up"></i> Salvar no Banco
     </button>
-    <button class="btn" type="button" onclick="document.getElementById('inputUploadBrasao').click()" title="Selecionar imagem do Brasão PMMT (salvo no navegador)">
+    <button class="btn btn-gold" type="button" onclick="abrirHistoricoDocumentos()">
+      <i class="fa-solid fa-database"></i> Salvos (<span id="qtdSalvos">0</span>)
+    </button>
+    <button class="btn" type="button" onclick="novoDocumento()">
+      <i class="fa-solid fa-file-circle-plus"></i> Novo
+    </button>
+    <button class="btn" type="button" onclick="preencherDataHoje()" title="Atualiza a data de emissão para hoje">
+      <i class="fa-regular fa-calendar-check"></i> Hoje
+    </button>
+    <button class="btn" type="button" onclick="document.getElementById('inputUploadBrasao').click()" title="Carregar imagem do Brasão PMMT">
       <i class="fa-solid fa-shield"></i> Brasão
     </button>
     <input type="file" id="inputUploadBrasao" accept="image/*" style="display:none" onchange="carregarBrasaoManual(event)">
-    <button class="btn btn-danger" type="button" onclick="limparModeloAtual()" title="Limpar campos do modelo ativo">
+    <button class="btn btn-danger" type="button" onclick="limparModeloAtual()" title="Limpar campos da tela">
       <i class="fa-solid fa-eraser"></i> Limpar
     </button>
-    <button class="btn btn-gold" type="button" onclick="imprimirDocumento()">
-      <i class="fa-solid fa-print"></i> Imprimir / Salvar PDF (A4)
+    <button class="btn btn-primary" type="button" onclick="imprimirDocumento()">
+      <i class="fa-solid fa-print"></i> Imprimir / PDF
     </button>
   </div>
 </header>
 
 <div class="app-layout">
-  <!-- ===== SIDEBAR: SELETOR DE MODELOS + PREENCHIMENTO ASSISTIDO ===== -->
+  <!-- ===== SIDEBAR ===== -->
   <aside class="sidebar no-print" id="sidebar">
+    <div id="indicadorRegistro" class="record-indicator">
+      <span><i class="fa-solid fa-file-circle-plus"></i> Novo Registro</span>
+      <span>BD</span>
+    </div>
+
     <div class="sidebar-section-title">
       <span><i class="fa-solid fa-folder-open"></i> Modelos Disponíveis</span>
     </div>
@@ -627,21 +726,30 @@
       </li>
     </ul>
 
+    <!-- STATUS COMUM PARA BANCO -->
+    <div class="quick-box" style="margin-bottom:12px;">
+      <label for="selectStatusDoc"><i class="fa-solid fa-flag"></i> Status do Documento (BD)</label>
+      <select id="selectStatusDoc" onchange="salvarRascunhoLocal()">
+        <option value="RASCUNHO">Rascunho</option>
+        <option value="ENVIADO">Enviado / Protocolado</option>
+        <option value="AUTORIZADO">Autorizado / Deferido</option>
+        <option value="NEGADO">Negado / Indeferido</option>
+      </select>
+    </div>
+
     <!-- ===== PAINEL ASSISTIDO: MODELO 01 (TROCA DE SERVIÇO) ===== -->
     <div id="config-troca" class="panel-config active">
       <div class="sidebar-section-title">
         <span><i class="fa-solid fa-sliders"></i> Dados da Permuta (BD)</span>
       </div>
       <div class="quick-box">
-        <div class="quick-grid-2">
-          <div>
-            <label for="tr_parte_num">Parte Nº</label>
-            <input id="tr_parte_num" type="text" value="001" oninput="syncTroca()">
-          </div>
-          <div>
-            <label for="tr_parte_ano">Ano</label>
-            <input id="tr_parte_ano" type="text" value="2026" oninput="syncTroca()">
-          </div>
+        <label for="tr_parte_num"><i class="fa-solid fa-hashtag"></i> Parte Nº / Ano</label>
+        <div class="quick-row">
+          <input id="tr_parte_num" type="text" value="001" placeholder="001" oninput="syncTroca()">
+          <input id="tr_parte_ano" type="text" value="2026" style="max-width:64px;text-align:center;" oninput="syncTroca()">
+          <button class="btn btn-sm btn-gold" id="btnGerarParte" type="button" onclick="gerarProximoNumeroParte()" title="Consultar banco e gerar próximo nº sequencial">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Gerar
+          </button>
         </div>
 
         <label for="tr_data_emissao">Data da Emissão</label>
@@ -713,7 +821,7 @@
     </div>
 
     <div class="sidebar-hint">
-      <strong>Dica:</strong> Você pode selecionar os dados aqui na lateral ou clicar diretamente sobre qualquer campo azul na folha A4 para ajustar o texto antes de clicar em <em>Imprimir / Salvar PDF</em>.
+      <strong>Dica:</strong> Selecione os dados na lateral ou edite direto na folha A4. Clique em <strong>Salvar no Banco</strong> para registrar no histórico ou em <strong>Imprimir / PDF</strong> para exportar.
     </div>
   </aside>
 
@@ -746,15 +854,15 @@
 
           <div class="doc-date-right">
             Cáceres - MT,
-            <input type="text" id="doc_tr_dia" class="f-in w-xs" placeholder="00"> de
-            <input type="text" id="doc_tr_mes" class="f-in w-md center" placeholder="Novembro"> de
-            <input type="text" id="doc_tr_ano_ext" class="f-in w-sm" value="2026">.
+            <input type="text" id="doc_tr_dia" class="f-in w-xs" placeholder="00" oninput="salvarRascunhoLocal()"> de
+            <input type="text" id="doc_tr_mes" class="f-in w-md center" placeholder="Novembro" oninput="salvarRascunhoLocal()"> de
+            <input type="text" id="doc_tr_ano_ext" class="f-in w-sm" value="2026" oninput="salvarRascunhoLocal()">.
           </div>
 
           <div class="doc-meta">
             <div class="doc-meta-row">
               <span>Parte nº</span>
-              <input type="text" id="doc_tr_parte_num" class="f-in w-sm" value="001" oninput="document.getElementById('tr_parte_num').value=this.value"><span>/</span><input type="text" id="doc_tr_parte_ano" class="f-in w-sm" value="2026" oninput="document.getElementById('tr_parte_ano').value=this.value"><span>.</span>
+              <input type="text" id="doc_tr_parte_num" class="f-in w-sm" value="001" oninput="document.getElementById('tr_parte_num').value=this.value; salvarRascunhoLocal()"><span>/</span><input type="text" id="doc_tr_parte_ano" class="f-in w-sm" value="2026" oninput="document.getElementById('tr_parte_ano').value=this.value; salvarRascunhoLocal()"><span>.</span>
             </div>
 
             <div class="doc-meta-row">
@@ -765,38 +873,38 @@
 
             <div class="doc-meta-row">
               <span style="font-weight:700;">Ao: Sr.</span>
-              <input type="text" id="doc_tr_destinatario" class="f-in upper w-xl" value="1º SGT PM ALESSANDER ORTIZ DE SOUZA" placeholder="Posto/Grad e Nome do Destinatário" oninput="atualizarAssinaturaDespacho()">
+              <input type="text" id="doc_tr_destinatario" class="f-in upper w-xl" value="1º SGT PM ALESSANDER ORTIZ DE SOUZA" placeholder="Posto/Grad e Nome do Destinatário" oninput="atualizarAssinaturaDespacho(); salvarRascunhoLocal()">
               <span>|</span>
-              <input type="text" id="doc_tr_funcao" class="f-in w-md" value="Graduado de dia" oninput="document.getElementById('tr_funcao_dest').value=this.value; atualizarAssinaturaDespacho()">
+              <input type="text" id="doc_tr_funcao" class="f-in w-md" value="Graduado de dia" oninput="document.getElementById('tr_funcao_dest').value=this.value; atualizarAssinaturaDespacho(); salvarRascunhoLocal()">
             </div>
 
             <div class="doc-meta-row" style="margin-top: 12px;">
               <span>Assunto:</span>
-              <input type="text" id="doc_tr_assunto" class="f-in w-xl" value="Solicitação de troca de serviço.">
+              <input type="text" id="doc_tr_assunto" class="f-in w-xl" value="Solicitação de troca de serviço." oninput="salvarRascunhoLocal()">
             </div>
           </div>
 
           <div class="doc-salutation">
-            <input type="text" id="doc_tr_vocativo" class="f-in bold w-lg" value="Senhor Graduado,">
+            <input type="text" id="doc_tr_vocativo" class="f-in bold w-lg" value="Senhor Graduado," oninput="salvarRascunhoLocal()">
           </div>
 
           <p class="doc-body-p">
             Eu AL SD PM
             <input type="text" id="doc_tr_solicitante_corpo" class="f-in bold upper w-md center" placeholder="SOLICITANTE" oninput="syncNomeSolicitante(this.value, this)">,
             solicito autorização para permutar o serviço do dia
-            <input type="text" id="doc_tr_dia_escalado" class="f-in upper w-md center" placeholder="28 (SÁBADO)"> —
-            <input type="text" id="doc_tr_carga" class="f-in w-xs" value="24h" oninput="document.getElementById('tr_carga').value=this.value">,
+            <input type="text" id="doc_tr_dia_escalado" class="f-in upper w-md center" placeholder="28 (SÁBADO)" oninput="salvarRascunhoLocal()"> —
+            <input type="text" id="doc_tr_carga" class="f-in w-xs" value="24h" oninput="document.getElementById('tr_carga').value=this.value; salvarRascunhoLocal()">,
             no qual me encontraria escalado, com o AL SD PM
             <input type="text" id="doc_tr_permutante_corpo" class="f-in bold upper w-md center" placeholder="PERMUTANTE" oninput="syncNomePermutante(this.value, this)">,
             que está de acordo para o qual o compensarei no serviço do dia
-            <input type="text" id="doc_tr_dia_compensa" class="f-in upper w-md center" placeholder="29 (DOMINGO)">.
+            <input type="text" id="doc_tr_dia_compensa" class="f-in upper w-md center" placeholder="29 (DOMINGO)" oninput="salvarRascunhoLocal()">.
           </p>
 
           <div class="doc-closing">
             Respeitosamente,
           </div>
 
-          <!-- ASSINATURAS DUPLAS ENQUADRADAS NA FOLHA A4 -->
+          <!-- ASSINATURAS DUPLAS -->
           <div class="sig-dual">
             <div>
               <div class="sig-line">
@@ -863,21 +971,21 @@
           <div class="doc-meta">
             <div class="doc-meta-row">
               <span style="font-weight:700;">DATA DE EMISSÃO:</span>
-              <input type="text" id="doc_pad_data" class="f-in w-lg">
+              <input type="text" id="doc_pad_data" class="f-in w-lg" oninput="salvarRascunhoLocal()">
             </div>
             <div class="doc-meta-row">
               <span style="font-weight:700;">AUTOR/RESPONSÁVEL:</span>
-              <input type="text" id="doc_pad_autor" class="f-in upper w-xl" oninput="document.getElementById('sig_pad_autor').textContent=this.value || 'AL SD PM'">
+              <input type="text" id="doc_pad_autor" class="f-in upper w-xl" oninput="document.getElementById('sig_pad_autor').textContent=this.value || 'AL SD PM'; salvarRascunhoLocal()">
             </div>
             <div id="doc_pad_bloco_alunos" style="margin-top:4px;"></div>
             <div id="doc_pad_bloco_cmd" style="margin-top:4px;"></div>
             <div class="doc-meta-row" style="margin-top:12px;">
               <span style="font-weight:700;">ASSUNTO:</span>
-              <input type="text" id="doc_pad_assunto" class="f-in w-flex" placeholder="Digite o assunto..." oninput="document.getElementById('pad_assunto_in').value=this.value">
+              <input type="text" id="doc_pad_assunto" class="f-in w-flex" placeholder="Digite o assunto..." oninput="document.getElementById('pad_assunto_in').value=this.value; salvarRascunhoLocal()">
             </div>
             <div class="doc-meta-row">
               <span style="font-weight:700;">TEMA:</span>
-              <input type="text" id="doc_pad_tema" class="f-in w-flex" placeholder="Digite o tema..." oninput="document.getElementById('pad_tema_in').value=this.value">
+              <input type="text" id="doc_pad_tema" class="f-in w-flex" placeholder="Digite o tema..." oninput="document.getElementById('pad_tema_in').value=this.value; salvarRascunhoLocal()">
             </div>
           </div>
 
@@ -903,6 +1011,39 @@
   </main>
 </div>
 
+<!-- MODAL: DOCUMENTOS SALVOS NO SUPABASE -->
+<div id="historicoModal" class="modal no-print">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3><i class="fa-solid fa-folder-open"></i> Documentos Registrados no Banco de Dados (Supabase)</h3>
+      <div style="display:flex; gap:6px;">
+        <button type="button" class="btn btn-sm" onclick="carregarListaDocumentos()"><i class="fa-solid fa-arrows-rotate"></i> Atualizar</button>
+        <button type="button" class="btn btn-sm btn-danger" onclick="fecharHistoricoDocumentos()"><i class="fa-solid fa-xmark"></i> Fechar</button>
+      </div>
+    </div>
+    <div class="modal-inner">
+      <input type="text" id="buscaHistorico" class="modal-search" onkeyup="filtrarHistorico()" placeholder="Pesquisar por Nº Parte, Modelo, Solicitante, Permutante, Assunto ou Status...">
+      <div class="modal-body">
+        <table class="db-table">
+          <thead>
+            <tr>
+              <th>Modelo</th>
+              <th>Parte / Ref.</th>
+              <th>Emissão</th>
+              <th>Solicitante / Assunto</th>
+              <th>Status</th>
+              <th style="text-align:right;">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaHistoricoBody">
+            <tr><td colspan="6" style="text-align:center; padding:20px; color:#64748b;">Carregando registros...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="status-toast" id="toast">Ação concluída</div>
 
 <script>
@@ -911,6 +1052,7 @@
   const dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   const BRASAO_STORAGE_KEY = 'pmmt_5pel_brasao_base64';
+  const DRAFT_STORAGE_KEY = 'docs_5pel_caceres_rascunho_v1';
   const MESES_CAP = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
   const DIAS_SEMANA = ['DOMINGO', 'SEGUNDA-FEIRA', 'TERÇA-FEIRA', 'QUARTA-FEIRA', 'QUINTA-FEIRA', 'SEXTA-FEIRA', 'SÁBADO'];
 
@@ -921,8 +1063,10 @@
   ];
 
   let modeloAtivo = 'troca';
+  let docAtualId = null;
   let listaAlunos = [];
   let listaTecnico = [];
+  let listaDocumentos = [];
   let emailUsuarioLogado = '';
 
   document.addEventListener('DOMContentLoaded', async () => {
@@ -930,6 +1074,7 @@
     preencherDataHoje(true);
     configurarTextareaEspelho();
     await inicializarDados();
+    restaurarRascunhoLocal();
   });
 
   function showToast(msg) {
@@ -937,7 +1082,26 @@
     el.textContent = msg;
     el.classList.add('show');
     clearTimeout(window._toastT);
-    window._toastT = setTimeout(() => el.classList.remove('show'), 2200);
+    window._toastT = setTimeout(() => el.classList.remove('show'), 2400);
+  }
+
+  function escapeHtml(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function escapeJsAttr(str) {
+    return escapeHtml(String(str || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'"));
+  }
+
+  function converterISOParaBR(iso) {
+    if (!iso) return '--/--/----';
+    const m = String(iso).slice(0, 10).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    return m ? `${m[3]}/${m[2]}/${m[1]}` : iso;
   }
 
   function limparQra(aluno) {
@@ -970,6 +1134,7 @@
       popularSelectsEfetivo();
       popularTemas(resTemas.data || []);
       preselecionarUsuarioLogado();
+      await carregarListaDocumentos();
 
       badge.className = 'status-pill ok';
       badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> Supabase Online';
@@ -1005,7 +1170,6 @@
       if (a.comandante) comandantesSet.add(a.comandante.trim());
     });
 
-    // Destinatários (Graduados padrão + Corpo Técnico + Comandantes)
     selDest.innerHTML = '<option value="">-- Selecione ou edite na folha --</option>';
     const usados = new Set();
 
@@ -1041,8 +1205,8 @@
     dlAssuntos.innerHTML = '';
     dlTemas.innerHTML = '';
     temasData.forEach(item => {
-      if (item.assunto) dlAssuntos.innerHTML += `<option value="${item.assunto}">`;
-      if (item.tema) dlTemas.innerHTML += `<option value="${item.tema}">`;
+      if (item.assunto) dlAssuntos.innerHTML += `<option value="${escapeHtml(item.assunto)}">`;
+      if (item.tema) dlTemas.innerHTML += `<option value="${escapeHtml(item.tema)}">`;
     });
   }
 
@@ -1058,7 +1222,7 @@
       const qra = limparQra(aluno);
       const num = aluno.numero ? '5' + String(aluno.numero).padStart(2, '0') : '';
       document.getElementById('tr_solicitante_sel').value = qra;
-      syncNomeSolicitante(qra);
+      syncNomeSolicitante(qra, null, true);
 
       const autorPad = `AL SD PM ${num ? num + ' - ' : ''}${qra}`;
       document.getElementById('doc_pad_autor').value = autorPad;
@@ -1071,7 +1235,478 @@
   }
 
   // ==========================================================
-  // TROCA DE MODELOS
+  // GERAÇÃO AUTOMÁTICA DO PRÓXIMO NÚMERO DE PARTE
+  // ==========================================================
+  async function gerarProximoNumeroParte(pularConfirmacao = false) {
+    const inpNum = document.getElementById('tr_parte_num');
+    const inpAno = document.getElementById('tr_parte_ano');
+    const btn = document.getElementById('btnGerarParte');
+
+    if (!pularConfirmacao && docAtualId && inpNum.value.trim()) {
+      const conf = await Swal.fire({
+        title: 'Alterar número da Parte?',
+        text: `Este documento já está salvo como Parte nº ${inpNum.value}/${inpAno.value}. Deseja gerar o próximo sequencial do banco?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#0B1C3D',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Sim, gerar novo',
+        cancelButtonText: 'Manter atual'
+      });
+      if (!conf.isConfirmed) return null;
+    }
+
+    const htmlOriginal = btn ? btn.innerHTML : '';
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+    }
+
+    try {
+      const anoRef = parseInt(inpAno.value, 10) || new Date().getFullYear();
+      const { data, error } = await dbClient
+        .from('documentos_registros')
+        .select('numero_parte')
+        .eq('modelo', 'troca');
+
+      if (error) throw error;
+
+      let maiorSeq = 0;
+      (data || []).forEach(r => {
+        const raw = (r.numero_parte || '').trim();
+        const m = raw.match(/^(\d+)\s*\/\s*(\d{4})$/);
+        if (m && parseInt(m[2], 10) === anoRef) {
+          const seq = parseInt(m[1], 10);
+          if (seq > maiorSeq) maiorSeq = seq;
+        } else if (/^\d+$/.test(raw)) {
+          const seq = parseInt(raw, 10);
+          if (seq > maiorSeq) maiorSeq = seq;
+        }
+      });
+
+      const proximoSeq = String(maiorSeq + 1).padStart(3, '0');
+      inpNum.value = proximoSeq;
+      inpAno.value = String(anoRef);
+      syncTroca();
+      salvarRascunhoLocal();
+
+      if (!pularConfirmacao) {
+        showToast(`Parte gerada: ${proximoSeq}/${anoRef}`);
+      }
+      return proximoSeq;
+    } catch (err) {
+      console.error('Erro ao gerar Parte:', err);
+      Swal.fire('Erro', 'Verifique se a tabela documentos_registros foi criada no Supabase.', 'error');
+      return null;
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = htmlOriginal;
+      }
+    }
+  }
+
+  // ==========================================================
+  // CRUD SUPABASE (documentos_registros)
+  // ==========================================================
+  async function carregarListaDocumentos() {
+    const { data, error } = await dbClient
+      .from('documentos_registros')
+      .select('id, modelo, numero_parte, assunto, solicitante, permutante, data_emissao, status, atualizado_em')
+      .order('atualizado_em', { ascending: false });
+
+    if (error) {
+      console.error('Erro ao ler documentos_registros:', error);
+      document.getElementById('tabelaHistoricoBody').innerHTML =
+        `<tr><td colspan="6" style="text-align:center; color:#b91c1c; padding:16px;">Tabela <code>documentos_registros</code> não encontrada. Execute o script SQL no Supabase.</td></tr>`;
+      return;
+    }
+
+    listaDocumentos = data || [];
+    document.getElementById('qtdSalvos').textContent = listaDocumentos.length;
+    renderizarTabelaHistorico(listaDocumentos);
+  }
+
+  function renderizarTabelaHistorico(registros) {
+    const tbody = document.getElementById('tabelaHistoricoBody');
+    if (!registros.length) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:22px; color:#64748b;">Nenhum documento salvo no banco ainda.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = registros.map(r => {
+      const idSeguro = escapeJsAttr(String(r.id));
+      const modeloNome = r.modelo === 'troca' ? 'Troca de Serviço' : 'Doc. Padrão';
+      const refLabel = r.numero_parte ? `Parte ${r.numero_parte}` : 'Avulso';
+      const refJs = escapeJsAttr(r.numero_parte || r.assunto || modeloNome);
+      const detalhe = r.modelo === 'troca'
+        ? `${r.solicitante || '-'} ↔ ${r.permutante || '-'}`
+        : `${r.solicitante || '-'} — ${r.assunto || 'Sem assunto'}`;
+      const st = r.status || 'RASCUNHO';
+
+      return `
+        <tr>
+          <td><span class="mod-badge">${escapeHtml(modeloNome)}</span></td>
+          <td><strong>${escapeHtml(refLabel)}</strong></td>
+          <td>${converterISOParaBR(r.data_emissao)}</td>
+          <td>${escapeHtml(detalhe)}</td>
+          <td><span class="st-badge st-${st}">${st}</span></td>
+          <td style="text-align:right; white-space:nowrap;">
+            <button type="button" class="btn btn-sm btn-primary" onclick="carregarDocumentoPorId('${idSeguro}')">
+              <i class="fa-solid fa-pen-to-square"></i> Abrir
+            </button>
+            <button type="button" class="btn btn-sm btn-danger" onclick="excluirDocumento('${idSeguro}', '${refJs}')">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function filtrarHistorico() {
+    const termo = document.getElementById('buscaHistorico').value.toLowerCase();
+    const filtrados = listaDocumentos.filter(r =>
+      (r.modelo && r.modelo.toLowerCase().includes(termo)) ||
+      (r.numero_parte && r.numero_parte.toLowerCase().includes(termo)) ||
+      (r.assunto && r.assunto.toLowerCase().includes(termo)) ||
+      (r.solicitante && r.solicitante.toLowerCase().includes(termo)) ||
+      (r.permutante && r.permutante.toLowerCase().includes(termo)) ||
+      (r.status && r.status.toLowerCase().includes(termo))
+    );
+    renderizarTabelaHistorico(filtrados);
+  }
+
+  function encontrarAlunoIdPorQra(qraTexto) {
+    const alvo = (qraTexto || '').trim().toUpperCase();
+    if (!alvo) return null;
+    const match = listaAlunos.find(a => limparQra(a) === alvo || alvo.includes(limparQra(a)));
+    return match ? match.id : null;
+  }
+
+  async function salvarDocumentoNoBanco() {
+    if (modeloAtivo === 'troca') {
+      let numParte = document.getElementById('doc_tr_parte_num').value.trim();
+      if (!numParte) {
+        const escolha = await Swal.fire({
+          title: 'Número da Parte em branco',
+          text: 'Deseja gerar automaticamente o próximo número sequencial do banco e salvar agora?',
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#059669',
+          cancelButtonColor: '#64748b',
+          confirmButtonText: 'Gerar e Salvar',
+          cancelButtonText: 'Digitar manualmente'
+        });
+        if (!escolha.isConfirmed) {
+          document.getElementById('tr_parte_num').focus();
+          return;
+        }
+        numParte = await gerarProximoNumeroParte(true);
+        if (!numParte) return;
+      }
+    } else {
+      const assuntoPad = document.getElementById('doc_pad_assunto').value.trim();
+      if (!assuntoPad) {
+        Swal.fire('Campo obrigatório', 'Informe o Assunto do documento antes de salvar no banco.', 'warning');
+        document.getElementById('doc_pad_assunto').focus();
+        return;
+      }
+    }
+
+    const btn = document.getElementById('btnSalvarBD');
+    const htmlOriginal = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
+
+    const state = coletarEstadoCompleto();
+    const statusVal = document.getElementById('selectStatusDoc').value || 'RASCUNHO';
+    const hojeIso = new Date().toISOString().split('T')[0];
+
+    let registro;
+    if (modeloAtivo === 'troca') {
+      const pNum = document.getElementById('doc_tr_parte_num').value.trim();
+      const pAno = document.getElementById('doc_tr_parte_ano').value.trim() || String(new Date().getFullYear());
+      const solNome = document.getElementById('doc_tr_solicitante_do').value.trim();
+      const permNome = document.getElementById('doc_tr_permutante_corpo').value.trim();
+      registro = {
+        modelo: 'troca',
+        numero_parte: `${pNum}/${pAno}`,
+        assunto: document.getElementById('doc_tr_assunto').value.trim() || 'Solicitação de troca de serviço.',
+        solicitante: solNome || null,
+        permutante: permNome || null,
+        destinatario: document.getElementById('doc_tr_destinatario').value.trim() || null,
+        data_emissao: document.getElementById('tr_data_emissao').value || hojeIso,
+        aluno_id: encontrarAlunoIdPorQra(solNome),
+        status: statusVal,
+        criado_por_email: emailUsuarioLogado || null,
+        dados_completos: state,
+        atualizado_em: new Date().toISOString()
+      };
+    } else {
+      const autorPad = document.getElementById('doc_pad_autor').value.trim();
+      registro = {
+        modelo: 'padrao',
+        numero_parte: null,
+        assunto: document.getElementById('doc_pad_assunto').value.trim() || null,
+        solicitante: autorPad || null,
+        permutante: null,
+        destinatario: document.getElementById('pad_cmd_sel').value || null,
+        data_emissao: hojeIso,
+        aluno_id: encontrarAlunoIdPorQra(autorPad),
+        status: statusVal,
+        criado_por_email: emailUsuarioLogado || null,
+        dados_completos: state,
+        atualizado_em: new Date().toISOString()
+      };
+    }
+
+    try {
+      let resultado;
+      if (docAtualId) {
+        resultado = await dbClient
+          .from('documentos_registros')
+          .update(registro)
+          .eq('id', docAtualId)
+          .select('id, modelo, numero_parte, assunto')
+          .single();
+      } else {
+        resultado = await dbClient
+          .from('documentos_registros')
+          .insert([registro])
+          .select('id, modelo, numero_parte, assunto')
+          .single();
+      }
+
+      if (resultado.error) throw resultado.error;
+
+      docAtualId = resultado.data.id;
+      const rotulo = resultado.data.numero_parte
+        ? `Parte ${resultado.data.numero_parte}`
+        : (resultado.data.assunto || 'Documento');
+      atualizarIndicadorEdicao(rotulo);
+      await carregarListaDocumentos();
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Documento Salvo no Banco!',
+        text: `${rotulo} sincronizado com sucesso.`,
+        confirmButtonColor: '#0B1C3D',
+        timer: 2000
+      });
+    } catch (err) {
+      console.error('Erro ao salvar documento:', err);
+      const msg = (err.message || '').toLowerCase().includes('row-level security')
+        ? 'Apenas usuários autorizados podem gravar no banco de dados. Você ainda pode imprimir ou salvar o PDF localmente.'
+        : (err.message || 'Verifique se a tabela documentos_registros existe no Supabase.');
+      Swal.fire('Não foi possível salvar', msg, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = htmlOriginal;
+    }
+  }
+
+  async function carregarDocumentoPorId(id) {
+    const { data, error } = await dbClient
+      .from('documentos_registros')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error || !data) {
+      Swal.fire('Erro', 'Não foi possível carregar este documento.', 'error');
+      return;
+    }
+
+    docAtualId = data.id;
+    selecionarModelo(data.modelo || 'troca');
+    document.getElementById('selectStatusDoc').value = data.status || 'RASCUNHO';
+
+    if (data.dados_completos) {
+      aplicarEstadoCompleto(data.dados_completos);
+    }
+
+    const rotulo = data.numero_parte ? `Parte ${data.numero_parte}` : (data.assunto || 'Documento');
+    atualizarIndicadorEdicao(rotulo);
+    salvarRascunhoLocal();
+    fecharHistoricoDocumentos();
+    showToast(`${rotulo} carregado!`);
+  }
+
+  async function excluirDocumento(id, rotulo) {
+    const conf = await Swal.fire({
+      title: `Excluir "${rotulo}"?`,
+      text: 'Esta ação removerá o documento permanentemente do banco de dados.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#b91c1c',
+      cancelButtonColor: '#64748b',
+      confirmButtonText: 'Sim, excluir',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (!conf.isConfirmed) return;
+
+    const { error } = await dbClient.from('documentos_registros').delete().eq('id', id);
+    if (error) {
+      const msg = (error.message || '').toLowerCase().includes('row-level security')
+        ? 'Apenas administradores podem excluir registros do banco.'
+        : error.message;
+      Swal.fire('Erro ao excluir', msg, 'error');
+      return;
+    }
+
+    if (String(docAtualId) === String(id)) novoDocumento(true);
+    await carregarListaDocumentos();
+    Swal.fire({ icon: 'success', title: 'Excluído!', timer: 1300, showConfirmButton: false });
+  }
+
+  function atualizarIndicadorEdicao(rotulo) {
+    const el = document.getElementById('indicadorRegistro');
+    if (docAtualId) {
+      const idCurto = String(docAtualId).length > 8 ? String(docAtualId).slice(0, 8) : String(docAtualId);
+      el.className = 'record-indicator editing';
+      el.innerHTML = `<span><i class="fa-solid fa-pen"></i> Editando #${escapeHtml(idCurto)}</span><span>${escapeHtml(rotulo)}</span>`;
+    } else {
+      el.className = 'record-indicator';
+      el.innerHTML = `<span><i class="fa-solid fa-file-circle-plus"></i> Novo Registro</span><span>BD</span>`;
+    }
+  }
+
+  function novoDocumento(silencioso = false) {
+    if (!silencioso && !confirm('Iniciar um novo documento em branco? Alterações não salvas no banco serão perdidas.')) return;
+    docAtualId = null;
+    localStorage.removeItem(DRAFT_STORAGE_KEY);
+    document.getElementById('selectStatusDoc').value = 'RASCUNHO';
+    limparCamposSemConfirmar();
+    preencherDataHoje(true);
+    preselecionarUsuarioLogado();
+    atualizarIndicadorEdicao('');
+    if (!silencioso) showToast('Novo documento iniciado!');
+  }
+
+  function abrirHistoricoDocumentos() {
+    carregarListaDocumentos();
+    document.getElementById('historicoModal').style.display = 'flex';
+  }
+
+  function fecharHistoricoDocumentos() {
+    document.getElementById('historicoModal').style.display = 'none';
+  }
+
+  // ==========================================================
+  // SERIALIZAÇÃO DE ESTADO (BANCO + LOCALSTORAGE)
+  // ==========================================================
+  function coletarEstadoCompleto() {
+    const selPadAl = document.getElementById('pad_alunos_sel');
+    return {
+      modeloAtivo,
+      status: document.getElementById('selectStatusDoc').value,
+      troca: {
+        parte_num: document.getElementById('doc_tr_parte_num').value,
+        parte_ano: document.getElementById('doc_tr_parte_ano').value,
+        data_emissao_iso: document.getElementById('tr_data_emissao').value,
+        dia: document.getElementById('doc_tr_dia').value,
+        mes: document.getElementById('doc_tr_mes').value,
+        ano_ext: document.getElementById('doc_tr_ano_ext').value,
+        solicitante: document.getElementById('doc_tr_solicitante_do').value,
+        destinatario: document.getElementById('doc_tr_destinatario').value,
+        funcao: document.getElementById('doc_tr_funcao').value,
+        assunto: document.getElementById('doc_tr_assunto').value,
+        vocativo: document.getElementById('doc_tr_vocativo').value,
+        dt_escalado_iso: document.getElementById('tr_dt_escalado').value,
+        dia_escalado: document.getElementById('doc_tr_dia_escalado').value,
+        carga: document.getElementById('doc_tr_carga').value,
+        permutante: document.getElementById('doc_tr_permutante_corpo').value,
+        dt_compensa_iso: document.getElementById('tr_dt_compensa').value,
+        dia_compensa: document.getElementById('doc_tr_dia_compensa').value,
+        despacho: document.getElementById('tr_chk_despacho').checked
+      },
+      padrao: {
+        data: document.getElementById('doc_pad_data').value,
+        autor: document.getElementById('doc_pad_autor').value,
+        alunos: Array.from(selPadAl.selectedOptions).map(o => o.value),
+        comandante: document.getElementById('pad_cmd_sel').value,
+        assunto: document.getElementById('doc_pad_assunto').value,
+        tema: document.getElementById('doc_pad_tema').value,
+        texto: document.getElementById('doc_pad_texto').value
+      }
+    };
+  }
+
+  function aplicarEstadoCompleto(st) {
+    if (!st || typeof st !== 'object') return;
+    if (st.status) document.getElementById('selectStatusDoc').value = st.status;
+
+    if (st.troca) {
+      const t = st.troca;
+      document.getElementById('tr_parte_num').value = t.parte_num ?? '001';
+      document.getElementById('doc_tr_parte_num').value = t.parte_num ?? '001';
+      document.getElementById('tr_parte_ano').value = t.parte_ano ?? '2026';
+      document.getElementById('doc_tr_parte_ano').value = t.parte_ano ?? '2026';
+      document.getElementById('tr_data_emissao').value = t.data_emissao_iso || '';
+      document.getElementById('doc_tr_dia').value = t.dia || '';
+      document.getElementById('doc_tr_mes').value = t.mes || '';
+      document.getElementById('doc_tr_ano_ext').value = t.ano_ext || '2026';
+      document.getElementById('tr_solicitante_sel').value = t.solicitante || '';
+      syncNomeSolicitante(t.solicitante || '', null, true);
+      document.getElementById('doc_tr_destinatario').value = t.destinatario || '';
+      document.getElementById('tr_funcao_dest').value = t.funcao || 'Graduado de dia';
+      document.getElementById('doc_tr_funcao').value = t.funcao || 'Graduado de dia';
+      document.getElementById('doc_tr_assunto').value = t.assunto || 'Solicitação de troca de serviço.';
+      document.getElementById('doc_tr_vocativo').value = t.vocativo || 'Senhor Graduado,';
+      document.getElementById('tr_dt_escalado').value = t.dt_escalado_iso || '';
+      document.getElementById('doc_tr_dia_escalado').value = t.dia_escalado || '';
+      document.getElementById('tr_carga').value = t.carga || '24h';
+      document.getElementById('doc_tr_carga').value = t.carga || '24h';
+      document.getElementById('tr_permutante_sel').value = t.permutante || '';
+      syncNomePermutante(t.permutante || '', null, true);
+      document.getElementById('tr_dt_compensa').value = t.dt_compensa_iso || '';
+      document.getElementById('doc_tr_dia_compensa').value = t.dia_compensa || '';
+      document.getElementById('tr_chk_despacho').checked = Boolean(t.despacho);
+      toggleDespachoTroca(true);
+      atualizarAssinaturaDespacho();
+    }
+
+    if (st.padrao) {
+      const p = st.padrao;
+      document.getElementById('doc_pad_data').value = p.data || '';
+      document.getElementById('doc_pad_autor').value = p.autor || '';
+      document.getElementById('sig_pad_autor').textContent = p.autor || 'AL SD PM';
+      const selAl = document.getElementById('pad_alunos_sel');
+      const setAl = new Set(p.alunos || ['']);
+      Array.from(selAl.options).forEach(o => { o.selected = setAl.has(o.value); });
+      document.getElementById('pad_cmd_sel').value = p.comandante || '';
+      document.getElementById('pad_assunto_in').value = p.assunto || '';
+      document.getElementById('pad_tema_in').value = p.tema || '';
+      document.getElementById('doc_pad_texto').value = p.texto || '';
+      document.getElementById('doc_pad_texto').dispatchEvent(new Event('input'));
+      atualizarDocumentoPadrao(true);
+    }
+  }
+
+  let draftTimer = null;
+  function salvarRascunhoLocal() {
+    clearTimeout(draftTimer);
+    draftTimer = setTimeout(() => {
+      try {
+        localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(coletarEstadoCompleto()));
+      } catch (e) {}
+    }, 250);
+  }
+
+  function restaurarRascunhoLocal() {
+    try {
+      const raw = localStorage.getItem(DRAFT_STORAGE_KEY);
+      if (!raw) return;
+      const st = JSON.parse(raw);
+      if (st.modeloAtivo) selecionarModelo(st.modeloAtivo);
+      aplicarEstadoCompleto(st);
+    } catch (e) {}
+  }
+
+  // ==========================================================
+  // TROCA DE MODELOS E SINCRONIZAÇÃO DE CAMPOS
   // ==========================================================
   function selecionarModelo(modeloId) {
     modeloAtivo = modeloId;
@@ -1084,31 +1719,31 @@
     document.getElementById('sidebar').classList.remove('open');
   }
 
-  // ==========================================================
-  // LÓGICA DO MODELO 01: TROCA DE SERVIÇO
-  // ==========================================================
   function syncTroca() {
     document.getElementById('doc_tr_parte_num').value = document.getElementById('tr_parte_num').value;
     document.getElementById('doc_tr_parte_ano').value = document.getElementById('tr_parte_ano').value;
     document.getElementById('doc_tr_funcao').value = document.getElementById('tr_funcao_dest').value;
     document.getElementById('doc_tr_carga').value = document.getElementById('tr_carga').value;
     atualizarAssinaturaDespacho();
+    salvarRascunhoLocal();
   }
 
-  function syncNomeSolicitante(valor, origem = null) {
+  function syncNomeSolicitante(valor, origem = null, pularDraft = false) {
     const val = (valor || '').toUpperCase();
     const elDo = document.getElementById('doc_tr_solicitante_do');
     const elCorpo = document.getElementById('doc_tr_solicitante_corpo');
     if (origem !== elDo) elDo.value = val;
     if (origem !== elCorpo) elCorpo.value = val;
     document.getElementById('sig_tr_solicitante').textContent = val || 'SOLICITANTE';
+    if (!pularDraft) salvarRascunhoLocal();
   }
 
-  function syncNomePermutante(valor, origem = null) {
+  function syncNomePermutante(valor, origem = null, pularDraft = false) {
     const val = (valor || '').toUpperCase();
     const elCorpo = document.getElementById('doc_tr_permutante_corpo');
     if (origem !== elCorpo) elCorpo.value = val;
     document.getElementById('sig_tr_permutante').textContent = val || 'PERMUTANTE';
+    if (!pularDraft) salvarRascunhoLocal();
   }
 
   function aplicarAlunoTroca(tipo) {
@@ -1131,10 +1766,10 @@
         document.getElementById('tr_funcao_dest').value = obj.funcao;
         document.getElementById('doc_tr_funcao').value = obj.funcao;
       }
-      // Ajusta vocativo automaticamente para Oficial vs Graduado
       const isOficial = /^(ASP|2º TEN|1º TEN|CAP|MAJ|TEN CEL|CEL)/i.test(obj.nome);
       document.getElementById('doc_tr_vocativo').value = isOficial ? 'Senhor Oficial,' : 'Senhor Graduado,';
       atualizarAssinaturaDespacho();
+      salvarRascunhoLocal();
     } catch (e) {}
   }
 
@@ -1148,6 +1783,7 @@
     document.getElementById('doc_tr_ano_ext').value = d.getFullYear();
     document.getElementById('tr_parte_ano').value = d.getFullYear();
     document.getElementById('doc_tr_parte_ano').value = d.getFullYear();
+    salvarRascunhoLocal();
   }
 
   function aplicarDataServico(qual) {
@@ -1160,12 +1796,14 @@
     const dia = String(d.getDate()).padStart(2, '0');
     const diaSem = DIAS_SEMANA[d.getDay()];
     document.getElementById(targetId).value = `${dia} (${diaSem})`;
+    salvarRascunhoLocal();
   }
 
-  function toggleDespachoTroca() {
+  function toggleDespachoTroca(pularDraft = false) {
     const checked = document.getElementById('tr_chk_despacho').checked;
     document.getElementById('blocoDespachoTroca').classList.toggle('visible', checked);
     atualizarAssinaturaDespacho();
+    if (!pularDraft) salvarRascunhoLocal();
   }
 
   function atualizarAssinaturaDespacho() {
@@ -1175,10 +1813,7 @@
     document.getElementById('sig_tr_dest_funcao').textContent = func || 'Graduado de dia';
   }
 
-  // ==========================================================
-  // LÓGICA DO MODELO 02: DOCUMENTO PADRÃO
-  // ==========================================================
-  function atualizarDocumentoPadrao() {
+  function atualizarDocumentoPadrao(pularDraft = false) {
     const selAl = document.getElementById('pad_alunos_sel');
     const selecionados = Array.from(selAl.selectedOptions).map(o => o.value).filter(v => v !== '');
     const cmd = document.getElementById('pad_cmd_sel').value;
@@ -1187,18 +1822,19 @@
 
     const blocoAl = document.getElementById('doc_pad_bloco_alunos');
     if (selecionados.length === 1) {
-      blocoAl.innerHTML = `<span style="font-weight:700;">ALUNO REFERÊNCIA:</span> AL SD PM ${selecionados[0]}`;
+      blocoAl.innerHTML = `<span style="font-weight:700;">ALUNO REFERÊNCIA:</span> AL SD PM ${escapeHtml(selecionados[0])}`;
     } else if (selecionados.length > 1) {
-      blocoAl.innerHTML = `<span style="font-weight:700;">ALUNOS REFERÊNCIA:</span><br>${selecionados.map(a => `AL SD PM ${a}`).join('<br>')}`;
+      blocoAl.innerHTML = `<span style="font-weight:700;">ALUNOS REFERÊNCIA:</span><br>${selecionados.map(a => `AL SD PM ${escapeHtml(a)}`).join('<br>')}`;
     } else {
       blocoAl.innerHTML = '';
     }
 
     const blocoCmd = document.getElementById('doc_pad_bloco_cmd');
-    blocoCmd.innerHTML = cmd ? `<span style="font-weight:700;">AOS CUIDADOS DE:</span> ${cmd}` : '';
+    blocoCmd.innerHTML = cmd ? `<span style="font-weight:700;">AOS CUIDADOS DE:</span> ${escapeHtml(cmd)}` : '';
 
     document.getElementById('doc_pad_assunto').value = assunto;
     document.getElementById('doc_pad_tema').value = tema;
+    if (!pularDraft) salvarRascunhoLocal();
   }
 
   function configurarTextareaEspelho() {
@@ -1208,13 +1844,14 @@
       ta.style.height = 'auto';
       ta.style.height = Math.max(ta.scrollHeight, 130) + 'px';
       mirror.textContent = ta.value;
+      salvarRascunhoLocal();
     };
     ta.addEventListener('input', sync);
     sync();
   }
 
   // ==========================================================
-  // BRASÃO, DATA DE HOJE, LIMPEZA E IMPRESSÃO
+  // BRASÃO, DATA, LIMPEZA E IMPRESSÃO
   // ==========================================================
   function carregarBrasaoManual(evt) {
     const file = evt.target.files[0];
@@ -1255,17 +1892,18 @@
     if (!silencioso) showToast(`Data atualizada: ${dataExtenso}`);
   }
 
-  function limparModeloAtual() {
-    if (!confirm('Limpar os campos do documento atual?')) return;
+  function limparCamposSemConfirmar() {
     if (modeloAtivo === 'troca') {
+      document.getElementById('tr_parte_num').value = '';
+      document.getElementById('doc_tr_parte_num').value = '';
       document.getElementById('tr_solicitante_sel').value = '';
       document.getElementById('tr_permutante_sel').value = '';
       document.getElementById('tr_dt_escalado').value = '';
       document.getElementById('tr_dt_compensa').value = '';
       document.getElementById('doc_tr_dia_escalado').value = '';
       document.getElementById('doc_tr_dia_compensa').value = '';
-      syncNomeSolicitante('');
-      syncNomePermutante('');
+      syncNomeSolicitante('', null, true);
+      syncNomePermutante('', null, true);
     } else {
       document.getElementById('pad_alunos_sel').selectedIndex = 0;
       document.getElementById('pad_cmd_sel').value = '';
@@ -1273,8 +1911,14 @@
       document.getElementById('pad_tema_in').value = '';
       document.getElementById('doc_pad_texto').value = '';
       document.getElementById('doc_pad_texto').dispatchEvent(new Event('input'));
-      atualizarDocumentoPadrao();
+      atualizarDocumentoPadrao(true);
     }
+  }
+
+  function limparModeloAtual() {
+    if (!confirm('Limpar os campos do documento atual na tela?')) return;
+    limparCamposSemConfirmar();
+    salvarRascunhoLocal();
     showToast('Campos limpos!');
   }
 
