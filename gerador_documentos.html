@@ -1,242 +1,1295 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Documentos - 5º Pelotão</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Adicionando a biblioteca para gerar PDF nativo -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: { 
-                extend: { 
-                    colors: { 
-                        sys: { dark: '#1b4571', header: '#348fe2', menu: '#e2e7ec', bg: '#f4f6f9', blue: '#2b579a', breadcrumb: '#5b8cbe' },
-                        pmmt: { blue: '#0B1C3D', gold: '#C5A059', light: '#142A5C' }
-                    }, 
-                    fontFamily: { sans: ['"Open Sans"', 'sans-serif'] } 
-                } 
-            }
-        }
-    </script>
-    <style>
-        body { background-color: transparent; color: #333; }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Central de Documentos – 5º Pelotão | PMMT</title>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --bg-app: #0a101f;
+    --bg-header: #151e2e;
+    --bg-panel: #151e2e;
+    --bg-panel-hover: #1e293b;
+    --border-ui: #334155;
+    --text-ui: #f1f5f9;
+    --text-muted: #94a3b8;
+    --accent: #1e3a8a;
+    --pm-navy: #0B1C3D;
+    --pm-gold: #C5A059;
+    --success: #059669;
+    --danger: #b91c1c;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg-app);
+    color: var(--text-ui);
+    font-family: 'Open Sans', system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #1e293b; }
+  ::-webkit-scrollbar-thumb { background: #475569; }
+
+  /* ===== TOPBAR (PADRÃO PORTAL) ===== */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg-app);
+    border-bottom: 2px solid var(--pm-gold);
+    padding: 10px 16px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .brand-badge {
+    background: var(--pm-navy);
+    color: var(--pm-gold);
+    font-weight: 800;
+    font-size: 11px;
+    padding: 6px 10px;
+    border-radius: 2px;
+    border: 1px solid var(--pm-gold);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+  }
+  .brand-title { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1.2; }
+  .brand-sub { font-size: 10px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 4px 9px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid #475569;
+    color: #cbd5e1;
+  }
+  .status-pill.ok { background: rgba(16,185,129,0.15); border-color: #10b981; color: #6ee7b7; }
+  .status-pill.err { background: rgba(239,68,68,0.15); border-color: #ef4444; color: #fca5a5; }
+
+  .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+
+  .btn {
+    appearance: none;
+    border: 1px solid var(--border-ui);
+    background: var(--bg-panel);
+    color: var(--text-ui);
+    padding: 7px 11px;
+    border-radius: 2px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+  }
+  .btn:hover { background: var(--bg-panel-hover); filter: brightness(1.08); }
+  .btn-primary { background: var(--pm-navy); border-color: #3b82f6; color: #fff; }
+  .btn-primary:hover { background: var(--accent); }
+  .btn-gold { background: var(--pm-gold); border-color: #b08b43; color: var(--bg-app); font-weight: 800; }
+  .btn-danger { background: transparent; border-color: #7f1d1d; color: #fca5a5; }
+  .btn-danger:hover { background: var(--danger); color: #fff; border-color: #ef4444; }
+  .btn-sm { padding: 4px 8px; font-size: 10px; }
+
+  /* ===== LAYOUT ===== */
+  .app-layout { display: flex; flex: 1; min-height: 0; }
+
+  /* ===== SIDEBAR ===== */
+  .sidebar {
+    width: 320px;
+    flex-shrink: 0;
+    background: var(--bg-panel);
+    border-right: 1px solid var(--border-ui);
+    padding: 14px 12px;
+    position: sticky;
+    top: 58px;
+    height: calc(100vh - 58px);
+    overflow-y: auto;
+  }
+
+  .sidebar-section-title {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--pm-gold);
+    font-weight: 800;
+    margin: 0 0 8px 2px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .model-list {
+    list-style: none;
+    margin: 0 0 14px 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .model-btn {
+    width: 100%;
+    text-align: left;
+    background: rgba(10, 16, 31, 0.55);
+    border: 1px solid var(--border-ui);
+    border-left: 3px solid transparent;
+    color: var(--text-ui);
+    padding: 9px 10px;
+    border-radius: 2px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    transition: all 0.15s;
+  }
+  .model-btn:hover { background: var(--bg-panel-hover); border-color: #475569; }
+  .model-btn.active {
+    background: var(--pm-navy);
+    border-color: var(--pm-gold);
+    border-left-color: var(--pm-gold);
+    color: var(--pm-gold);
+  }
+  .model-num {
+    font-size: 10px;
+    font-weight: 800;
+    background: rgba(197, 160, 89, 0.16);
+    color: var(--pm-gold);
+    padding: 2px 6px;
+    border-radius: 2px;
+    border: 1px solid rgba(197, 160, 89, 0.4);
+  }
+  .model-sub {
+    display: block;
+    font-size: 9.5px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: none;
+    letter-spacing: 0;
+    margin-top: 2px;
+  }
+
+  .quick-box {
+    background: var(--bg-app);
+    border: 1px solid var(--border-ui);
+    border-top: 2px solid var(--pm-gold);
+    border-radius: 2px;
+    padding: 10px;
+    margin-bottom: 14px;
+  }
+  .quick-box label {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 3px;
+    margin-top: 9px;
+  }
+  .quick-box label:first-child { margin-top: 0; }
+  .quick-box input[type="text"],
+  .quick-box input[type="date"],
+  .quick-box select,
+  .quick-box textarea {
+    width: 100%;
+    background: #1e293b;
+    border: 1px solid #475569;
+    color: #fff;
+    border-radius: 2px;
+    padding: 6px 8px;
+    font-size: 11.5px;
+    font-weight: 600;
+    font-family: inherit;
+  }
+  .quick-box input:focus,
+  .quick-box select:focus,
+  .quick-box textarea:focus {
+    outline: none;
+    border-color: var(--pm-gold);
+  }
+  .quick-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .quick-chk {
+    display: flex !important;
+    align-items: center;
+    gap: 7px;
+    margin-top: 10px !important;
+    color: #cbd5e1 !important;
+    cursor: pointer;
+    text-transform: none !important;
+    font-size: 11px !important;
+  }
+  .quick-chk input { accent-color: var(--pm-gold); width: 14px; height: 14px; margin: 0; }
+
+  .sidebar-hint {
+    padding: 9px;
+    background: rgba(197, 160, 89, 0.1);
+    border: 1px solid rgba(197, 160, 89, 0.35);
+    border-radius: 2px;
+    font-size: 10.5px;
+    color: #e2e8f0;
+    line-height: 1.45;
+  }
+
+  .panel-config { display: none; }
+  .panel-config.active { display: block; }
+
+  /* ===== WORKSPACE & FOLHA A4 ===== */
+  .workspace {
+    flex: 1;
+    padding: 22px 16px 60px;
+    overflow-x: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #111827;
+  }
+
+  .doc-view {
+    display: none;
+    width: 100%;
+    max-width: 210mm;
+  }
+  .doc-view.active { display: block; }
+
+  .sheet-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 0 2px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .sheet-bar-title {
+    font-size: 11.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #cbd5e1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sheet-bar-badge {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 2px;
+    background: var(--pm-navy);
+    border: 1px solid var(--pm-gold);
+    color: var(--pm-gold);
+  }
+
+  /* ===== FOLHA OFICIAL A4 (FIDELIDADE DE IMPRESSÃO) ===== */
+  .sheet {
+    background: #ffffff;
+    color: #000000;
+    width: 100%;
+    min-height: 280mm;
+    padding: 18mm 20mm 16mm 20mm;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+    border-radius: 2px;
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    font-size: 12pt;
+    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sheet-body { flex: 1; }
+
+  .doc-brasao-wrap {
+    text-align: center;
+    margin-bottom: 6px;
+    min-height: 10px;
+  }
+  .doc-brasao {
+    height: 76px;
+    width: auto;
+    object-fit: contain;
+    display: inline-block;
+  }
+
+  .doc-header {
+    text-align: center;
+    line-height: 1.4;
+    margin-bottom: 22px;
+    font-size: 11.5pt;
+    text-transform: uppercase;
+  }
+  .doc-header .line { display: block; }
+
+  .doc-date-right {
+    text-align: right;
+    margin-bottom: 18px;
+  }
+
+  .doc-meta {
+    margin-bottom: 24px;
+    line-height: 1.65;
+  }
+  .doc-meta-row {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+
+  .doc-salutation {
+    font-weight: 700;
+    margin: 22px 0 10px 0;
+  }
+
+  .doc-body-p {
+    text-align: justify;
+    margin: 0 0 16px 0;
+    line-height: 1.65;
+  }
+
+  .doc-closing {
+    margin-top: 18px;
+    margin-bottom: 46px;
+  }
+
+  /* Assinaturas Duplas (Troca de Serviço) */
+  .sig-dual {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-top: 38px;
+    text-align: center;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .sig-single {
+    text-align: center;
+    margin-top: 56px;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .sig-line {
+    border-top: 1px solid #000;
+    padding-top: 5px;
+    font-size: 10.5pt;
+    line-height: 1.35;
+  }
+  .sig-line-center {
+    width: 320px;
+    max-width: 90%;
+    margin: 0 auto;
+    border-top: 1px solid #000;
+    padding-top: 5px;
+    font-size: 11pt;
+    line-height: 1.35;
+  }
+  .sig-name {
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .sig-role {
+    font-size: 9.5pt;
+  }
+
+  /* Quadro de Despacho Opcional */
+  .despacho-box {
+    display: none;
+    margin-top: 34px;
+    border: 1px solid #000;
+    padding: 12px 14px;
+    font-size: 10.5pt;
+    line-height: 1.5;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .despacho-box.visible { display: block; }
+  .despacho-title {
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 10pt;
+    border-bottom: 1px solid #000;
+    padding-bottom: 4px;
+    margin-bottom: 8px;
+  }
+  .despacho-opts {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+
+  .doc-footer {
+    margin-top: 24px;
+    padding-top: 6px;
+    border-top: 1px solid #d1d5db;
+    text-align: center;
+    font-size: 8.5pt;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #555;
+  }
+
+  /* ===== CAMPOS EDITÁVEIS NA FOLHA ===== */
+  .f-in, .f-ta {
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    font-size: inherit;
+    color: #000000;
+    background: #eff6ff;
+    border: none;
+    border-bottom: 1px dashed #60a5fa;
+    border-radius: 2px;
+    padding: 0 4px;
+    transition: background 0.12s, border-color 0.12s;
+  }
+  .f-in:focus, .f-ta:focus {
+    outline: none;
+    background: #dbeafe;
+    border-bottom: 1.5px solid #1d4ed8;
+  }
+  .f-in::placeholder, .f-ta::placeholder {
+    color: #64748b;
+    font-style: italic;
+  }
+  .f-in.bold { font-weight: 700; }
+  .f-in.upper { text-transform: uppercase; }
+  .f-in.center { text-align: center; }
+
+  .w-xs { width: 42px; text-align: center; }
+  .w-sm { width: 64px; text-align: center; }
+  .w-md { width: 135px; }
+  .w-lg { width: 210px; }
+  .w-xl { width: 310px; max-width: 100%; }
+  .w-flex { flex: 1; min-width: 140px; }
+
+  .f-ta {
+    width: 100%;
+    resize: vertical;
+    min-height: 120px;
+    line-height: 1.65;
+    text-align: justify;
+    padding: 6px 8px;
+    display: block;
+  }
+
+  .print-mirror {
+    display: none;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    text-align: justify;
+    line-height: 1.65;
+  }
+
+  .status-toast {
+    position: fixed;
+    bottom: 18px;
+    right: 18px;
+    background: #065f46;
+    color: #ecfdf5;
+    border: 1px solid #10b981;
+    padding: 9px 14px;
+    border-radius: 2px;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.45);
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+    transition: all 0.25s ease;
+    z-index: 250;
+  }
+  .status-toast.show { opacity: 1; transform: translateY(0); }
+
+  /* ===== RESPONSIVO ===== */
+  .mobile-menu-btn { display: none; }
+  @media (max-width: 960px) {
+    .mobile-menu-btn { display: inline-flex; }
+    .sidebar {
+      position: fixed;
+      left: -340px;
+      top: 56px;
+      z-index: 150;
+      transition: left 0.2s ease;
+      box-shadow: 6px 0 24px rgba(0,0,0,0.55);
+    }
+    .sidebar.open { left: 0; }
+    .sheet { padding: 12mm 10mm; min-height: auto; }
+    .sig-dual { grid-template-columns: 1fr; gap: 28px; }
+  }
+
+  /* ===== IMPRESSÃO OFICIAL A4 ===== */
+  @page {
+    size: A4 portrait;
+    margin: 16mm 18mm 14mm 18mm;
+  }
+
+  @media print {
+    body { background: #ffffff !important; color: #000000 !important; display: block !important; }
+    .no-print, .topbar, .sidebar, .sheet-bar, .status-toast { display: none !important; }
+    .app-layout, .workspace { display: block !important; padding: 0 !important; margin: 0 !important; background: #ffffff !important; overflow: visible !important; }
+    .doc-view { display: none !important; max-width: none !important; width: 100% !important; }
+    .doc-view.active { display: block !important; }
+    .sheet { box-shadow: none !important; border-radius: 0 !important; padding: 0 !important; min-height: auto !important; display: block !important; }
+    .f-in, .f-ta {
+      background: transparent !important;
+      border: none !important;
+      padding: 0 !important;
+      color: #000000 !important;
+    }
+    .f-in::placeholder, .f-ta::placeholder { color: transparent !important; }
+    .f-ta { display: none !important; }
+    .print-mirror { display: block !important; }
+  }
+</style>
 </head>
-<body class="h-screen flex flex-col antialiased bg-white p-4 overflow-y-auto">
+<body>
 
-    <div class="bg-white shadow-sm border border-slate-300 rounded-xl overflow-hidden mb-4">
-        <div class="bg-sys-dark text-white px-5 py-4 flex justify-between items-center border-b-4 border-pmmt-gold">
-            <div>
-                <h2 class="text-sm font-black tracking-widest uppercase"><i class="fa-solid fa-file-pdf text-pmmt-gold mr-2"></i> Gerador de Documento Padrão</h2>
-                <p class="text-[9px] text-slate-300 uppercase mt-0.5">Preencha os campos (ou selecione os cadastrados) para exportar em .PDF</p>
-            </div>
-        </div>
-        
-        <form onsubmit="gerarDocumentoPDF(event)" class="p-6 bg-slate-50 flex flex-col gap-5">
-            
-            <!-- Linha 1: Buscas Automáticas do Banco (Alunos e Comandantes) -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 p-4 bg-white border border-slate-200 rounded-lg shadow-sm">
-                <div>
-                    <label class="block text-xs font-bold text-pmmt-blue uppercase tracking-wider mb-1.5 flex justify-between items-end">
-                        <span><i class="fa-solid fa-users mr-1"></i> Aluno(s) Envolvido(s)</span>
-                        <span class="text-[9px] text-slate-400 font-bold tracking-normal normal-case">(Segure CTRL para vários)</span>
-                    </label>
-                    <select id="docAluno" multiple size="4" class="w-full bg-slate-50 border border-slate-300 p-2 rounded-lg text-sm text-slate-700 outline-none focus:border-pmmt-gold transition">
-                        <option value="" selected>-- Geral / Nenhum Aluno Específico --</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-pmmt-blue uppercase tracking-wider mb-1.5"><i class="fa-solid fa-user-shield mr-1"></i> Aos Cuidados de (Comandante)</label>
-                    <select id="docComandante" class="w-full bg-slate-50 border border-slate-300 p-2.5 rounded-lg text-sm text-slate-700 outline-none focus:border-pmmt-gold transition">
-                        <option value="">-- Sem Destinatário Específico --</option>
-                    </select>
-                </div>
-            </div>
+<!-- ===== TOPBAR ===== -->
+<header class="topbar no-print">
+  <div class="brand">
+    <button class="btn btn-sm mobile-menu-btn" id="btnToggleSidebar" type="button"><i class="fa-solid fa-bars"></i> Modelos</button>
+    <div class="brand-badge"><i class="fa-solid fa-file-lines"></i> 5º PELOTÃO • PMMT</div>
+    <div>
+      <div class="brand-title">Central de Documentos Oficiais</div>
+      <div class="brand-sub">35º CFSD – Polo Cáceres/MT • Preenchimento em Folha A4</div>
+    </div>
+    <span id="statusConexao" class="status-pill"><i class="fa-solid fa-circle-notch fa-spin"></i> Conectando...</span>
+  </div>
 
-            <!-- Linha 2: Assunto e Tema com Sugestões do Banco -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Assunto</label>
-                    <input list="listaAssuntos" type="text" id="docAssunto" required placeholder="Ex: Solicitação de Material" class="w-full bg-white border border-slate-300 p-3 rounded-lg text-sm text-slate-700 outline-none focus:border-pmmt-blue focus:ring-1 focus:ring-pmmt-blue transition shadow-sm">
-                    <datalist id="listaAssuntos"></datalist>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Tema</label>
-                    <input list="listaTemas" type="text" id="docTema" required placeholder="Ex: Equipamentos Administrativos" class="w-full bg-white border border-slate-300 p-3 rounded-lg text-sm text-slate-700 outline-none focus:border-pmmt-blue focus:ring-1 focus:ring-pmmt-blue transition shadow-sm">
-                    <datalist id="listaTemas"></datalist>
-                </div>
-            </div>
-            
-            <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Texto Abordado</label>
-                <textarea id="docTexto" required placeholder="Digite o conteúdo detalhado do documento..." class="w-full bg-white border border-slate-300 p-4 rounded-lg text-sm text-slate-700 outline-none focus:border-pmmt-blue focus:ring-1 focus:ring-pmmt-blue transition resize-none h-48 shadow-sm"></textarea>
-            </div>
+  <div class="toolbar">
+    <button class="btn" type="button" onclick="preencherDataHoje()" title="Atualiza a data de emissão para hoje">
+      <i class="fa-regular fa-calendar-check"></i> Data Hoje
+    </button>
+    <button class="btn" type="button" onclick="document.getElementById('inputUploadBrasao').click()" title="Selecionar imagem do Brasão PMMT (salvo no navegador)">
+      <i class="fa-solid fa-shield"></i> Brasão
+    </button>
+    <input type="file" id="inputUploadBrasao" accept="image/*" style="display:none" onchange="carregarBrasaoManual(event)">
+    <button class="btn btn-danger" type="button" onclick="limparModeloAtual()" title="Limpar campos do modelo ativo">
+      <i class="fa-solid fa-eraser"></i> Limpar
+    </button>
+    <button class="btn btn-gold" type="button" onclick="imprimirDocumento()">
+      <i class="fa-solid fa-print"></i> Imprimir / Salvar PDF (A4)
+    </button>
+  </div>
+</header>
 
-            <div class="flex justify-end pt-4 border-t border-slate-200 mt-2">
-                <button type="submit" id="btnGerarPdf" class="bg-pmmt-blue hover:bg-sys-blue text-white font-black px-8 py-3 rounded-lg shadow-md transition text-xs uppercase tracking-widest flex items-center gap-2">
-                    <i class="fa-solid fa-file-pdf"></i> Baixar Documento .PDF
-                </button>
-            </div>
-        </form>
+<div class="app-layout">
+  <!-- ===== SIDEBAR: SELETOR DE MODELOS + PREENCHIMENTO ASSISTIDO ===== -->
+  <aside class="sidebar no-print" id="sidebar">
+    <div class="sidebar-section-title">
+      <span><i class="fa-solid fa-folder-open"></i> Modelos Disponíveis</span>
     </div>
 
-    <script>
-        // Credenciais do Supabase
-        const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        
-        let autorAtual = "Usuário Logado";
+    <ul class="model-list">
+      <li>
+        <button type="button" class="model-btn active" data-model="troca" onclick="selecionarModelo('troca')">
+          <span class="model-num">01</span>
+          <div>
+            Troca de Serviço
+            <span class="model-sub">Parte de permuta entre alunos</span>
+          </div>
+        </button>
+      </li>
+      <li>
+        <button type="button" class="model-btn" data-model="padrao" onclick="selecionarModelo('padrao')">
+          <span class="model-num">02</span>
+          <div>
+            Documento Padrão
+            <span class="model-sub">Parte / Solicitação geral</span>
+          </div>
+        </button>
+      </li>
+    </ul>
 
-        window.onload = async function() {
-            // Verifica o usuário atual
-            const { data: { user } } = await supabaseClient.auth.getUser();
-            if (user) {
-                autorAtual = user.email.split('@')[0].toUpperCase();
-            }
+    <!-- ===== PAINEL ASSISTIDO: MODELO 01 (TROCA DE SERVIÇO) ===== -->
+    <div id="config-troca" class="panel-config active">
+      <div class="sidebar-section-title">
+        <span><i class="fa-solid fa-sliders"></i> Dados da Permuta (BD)</span>
+      </div>
+      <div class="quick-box">
+        <div class="quick-grid-2">
+          <div>
+            <label for="tr_parte_num">Parte Nº</label>
+            <input id="tr_parte_num" type="text" value="001" oninput="syncTroca()">
+          </div>
+          <div>
+            <label for="tr_parte_ano">Ano</label>
+            <input id="tr_parte_ano" type="text" value="2026" oninput="syncTroca()">
+          </div>
+        </div>
 
-            // Carrega os dados de Alunos e Temas para popular os formulários automaticamente
-            await carregarOpcoesDoBanco();
-        };
+        <label for="tr_data_emissao">Data da Emissão</label>
+        <input id="tr_data_emissao" type="date" onchange="aplicarDataEmissaoTroca()">
 
-        // Função que busca dados do Supabase e preenche os botões de seleção
-        async function carregarOpcoesDoBanco() {
-            // 1. Busca os alunos do pelotão
-            const { data: alunosData } = await supabaseClient
-                .from('alunos_pelotao')
-                .select('numero, qra, nome, comandante')
-                .order('numero', { ascending: true });
+        <label for="tr_solicitante_sel"><i class="fa-solid fa-user"></i> Solicitante (Do: AL SD PM)</label>
+        <select id="tr_solicitante_sel" onchange="aplicarAlunoTroca('solicitante')">
+          <option value="">Carregando alunos...</option>
+        </select>
 
-            if(alunosData) {
-                const selAluno = document.getElementById('docAluno');
-                const selCmd = document.getElementById('docComandante');
-                const comandantesSet = new Set(); // Set evita repetição de nomes de comandantes
+        <label for="tr_destinatario_sel"><i class="fa-solid fa-user-shield"></i> Destinatário (Ao: Sr.)</label>
+        <select id="tr_destinatario_sel" onchange="aplicarDestinatarioTroca()">
+          <option value="">Carregando graduados/oficiais...</option>
+        </select>
 
-                alunosData.forEach(aluno => {
-                    // Formata para '501 - QRA'
-                    const num = "5" + aluno.numero.toString().padStart(2, '0');
-                    const nomeExibicao = aluno.qra || aluno.nome;
-                    selAluno.innerHTML += `<option value="${num} - ${nomeExibicao}">AL SD PM ${num} - ${nomeExibicao}</option>`;
+        <label for="tr_funcao_dest">Função do Destinatário</label>
+        <input id="tr_funcao_dest" type="text" value="Graduado de dia" oninput="syncTroca()">
 
-                    // Pega o nome dos comandantes de forma dinâmica
-                    if(aluno.comandante) {
-                        comandantesSet.add(aluno.comandante);
-                    }
-                });
+        <label for="tr_permutante_sel"><i class="fa-solid fa-people-arrows"></i> Permutante (Com o AL SD PM)</label>
+        <select id="tr_permutante_sel" onchange="aplicarAlunoTroca('permutante')">
+          <option value="">-- Selecione quem assumirá --</option>
+        </select>
 
-                // Preenche a lista de comandantes
-                comandantesSet.forEach(cmd => {
-                    selCmd.innerHTML += `<option value="${cmd}">${cmd}</option>`;
-                });
-            }
+        <div class="quick-grid-2">
+          <div>
+            <label for="tr_dt_escalado">Dia Escalado</label>
+            <input id="tr_dt_escalado" type="date" onchange="aplicarDataServico('escalado')">
+          </div>
+          <div>
+            <label for="tr_dt_compensa">Dia Compensação</label>
+            <input id="tr_dt_compensa" type="date" onchange="aplicarDataServico('compensa')">
+          </div>
+        </div>
 
-            // 2. Busca os assuntos e temas criados no banco de dados
-            const { data: temasData } = await supabaseClient.from('documentos_temas').select('*');
-            if(temasData) {
-                const dlAssuntos = document.getElementById('listaAssuntos');
-                const dlTemas = document.getElementById('listaTemas');
-                
-                temasData.forEach(item => {
-                    dlAssuntos.innerHTML += `<option value="${item.assunto}">`;
-                    dlTemas.innerHTML += `<option value="${item.tema}">`;
-                });
-            }
-        }
+        <label for="tr_carga">Turno / Carga do Serviço</label>
+        <input id="tr_carga" type="text" value="24h" placeholder="Ex: 24h / 12h" oninput="syncTroca()">
 
-        function gerarDocumentoPDF(e) {
-            e.preventDefault();
-            
-            const btn = document.getElementById('btnGerarPdf');
-            const originalText = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Gerando PDF...';
+        <label class="quick-chk">
+          <input type="checkbox" id="tr_chk_despacho" onchange="toggleDespachoTroca()">
+          <span>Incluir quadro de Despacho (Autorizo)</span>
+        </label>
+      </div>
+    </div>
 
-            // Captura todos os alunos selecionados (Múltipla Seleção)
-            const docAlunoEl = document.getElementById('docAluno');
-            const alunosSelecionados = Array.from(docAlunoEl.selectedOptions)
-                                            .map(opt => opt.value)
-                                            .filter(val => val !== ""); // Remove a opção "Geral" se estiver junto
+    <!-- ===== PAINEL ASSISTIDO: MODELO 02 (DOCUMENTO PADRÃO) ===== -->
+    <div id="config-padrao" class="panel-config">
+      <div class="sidebar-section-title">
+        <span><i class="fa-solid fa-sliders"></i> Dados do Documento (BD)</span>
+      </div>
+      <div class="quick-box">
+        <label for="pad_alunos_sel">Aluno(s) Envolvido(s) <span style="font-weight:400;text-transform:none;">(Ctrl p/ vários)</span></label>
+        <select id="pad_alunos_sel" multiple size="5" onchange="atualizarDocumentoPadrao()">
+          <option value="" selected>-- Geral / Nenhum Aluno --</option>
+        </select>
 
-            const comandanteSelecionado = document.getElementById('docComandante').value;
-            const assunto = document.getElementById('docAssunto').value.trim();
-            const tema = document.getElementById('docTema').value.trim();
-            const texto = document.getElementById('docTexto').value.trim().replace(/\n/g, '<br>');
-            const dataAtual = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+        <label for="pad_cmd_sel">Aos Cuidados de (Comandante)</label>
+        <select id="pad_cmd_sel" onchange="atualizarDocumentoPadrao()">
+          <option value="">-- Sem Destinatário Específico --</option>
+        </select>
 
-            // Monta o bloco de Alunos dinamicamente (Singular ou Plural)
-            let blocoAluno = '';
-            if (alunosSelecionados.length === 1) {
-                blocoAluno = `<p><span style="font-weight: bold;">ALUNO REFERÊNCIA:</span> AL SD PM ${alunosSelecionados[0]}</p>`;
-            } else if (alunosSelecionados.length > 1) {
-                const listaFormatada = alunosSelecionados.map(a => `AL SD PM ${a}`).join('<br>');
-                blocoAluno = `<p><span style="font-weight: bold;">ALUNOS REFERÊNCIA:</span><br>${listaFormatada}</p>`;
-            }
+        <label for="pad_assunto_in">Assunto</label>
+        <input id="pad_assunto_in" list="listaAssuntos" type="text" placeholder="Ex: Solicitação de Material" oninput="atualizarDocumentoPadrao()">
+        <datalist id="listaAssuntos"></datalist>
 
-            let blocoCmd = comandanteSelecionado ? `<p><span style="font-weight: bold;">AOS CUIDADOS DE:</span> ${comandanteSelecionado}</p>` : '';
+        <label for="pad_tema_in">Tema</label>
+        <input id="pad_tema_in" list="listaTemas" type="text" placeholder="Ex: Equipamentos Administrativos" oninput="atualizarDocumentoPadrao()">
+        <datalist id="listaTemas"></datalist>
+      </div>
+    </div>
 
-            // Cria um elemento div temporário com os estilos aplicados inline
-            const conteudoDoc = document.createElement('div');
-            conteudoDoc.innerHTML = `
-                <div style="font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 1.5; text-align: justify; padding: 20px; color: black; background: white;">
-                    <div style="text-align: center; font-weight: bold; margin-bottom: 40px; text-transform: uppercase;">
-                        ESTADO DE MATO GROSSO<br>
-                        POLÍCIA MILITAR DO ESTADO DE MATO GROSSO<br>
-                        ESCOLA SUPERIOR DE FORMAÇÃO E APERFEIÇOAMENTO DE PRAÇAS<br>
-                        35º CFSD - 5º PELOTÃO
-                    </div>
+    <div class="sidebar-hint">
+      <strong>Dica:</strong> Você pode selecionar os dados aqui na lateral ou clicar diretamente sobre qualquer campo azul na folha A4 para ajustar o texto antes de clicar em <em>Imprimir / Salvar PDF</em>.
+    </div>
+  </aside>
 
-                    <p><span style="font-weight: bold;">DATA DE EMISSÃO:</span> ${dataAtual}</p>
-                    <p><span style="font-weight: bold;">AUTOR/RESPONSÁVEL:</span> ${autorAtual}</p>
-                    ${blocoAluno}
-                    ${blocoCmd}
-                    <br>
-                    <p><span style="font-weight: bold;">ASSUNTO:</span> ${assunto}</p>
-                    <p><span style="font-weight: bold;">TEMA:</span> ${tema}</p>
-                    <br>
-                    <p style="text-indent: 40px;">${texto}</p>
-                    
-                    <div style="text-align: center; margin-top: 80px;">
-                        <div style="width: 300px; border-top: 1px solid black; margin: 0 auto 5px auto;"></div>
-                        ${autorAtual}<br>
-                        Aluno(a) Soldado PM - 5º Pelotão
-                    </div>
-                </div>
-            `;
+  <!-- ===== ÁREA PRINCIPAL: FOLHAS A4 EDITÁVEIS ===== -->
+  <main class="workspace">
 
-            // Configurações do PDF (Folha A4, margem, nome do arquivo)
-            const opt = {
-                margin:       15,
-                filename:     `Documento_${assunto.replace(/\s+/g, '_')}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2 },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
+    <!-- ================================================================ -->
+    <!-- MODELO 01: SOLICITAÇÃO DE TROCA DE SERVIÇO                       -->
+    <!-- ================================================================ -->
+    <section id="view-troca" class="doc-view active">
+      <div class="sheet-bar no-print">
+        <div class="sheet-bar-title">
+          <span>Modelo 01 – Solicitação de Troca de Serviço</span>
+          <span class="sheet-bar-badge">Folha A4 Editável</span>
+        </div>
+      </div>
 
-            // Gera o PDF e faz o download
-            html2pdf().set(opt).from(conteudoDoc).save().then(() => {
-                // Restaura o botão e limpa os campos de texto após concluir
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-                document.getElementById('docAssunto').value = '';
-                document.getElementById('docTema').value = '';
-                document.getElementById('docTexto').value = '';
-                document.getElementById('docAluno').selectedIndex = 0; // Volta pra opção Geral
-                document.getElementById('docComandante').value = '';
-            }).catch(err => {
-                alert("Erro ao gerar o PDF.");
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-            });
-        }
-    </script>
+      <div class="sheet">
+        <div class="sheet-body">
+          <div class="doc-brasao-wrap">
+            <img class="doc-brasao img-brasao-pmmt" src="brasao_pmmt.png" alt="Brasão PMMT" onerror="this.style.display='none'">
+          </div>
+
+          <div class="doc-header">
+            <span class="line">POLÍCIA MILITAR DO ESTADO DE MATO GROSSO</span>
+            <span class="line">DIRETORIA DE ENSINO, INSTRUÇÃO E PESQUISA</span>
+            <span class="line">ESCOLA SUPERIOR DE FORMAÇÃO E APERFEIÇOAMENTO DE PRAÇAS</span>
+            <span class="line">35º CFSD - 5º PELOTÃO / POLO CÁCERES</span>
+          </div>
+
+          <div class="doc-date-right">
+            Cáceres - MT,
+            <input type="text" id="doc_tr_dia" class="f-in w-xs" placeholder="00"> de
+            <input type="text" id="doc_tr_mes" class="f-in w-md center" placeholder="Novembro"> de
+            <input type="text" id="doc_tr_ano_ext" class="f-in w-sm" value="2026">.
+          </div>
+
+          <div class="doc-meta">
+            <div class="doc-meta-row">
+              <span>Parte nº</span>
+              <input type="text" id="doc_tr_parte_num" class="f-in w-sm" value="001" oninput="document.getElementById('tr_parte_num').value=this.value"><span>/</span><input type="text" id="doc_tr_parte_ano" class="f-in w-sm" value="2026" oninput="document.getElementById('tr_parte_ano').value=this.value"><span>.</span>
+            </div>
+
+            <div class="doc-meta-row">
+              <span>Do: AL SD</span>
+              <span style="font-weight:700;">PM</span>
+              <input type="text" id="doc_tr_solicitante_do" class="f-in bold upper w-xl" placeholder="NOME / QRA DO SOLICITANTE" oninput="syncNomeSolicitante(this.value, this)">
+            </div>
+
+            <div class="doc-meta-row">
+              <span style="font-weight:700;">Ao: Sr.</span>
+              <input type="text" id="doc_tr_destinatario" class="f-in upper w-xl" value="1º SGT PM ALESSANDER ORTIZ DE SOUZA" placeholder="Posto/Grad e Nome do Destinatário" oninput="atualizarAssinaturaDespacho()">
+              <span>|</span>
+              <input type="text" id="doc_tr_funcao" class="f-in w-md" value="Graduado de dia" oninput="document.getElementById('tr_funcao_dest').value=this.value; atualizarAssinaturaDespacho()">
+            </div>
+
+            <div class="doc-meta-row" style="margin-top: 12px;">
+              <span>Assunto:</span>
+              <input type="text" id="doc_tr_assunto" class="f-in w-xl" value="Solicitação de troca de serviço.">
+            </div>
+          </div>
+
+          <div class="doc-salutation">
+            <input type="text" id="doc_tr_vocativo" class="f-in bold w-lg" value="Senhor Graduado,">
+          </div>
+
+          <p class="doc-body-p">
+            Eu AL SD PM
+            <input type="text" id="doc_tr_solicitante_corpo" class="f-in bold upper w-md center" placeholder="SOLICITANTE" oninput="syncNomeSolicitante(this.value, this)">,
+            solicito autorização para permutar o serviço do dia
+            <input type="text" id="doc_tr_dia_escalado" class="f-in upper w-md center" placeholder="28 (SÁBADO)"> —
+            <input type="text" id="doc_tr_carga" class="f-in w-xs" value="24h" oninput="document.getElementById('tr_carga').value=this.value">,
+            no qual me encontraria escalado, com o AL SD PM
+            <input type="text" id="doc_tr_permutante_corpo" class="f-in bold upper w-md center" placeholder="PERMUTANTE" oninput="syncNomePermutante(this.value, this)">,
+            que está de acordo para o qual o compensarei no serviço do dia
+            <input type="text" id="doc_tr_dia_compensa" class="f-in upper w-md center" placeholder="29 (DOMINGO)">.
+          </p>
+
+          <div class="doc-closing">
+            Respeitosamente,
+          </div>
+
+          <!-- ASSINATURAS DUPLAS ENQUADRADAS NA FOLHA A4 -->
+          <div class="sig-dual">
+            <div>
+              <div class="sig-line">
+                <div class="sig-name" id="sig_tr_solicitante">SOLICITANTE</div>
+                <div class="sig-role">AL SD PM – 5º PELOTÃO – 35º CFSD</div>
+                <div class="sig-role" style="font-style:italic;">(Solicitante)</div>
+              </div>
+            </div>
+            <div>
+              <div class="sig-line">
+                <div class="sig-name" id="sig_tr_permutante">PERMUTANTE</div>
+                <div class="sig-role">AL SD PM – 5º PELOTÃO – 35º CFSD</div>
+                <div class="sig-role" style="font-style:italic;">(De acordo / Permutante)</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- QUADRO DE DESPACHO OPCIONAL -->
+          <div id="blocoDespachoTroca" class="despacho-box">
+            <div class="despacho-title">Despacho / Autorização</div>
+            <div class="despacho-opts">
+              <span>(&nbsp;&nbsp;&nbsp;) AUTORIZO a permuta solicitada</span>
+              <span>(&nbsp;&nbsp;&nbsp;) NÃO AUTORIZO</span>
+            </div>
+            <div style="text-align:center; margin-top:26px;">
+              <div class="sig-line-center">
+                <div class="sig-name" id="sig_tr_destinatario">1º SGT PM ALESSANDER ORTIZ DE SOUZA</div>
+                <div class="sig-role" id="sig_tr_dest_funcao">Graduado de dia</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="doc-footer">
+          35º CFSD – 5º Pelotão / Polo Cáceres – Polícia Militar do Estado de Mato Grosso
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <!-- MODELO 02: DOCUMENTO PADRÃO / PARTE GERAL                        -->
+    <!-- ================================================================ -->
+    <section id="view-padrao" class="doc-view">
+      <div class="sheet-bar no-print">
+        <div class="sheet-bar-title">
+          <span>Modelo 02 – Documento Padrão / Parte Geral</span>
+          <span class="sheet-bar-badge">Folha A4 Editável</span>
+        </div>
+      </div>
+
+      <div class="sheet">
+        <div class="sheet-body">
+          <div class="doc-brasao-wrap">
+            <img class="doc-brasao img-brasao-pmmt" src="brasao_pmmt.png" alt="Brasão PMMT" onerror="this.style.display='none'">
+          </div>
+
+          <div class="doc-header">
+            <span class="line" style="font-weight:700;">ESTADO DE MATO GROSSO</span>
+            <span class="line" style="font-weight:700;">POLÍCIA MILITAR DO ESTADO DE MATO GROSSO</span>
+            <span class="line" style="font-weight:700;">ESCOLA SUPERIOR DE FORMAÇÃO E APERFEIÇOAMENTO DE PRAÇAS</span>
+            <span class="line" style="font-weight:700;">35º CFSD - 5º PELOTÃO / POLO CÁCERES</span>
+          </div>
+
+          <div class="doc-meta">
+            <div class="doc-meta-row">
+              <span style="font-weight:700;">DATA DE EMISSÃO:</span>
+              <input type="text" id="doc_pad_data" class="f-in w-lg">
+            </div>
+            <div class="doc-meta-row">
+              <span style="font-weight:700;">AUTOR/RESPONSÁVEL:</span>
+              <input type="text" id="doc_pad_autor" class="f-in upper w-xl" oninput="document.getElementById('sig_pad_autor').textContent=this.value || 'AL SD PM'">
+            </div>
+            <div id="doc_pad_bloco_alunos" style="margin-top:4px;"></div>
+            <div id="doc_pad_bloco_cmd" style="margin-top:4px;"></div>
+            <div class="doc-meta-row" style="margin-top:12px;">
+              <span style="font-weight:700;">ASSUNTO:</span>
+              <input type="text" id="doc_pad_assunto" class="f-in w-flex" placeholder="Digite o assunto..." oninput="document.getElementById('pad_assunto_in').value=this.value">
+            </div>
+            <div class="doc-meta-row">
+              <span style="font-weight:700;">TEMA:</span>
+              <input type="text" id="doc_pad_tema" class="f-in w-flex" placeholder="Digite o tema..." oninput="document.getElementById('pad_tema_in').value=this.value">
+            </div>
+          </div>
+
+          <div style="margin-top:16px;">
+            <textarea id="doc_pad_texto" class="f-ta" placeholder="Digite aqui o conteúdo detalhado do documento..."></textarea>
+            <div id="mirror_pad_texto" class="print-mirror" style="text-indent: 40px;"></div>
+          </div>
+
+          <div class="sig-single">
+            <div class="sig-line-center">
+              <div class="sig-name" id="sig_pad_autor">USUÁRIO LOGADO</div>
+              <div class="sig-role">Aluno(a) Soldado PM – 5º Pelotão / 35º CFSD</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="doc-footer">
+          35º CFSD – 5º Pelotão / Polo Cáceres – Polícia Militar do Estado de Mato Grosso
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div class="status-toast" id="toast">Ação concluída</div>
+
+<script>
+  const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
+  const dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  const BRASAO_STORAGE_KEY = 'pmmt_5pel_brasao_base64';
+  const MESES_CAP = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+  const DIAS_SEMANA = ['DOMINGO', 'SEGUNDA-FEIRA', 'TERÇA-FEIRA', 'QUARTA-FEIRA', 'QUINTA-FEIRA', 'SEXTA-FEIRA', 'SÁBADO'];
+
+  const GRADUADOS_PADRAO = [
+    { nome: '1º SGT PM ALESSANDER ORTIZ DE SOUZA', funcao: 'Graduado de dia' },
+    { nome: '1º SGT PM MAURIZON', funcao: 'Graduado de dia' },
+    { nome: '2º SGT PM SOUZA', funcao: 'Graduado de dia' }
+  ];
+
+  let modeloAtivo = 'troca';
+  let listaAlunos = [];
+  let listaTecnico = [];
+  let emailUsuarioLogado = '';
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    restaurarBrasaoSalvo();
+    preencherDataHoje(true);
+    configurarTextareaEspelho();
+    await inicializarDados();
+  });
+
+  function showToast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(window._toastT);
+    window._toastT = setTimeout(() => el.classList.remove('show'), 2200);
+  }
+
+  function limparQra(aluno) {
+    return (aluno.qra || aluno.nome || '')
+      .replace(/AL SD PM |AL SD /gi, '')
+      .trim()
+      .toUpperCase();
+  }
+
+  // ==========================================================
+  // INICIALIZAÇÃO E SUPABASE
+  // ==========================================================
+  async function inicializarDados() {
+    const badge = document.getElementById('statusConexao');
+    try {
+      const { data: { session } } = await dbClient.auth.getSession();
+      if (session && session.user && session.user.email) {
+        emailUsuarioLogado = session.user.email;
+      }
+
+      const [resAlunos, resTec, resTemas] = await Promise.all([
+        dbClient.from('alunos_pelotao').select('id, numero, qra, nome, equipe, comandante').order('numero', { ascending: true }),
+        dbClient.from('corpo_tecnico').select('*'),
+        dbClient.from('documentos_temas').select('*')
+      ]);
+
+      listaAlunos = resAlunos.data || [];
+      listaTecnico = resTec.data || [];
+
+      popularSelectsEfetivo();
+      popularTemas(resTemas.data || []);
+      preselecionarUsuarioLogado();
+
+      badge.className = 'status-pill ok';
+      badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> Supabase Online';
+    } catch (err) {
+      console.error('Erro ao carregar dados do banco:', err);
+      badge.className = 'status-pill err';
+      badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Modo Offline';
+    }
+  }
+
+  function popularSelectsEfetivo() {
+    const selSol = document.getElementById('tr_solicitante_sel');
+    const selPerm = document.getElementById('tr_permutante_sel');
+    const selPadAl = document.getElementById('pad_alunos_sel');
+    const selPadCmd = document.getElementById('pad_cmd_sel');
+    const selDest = document.getElementById('tr_destinatario_sel');
+
+    selSol.innerHTML = '<option value="">-- Selecione o Solicitante --</option>';
+    selPerm.innerHTML = '<option value="">-- Selecione o Permutante --</option>';
+    selPadAl.innerHTML = '<option value="" selected>-- Geral / Nenhum Aluno --</option>';
+
+    const comandantesSet = new Set();
+
+    listaAlunos.forEach(a => {
+      const num = a.numero ? '5' + String(a.numero).padStart(2, '0') : '---';
+      const qra = limparQra(a);
+      const label = `${num} - ${qra}${a.equipe ? ' (' + a.equipe + ')' : ''}`;
+
+      selSol.add(new Option(label, qra));
+      selPerm.add(new Option(label, qra));
+      selPadAl.add(new Option(`AL SD PM ${num} - ${qra}`, `${num} - ${qra}`));
+
+      if (a.comandante) comandantesSet.add(a.comandante.trim());
+    });
+
+    // Destinatários (Graduados padrão + Corpo Técnico + Comandantes)
+    selDest.innerHTML = '<option value="">-- Selecione ou edite na folha --</option>';
+    const usados = new Set();
+
+    const grpGrad = document.createElement('optgroup');
+    grpGrad.label = 'GRADUADOS DE DIA';
+    GRADUADOS_PADRAO.forEach(g => {
+      usados.add(g.nome.toUpperCase());
+      grpGrad.appendChild(new Option(g.nome, JSON.stringify(g)));
+    });
+    selDest.appendChild(grpGrad);
+
+    if (listaTecnico.length > 0) {
+      const grpTec = document.createElement('optgroup');
+      grpTec.label = 'CORPO TÉCNICO / COMANDO';
+      listaTecnico.forEach(t => {
+        const nomeCompleto = `${(t.posto_graduacao || 'PM').toUpperCase()} ${(t.nome || t.nome_guerra || '').trim().toUpperCase()}`.trim();
+        if (!nomeCompleto || usados.has(nomeCompleto)) return;
+        usados.add(nomeCompleto);
+        const funcao = t.funcao || 'Comandante / Coordenação';
+        grpTec.appendChild(new Option(nomeCompleto, JSON.stringify({ nome: nomeCompleto, funcao })));
+        comandantesSet.add(nomeCompleto);
+      });
+      if (grpTec.children.length > 0) selDest.appendChild(grpTec);
+    }
+
+    selPadCmd.innerHTML = '<option value="">-- Sem Destinatário Específico --</option>';
+    comandantesSet.forEach(cmd => selPadCmd.add(new Option(cmd, cmd)));
+  }
+
+  function popularTemas(temasData) {
+    const dlAssuntos = document.getElementById('listaAssuntos');
+    const dlTemas = document.getElementById('listaTemas');
+    dlAssuntos.innerHTML = '';
+    dlTemas.innerHTML = '';
+    temasData.forEach(item => {
+      if (item.assunto) dlAssuntos.innerHTML += `<option value="${item.assunto}">`;
+      if (item.tema) dlTemas.innerHTML += `<option value="${item.tema}">`;
+    });
+  }
+
+  function preselecionarUsuarioLogado() {
+    if (!emailUsuarioLogado) return;
+    const prefix = emailUsuarioLogado.split('@')[0].toLowerCase();
+    const aluno = listaAlunos.find(a =>
+      (a.qra && a.qra.toLowerCase().includes(prefix)) ||
+      (a.nome && a.nome.toLowerCase().includes(prefix))
+    );
+
+    if (aluno) {
+      const qra = limparQra(aluno);
+      const num = aluno.numero ? '5' + String(aluno.numero).padStart(2, '0') : '';
+      document.getElementById('tr_solicitante_sel').value = qra;
+      syncNomeSolicitante(qra);
+
+      const autorPad = `AL SD PM ${num ? num + ' - ' : ''}${qra}`;
+      document.getElementById('doc_pad_autor').value = autorPad;
+      document.getElementById('sig_pad_autor').textContent = autorPad;
+    } else {
+      const autorUpper = prefix.toUpperCase();
+      document.getElementById('doc_pad_autor').value = autorUpper;
+      document.getElementById('sig_pad_autor').textContent = autorUpper;
+    }
+  }
+
+  // ==========================================================
+  // TROCA DE MODELOS
+  // ==========================================================
+  function selecionarModelo(modeloId) {
+    modeloAtivo = modeloId;
+    document.querySelectorAll('.model-btn').forEach(b => b.classList.toggle('active', b.dataset.model === modeloId));
+    document.querySelectorAll('.panel-config').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.doc-view').forEach(v => v.classList.remove('active'));
+
+    document.getElementById('config-' + modeloId)?.classList.add('active');
+    document.getElementById('view-' + modeloId)?.classList.add('active');
+    document.getElementById('sidebar').classList.remove('open');
+  }
+
+  // ==========================================================
+  // LÓGICA DO MODELO 01: TROCA DE SERVIÇO
+  // ==========================================================
+  function syncTroca() {
+    document.getElementById('doc_tr_parte_num').value = document.getElementById('tr_parte_num').value;
+    document.getElementById('doc_tr_parte_ano').value = document.getElementById('tr_parte_ano').value;
+    document.getElementById('doc_tr_funcao').value = document.getElementById('tr_funcao_dest').value;
+    document.getElementById('doc_tr_carga').value = document.getElementById('tr_carga').value;
+    atualizarAssinaturaDespacho();
+  }
+
+  function syncNomeSolicitante(valor, origem = null) {
+    const val = (valor || '').toUpperCase();
+    const elDo = document.getElementById('doc_tr_solicitante_do');
+    const elCorpo = document.getElementById('doc_tr_solicitante_corpo');
+    if (origem !== elDo) elDo.value = val;
+    if (origem !== elCorpo) elCorpo.value = val;
+    document.getElementById('sig_tr_solicitante').textContent = val || 'SOLICITANTE';
+  }
+
+  function syncNomePermutante(valor, origem = null) {
+    const val = (valor || '').toUpperCase();
+    const elCorpo = document.getElementById('doc_tr_permutante_corpo');
+    if (origem !== elCorpo) elCorpo.value = val;
+    document.getElementById('sig_tr_permutante').textContent = val || 'PERMUTANTE';
+  }
+
+  function aplicarAlunoTroca(tipo) {
+    if (tipo === 'solicitante') {
+      const qra = document.getElementById('tr_solicitante_sel').value;
+      if (qra) syncNomeSolicitante(qra);
+    } else {
+      const qra = document.getElementById('tr_permutante_sel').value;
+      if (qra) syncNomePermutante(qra);
+    }
+  }
+
+  function aplicarDestinatarioTroca() {
+    const raw = document.getElementById('tr_destinatario_sel').value;
+    if (!raw) return;
+    try {
+      const obj = JSON.parse(raw);
+      document.getElementById('doc_tr_destinatario').value = obj.nome;
+      if (obj.funcao) {
+        document.getElementById('tr_funcao_dest').value = obj.funcao;
+        document.getElementById('doc_tr_funcao').value = obj.funcao;
+      }
+      // Ajusta vocativo automaticamente para Oficial vs Graduado
+      const isOficial = /^(ASP|2º TEN|1º TEN|CAP|MAJ|TEN CEL|CEL)/i.test(obj.nome);
+      document.getElementById('doc_tr_vocativo').value = isOficial ? 'Senhor Oficial,' : 'Senhor Graduado,';
+      atualizarAssinaturaDespacho();
+    } catch (e) {}
+  }
+
+  function aplicarDataEmissaoTroca() {
+    const val = document.getElementById('tr_data_emissao').value;
+    if (!val) return;
+    const d = new Date(val + 'T12:00:00');
+    if (isNaN(d)) return;
+    document.getElementById('doc_tr_dia').value = String(d.getDate()).padStart(2, '0');
+    document.getElementById('doc_tr_mes').value = MESES_CAP[d.getMonth()];
+    document.getElementById('doc_tr_ano_ext').value = d.getFullYear();
+    document.getElementById('tr_parte_ano').value = d.getFullYear();
+    document.getElementById('doc_tr_parte_ano').value = d.getFullYear();
+  }
+
+  function aplicarDataServico(qual) {
+    const inputId = qual === 'escalado' ? 'tr_dt_escalado' : 'tr_dt_compensa';
+    const targetId = qual === 'escalado' ? 'doc_tr_dia_escalado' : 'doc_tr_dia_compensa';
+    const val = document.getElementById(inputId).value;
+    if (!val) return;
+    const d = new Date(val + 'T12:00:00');
+    if (isNaN(d)) return;
+    const dia = String(d.getDate()).padStart(2, '0');
+    const diaSem = DIAS_SEMANA[d.getDay()];
+    document.getElementById(targetId).value = `${dia} (${diaSem})`;
+  }
+
+  function toggleDespachoTroca() {
+    const checked = document.getElementById('tr_chk_despacho').checked;
+    document.getElementById('blocoDespachoTroca').classList.toggle('visible', checked);
+    atualizarAssinaturaDespacho();
+  }
+
+  function atualizarAssinaturaDespacho() {
+    const dest = document.getElementById('doc_tr_destinatario').value.trim();
+    const func = document.getElementById('doc_tr_funcao').value.trim();
+    document.getElementById('sig_tr_destinatario').textContent = dest || 'GRADUADO DE DIA';
+    document.getElementById('sig_tr_dest_funcao').textContent = func || 'Graduado de dia';
+  }
+
+  // ==========================================================
+  // LÓGICA DO MODELO 02: DOCUMENTO PADRÃO
+  // ==========================================================
+  function atualizarDocumentoPadrao() {
+    const selAl = document.getElementById('pad_alunos_sel');
+    const selecionados = Array.from(selAl.selectedOptions).map(o => o.value).filter(v => v !== '');
+    const cmd = document.getElementById('pad_cmd_sel').value;
+    const assunto = document.getElementById('pad_assunto_in').value;
+    const tema = document.getElementById('pad_tema_in').value;
+
+    const blocoAl = document.getElementById('doc_pad_bloco_alunos');
+    if (selecionados.length === 1) {
+      blocoAl.innerHTML = `<span style="font-weight:700;">ALUNO REFERÊNCIA:</span> AL SD PM ${selecionados[0]}`;
+    } else if (selecionados.length > 1) {
+      blocoAl.innerHTML = `<span style="font-weight:700;">ALUNOS REFERÊNCIA:</span><br>${selecionados.map(a => `AL SD PM ${a}`).join('<br>')}`;
+    } else {
+      blocoAl.innerHTML = '';
+    }
+
+    const blocoCmd = document.getElementById('doc_pad_bloco_cmd');
+    blocoCmd.innerHTML = cmd ? `<span style="font-weight:700;">AOS CUIDADOS DE:</span> ${cmd}` : '';
+
+    document.getElementById('doc_pad_assunto').value = assunto;
+    document.getElementById('doc_pad_tema').value = tema;
+  }
+
+  function configurarTextareaEspelho() {
+    const ta = document.getElementById('doc_pad_texto');
+    const mirror = document.getElementById('mirror_pad_texto');
+    const sync = () => {
+      ta.style.height = 'auto';
+      ta.style.height = Math.max(ta.scrollHeight, 130) + 'px';
+      mirror.textContent = ta.value;
+    };
+    ta.addEventListener('input', sync);
+    sync();
+  }
+
+  // ==========================================================
+  // BRASÃO, DATA DE HOJE, LIMPEZA E IMPRESSÃO
+  // ==========================================================
+  function carregarBrasaoManual(evt) {
+    const file = evt.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try { localStorage.setItem(BRASAO_STORAGE_KEY, reader.result); } catch (e) {}
+      aplicarSrcBrasao(reader.result);
+      showToast('Brasão atualizado e salvo no navegador!');
+    };
+    reader.readAsDataURL(file);
+    evt.target.value = '';
+  }
+
+  function restaurarBrasaoSalvo() {
+    try {
+      const salvo = localStorage.getItem(BRASAO_STORAGE_KEY);
+      if (salvo) aplicarSrcBrasao(salvo);
+    } catch (e) {}
+  }
+
+  function aplicarSrcBrasao(src) {
+    document.querySelectorAll('.img-brasao-pmmt').forEach(img => {
+      img.src = src;
+      img.style.display = 'inline-block';
+    });
+  }
+
+  function preencherDataHoje(silencioso = false) {
+    const now = new Date();
+    const iso = now.toISOString().split('T')[0];
+    document.getElementById('tr_data_emissao').value = iso;
+    aplicarDataEmissaoTroca();
+
+    const dataExtenso = now.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+    document.getElementById('doc_pad_data').value = dataExtenso;
+
+    if (!silencioso) showToast(`Data atualizada: ${dataExtenso}`);
+  }
+
+  function limparModeloAtual() {
+    if (!confirm('Limpar os campos do documento atual?')) return;
+    if (modeloAtivo === 'troca') {
+      document.getElementById('tr_solicitante_sel').value = '';
+      document.getElementById('tr_permutante_sel').value = '';
+      document.getElementById('tr_dt_escalado').value = '';
+      document.getElementById('tr_dt_compensa').value = '';
+      document.getElementById('doc_tr_dia_escalado').value = '';
+      document.getElementById('doc_tr_dia_compensa').value = '';
+      syncNomeSolicitante('');
+      syncNomePermutante('');
+    } else {
+      document.getElementById('pad_alunos_sel').selectedIndex = 0;
+      document.getElementById('pad_cmd_sel').value = '';
+      document.getElementById('pad_assunto_in').value = '';
+      document.getElementById('pad_tema_in').value = '';
+      document.getElementById('doc_pad_texto').value = '';
+      document.getElementById('doc_pad_texto').dispatchEvent(new Event('input'));
+      atualizarDocumentoPadrao();
+    }
+    showToast('Campos limpos!');
+  }
+
+  function imprimirDocumento() {
+    document.getElementById('mirror_pad_texto').textContent = document.getElementById('doc_pad_texto').value;
+    window.print();
+  }
+
+  window.addEventListener('beforeprint', () => {
+    document.getElementById('mirror_pad_texto').textContent = document.getElementById('doc_pad_texto').value;
+  });
+
+  document.getElementById('btnToggleSidebar').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('open');
+  });
+</script>
 </body>
 </html>
