@@ -2078,6 +2078,10 @@
       .replace(/'/g, '&#039;');
   }
 
+  function escapeJsAttr(str) {
+    return escapeHtml(String(str || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'"));
+  }
+
   function converterDataParaISO(str) {
     if (!str) return null;
     const limpo = str.trim();
@@ -2351,7 +2355,6 @@
     syncByKey('tipificacao', inf.tipificacao_legal);
     exibirAcaoPenal(inf.acao_penal);
 
-    // Tenta sugerir artigo na conclusão do policial se ainda estiver vazio
     const artEl = document.querySelector('[name="conc_art"]');
     if (artEl && !artEl.value) {
       const mArt = inf.tipificacao_legal.match(/Art\.?\s*([\dºª°,\s§a-z]+)/i);
@@ -2526,18 +2529,21 @@
     tbody.innerHTML = registros.map(r => {
       const dataFmt = r.data_fato ? converterISOParaBR(r.data_fato) : '--/--/----';
       const st = r.status || 'RASCUNHO';
+      const idSeguro = escapeJsAttr(String(r.id));
+      const numSeguro = escapeHtml(r.numero_tco || 'S/N');
+      const numJs = escapeJsAttr(r.numero_tco || '');
       return `
         <tr>
-          <td><strong>${escapeHtml(r.numero_tco || 'S/N')}</strong></td>
+          <td><strong>${numSeguro}</strong></td>
           <td>${dataFmt}</td>
           <td>${escapeHtml(r.natureza || '-')}</td>
           <td>${escapeHtml(r.autor_nome || '-')}</td>
           <td><span class="st-badge st-${st}">${st}</span></td>
           <td style="text-align:right; white-space:nowrap;">
-            <button type="button" class="btn btn-sm btn-primary" onclick="carregarTCOPorId(${r.id})">
+            <button type="button" class="btn btn-sm btn-primary" onclick="carregarTCOPorId('${idSeguro}')">
               <i class="fa-solid fa-pen-to-square"></i> Abrir
             </button>
-            <button type="button" class="btn btn-sm btn-danger" onclick="excluirTCO(${r.id}, '${escapeHtml(r.numero_tco || '')}')">
+            <button type="button" class="btn btn-sm btn-danger" onclick="excluirTCO('${idSeguro}', '${numJs}')">
               <i class="fa-solid fa-trash"></i>
             </button>
           </td>
@@ -2666,12 +2672,10 @@
 
     const dc = data.dados_completos || {};
     if (dc.fields) {
-      // Formato do novo template (10 peças)
       applyState(dc);
       const seq = extrairSeqTCO(dc.fields.__quick_q_tco || data.numero_tco);
       syncByKey('tco_num', seq);
     } else {
-      // Compatibilidade caso abra um TCO gravado na versão anterior (7 abas)
       syncByKey('tco_num', extrairSeqTCO(data.numero_tco));
       syncByKey('natureza', dc.ocorrencia?.natureza || data.natureza || '');
       syncByKey('tipificacao', dc.ocorrencia?.tipificacao_legal || data.tipificacao || '');
@@ -2687,7 +2691,6 @@
       syncByKey('cmt_rg', dc.guarnicao?.cmt_rg || '');
     }
 
-    // Sincroniza o seletor de infrações com a natureza carregada
     const natCarregada = document.getElementById('q_nat').value.trim().toLowerCase();
     const matchInf = listaInfracoes.find(i => i.natureza.toLowerCase() === natCarregada);
     if (matchInf) {
@@ -2724,7 +2727,7 @@
       return;
     }
 
-    if (tcoAtualId === id) window.novoTCO(true);
+    if (String(tcoAtualId) === String(id)) window.novoTCO(true);
     await window.carregarListaTCOs();
     Swal.fire({ icon: 'success', title: 'Excluído!', timer: 1300, showConfirmButton: false });
   };
@@ -2732,8 +2735,9 @@
   function atualizarIndicadorEdicao(numero) {
     const el = document.getElementById('indicadorRegistro');
     if (tcoAtualId) {
+      const idCurto = String(tcoAtualId).length > 8 ? String(tcoAtualId).slice(0, 8) : String(tcoAtualId);
       el.className = 'record-indicator editing';
-      el.innerHTML = `<span><i class="fa-solid fa-pen"></i> Editando #${tcoAtualId}</span><span>${escapeHtml(numero)}</span>`;
+      el.innerHTML = `<span><i class="fa-solid fa-pen"></i> Editando #${escapeHtml(idCurto)}</span><span>${escapeHtml(numero)}</span>`;
     } else {
       el.className = 'record-indicator';
       el.innerHTML = `<span><i class="fa-solid fa-file-circle-plus"></i> Novo Registro</span><span>BD</span>`;
