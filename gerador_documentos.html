@@ -86,6 +86,7 @@
   }
   .status-pill.ok { background: rgba(16,185,129,0.15); border-color: #10b981; color: #6ee7b7; }
   .status-pill.err { background: rgba(239,68,68,0.15); border-color: #ef4444; color: #fca5a5; }
+  .status-pill.admin { background: rgba(197,160,89,0.16); border-color: var(--pm-gold); color: var(--pm-gold); }
 
   .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 
@@ -107,7 +108,7 @@
     transition: all 0.15s ease;
   }
   .btn:hover { background: var(--bg-panel-hover); filter: brightness(1.08); }
-  .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+  .btn:disabled { opacity: 0.48; cursor: not-allowed; filter: none; }
   .btn-primary { background: var(--pm-navy); border-color: #3b82f6; color: #fff; }
   .btn-primary:hover { background: var(--accent); }
   .btn-success { background: var(--success); border-color: #10b981; color: #fff; }
@@ -153,6 +154,25 @@
     border-color: #d97706;
     color: #fcd34d;
   }
+  .record-indicator.readonly {
+    background: rgba(148, 163, 184, 0.14);
+    border-color: #64748b;
+    color: #cbd5e1;
+  }
+
+  .perm-alert {
+    display: none;
+    margin-bottom: 10px;
+    padding: 7px 9px;
+    border-radius: 2px;
+    font-size: 10.5px;
+    line-height: 1.4;
+    font-weight: 600;
+    background: rgba(245, 158, 11, 0.14);
+    border: 1px solid #d97706;
+    color: #fde68a;
+  }
+  .perm-alert.visible { display: block; }
 
   .sidebar-section-title {
     font-size: 10px;
@@ -250,6 +270,10 @@
     font-size: 11.5px;
     font-weight: 600;
     font-family: inherit;
+  }
+  .quick-box select:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
   }
   .quick-box input:focus,
   .quick-box select:focus,
@@ -665,6 +689,7 @@
       <div class="brand-sub">35º CFSD – Polo Cáceres/MT • Integrado ao Supabase</div>
     </div>
     <span id="statusConexao" class="status-pill"><i class="fa-solid fa-circle-notch fa-spin"></i> Conectando...</span>
+    <span id="badgePerfil" class="status-pill"><i class="fa-solid fa-lock"></i> Perfil...</span>
   </div>
 
   <div class="toolbar">
@@ -701,6 +726,8 @@
       <span>BD</span>
     </div>
 
+    <div id="avisoPermissao" class="perm-alert"></div>
+
     <div class="sidebar-section-title">
       <span><i class="fa-solid fa-folder-open"></i> Modelos Disponíveis</span>
     </div>
@@ -732,8 +759,8 @@
       <select id="selectStatusDoc" onchange="salvarRascunhoLocal()">
         <option value="RASCUNHO">Rascunho</option>
         <option value="ENVIADO">Enviado / Protocolado</option>
-        <option value="AUTORIZADO">Autorizado / Deferido</option>
-        <option value="NEGADO">Negado / Indeferido</option>
+        <option value="AUTORIZADO" data-admin-opt="true">Autorizado / Deferido</option>
+        <option value="NEGADO" data-admin-opt="true">Negado / Indeferido</option>
       </select>
     </div>
 
@@ -1062,8 +1089,11 @@
     { nome: '2º SGT PM SOUZA', funcao: 'Graduado de dia' }
   ];
 
+  let isAdmin = false;
   let modeloAtivo = 'troca';
   let docAtualId = null;
+  let docAtualCriadorEmail = null;
+  let docAtualStatusBanco = null;
   let listaAlunos = [];
   let listaTecnico = [];
   let listaDocumentos = [];
@@ -1075,6 +1105,7 @@
     configurarTextareaEspelho();
     await inicializarDados();
     restaurarRascunhoLocal();
+    atualizarControlesPermissao();
   });
 
   function showToast(msg) {
@@ -1112,7 +1143,7 @@
   }
 
   // ==========================================================
-  // INICIALIZAÇÃO E SUPABASE
+  // INICIALIZAÇÃO, PERMISSÕES E SUPABASE
   // ==========================================================
   async function inicializarDados() {
     const badge = document.getElementById('statusConexao');
@@ -1120,7 +1151,13 @@
       const { data: { session } } = await dbClient.auth.getSession();
       if (session && session.user && session.user.email) {
         emailUsuarioLogado = session.user.email;
+        const { data: podeAdmin, error: errAdmin } = await dbClient.rpc('is_portal_admin');
+        isAdmin = !errAdmin && Boolean(podeAdmin);
+      } else {
+        isAdmin = false;
       }
+
+      atualizarBadgePerfil();
 
       const [resAlunos, resTec, resTemas] = await Promise.all([
         dbClient.from('alunos_pelotao').select('id, numero, qra, nome, equipe, comandante').order('numero', { ascending: true }),
@@ -1142,6 +1179,81 @@
       console.error('Erro ao carregar dados do banco:', err);
       badge.className = 'status-pill err';
       badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Modo Offline';
+    }
+  }
+
+  function atualizarBadgePerfil() {
+    const badge = document.getElementById('badgePerfil');
+    if (isAdmin) {
+      badge.className = 'status-pill admin';
+      badge.innerHTML = '<i class="fa-solid fa-user-shield"></i> Administrador';
+    } else {
+      badge.className = 'status-pill';
+      badge.innerHTML = '<i class="fa-solid fa-user"></i> Aluno (Troca Própria)';
+    }
+  }
+
+  function avaliarPermissaoSalvarAtual() {
+    if (isAdmin) return { permitido: true, motivo: '' };
+    if (!emailUsuarioLogado) return { permitido: false, motivo: 'Faça login no portal para gravar documentos no banco.' };
+
+    if (modeloAtivo !== 'troca') {
+      return {
+        permitido: false,
+        motivo: 'Somente administradores podem gravar o Modelo Padrão no banco. Você ainda pode preencher e imprimir/PDF normalmente.'
+      };
+    }
+
+    if (docAtualId) {
+      const dono = (docAtualCriadorEmail || '').toLowerCase() === emailUsuarioLogado.toLowerCase();
+      if (!dono) {
+        return {
+          permitido: false,
+          motivo: 'Este documento pertence a outro usuário. Modo somente leitura (clique em "Novo" para criar sua solicitação).'
+        };
+      }
+      if (docAtualStatusBanco === 'AUTORIZADO' || docAtualStatusBanco === 'NEGADO') {
+        return {
+          permitido: false,
+          motivo: `Solicitação já despachada (${docAtualStatusBanco}). Edição bloqueada no banco; impressão/PDF liberada.`
+        };
+      }
+    }
+
+    return { permitido: true, motivo: '' };
+  }
+
+  function atualizarControlesPermissao() {
+    const selStatus = document.getElementById('selectStatusDoc');
+    const btnSalvar = document.getElementById('btnSalvarBD');
+    const aviso = document.getElementById('avisoPermissao');
+    const { permitido, motivo } = avaliarPermissaoSalvarAtual();
+
+    // Oculta opções Autorizado / Negado para alunos comuns
+    Array.from(selStatus.options).forEach(opt => {
+      if (opt.dataset.adminOpt === 'true') {
+        const manterVisivelLeitura = !isAdmin && docAtualId && docAtualStatusBanco === opt.value;
+        opt.hidden = !isAdmin && !manterVisivelLeitura;
+        opt.disabled = !isAdmin;
+      }
+    });
+
+    // Garante que aluno comum não fique com status restrito em documento editável
+    if (!isAdmin && permitido && (selStatus.value === 'AUTORIZADO' || selStatus.value === 'NEGADO')) {
+      selStatus.value = 'RASCUNHO';
+    }
+
+    selStatus.disabled = !permitido;
+    btnSalvar.disabled = !permitido;
+
+    if (!permitido) {
+      btnSalvar.title = motivo;
+      aviso.innerHTML = `<i class="fa-solid fa-lock"></i> ${escapeHtml(motivo)}`;
+      aviso.classList.add('visible');
+    } else {
+      btnSalvar.title = 'Salvar ou atualizar este documento no Supabase';
+      aviso.classList.remove('visible');
+      aviso.innerHTML = '';
     }
   }
 
@@ -1312,7 +1424,7 @@
   async function carregarListaDocumentos() {
     const { data, error } = await dbClient
       .from('documentos_registros')
-      .select('id, modelo, numero_parte, assunto, solicitante, permutante, data_emissao, status, atualizado_em')
+      .select('id, modelo, numero_parte, assunto, solicitante, permutante, data_emissao, status, criado_por_email, atualizado_em')
       .order('atualizado_em', { ascending: false });
 
     if (error) {
@@ -1344,6 +1456,12 @@
         : `${r.solicitante || '-'} — ${r.assunto || 'Sem assunto'}`;
       const st = r.status || 'RASCUNHO';
 
+      const btnExcluirHtml = isAdmin
+        ? `<button type="button" class="btn btn-sm btn-danger" onclick="excluirDocumento('${idSeguro}', '${refJs}')" title="Excluir registro">
+             <i class="fa-solid fa-trash"></i>
+           </button>`
+        : '';
+
       return `
         <tr>
           <td><span class="mod-badge">${escapeHtml(modeloNome)}</span></td>
@@ -1355,9 +1473,7 @@
             <button type="button" class="btn btn-sm btn-primary" onclick="carregarDocumentoPorId('${idSeguro}')">
               <i class="fa-solid fa-pen-to-square"></i> Abrir
             </button>
-            <button type="button" class="btn btn-sm btn-danger" onclick="excluirDocumento('${idSeguro}', '${refJs}')">
-              <i class="fa-solid fa-trash"></i>
-            </button>
+            ${btnExcluirHtml}
           </td>
         </tr>
       `;
@@ -1385,6 +1501,12 @@
   }
 
   async function salvarDocumentoNoBanco() {
+    const perm = avaliarPermissaoSalvarAtual();
+    if (!perm.permitido) {
+      Swal.fire('Acesso Restrito', perm.motivo, 'warning');
+      return;
+    }
+
     if (modeloAtivo === 'troca') {
       let numParte = document.getElementById('doc_tr_parte_num').value.trim();
       if (!numParte) {
@@ -1414,13 +1536,18 @@
       }
     }
 
+    let statusVal = document.getElementById('selectStatusDoc').value || 'RASCUNHO';
+    if (!isAdmin && (statusVal === 'AUTORIZADO' || statusVal === 'NEGADO')) {
+      statusVal = 'ENVIADO';
+      document.getElementById('selectStatusDoc').value = statusVal;
+    }
+
     const btn = document.getElementById('btnSalvarBD');
     const htmlOriginal = btn.innerHTML;
     btn.disabled = true;
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
 
     const state = coletarEstadoCompleto();
-    const statusVal = document.getElementById('selectStatusDoc').value || 'RASCUNHO';
     const hojeIso = new Date().toISOString().split('T')[0];
 
     let registro;
@@ -1439,7 +1566,7 @@
         data_emissao: document.getElementById('tr_data_emissao').value || hojeIso,
         aluno_id: encontrarAlunoIdPorQra(solNome),
         status: statusVal,
-        criado_por_email: emailUsuarioLogado || null,
+        criado_por_email: docAtualId && isAdmin ? (docAtualCriadorEmail || emailUsuarioLogado || null) : (emailUsuarioLogado || null),
         dados_completos: state,
         atualizado_em: new Date().toISOString()
       };
@@ -1455,7 +1582,7 @@
         data_emissao: hojeIso,
         aluno_id: encontrarAlunoIdPorQra(autorPad),
         status: statusVal,
-        criado_por_email: emailUsuarioLogado || null,
+        criado_por_email: docAtualId && isAdmin ? (docAtualCriadorEmail || emailUsuarioLogado || null) : (emailUsuarioLogado || null),
         dados_completos: state,
         atualizado_em: new Date().toISOString()
       };
@@ -1468,23 +1595,27 @@
           .from('documentos_registros')
           .update(registro)
           .eq('id', docAtualId)
-          .select('id, modelo, numero_parte, assunto')
+          .select('id, modelo, numero_parte, assunto, status, criado_por_email')
           .single();
       } else {
         resultado = await dbClient
           .from('documentos_registros')
           .insert([registro])
-          .select('id, modelo, numero_parte, assunto')
+          .select('id, modelo, numero_parte, assunto, status, criado_por_email')
           .single();
       }
 
       if (resultado.error) throw resultado.error;
 
       docAtualId = resultado.data.id;
+      docAtualCriadorEmail = resultado.data.criado_por_email;
+      docAtualStatusBanco = resultado.data.status;
+
       const rotulo = resultado.data.numero_parte
         ? `Parte ${resultado.data.numero_parte}`
         : (resultado.data.assunto || 'Documento');
       atualizarIndicadorEdicao(rotulo);
+      atualizarControlesPermissao();
       await carregarListaDocumentos();
 
       Swal.fire({
@@ -1497,12 +1628,12 @@
     } catch (err) {
       console.error('Erro ao salvar documento:', err);
       const msg = (err.message || '').toLowerCase().includes('row-level security')
-        ? 'Apenas usuários autorizados podem gravar no banco de dados. Você ainda pode imprimir ou salvar o PDF localmente.'
+        ? 'Sem permissão para alterar este registro no banco. Você ainda pode imprimir ou gerar PDF localmente.'
         : (err.message || 'Verifique se a tabela documentos_registros existe no Supabase.');
       Swal.fire('Não foi possível salvar', msg, 'error');
     } finally {
-      btn.disabled = false;
       btn.innerHTML = htmlOriginal;
+      atualizarControlesPermissao();
     }
   }
 
@@ -1519,14 +1650,19 @@
     }
 
     docAtualId = data.id;
-    selecionarModelo(data.modelo || 'troca');
-    document.getElementById('selectStatusDoc').value = data.status || 'RASCUNHO';
+    docAtualCriadorEmail = data.criado_por_email || null;
+    docAtualStatusBanco = data.status || 'RASCUNHO';
+
+    selecionarModelo(data.modelo || 'troca', true);
+    document.getElementById('selectStatusDoc').value = docAtualStatusBanco;
 
     if (data.dados_completos) {
       aplicarEstadoCompleto(data.dados_completos);
+      document.getElementById('selectStatusDoc').value = docAtualStatusBanco;
     }
 
     const rotulo = data.numero_parte ? `Parte ${data.numero_parte}` : (data.assunto || 'Documento');
+    atualizarControlesPermissao();
     atualizarIndicadorEdicao(rotulo);
     salvarRascunhoLocal();
     fecharHistoricoDocumentos();
@@ -1534,6 +1670,11 @@
   }
 
   async function excluirDocumento(id, rotulo) {
+    if (!isAdmin) {
+      Swal.fire('Acesso Restrito', 'Apenas administradores podem excluir documentos salvos no banco.', 'warning');
+      return;
+    }
+
     const conf = await Swal.fire({
       title: `Excluir "${rotulo}"?`,
       text: 'Esta ação removerá o documento permanentemente do banco de dados.',
@@ -1563,10 +1704,17 @@
 
   function atualizarIndicadorEdicao(rotulo) {
     const el = document.getElementById('indicadorRegistro');
+    const perm = avaliarPermissaoSalvarAtual();
+
     if (docAtualId) {
       const idCurto = String(docAtualId).length > 8 ? String(docAtualId).slice(0, 8) : String(docAtualId);
-      el.className = 'record-indicator editing';
-      el.innerHTML = `<span><i class="fa-solid fa-pen"></i> Editando #${escapeHtml(idCurto)}</span><span>${escapeHtml(rotulo)}</span>`;
+      if (perm.permitido) {
+        el.className = 'record-indicator editing';
+        el.innerHTML = `<span><i class="fa-solid fa-pen"></i> Editando #${escapeHtml(idCurto)}</span><span>${escapeHtml(rotulo)}</span>`;
+      } else {
+        el.className = 'record-indicator readonly';
+        el.innerHTML = `<span><i class="fa-solid fa-eye"></i> Consulta #${escapeHtml(idCurto)}</span><span>${escapeHtml(rotulo)}</span>`;
+      }
     } else {
       el.className = 'record-indicator';
       el.innerHTML = `<span><i class="fa-solid fa-file-circle-plus"></i> Novo Registro</span><span>BD</span>`;
@@ -1576,11 +1724,14 @@
   function novoDocumento(silencioso = false) {
     if (!silencioso && !confirm('Iniciar um novo documento em branco? Alterações não salvas no banco serão perdidas.')) return;
     docAtualId = null;
+    docAtualCriadorEmail = null;
+    docAtualStatusBanco = null;
     localStorage.removeItem(DRAFT_STORAGE_KEY);
     document.getElementById('selectStatusDoc').value = 'RASCUNHO';
     limparCamposSemConfirmar();
     preencherDataHoje(true);
     preselecionarUsuarioLogado();
+    atualizarControlesPermissao();
     atualizarIndicadorEdicao('');
     if (!silencioso) showToast('Novo documento iniciado!');
   }
@@ -1700,7 +1851,7 @@
       const raw = localStorage.getItem(DRAFT_STORAGE_KEY);
       if (!raw) return;
       const st = JSON.parse(raw);
-      if (st.modeloAtivo) selecionarModelo(st.modeloAtivo);
+      if (st.modeloAtivo) selecionarModelo(st.modeloAtivo, true);
       aplicarEstadoCompleto(st);
     } catch (e) {}
   }
@@ -1708,7 +1859,7 @@
   // ==========================================================
   // TROCA DE MODELOS E SINCRONIZAÇÃO DE CAMPOS
   // ==========================================================
-  function selecionarModelo(modeloId) {
+  function selecionarModelo(modeloId, silenciosoPerm = false) {
     modeloAtivo = modeloId;
     document.querySelectorAll('.model-btn').forEach(b => b.classList.toggle('active', b.dataset.model === modeloId));
     document.querySelectorAll('.panel-config').forEach(p => p.classList.remove('active'));
@@ -1717,6 +1868,10 @@
     document.getElementById('config-' + modeloId)?.classList.add('active');
     document.getElementById('view-' + modeloId)?.classList.add('active');
     document.getElementById('sidebar').classList.remove('open');
+
+    if (!silenciosoPerm) {
+      atualizarControlesPermissao();
+    }
   }
 
   function syncTroca() {
