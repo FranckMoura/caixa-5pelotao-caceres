@@ -1189,7 +1189,7 @@
       badge.innerHTML = '<i class="fa-solid fa-user-shield"></i> Administrador';
     } else {
       badge.className = 'status-pill';
-      badge.innerHTML = '<i class="fa-solid fa-user"></i> Aluno (Troca Própria)';
+      badge.innerHTML = '<i class="fa-solid fa-user"></i> Usuário Padrão';
     }
   }
 
@@ -1197,25 +1197,18 @@
     if (isAdmin) return { permitido: true, motivo: '' };
     if (!emailUsuarioLogado) return { permitido: false, motivo: 'Faça login no portal para gravar documentos no banco.' };
 
-    if (modeloAtivo !== 'troca') {
-      return {
-        permitido: false,
-        motivo: 'Somente administradores podem gravar o Modelo Padrão no banco. Você ainda pode preencher e imprimir/PDF normalmente.'
-      };
-    }
-
     if (docAtualId) {
       const dono = (docAtualCriadorEmail || '').toLowerCase() === emailUsuarioLogado.toLowerCase();
       if (!dono) {
         return {
           permitido: false,
-          motivo: 'Este documento pertence a outro usuário. Modo somente leitura (clique em "Novo" para criar sua solicitação).'
+          motivo: 'Este documento pertence a outro usuário. Modo somente leitura (clique em "Novo" para criar o seu).'
         };
       }
       if (docAtualStatusBanco === 'AUTORIZADO' || docAtualStatusBanco === 'NEGADO') {
         return {
           permitido: false,
-          motivo: `Solicitação já despachada (${docAtualStatusBanco}). Edição bloqueada no banco; impressão/PDF liberada.`
+          motivo: `Documento já despachado (${docAtualStatusBanco}). Edição bloqueada no banco; impressão/PDF liberada.`
         };
       }
     }
@@ -1229,7 +1222,7 @@
     const aviso = document.getElementById('avisoPermissao');
     const { permitido, motivo } = avaliarPermissaoSalvarAtual();
 
-    // Oculta opções Autorizado / Negado para alunos comuns
+    // Oculta opções Autorizado / Negado para usuários não-administradores
     Array.from(selStatus.options).forEach(opt => {
       if (opt.dataset.adminOpt === 'true') {
         const manterVisivelLeitura = !isAdmin && docAtualId && docAtualStatusBanco === opt.value;
@@ -1238,7 +1231,6 @@
       }
     });
 
-    // Garante que aluno comum não fique com status restrito em documento editável
     if (!isAdmin && permitido && (selStatus.value === 'AUTORIZADO' || selStatus.value === 'NEGADO')) {
       selStatus.value = 'RASCUNHO';
     }
@@ -1456,7 +1448,11 @@
         : `${r.solicitante || '-'} — ${r.assunto || 'Sem assunto'}`;
       const st = r.status || 'RASCUNHO';
 
-      const btnExcluirHtml = isAdmin
+      const ehDono = emailUsuarioLogado && (r.criado_por_email || '').toLowerCase() === emailUsuarioLogado.toLowerCase();
+      const naoDespachado = (st === 'RASCUNHO' || st === 'ENVIADO');
+      const podeExcluir = isAdmin || (ehDono && naoDespachado);
+
+      const btnExcluirHtml = podeExcluir
         ? `<button type="button" class="btn btn-sm btn-danger" onclick="excluirDocumento('${idSeguro}', '${refJs}')" title="Excluir registro">
              <i class="fa-solid fa-trash"></i>
            </button>`
@@ -1670,8 +1666,12 @@
   }
 
   async function excluirDocumento(id, rotulo) {
-    if (!isAdmin) {
-      Swal.fire('Acesso Restrito', 'Apenas administradores podem excluir documentos salvos no banco.', 'warning');
+    const reg = listaDocumentos.find(d => String(d.id) === String(id));
+    const ehDono = reg && emailUsuarioLogado && (reg.criado_por_email || '').toLowerCase() === emailUsuarioLogado.toLowerCase();
+    const naoDespachado = reg && (reg.status === 'RASCUNHO' || reg.status === 'ENVIADO');
+
+    if (!isAdmin && !(ehDono && naoDespachado)) {
+      Swal.fire('Acesso Restrito', 'Você só pode excluir seus próprios documentos enquanto não estiverem despachados.', 'warning');
       return;
     }
 
@@ -1691,7 +1691,7 @@
     const { error } = await dbClient.from('documentos_registros').delete().eq('id', id);
     if (error) {
       const msg = (error.message || '').toLowerCase().includes('row-level security')
-        ? 'Apenas administradores podem excluir registros do banco.'
+        ? 'Sem permissão para excluir este registro do banco.'
         : error.message;
       Swal.fire('Erro ao excluir', msg, 'error');
       return;
